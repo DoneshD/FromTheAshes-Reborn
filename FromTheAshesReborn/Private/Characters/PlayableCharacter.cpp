@@ -414,6 +414,21 @@ void APlayableCharacter::HardLockOn()
 				OutHit,
 				true);
 
+			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+			ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+			bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+				GetWorld(),
+				GetActorLocation(),
+				EndLocation,
+				100.f,
+				ObjectTypes,
+				false,
+				ActorArray,
+				EDrawDebugTrace::ForDuration,
+				OutHit,
+				true);
+
 			if (TargetHit)
 			{
 
