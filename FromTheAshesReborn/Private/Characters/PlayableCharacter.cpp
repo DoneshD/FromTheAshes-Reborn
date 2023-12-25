@@ -1,4 +1,5 @@
 #include "Characters/PlayableCharacter.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -10,6 +11,18 @@
 
 APlayableCharacter::APlayableCharacter()
 {
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
+	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->TargetArmLength = 400.0f;
+	SpringArmComp->bUsePawnControlRotation = true;
+
+	SpringArmComp->SetUsingAbsoluteRotation(true);
+	SpringArmComp->bUsePawnControlRotation = true;
+
+	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
+	CameraComp->SetupAttachment(SpringArmComp);
+	CameraComp->bUsePawnControlRotation = false;
+
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
 	GetCharacterMovement()->GravityScale = 2.f;
@@ -229,6 +242,12 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 	if (InputComp)
 	{
+		InputComp->BindAction(Input_Move, ETriggerEvent::Triggered, this, &APlayableCharacter::Move);
+		InputComp->BindAction(Input_Jump, ETriggerEvent::Started, this, &APlayableCharacter::DoubleJump);
+		InputComp->BindAction(Input_Jump, ETriggerEvent::Completed, this, &APlayableCharacter::StopJump);
+		InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered, this, &APlayableCharacter::LookMouse);
+		InputComp->BindAction(Input_LookStick, ETriggerEvent::Triggered, this, &APlayableCharacter::LookStick);
+
 		InputComp->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputLightAttack);
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
 		InputComp->BindAction(Input_Dodge, ETriggerEvent::Started, this, &APlayableCharacter::InputDodge);
@@ -237,13 +256,91 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 }
 
 //------------------------------------------------------------ Movement -----------------------------------------------------------------//
+void APlayableCharacter::Move(const FInputActionInstance& Instance)
+{
+	FRotator ControlRot = GetControlRotation();
+	ControlRot.Pitch = 0.0f;
+	ControlRot.Roll = 0.0f;
 
+	InputDirection = Instance.GetValue().Get<FVector2D>();
+	InputDirection.Normalize();
+
+	InputDirection.X = FMath::Clamp(InputDirection.X, -1.0f, 1.0f);
+	InputDirection.Y = FMath::Clamp(InputDirection.Y, -1.0f, 1.0f);
+
+	AddMovementInput(ControlRot.Vector(), InputDirection.Y);
+
+	const FRotationMatrix RotationMatrix(ControlRot);
+	const FVector RightVector = RotationMatrix.GetScaledAxis(EAxis::Y);
+	AddMovementInput(RightVector, InputDirection.X);
+}
+
+void APlayableCharacter::LookMouse(const FInputActionValue& InputValue)
+{
+	const FVector2D Value = InputValue.Get<FVector2D>();
+
+	AddControllerYawInput(Value.X);
+
+	//Invert depend on controller or mouse
+	AddControllerPitchInput(-Value.Y);
+}
+
+void APlayableCharacter::LookStick(const FInputActionValue& InputValue)
+{
+	FVector2D Value = InputValue.Get<FVector2D>();
+
+	bool XNegative = Value.X < 0.f;
+	bool YNegative = Value.Y < 0.f;
+
+	static const float LookYawRate = 100.0f;
+	static const float LookPitchRate = 50.0f;
+
+	Value = Value * Value;
+
+	if (XNegative)
+	{
+		Value.X *= -1.f;
+	}
+	if (YNegative)
+	{
+		Value.Y *= -1.f;
+	}
+
+	AddControllerYawInput(Value.X * (LookYawRate)*GetWorld()->GetDeltaSeconds());
+	AddControllerPitchInput(Value.Y * (LookPitchRate)*GetWorld()->GetDeltaSeconds());
+}
 void APlayableCharacter::EnableRootRotation()
 {
 	if (!SoftTarget && !HardTarget)
 	{
 		GetCharacterMovement()->bAllowPhysicsRotationDuringAnimRootMotion = true;
 	}
+}
+
+void APlayableCharacter::DoubleJump()
+{
+	if (CanJump())
+	{
+		Jump();
+		JumpCount++;
+		if (!GetCharacterMovement()->IsFalling())
+		{
+			JumpCount = 0;
+		}
+		else
+		{
+			if (JumpCount < 2)
+			{
+				Jump();
+			}
+		}
+	}
+}
+
+void APlayableCharacter::StopJump()
+{
+	StopJumping();
+	JumpCount = 0;
 }
 
 //------------------------------------------------------------ Timelines -----------------------------------------------------------------//

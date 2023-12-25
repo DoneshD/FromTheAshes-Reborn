@@ -6,6 +6,7 @@
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
+#include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackSurgePausedEvent);
@@ -25,6 +26,9 @@ struct FSideDodgeArray
 	TArray<TObjectPtr<UAnimMontage>> SideDodgeArray;
 };
 
+class UInputMappingContext;
+class UCameraComponent;
+class USpringArmComponent;
 class UTimelineComponent;
 class UCurveFloat;
 
@@ -44,6 +48,28 @@ protected:
 	virtual void BeginPlay() override;
 
 	//-----------------------------------------Inputs-----------------------------------------------
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> SpringArmComp;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> CameraComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputMappingContext> DefaultInputMapping;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Move;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_LookMouse;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_LookStick;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Jump;
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LightAttack;
@@ -70,6 +96,14 @@ protected:
 	void ResetSurgeCombo();
 
 	//-----------------------------------------Movement---------------------------------------------
+
+	//Basic controls
+	void Move(const FInputActionInstance& Instance);
+	void LookMouse(const FInputActionValue& InputValue);
+	void LookStick(const FInputActionValue& InputValue);
+
+	void DoubleJump();
+	void StopJump();
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void EnableRootRotation();
