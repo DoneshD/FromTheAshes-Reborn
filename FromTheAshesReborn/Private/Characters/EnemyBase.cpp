@@ -26,8 +26,3 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-
-AEnemyBase* AEnemyBase::ReturnSelf()
-{
-	return this;
-}

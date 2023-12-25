@@ -1,12 +1,7 @@
 #include "Characters/PlayableCharacter.h"
 #include "Camera/CameraComponent.h"
-
-#include "Weaponary/Kunai.h"
-
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
-
-#include "Interfaces/EnemyInterface.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -173,18 +168,15 @@ void APlayableCharacter::Tick(float DeltaTime)
 			AActor* HitActor = CurrentHit.GetActor();
 			if (HitActor)
 			{
-				IEnemyInterface* EnemyInterface = Cast<IEnemyInterface>(HitActor);
-				if (EnemyInterface)
-				{
-					WCHitActor = HitActor;
+				WCHitActor = HitActor;
 					
-					if (!AlreadyHitActors_L.Contains(WCHitActor))
-					{
-						AlreadyHitActors_L.AddUnique(WCHitActor);
-						//TODO
-						//UGameplayStatics::ApplyDamage()
-					}
+				if (!AlreadyHitActors_L.Contains(WCHitActor))
+				{
+					AlreadyHitActors_L.AddUnique(WCHitActor);
+					//TODO
+					//UGameplayStatics::ApplyDamage()
 				}
+				
 			}
 		}
 
@@ -198,17 +190,15 @@ void APlayableCharacter::Tick(float DeltaTime)
 			AActor* HitActor = CurrentHit.GetActor();
 			if (HitActor)
 			{
-				IEnemyInterface* EnemyInterface = Cast<IEnemyInterface>(HitActor);
-				if (EnemyInterface)
+				
+				WCHitActor = HitActor;
+				if (!AlreadyHitActors_R.Contains(CurrentHit.GetActor()))
 				{
-					WCHitActor = HitActor;
-					if (!AlreadyHitActors_R.Contains(CurrentHit.GetActor()))
-					{
-						AlreadyHitActors_R.AddUnique(WCHitActor);
-						//TODO
-						//UGameplayStatics::ApplyDamage()
-					}
+					AlreadyHitActors_R.AddUnique(WCHitActor);
+					//TODO
+					//UGameplayStatics::ApplyDamage()
 				}
+				
 			}
 		}
 	}
@@ -243,8 +233,6 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
 		InputComp->BindAction(Input_Dodge, ETriggerEvent::Started, this, &APlayableCharacter::InputDodge);
 		InputComp->BindAction(Input_LockOn, ETriggerEvent::Started, this, &APlayableCharacter::HardLockOn);
-		InputComp->BindAction(Input_ThrowKunai, ETriggerEvent::Started, this, &APlayableCharacter::ThrowKunai);
-		InputComp->BindAction(Input_Interact, ETriggerEvent::Started, this, &APlayableCharacter::Interact);
 	}
 }
 
@@ -371,11 +359,7 @@ void APlayableCharacter::SoftLockOn(float Distance)
 			AActor* HitActor = OutHit.GetActor();
 			if (HitActor)
 			{
-				IEnemyInterface* EnemyInterface = Cast<IEnemyInterface>(HitActor);
-				if (EnemyInterface)
-				{
-					SoftTarget = HitActor;
-				}
+				SoftTarget = HitActor;
 			}
 		}
 		else
@@ -416,15 +400,11 @@ void APlayableCharacter::HardLockOn()
 
 			if (TargetHit)
 			{
-
 				AActor* HitActor = OutHit.GetActor();
-				IEnemyInterface* EnemyInterface = Cast<IEnemyInterface>(HitActor);
-				if (EnemyInterface)
-				{
-					GetCharacterMovement()->bOrientRotationToMovement = false;
-					bTargeting = true;
-					HardTarget = HitActor;
-				}
+				
+				GetCharacterMovement()->bOrientRotationToMovement = false;
+				bTargeting = true;
+				HardTarget = HitActor;
 			}
 		}
 	}
@@ -874,128 +854,4 @@ void APlayableCharacter::PerformComboSurge()
 	{
 		return;
 	}
-}
-
-void APlayableCharacter::Interact()
-{
-	if (Kunai && bKunaiLanded)
-	{
-		this->TeleportTo(Kunai->GetActorLocation(), GetActorRotation());
-		Kunai->Destroy();
-		Kunai = nullptr;
-		if (bFlank)
-		{
-			bFlank = false;
-
-			FHitResult OutHit;
-			TArray<AActor*> ActorArray;
-			ActorArray.Add(this);
-
-			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-			ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-			bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
-				GetWorld(),
-				GetActorLocation(),
-				GetActorLocation(),
-				200.f,
-				ObjectTypes,
-				false,
-				ActorArray,
-				EDrawDebugTrace::ForDuration,
-				OutHit,
-				true);
-
-			if (TargetHit)
-			{
-				AActor* HitEnemy = OutHit.GetActor();
-				FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), HitEnemy->GetActorLocation());
-				FRotator InterpRot = FMath::RInterpTo(GetControlRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.f);
-
-				GetController()->SetControlRotation(InterpRot);
-				SetActorRotation(InterpRot);
-			}
-		}
-	}
-}
-
-bool APlayableCharacter::TraceShot(FHitResult& Hit, FVector& EndLocation)
-{
-	AController* OwnerController = GetController();
-	if (OwnerController == nullptr)
-		return false;
-
-	FVector StartLocation = GetActorLocation();
-
-	FVector ControllerLocation;
-	FRotator ControllerRotation;
-
-	OwnerController->GetPlayerViewPoint(ControllerLocation, ControllerRotation);
-	EndLocation = ControllerLocation + ControllerRotation.Vector() * 50000.f;
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(GetOwner());
-
-	return GetWorld()->LineTraceSingleByChannel(Hit, StartLocation, EndLocation, ECollisionChannel::ECC_GameTraceChannel1, Params);
-}
-
-void APlayableCharacter::ThrowKunai()
-{
-	FHitResult Hit;
-	FVector EndLocation;
-	FVector HitLocation;
-
-	FVector SocketLocation = GetMesh()->GetSocketLocation(TEXT("Kunai_Socket"));
-	FRotator LookRotation;
-	FTransform LookFire;
-
-	if (!bTargeting)
-	{
-		bool bSuccess = TraceShot(Hit, EndLocation);
-
-		HitLocation = UKismetMathLibrary::SelectVector(Hit.Location, EndLocation, bSuccess);
-		LookRotation = UKismetMathLibrary::FindLookAtRotation(SocketLocation, HitLocation);
-	}
-	else
-	{
-		LookRotation = UKismetMathLibrary::FindLookAtRotation(SocketLocation, HardTarget->GetActorLocation());
-	}
-
-	LookFire = UKismetMathLibrary::MakeTransform(SocketLocation, LookRotation);
-
-	Kunai = GetWorld()->SpawnActor<AKunai>(KunaiClass, LookFire);
-	
-	if (bKunaiLanded)
-	{
-	
-		if (Kunai)
-		{
-			Kunai->Destroy();
-			Kunai = nullptr;
-		}
-		if (KunaiThrow) 
-		{
-			//PlayAnimMontage(KunaiThrow);
-			UE_LOG(LogTemp, Warning, TEXT("Play Anim"))
-		}
-		Kunai = GetWorld()->SpawnActor<AKunai>(KunaiClass, LookFire);
-		
-		if (Kunai)
-		{
-			bKunaiLanded = false;
-			Kunai->SetOwner(this);
-		}
-	}
-	//GetWorldTimerManager().SetTimer(FireHandle, this, &AShooterCharacter::FireRateValid, .35, true);
-}
-
-void APlayableCharacter::SetKunaiLanded()
-{
-	bKunaiLanded = true;
-}
-
-void APlayableCharacter::SetFlank()
-{
-	bFlank = true;
 }

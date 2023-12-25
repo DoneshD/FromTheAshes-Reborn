@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EDamageResponse.h"
-#include "EDamageType.h"
+#include "Enums/EDamageResponse.h"
+#include "Enums/EDamageType.h"
 #include "DamageInfo.generated.h"
 
 USTRUCT(BlueprintType)
@@ -12,7 +12,7 @@ struct FROMTHEASHESREBORN_API FDamageInfo
 
 public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    float Amount;
+    float DamageAmount;
 
     EDamageType DamageType;
 

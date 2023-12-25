@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Interfaces/PlayerInterface.h"
 #include "Components/TimelineComponent.h"
 #include "PlayableCharacter.generated.h"
 
@@ -30,7 +29,7 @@ class UTimelineComponent;
 class UCurveFloat;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IPlayerInterface
+class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter
 {
 	GENERATED_BODY()
 
@@ -57,12 +56,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_ThrowKunai;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Interact;
 
 	//-----------------------------------------FSM Reset States-------------------------------------
 
@@ -175,10 +168,7 @@ protected:
 
 	//-----------------------------------------Kunai-------------------------------------------------
 
-	void ThrowKunai();
-	bool TraceShot(FHitResult& Hit, FVector& EndLocation);
 
-	void Interact();
 
 private:
 	//-----------------------------------------Light Attack-----------------------------------------
@@ -308,24 +298,12 @@ private:
 
 	//-----------------------------------------Kunai---------------------------------------
 
-	UPROPERTY(EditDefaultsOnly, Category = "Kunai")
-	TSubclassOf<class AKunai> KunaiClass;
-	AKunai* Kunai;
+
 
 public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION()
-	virtual void SetFlank() override;
-
-	UFUNCTION()
-	virtual void SetKunaiLanded() override;
-
-	bool bKunaiLanded = true;
-
-	bool bFlank = false;
 
 };
 
