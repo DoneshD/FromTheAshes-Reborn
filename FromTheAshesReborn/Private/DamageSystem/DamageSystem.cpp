@@ -74,6 +74,7 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 			{
 				//CallOnDamageResponse(EDamageResponse::DamageInfo.DamageResponse)
 				UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth);
+				//should return true
 			}
 			return true;
 		}

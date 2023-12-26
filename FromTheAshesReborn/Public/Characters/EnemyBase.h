@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "FTACharacter.h"
+#include "AIControllerEnemyBase.h"
+#include "AIController.h"
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "EnemyBase.generated.h"
@@ -11,6 +13,9 @@
 /**
  * 
  */
+
+class AIControllerEnemyBase;
+
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface
 {
@@ -48,6 +53,8 @@ public:
 
 	UFUNCTION()
 	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
+
+	AIControllerEnemyBase* AICEnemyBase;
 
 	
 };
