@@ -207,7 +207,6 @@ void APlayableCharacter::Tick(float DeltaTime)
 						};
 
 						EnemyInterface->NativeTakeDamage(DamageInfo);
-						
 					}
 				}
 				

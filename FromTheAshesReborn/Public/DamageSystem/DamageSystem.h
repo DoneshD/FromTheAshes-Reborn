@@ -23,10 +23,10 @@ public:
 	UDamageSystem();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentHealth;
+	float CurrentHealth = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth;
+	float MaxHealth = 100;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsInvincible = false;

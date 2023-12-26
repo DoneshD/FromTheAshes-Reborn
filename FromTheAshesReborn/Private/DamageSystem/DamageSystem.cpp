@@ -53,12 +53,11 @@ float UDamageSystem::Heal(float HealAmount)
 
 bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 {
-	UE_LOG(LogTemp, Warning, TEXT("In Actor COmp"));
 	DamageOutput = CanBeDamaged(DamageInfo.ShouldDamageInvincible, DamageInfo.CanBeBlocked);
 	if (DamageOutput == ECanBeDamaged::ECanBeDamaged_BlockedDamage)
 	{
 		//CallOnBlocked(DamageInfo.CanBeParried)
-		return false;
+		return true;
 	}
 	else if (DamageOutput == ECanBeDamaged::ECanBeDamaged_DoDamage)
 	{
@@ -74,9 +73,14 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 			if (DamageInfo.ShouldForceInterrupt || IsInterruptible)
 			{
 				//CallOnDamageResponse(EDamageResponse::DamageInfo.DamageResponse)
+				UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth);
 			}
 			return true;
 		}
+	}
+	else if (DamageOutput == ECanBeDamaged::ECanBeDamaged_NoDamage)
+	{
+		return false;
 	}
 	else
 	{
