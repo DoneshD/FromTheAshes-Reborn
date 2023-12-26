@@ -4,13 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "FTACharacter.h"
+#include "Interfaces/DamagableInterface.h"
+#include "DamageSystem/DamageSystem.h"
 #include "EnemyBase.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface
 {
 	GENERATED_BODY()
 
@@ -26,6 +28,26 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+	class UDamageSystem* DamageSystemComponent;
+
+	//Damagable Interface functions
+
+	UFUNCTION()
+	virtual float NativeGetCurrentHealth() override;
+
+	UFUNCTION()
+	virtual float NativeGetMaxHealth() override;
+
+	UFUNCTION()
+	virtual bool NativeIsDead() override;
+
+	UFUNCTION()
+	virtual float NativeHeal(float NewHeatlh) override;
+
+	UFUNCTION()
+	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
 
 	
 };

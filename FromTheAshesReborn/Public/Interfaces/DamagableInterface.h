@@ -23,17 +23,17 @@ class FROMTHEASHESREBORN_API IDamagableInterface
 
 public:
 	UFUNCTION()
-	virtual float GetCurrentHealth() = 0;
+	virtual float NativeGetCurrentHealth() = 0;
 
 	UFUNCTION()
-	virtual float GetMaxHealth() = 0;
+	virtual float NativeGetMaxHealth() = 0;
 
 	UFUNCTION()
-	virtual bool IsDead() = 0;
+	virtual bool NativeIsDead() = 0;
 
 	UFUNCTION()
-	virtual float Heal(float NewHeatlh) = 0;
+	virtual float NativeHeal(float HealAmount) = 0;
 
 	UFUNCTION()
-	virtual bool TakeDamage(FDamageInfo DamageInfo) = 0;
+	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) = 0;
 };

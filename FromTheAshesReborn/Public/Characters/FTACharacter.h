@@ -28,10 +28,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> RightArrow;
-	
-
-	void DoubleJump();
-	void StopJump();
 
 	//FSM checks
 	bool CanJump();
