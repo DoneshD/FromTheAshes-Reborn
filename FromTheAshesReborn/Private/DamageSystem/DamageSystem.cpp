@@ -53,6 +53,7 @@ float UDamageSystem::Heal(float HealAmount)
 
 bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 {
+	UE_LOG(LogTemp, Warning, TEXT("In Actor COmp"));
 	DamageOutput = CanBeDamaged(DamageInfo.ShouldDamageInvincible, DamageInfo.CanBeBlocked);
 	if (DamageOutput == ECanBeDamaged::ECanBeDamaged_BlockedDamage)
 	{
