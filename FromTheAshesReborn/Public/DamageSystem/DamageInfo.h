@@ -8,7 +8,7 @@
 USTRUCT(BlueprintType)
 struct FROMTHEASHESREBORN_API FDamageInfo
 {
-    GENERATED_BODY()
+    GENERATED_USTRUCT_BODY()
 
 public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)

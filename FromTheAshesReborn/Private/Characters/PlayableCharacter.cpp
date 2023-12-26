@@ -2,6 +2,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Interfaces/DamagableInterface.h"
+#include "DamageSystem/DamageSystem.h"
+#include "DamageSystem/DamageInfo.h"
+
 #include "Kismet/GameplayStatics.h"
 
 #include "EnhancedInputComponent.h"
@@ -22,6 +26,9 @@ APlayableCharacter::APlayableCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false;
+
+	DamageSystemComponent = CreateDefaultSubobject<UDamageSystem>(TEXT("DamageSystemComponent"));
+	this->AddOwnedComponent(DamageSystemComponent);
 
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
@@ -181,13 +188,26 @@ void APlayableCharacter::Tick(float DeltaTime)
 			AActor* HitActor = CurrentHit.GetActor();
 			if (HitActor)
 			{
-				WCHitActor = HitActor;
-					
-				if (!AlreadyHitActors_L.Contains(WCHitActor))
+				IDamagableInterface* EnemyInterface = Cast<IDamagableInterface>(HitActor);
+
+				if (EnemyInterface)
 				{
-					AlreadyHitActors_L.AddUnique(WCHitActor);
-					//TODO
-					//UGameplayStatics::ApplyDamage()
+
+					if (!AlreadyHitActors_L.Contains(HitActor))
+					{
+						AlreadyHitActors_L.AddUnique(HitActor);
+						FDamageInfo DamageInfo{
+							20.0f,                            // DamageAmount
+							EDamageType::EDamageType_Melee,   // DamageType
+							EDamageResponse::EDamageResponse_None,  // DamageResponse
+							false,                            // ShouldDamageInvincible
+							false,                            // CanBeBlocked
+							false,                            // CanBeParried
+							false                             // ShouldForceInterrupt
+						};
+
+						EnemyInterface->NativeTakeDamage(DamageInfo);
+					}
 				}
 				
 			}
@@ -951,4 +971,31 @@ void APlayableCharacter::PerformComboSurge()
 	{
 		return;
 	}
+}
+
+//--------------------------------Damage System-------------------------------------
+
+float APlayableCharacter::NativeGetCurrentHealth()
+{
+	return DamageSystemComponent->CurrentHealth;
+}
+
+float APlayableCharacter::NativeGetMaxHealth()
+{
+	return DamageSystemComponent->MaxHealth;
+}
+
+bool APlayableCharacter::NativeIsDead()
+{
+	return DamageSystemComponent->IsDead;
+}
+
+float APlayableCharacter::NativeHeal(float HealAmount)
+{
+	return DamageSystemComponent->Heal(HealAmount);
+}
+
+bool APlayableCharacter::NativeTakeDamage(FDamageInfo DamageInfo)
+{
+	return DamageSystemComponent->TakeDamage(DamageInfo);
 }

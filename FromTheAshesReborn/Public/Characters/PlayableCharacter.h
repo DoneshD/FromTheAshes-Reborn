@@ -6,6 +6,11 @@
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
+
+#include "Interfaces/DamagableInterface.h"
+#include "DamageSystem/DamageSystem.h"
+#include "DamageSystem/DamageInfo.h"
+
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
@@ -33,7 +38,7 @@ class UTimelineComponent;
 class UCurveFloat;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter
+class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface
 {
 	GENERATED_BODY()
 
@@ -43,17 +48,20 @@ protected:
 
 	APlayableCharacter();
 
-	//-----------------------------------------BeginPlay--------------------------------------------
-
-	virtual void BeginPlay() override;
-
-	//-----------------------------------------Inputs-----------------------------------------------
-	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
+	class UDamageSystem* DamageSystemComponent;
+
+	//-----------------------------------------BeginPlay--------------------------------------------
+
+	virtual void BeginPlay() override;
+
+	//-----------------------------------------Inputs-----------------------------------------------
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMapping;
@@ -69,7 +77,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Jump;
-
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LightAttack;
@@ -205,6 +212,7 @@ protected:
 
 
 private:
+
 	//-----------------------------------------Light Attack-----------------------------------------
 
 	int LightAttackIndex = 0;
@@ -338,6 +346,24 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	//Damagable Interface functions
+
+	UFUNCTION()
+	virtual float NativeGetCurrentHealth() override;
+
+	UFUNCTION()
+	virtual float NativeGetMaxHealth() override;
+
+	UFUNCTION()
+	virtual bool NativeIsDead() override;
+
+	UFUNCTION()
+	virtual float NativeHeal(float NewHeatlh) override;
+
+	UFUNCTION()
+	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
+
 
 };
 
