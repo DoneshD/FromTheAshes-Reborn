@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Enums/EAIStates.h"
+#include "Perception/AIPerceptionComponent.h"
+
 #include "AIController.h"
 #include "AIControllerEnemyBase.generated.h"
 
@@ -13,6 +15,10 @@
 
 class UBehaviorTree;
 class UBlackboardComponent;
+class UAIPerceptionComponent;
+class UAISenseConfig_Sight;
+class UAISenseConfig_Hearing;
+
 UCLASS()
 class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
 {
@@ -23,10 +29,14 @@ public:
 	FName AttackTargetKeyName = TEXT("AttackTarget");
 	FName PointOfInterestKeyName = TEXT("PointOfInterest");
 
-	AActor* AttackTarget;
+	TObjectPtr<AActor> AttackTarget;
+
+	AAIControllerEnemyBase();
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors) override;
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -34,6 +44,15 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBlackboardComponent> BaseBlackboardComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAISenseConfig_Sight> AISenseConfigSight = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAISenseConfig_Hearing> AISenseConfigHearing = nullptr;
 
 
 public:

@@ -3,7 +3,29 @@
 #include "AIControllerEnemyBase.h"
 #include "Enums/EAIStates.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 #include "Characters/EnemyBase.h"
+
+AAIControllerEnemyBase::AAIControllerEnemyBase()
+{
+	BaseBlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
+	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
+	AISenseConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>("SenseSight");
+	AISenseConfigSight->DetectionByAffiliation.bDetectEnemies = true;
+	AISenseConfigSight->DetectionByAffiliation.bDetectFriendlies = false;
+	AISenseConfigSight->DetectionByAffiliation.bDetectNeutrals = false;
+
+	AISenseConfigHearing = CreateDefaultSubobject<UAISenseConfig_Hearing>("SenseHearing");
+	AISenseConfigHearing->DetectionByAffiliation.bDetectEnemies = true;
+	AISenseConfigHearing->DetectionByAffiliation.bDetectFriendlies = false;
+	AISenseConfigHearing->DetectionByAffiliation.bDetectNeutrals = false;
+
+	AIPerceptionComponent->ConfigureSense(*AISenseConfigSight);
+	AIPerceptionComponent->ConfigureSense(*AISenseConfigHearing);
+	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
+}
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 {
@@ -21,9 +43,9 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
-	BaseBlackboardComponent->GetValueAsEnum(StateKeyName);
 	//fix
 	return EAIStates::EAIStates_Passive;
+	BaseBlackboardComponent->GetValueAsEnum(StateKeyName);
 }
 
 void AAIControllerEnemyBase::SetStateAsPassive()
