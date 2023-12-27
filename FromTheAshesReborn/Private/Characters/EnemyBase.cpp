@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Characters/EnemyBase.h"
+#include "AIControllerEnemyBase.h"
+#include "AIController.h"
 #include "DamageSystem/DamageSystem.h"
 
 AEnemyBase::AEnemyBase()
@@ -14,6 +16,24 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+	AController* myEnemyController = this->GetController();
+	AAIController* myAIEnemyController;
+	if (myEnemyController)
+	{
+		myAIEnemyController = Cast<AAIController>(myEnemyController);
+	}
+	/*
+	AController* EnemyController = this->GetController();
+	AAIController* AIEnemyController;
+	if (AIEnemyController)
+	{
+		AIEnemyController = Cast<AAIController>(EnemyController);
+		if (AIEnemyController)
+		{
+			AICEnemyBase = Cast<AIControllerEnemyBase>(EnemyController);
+		}
+	}
+	*/
 
 }
 
