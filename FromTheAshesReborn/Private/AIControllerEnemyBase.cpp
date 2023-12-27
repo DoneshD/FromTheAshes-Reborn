@@ -15,13 +15,12 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 			RunBehaviorTree(BaseBehaviorTree);
 			SetStateAsPassive();
 		}
-		
 	}
 }
 
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
-	return EAIStates();
+	BaseBlackboardComponent->GetValueAsEnum(StateKeyName);
 }
 
 void AAIControllerEnemyBase::SetStateAsPassive()
@@ -29,27 +28,43 @@ void AAIControllerEnemyBase::SetStateAsPassive()
 	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Passive));
 }
 
-void AAIControllerEnemyBase::SetStateAsAttacking(AActor* AttackTarget, bool UseLastKnownAttackTarget)
+void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget)
 {
+	AActor* NewAttackTarget;
+	if (AttackTarget && UseLastKnownAttackTarget)
+	{
+		NewAttackTarget = AttackTarget;
+	}
+	else
+	{
+		NewAttackTarget = IncomingAttackTarget;
+	}
 
-}
-
-void AAIControllerEnemyBase::SetStateAsInvestigating()
-{
+	if (NewAttackTarget)
+	{
+		BaseBlackboardComponent->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
+		BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
+		AttackTarget = NewAttackTarget;
+	}
+	else
+	{
+		SetStateAsPassive();
+	}
 
 }
 
 void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)
 {
-
+	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Investigating));
+	BaseBlackboardComponent->SetValueAsVector(PointOfInterestKeyName, Location);
 }
 
 void AAIControllerEnemyBase::SetStateAsFrozen()
 {
-
+	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
 }
 
 void AAIControllerEnemyBase::SetStateAsDead()
 {
-
+	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Dead));
 }

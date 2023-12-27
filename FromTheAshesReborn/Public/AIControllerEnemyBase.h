@@ -20,6 +20,10 @@ class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
 
 public:
 	FName StateKeyName = TEXT("State");
+	FName AttackTargetKeyName = TEXT("AttackTarget");
+	FName PointOfInterestKeyName = TEXT("PointOfInterest");
+
+	AActor* AttackTarget;
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
@@ -39,9 +43,7 @@ public:
 
 	void SetStateAsPassive();
 
-	void SetStateAsAttacking(AActor* AttackTarget, bool UseLastKnownAttackTarget);
-
-	void SetStateAsInvestigating();
+	void SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget);
 
 	void SetStateAsInvestigating(FVector Location);
 
