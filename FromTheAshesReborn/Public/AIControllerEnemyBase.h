@@ -38,7 +38,6 @@ private:
 
 public:
 
-
 	EAIStates GetCurrentState();
 
 	void SetStateAsPassive();
@@ -50,6 +49,5 @@ public:
 	void SetStateAsFrozen();
 
 	void SetStateAsDead();
-
 	
 };

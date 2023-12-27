@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "AIControllerEnemyBase.h"
+#include "Enums/EAIStates.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Characters/EnemyBase.h"
 
@@ -21,6 +22,8 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
 	BaseBlackboardComponent->GetValueAsEnum(StateKeyName);
+	//fix
+	return EAIStates::EAIStates_Passive;
 }
 
 void AAIControllerEnemyBase::SetStateAsPassive()
