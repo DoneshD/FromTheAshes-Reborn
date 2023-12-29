@@ -160,37 +160,33 @@ bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAISt
 		{
 			if (CurrentStimulus.Type == SightID)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("I SAW YOU!"));
-				//HandleSensedSight(Actor);
-				UE_LOG(LogTemp, Warning, TEXT("HandleSensedSight() called"));
-				return true;
+				return CurrentStimulus.WasSuccessfullySensed();
 			}
 		}
 		else if (Sense == EAISenses::EAISenses_Hearing)
 		{
 			if (CurrentStimulus.Type == HearID)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("I HEARD YOU!"));
-				//HandleSensedSound(Actor);
-				UE_LOG(LogTemp, Warning, TEXT("HandleSensedSound() called"))
-					return true;
+				return CurrentStimulus.WasSuccessfullySensed();
+
 			}
 		}
 		else if (Sense == EAISenses::EAISenses_Damage)
 		{
 			if (CurrentStimulus.Type == DamageId)
 			{
-				//HandleSensedDamage(Actor);
-				UE_LOG(LogTemp, Warning, TEXT("HandleSensedDamage() called"));
+				return CurrentStimulus.WasSuccessfullySensed();
 			}
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Sense not found"));
+			return false;
 		}
 	}
 	return false;
 }
+
 
 void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 {
@@ -216,12 +212,50 @@ void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 	}
 }
 
-void AAIControllerEnemyBase::HandleSensedSound(FVector Actor)
+void AAIControllerEnemyBase::HandleSensedSound(FVector Location)
 {
+	switch (GetCurrentState())
+	{
+	case EAIStates::EAIStates_Passive:
+		SetStateAsInvestigating(Location);
 
+	case EAIStates::EAIStates_Attacking:
+		//Nothing
+
+	case EAIStates::EAIStates_Investigating:
+		SetStateAsInvestigating(Location);
+
+	case EAIStates::EAIStates_Frozen:
+		//Nothing
+
+	case EAIStates::EAIStates_Dead:
+		//Nothing
+
+	default:
+		break;
+	}
 }
 
 void AAIControllerEnemyBase::HandleSensedDamage(AActor* Actor)
 {
+	switch (GetCurrentState())
+	{
+	case EAIStates::EAIStates_Passive:
+		SetStateAsAttacking(Actor, false);
 
+	case EAIStates::EAIStates_Attacking:
+		//Nothing
+
+	case EAIStates::EAIStates_Investigating:
+		SetStateAsAttacking(Actor, false);
+
+	case EAIStates::EAIStates_Frozen:
+		//Nothing
+
+	case EAIStates::EAIStates_Dead:
+		//Nothing
+
+	default:
+		break;
+	}
 }
