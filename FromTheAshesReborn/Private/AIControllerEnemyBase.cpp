@@ -7,25 +7,43 @@
 #include "Perception/AISense.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
+#include "Perception/AISenseConfig_Damage.h"
 #include "Characters/EnemyBase.h"
 
 AAIControllerEnemyBase::AAIControllerEnemyBase()
 {
 	BaseBlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
+
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
+
 	AISenseConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>("SenseSight");
+	AISenseConfigSight->SightRadius = 800.0f;
+	AISenseConfigSight->LoseSightRadius = 1200.0f;
+	AISenseConfigSight->PeripheralVisionAngleDegrees = 60.0f;
 	AISenseConfigSight->DetectionByAffiliation.bDetectEnemies = true;
-	AISenseConfigSight->DetectionByAffiliation.bDetectFriendlies = false;
-	AISenseConfigSight->DetectionByAffiliation.bDetectNeutrals = false;
+	AISenseConfigSight->DetectionByAffiliation.bDetectFriendlies = true;
+	AISenseConfigSight->DetectionByAffiliation.bDetectNeutrals = true;
+	AISenseConfigSight->SetMaxAge(5.0f);
 
 	AISenseConfigHearing = CreateDefaultSubobject<UAISenseConfig_Hearing>("SenseHearing");
+	AISenseConfigHearing->HearingRange = 700.0f;
 	AISenseConfigHearing->DetectionByAffiliation.bDetectEnemies = true;
-	AISenseConfigHearing->DetectionByAffiliation.bDetectFriendlies = false;
-	AISenseConfigHearing->DetectionByAffiliation.bDetectNeutrals = false;
+	AISenseConfigHearing->DetectionByAffiliation.bDetectFriendlies = true;
+	AISenseConfigHearing->DetectionByAffiliation.bDetectNeutrals = true;
+	AISenseConfigHearing->SetMaxAge(3.0f);
+
+	AISenseConfigDamage = CreateDefaultSubobject<UAISenseConfig_Damage>("SenseDamage");
+	AISenseConfigDamage->SetMaxAge(5.0f);
 
 	AIPerceptionComponent->ConfigureSense(*AISenseConfigSight);
 	AIPerceptionComponent->ConfigureSense(*AISenseConfigHearing);
+	AIPerceptionComponent->ConfigureSense(*AISenseConfigDamage);
 	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
+
+	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated);
+
+
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
@@ -40,32 +58,38 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 			SetStateAsPassive();
 		}
 	}
+
 }
 
 void AAIControllerEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::OnPerceptionUpdated);
+
 }
 
-void AAIControllerEnemyBase::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
+void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnPerceptionUpdated() called"));
+
 	for (AActor* Actor : UpdatedActors)
 	{
-		if (CanSenseActor(Actor, EAISenses::EAISenses_Sight))
+		if (CanSenseActor(Actor, EAISenses::EAISenses_Sight, OutSightInfo))
 		{
-			//HandleSensedSight(Actor);
+			HandleSensedSight(Actor);
 		}
-		if (CanSenseActor(Actor, EAISenses::EAISenses_Hearing))
+		if (CanSenseActor(Actor, EAISenses::EAISenses_Hearing, OutHearInfo))
 		{
-			//HandleSensedSound(Actor);
+			HandleSensedSound(OutHearInfo.StimulusLocation);
 		}
-		if (CanSenseActor(Actor, EAISenses::EAISenses_Damage))
+		if (CanSenseActor(Actor, EAISenses::EAISenses_Damage, OutDamageInfo))
 		{
-			//HandleSensedDamage(Actor);
+			HandleSensedDamage(Actor);
 		}
 	}
+}
+
+void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{
+
 }
 
 EAIStates AAIControllerEnemyBase::GetCurrentState()
@@ -121,26 +145,83 @@ void AAIControllerEnemyBase::SetStateAsDead()
 	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Dead));
 }
 
-bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense)
+bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAIStimulus& CurrentStimulus)
 {
 	FActorPerceptionBlueprintInfo Info;
 	bool bSightSensed = AIPerceptionComponent->GetActorsPerception(Actor, Info);
 
 	for (const FAIStimulus& CurrentStimulus : Info.LastSensedStimuli)
 	{
-		FAISenseID sightid = AISenseConfigSight->GetSenseID();
-		FAISenseID hearid = AISenseConfigHearing->GetSenseID();
-
-		if (CurrentStimulus.Type == sightid)
+		FAISenseID SightID = AISenseConfigSight->GetSenseID();
+		FAISenseID HearID = AISenseConfigHearing->GetSenseID();
+		FAISenseID DamageId = AISenseConfigDamage->GetSenseID();
+		
+		if (Sense == EAISenses::EAISenses_Sight)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("I SAW YOU!"));
-			return true;
+			if (CurrentStimulus.Type == SightID)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("I SAW YOU!"));
+				//HandleSensedSight(Actor);
+				UE_LOG(LogTemp, Warning, TEXT("HandleSensedSight() called"));
+				return true;
+			}
 		}
-		else if (CurrentStimulus.Type == hearid)
+		else if (Sense == EAISenses::EAISenses_Hearing)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("I HEARD YOU!"));
-			return true;
+			if (CurrentStimulus.Type == HearID)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("I HEARD YOU!"));
+				//HandleSensedSound(Actor);
+				UE_LOG(LogTemp, Warning, TEXT("HandleSensedSound() called"))
+					return true;
+			}
+		}
+		else if (Sense == EAISenses::EAISenses_Damage)
+		{
+			if (CurrentStimulus.Type == DamageId)
+			{
+				//HandleSensedDamage(Actor);
+				UE_LOG(LogTemp, Warning, TEXT("HandleSensedDamage() called"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Sense not found"));
 		}
 	}
 	return false;
+}
+
+void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
+{
+	switch (GetCurrentState())
+	{
+	case EAIStates::EAIStates_Passive:
+		SetStateAsAttacking(Actor, false);
+
+	case EAIStates::EAIStates_Attacking:
+		//Nothing
+
+	case EAIStates::EAIStates_Investigating:
+		SetStateAsAttacking(Actor, false);
+
+	case EAIStates::EAIStates_Frozen:
+		//Nothing
+
+	case EAIStates::EAIStates_Dead:
+		//Nothing
+
+	default:
+		break;
+	}
+}
+
+void AAIControllerEnemyBase::HandleSensedSound(FVector Actor)
+{
+
+}
+
+void AAIControllerEnemyBase::HandleSensedDamage(AActor* Actor)
+{
+
 }

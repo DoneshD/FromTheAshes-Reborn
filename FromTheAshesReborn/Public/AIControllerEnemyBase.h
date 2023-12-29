@@ -19,6 +19,7 @@ class UBlackboardComponent;
 class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 class UAISenseConfig_Hearing;
+class UAISenseConfig_Damage;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
@@ -39,12 +40,12 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	//ActorPerceptionUpdatedDelegate.AddDynamic(this, &AAIControllerEnemyBase::OnPerceptionUpdated);
-	//void OnTargetPerceptionUpdated_Delegate(AActor* Actor, FAIStimulus Stimulus);
-	
 	UFUNCTION()
-	virtual void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+	void ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
+	UFUNCTION()
+	void TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
 private:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBehaviorTree> BaseBehaviorTree;
@@ -56,15 +57,20 @@ private:
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAISenseConfig_Sight> AISenseConfigSight = nullptr;
+	TObjectPtr<UAISenseConfig_Sight> AISenseConfigSight;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAISenseConfig_Hearing> AISenseConfigHearing = nullptr;
+	TObjectPtr<UAISenseConfig_Hearing> AISenseConfigHearing;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAISenseConfig_Damage> AISenseConfigDamage;
 
 
 public:
 
-	AActor* TestActor;
+	FAIStimulus OutSightInfo;
+	FAIStimulus OutHearInfo;
+	FAIStimulus OutDamageInfo;
 
 	EAIStates GetCurrentState();
 
@@ -78,6 +84,12 @@ public:
 
 	void SetStateAsDead();
 
-	bool CanSenseActor(AActor* Actor, EAISenses Sense);
+	bool CanSenseActor(AActor* Actor, EAISenses Sense, FAIStimulus& OutStimuli);
+
+	void HandleSensedSight(AActor* Actor);
+
+	void HandleSensedSound(FVector Location);
+
+	void HandleSensedDamage(AActor* Actor);
 
 };
