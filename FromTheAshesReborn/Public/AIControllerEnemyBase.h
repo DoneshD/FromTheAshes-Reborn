@@ -30,8 +30,13 @@ public:
 	FName StateKeyName = TEXT("State");
 	FName AttackTargetKeyName = TEXT("AttackTarget");
 	FName PointOfInterestKeyName = TEXT("PointOfInterest");
+	FName AttackRadiusKeyName = TEXT("AttackTarget");
+	FName DefendRadiusKeyName = TEXT("PointOfInterest");
 
 	TObjectPtr<AActor> AttackTarget;
+
+	float OutAttackRadius = 0.0f;
+	float OutDefendRadius = 0.0f;
 
 	AAIControllerEnemyBase();
 
