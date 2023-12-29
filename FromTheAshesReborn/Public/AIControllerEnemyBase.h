@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Enums/EAIStates.h"
+#include "Enums/EAISenses.h"
 #include "Perception/AIPerceptionComponent.h"
 
 #include "AIController.h"
@@ -36,7 +37,13 @@ public:
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
-	virtual void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors) override;
+	virtual void BeginPlay() override;
+
+	//ActorPerceptionUpdatedDelegate.AddDynamic(this, &AAIControllerEnemyBase::OnPerceptionUpdated);
+	//void OnTargetPerceptionUpdated_Delegate(AActor* Actor, FAIStimulus Stimulus);
+	
+	UFUNCTION()
+	virtual void OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -57,6 +64,8 @@ private:
 
 public:
 
+	AActor* TestActor;
+
 	EAIStates GetCurrentState();
 
 	void SetStateAsPassive();
@@ -68,5 +77,7 @@ public:
 	void SetStateAsFrozen();
 
 	void SetStateAsDead();
-	
+
+	bool CanSenseActor(AActor* Actor, EAISenses Sense);
+
 };

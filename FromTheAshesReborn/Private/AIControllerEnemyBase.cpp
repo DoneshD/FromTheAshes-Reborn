@@ -4,6 +4,7 @@
 #include "Enums/EAIStates.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Characters/EnemyBase.h"
@@ -37,6 +38,32 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 		{
 			RunBehaviorTree(BaseBehaviorTree);
 			SetStateAsPassive();
+		}
+	}
+}
+
+void AAIControllerEnemyBase::BeginPlay()
+{
+	Super::BeginPlay();
+	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::OnPerceptionUpdated);
+}
+
+void AAIControllerEnemyBase::OnPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnPerceptionUpdated() called"));
+	for (AActor* Actor : UpdatedActors)
+	{
+		if (CanSenseActor(Actor, EAISenses::EAISenses_Sight))
+		{
+			//HandleSensedSight(Actor);
+		}
+		if (CanSenseActor(Actor, EAISenses::EAISenses_Hearing))
+		{
+			//HandleSensedSound(Actor);
+		}
+		if (CanSenseActor(Actor, EAISenses::EAISenses_Damage))
+		{
+			//HandleSensedDamage(Actor);
 		}
 	}
 }
@@ -92,4 +119,28 @@ void AAIControllerEnemyBase::SetStateAsFrozen()
 void AAIControllerEnemyBase::SetStateAsDead()
 {
 	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Dead));
+}
+
+bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense)
+{
+	FActorPerceptionBlueprintInfo Info;
+	bool bSightSensed = AIPerceptionComponent->GetActorsPerception(Actor, Info);
+
+	for (const FAIStimulus& CurrentStimulus : Info.LastSensedStimuli)
+	{
+		FAISenseID sightid = AISenseConfigSight->GetSenseID();
+		FAISenseID hearid = AISenseConfigHearing->GetSenseID();
+
+		if (CurrentStimulus.Type == sightid)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("I SAW YOU!"));
+			return true;
+		}
+		else if (CurrentStimulus.Type == hearid)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("I HEARD YOU!"));
+			return true;
+		}
+	}
+	return false;
 }
