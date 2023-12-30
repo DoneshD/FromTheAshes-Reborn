@@ -35,6 +35,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AActor> AttackTarget;
+
 	float AttackRadius = 0.0f;
 	float DefendRadius = 0.0f;
 
@@ -53,8 +54,8 @@ protected:
 	
 private:
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UBlackboardComponent> BaseBlackboardComponent;
+	//UPROPERTY(EditAnywhere)
+	//TObjectPtr<UBlackboardComponent> BaseBlackboardComponent;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;

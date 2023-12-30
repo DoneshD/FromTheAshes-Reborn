@@ -12,7 +12,7 @@
 
 AAIControllerEnemyBase::AAIControllerEnemyBase()
 {
-	BaseBlackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
+	//BaseBlkackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
 
@@ -41,8 +41,7 @@ AAIControllerEnemyBase::AAIControllerEnemyBase()
 	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
 
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated)
-		;
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated);
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
@@ -57,8 +56,8 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 			SetStateAsPassive();
 			Enemy->NativeGetIdealRange(AttackRadius, DefendRadius);
 			UE_LOG(LogTemp, Warning, TEXT("OnPossess() - Ideal Attack Radius: %f, Ideal Defend Radius: %f"), AttackRadius, DefendRadius);
-			BaseBlackboardComponent->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
-			BaseBlackboardComponent->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
+			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
+			GetBlackboardComponent()->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
 
 		}
 	}
@@ -99,12 +98,12 @@ EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
 	//fix
 	return EAIStates::EAIStates_Passive;
-	BaseBlackboardComponent->GetValueAsEnum(StateKeyName);
+	GetBlackboardComponent()->GetValueAsEnum(StateKeyName);
 }
 
 void AAIControllerEnemyBase::SetStateAsPassive()
 {
-	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Passive));
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Passive));
 }
 
 void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget)
@@ -122,8 +121,8 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 
 	if (NewAttackTarget)
 	{
-		BaseBlackboardComponent->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
-		BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
+		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
+		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
 		AttackTarget = NewAttackTarget;
 		// Assuming AttackTargetKeyName and StateKeyName are FName variables
 		UE_LOG(LogTemp, Warning, TEXT("AttackTargetKeyName: %s, StateKeyName: %s"),
@@ -140,18 +139,18 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 
 void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)
 {
-	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Investigating));
-	BaseBlackboardComponent->SetValueAsVector(PointOfInterestKeyName, Location);
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Investigating));
+	GetBlackboardComponent()->SetValueAsVector(PointOfInterestKeyName, Location);
 }
 
 void AAIControllerEnemyBase::SetStateAsFrozen()
 {
-	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
 }
 
 void AAIControllerEnemyBase::SetStateAsDead()
 {
-	BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Dead));
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Dead));
 }
 
 bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAIStimulus& CurrentStimulus)
