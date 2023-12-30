@@ -25,9 +25,9 @@ class FROMTHEASHESREBORN_API IAIEnemyInterface
 public:
 
 	UFUNCTION()
-	virtual float SetMovementSpeed(EMovementSpeed SpeedState) = 0;
+	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) = 0;
 
 	UFUNCTION()
-	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) = 0;
+	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) = 0;
 
 };

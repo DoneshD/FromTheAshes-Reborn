@@ -31,6 +31,9 @@ private:
 public:
 	AIControllerEnemyBase* AICEnemyBase;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UBehaviorTree> BaseBehaviorTree;
+
 	AEnemyBase();
 
 	virtual void Tick(float DeltaTime) override;
@@ -61,10 +64,10 @@ public:
 	//Enemy Interface functions
 
 	UFUNCTION()
-	virtual float SetMovementSpeed(EMovementSpeed SpeedState) override;
+	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
 
 	UFUNCTION()
-	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
 	
 };

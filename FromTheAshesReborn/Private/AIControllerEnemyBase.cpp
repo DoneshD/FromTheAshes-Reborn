@@ -41,9 +41,8 @@ AAIControllerEnemyBase::AAIControllerEnemyBase()
 	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
 
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated);
-
-
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated)
+		;
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
@@ -52,17 +51,17 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 	AEnemyBase* Enemy = Cast<AEnemyBase>(InPawn);
 	if (Enemy)
 	{
-		if (BaseBehaviorTree)
+		if (Enemy->BaseBehaviorTree)
 		{
-			RunBehaviorTree(BaseBehaviorTree);
+			RunBehaviorTree(Enemy->BaseBehaviorTree);
 			SetStateAsPassive();
-			Enemy->GetIdealRange(OutAttackRadius, OutDefendRadius);
-			BaseBlackboardComponent->SetValueAsFloat(AttackRadiusKeyName, OutAttackRadius);
-			BaseBlackboardComponent->SetValueAsFloat(DefendRadiusKeyName, OutDefendRadius);
+			Enemy->NativeGetIdealRange(AttackRadius, DefendRadius);
+			UE_LOG(LogTemp, Warning, TEXT("OnPossess() - Ideal Attack Radius: %f, Ideal Defend Radius: %f"), AttackRadius, DefendRadius);
+			BaseBlackboardComponent->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
+			BaseBlackboardComponent->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
 
 		}
 	}
-
 }
 
 void AAIControllerEnemyBase::BeginPlay()
@@ -110,6 +109,7 @@ void AAIControllerEnemyBase::SetStateAsPassive()
 
 void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget)
 {
+
 	AActor* NewAttackTarget;
 	if (AttackTarget && UseLastKnownAttackTarget)
 	{
@@ -125,6 +125,11 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		BaseBlackboardComponent->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
 		BaseBlackboardComponent->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
 		AttackTarget = NewAttackTarget;
+		// Assuming AttackTargetKeyName and StateKeyName are FName variables
+		UE_LOG(LogTemp, Warning, TEXT("AttackTargetKeyName: %s, StateKeyName: %s"),
+			*AttackTargetKeyName.ToString(), *StateKeyName.ToString());
+
+
 	}
 	else
 	{
@@ -154,6 +159,7 @@ bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAISt
 	FActorPerceptionBlueprintInfo Info;
 	bool bSightSensed = AIPerceptionComponent->GetActorsPerception(Actor, Info);
 
+	//might be a problem
 	for (const FAIStimulus& CurrentStimulus : Info.LastSensedStimuli)
 	{
 		FAISenseID SightID = AISenseConfigSight->GetSenseID();
@@ -194,10 +200,12 @@ bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAISt
 
 void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 {
+	UE_LOG(LogTemp, Warning, TEXT("HandleSensedSight()"));
 	switch (GetCurrentState())
 	{
 	case EAIStates::EAIStates_Passive:
 		SetStateAsAttacking(Actor, false);
+
 
 	case EAIStates::EAIStates_Attacking:
 		//Nothing

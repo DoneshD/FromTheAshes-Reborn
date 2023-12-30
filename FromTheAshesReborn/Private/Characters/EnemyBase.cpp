@@ -66,7 +66,7 @@ bool AEnemyBase::NativeTakeDamage(FDamageInfo DamageInfo)
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
-float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
+float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 {
 	switch (SpeedState)
 	{
@@ -88,8 +88,8 @@ float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
 	}
 }
 
-void AEnemyBase::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
+void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
-	OutAttackRadius = 50.0f;
+	OutAttackRadius = 100.0f;
 	OutDefendRadius = 350.0f;
 }

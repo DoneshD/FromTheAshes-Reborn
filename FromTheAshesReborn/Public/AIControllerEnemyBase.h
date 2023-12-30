@@ -30,13 +30,13 @@ public:
 	FName StateKeyName = TEXT("State");
 	FName AttackTargetKeyName = TEXT("AttackTarget");
 	FName PointOfInterestKeyName = TEXT("PointOfInterest");
-	FName AttackRadiusKeyName = TEXT("AttackTarget");
-	FName DefendRadiusKeyName = TEXT("PointOfInterest");
+	FName AttackRadiusKeyName = TEXT("AttackRadius");
+	FName DefendRadiusKeyName = TEXT("DefendRadius");
 
+	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AActor> AttackTarget;
-
-	float OutAttackRadius = 0.0f;
-	float OutDefendRadius = 0.0f;
+	float AttackRadius = 0.0f;
+	float DefendRadius = 0.0f;
 
 	AAIControllerEnemyBase();
 
@@ -52,8 +52,6 @@ protected:
 	void TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	
 private:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UBehaviorTree> BaseBehaviorTree;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBlackboardComponent> BaseBlackboardComponent;
