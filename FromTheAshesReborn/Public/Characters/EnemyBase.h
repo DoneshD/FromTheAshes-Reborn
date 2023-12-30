@@ -6,6 +6,7 @@
 #include "FTACharacter.h"
 #include "AIControllerEnemyBase.h"
 #include "AIController.h"
+#include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "EnemyBase.generated.h"
@@ -17,7 +18,7 @@
 class AIControllerEnemyBase;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
 {
 	GENERATED_BODY()
 
@@ -28,6 +29,11 @@ private:
 
 
 public:
+	AIControllerEnemyBase* AICEnemyBase;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UBehaviorTree> BaseBehaviorTree;
+
 	AEnemyBase();
 
 	virtual void Tick(float DeltaTime) override;
@@ -54,7 +60,14 @@ public:
 	UFUNCTION()
 	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
 
-	AIControllerEnemyBase* AICEnemyBase;
+
+	//Enemy Interface functions
+
+	UFUNCTION()
+	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
+
+	UFUNCTION()
+	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
 	
 };

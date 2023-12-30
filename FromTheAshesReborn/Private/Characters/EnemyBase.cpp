@@ -2,6 +2,7 @@
 
 #include "Characters/EnemyBase.h"
 #include "AIControllerEnemyBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 #include "DamageSystem/DamageSystem.h"
 
@@ -16,25 +17,13 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	AController* myEnemyController = this->GetController();
-	AAIController* myAIEnemyController;
-	if (myEnemyController)
-	{
-		myAIEnemyController = Cast<AAIController>(myEnemyController);
-	}
-	/*
 	AController* EnemyController = this->GetController();
 	AAIController* AIEnemyController;
-	if (AIEnemyController)
+	if (EnemyController)
 	{
 		AIEnemyController = Cast<AAIController>(EnemyController);
-		if (AIEnemyController)
-		{
-			AICEnemyBase = Cast<AIControllerEnemyBase>(EnemyController);
-		}
 	}
-	*/
-
+	
 }
 
 
@@ -75,4 +64,32 @@ bool AEnemyBase::NativeTakeDamage(FDamageInfo DamageInfo)
 	
 	UE_LOG(LogTemp, Warning, TEXT("NativeTakeDamage() done"));
 	return DamageSystemComponent->TakeDamage(DamageInfo);
+}
+
+float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
+{
+	switch (SpeedState)
+	{
+	case EMovementSpeed::EMovementSpeed_Idle:
+		return GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+
+	case EMovementSpeed::EMovementSpeed_Walking:
+		return GetCharacterMovement()->MaxWalkSpeed = 100.0f;
+
+	case EMovementSpeed::EMovementSpeed_Jogging :
+		return GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+
+	case EMovementSpeed::EMovementSpeed_Sprinting:
+		return GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+
+	default:
+		return 0.0f;
+		break;
+	}
+}
+
+void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
+{
+	OutAttackRadius = 100.0f;
+	OutDefendRadius = 350.0f;
 }
