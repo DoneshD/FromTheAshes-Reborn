@@ -54,9 +54,6 @@ protected:
 	
 private:
 
-	//UPROPERTY(EditAnywhere)
-	//TObjectPtr<UBlackboardComponent> BaseBlackboardComponent;
-
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 
@@ -72,9 +69,9 @@ private:
 
 public:
 
-	FAIStimulus OutSightInfo;
-	FAIStimulus OutHearInfo;
-	FAIStimulus OutDamageInfo;
+	FAIStimulus OutSightStimuliInfo;
+	FAIStimulus OutHearStimuliInfo;
+	FAIStimulus OutDamageStimuliInfo;
 
 	EAIStates GetCurrentState();
 
@@ -88,7 +85,7 @@ public:
 
 	void SetStateAsDead();
 
-	bool CanSenseActor(AActor* Actor, EAISenses Sense, FAIStimulus& OutStimuli);
+	const FAIStimulus CanSenseActor(AActor* Actor, EAISenses Sense);
 
 	void HandleSensedSight(AActor* Actor);
 

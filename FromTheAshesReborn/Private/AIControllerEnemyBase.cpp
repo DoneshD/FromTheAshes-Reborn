@@ -12,8 +12,6 @@
 
 AAIControllerEnemyBase::AAIControllerEnemyBase()
 {
-	//BaseBlkackboardComponent = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));
-
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
 
 	AISenseConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>("SenseSight");
@@ -55,10 +53,8 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 			RunBehaviorTree(Enemy->BaseBehaviorTree);
 			SetStateAsPassive();
 			Enemy->NativeGetIdealRange(AttackRadius, DefendRadius);
-			UE_LOG(LogTemp, Warning, TEXT("OnPossess() - Ideal Attack Radius: %f, Ideal Defend Radius: %f"), AttackRadius, DefendRadius);
 			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
 			GetBlackboardComponent()->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
-
 		}
 	}
 }
@@ -74,15 +70,20 @@ void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& Upda
 
 	for (AActor* Actor : UpdatedActors)
 	{
-		if (CanSenseActor(Actor, EAISenses::EAISenses_Sight, OutSightInfo))
+		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
+		if(OutSightStimuliInfo.WasSuccessfullySensed())
 		{
 			HandleSensedSight(Actor);
 		}
-		if (CanSenseActor(Actor, EAISenses::EAISenses_Hearing, OutHearInfo))
+			
+		OutHearStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Hearing);
+		if (OutHearStimuliInfo.WasSuccessfullySensed())
 		{
-			HandleSensedSound(OutHearInfo.StimulusLocation);
+			HandleSensedSound(OutHearStimuliInfo.StimulusLocation);
 		}
-		if (CanSenseActor(Actor, EAISenses::EAISenses_Damage, OutDamageInfo))
+		
+		OutDamageStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Damage);
+		if (OutDamageStimuliInfo.WasSuccessfullySensed())
 		{
 			HandleSensedDamage(Actor);
 		}
@@ -124,11 +125,6 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
 		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
 		AttackTarget = NewAttackTarget;
-		// Assuming AttackTargetKeyName and StateKeyName are FName variables
-		UE_LOG(LogTemp, Warning, TEXT("AttackTargetKeyName: %s, StateKeyName: %s"),
-			*AttackTargetKeyName.ToString(), *StateKeyName.ToString());
-
-
 	}
 	else
 	{
@@ -153,7 +149,7 @@ void AAIControllerEnemyBase::SetStateAsDead()
 	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Dead));
 }
 
-bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAIStimulus& CurrentStimulus)
+const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense)
 {
 	FActorPerceptionBlueprintInfo Info;
 	bool bSightSensed = AIPerceptionComponent->GetActorsPerception(Actor, Info);
@@ -169,14 +165,15 @@ bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAISt
 		{
 			if (CurrentStimulus.Type == SightID)
 			{
-				return CurrentStimulus.WasSuccessfullySensed();
+				return CurrentStimulus;
 			}
 		}
 		else if (Sense == EAISenses::EAISenses_Hearing)
 		{
 			if (CurrentStimulus.Type == HearID)
 			{
-				return CurrentStimulus.WasSuccessfullySensed();
+				HandleSensedSound(CurrentStimulus.StimulusLocation);
+				return CurrentStimulus;
 
 			}
 		}
@@ -184,22 +181,22 @@ bool AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses Sense, FAISt
 		{
 			if (CurrentStimulus.Type == DamageId)
 			{
-				return CurrentStimulus.WasSuccessfullySensed();
+				return CurrentStimulus;
 			}
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Sense not found"));
-			return false;
+			return CurrentStimulus;
 		}
 	}
-	return false;
+	const FAIStimulus DummyStimuli;
+	return DummyStimuli;
 }
 
 
 void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleSensedSight()"));
 	switch (GetCurrentState())
 	{
 	case EAIStates::EAIStates_Passive:
