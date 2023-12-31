@@ -154,7 +154,6 @@ const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses
 	FActorPerceptionBlueprintInfo Info;
 	bool bSightSensed = AIPerceptionComponent->GetActorsPerception(Actor, Info);
 
-	//might be a problem
 	for (const FAIStimulus& CurrentStimulus : Info.LastSensedStimuli)
 	{
 		FAISenseID SightID = AISenseConfigSight->GetSenseID();
@@ -172,7 +171,6 @@ const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses
 		{
 			if (CurrentStimulus.Type == HearID)
 			{
-				HandleSensedSound(CurrentStimulus.StimulusLocation);
 				return CurrentStimulus;
 
 			}
