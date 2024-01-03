@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
+#include "Enums/EMovementSpeed.h"
 #include "BTTask_FocusTarget.generated.h"
 
 /**
@@ -15,6 +16,8 @@ class FROMTHEASHESREBORN_API UBTTask_FocusTarget : public UBTTask_BlackboardBase
 	GENERATED_BODY()
 
 protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	FBlackboardKeySelector AttackTargetKey;
 
 

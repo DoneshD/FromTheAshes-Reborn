@@ -14,4 +14,18 @@ class FROMTHEASHESREBORN_API UBTTask_MoveToIdealRange : public UBTTask_Blackboar
 {
 	GENERATED_BODY()
 	
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
+	FBlackboardKeySelector AttackTargetKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
+	FBlackboardKeySelector IdealRangeKey;
+
+public:
+
+	UBTTask_MoveToIdealRange();
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
 };

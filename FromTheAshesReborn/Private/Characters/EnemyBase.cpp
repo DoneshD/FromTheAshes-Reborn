@@ -90,6 +90,6 @@ float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 
 void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
-	OutAttackRadius = 100.0f;
+	OutAttackRadius = 50.0f;
 	OutDefendRadius = 350.0f;
 }

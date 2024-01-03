@@ -14,4 +14,10 @@ class FROMTHEASHESREBORN_API UBTTask_SetStateAsPassive : public UBTTask_Blackboa
 {
 	GENERATED_BODY()
 	
+public:
+
+	UBTTask_SetStateAsPassive();
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
 };

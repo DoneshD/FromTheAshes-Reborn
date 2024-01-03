@@ -14,4 +14,15 @@ class FROMTHEASHESREBORN_API UBTTask_SetMovementSpeed : public UBTTask_Blackboar
 {
 	GENERATED_BODY()
 	
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	EMovementSpeed MovementSpeed;
+
+public:
+
+	UBTTask_SetMovementSpeed();
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
 };
