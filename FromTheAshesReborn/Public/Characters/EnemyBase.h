@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FTACharacter.h"
-#include "AIControllerEnemyBase.h"
+#include "AI/Controllers/AIControllerEnemyBase.h"
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"

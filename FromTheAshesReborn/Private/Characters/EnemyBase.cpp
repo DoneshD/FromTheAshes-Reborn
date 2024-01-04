@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Characters/EnemyBase.h"
-#include "AIControllerEnemyBase.h"
+#include "AI/Controllers/AIControllerEnemyBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 #include "DamageSystem/DamageSystem.h"

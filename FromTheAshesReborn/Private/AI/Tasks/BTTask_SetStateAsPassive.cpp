@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTask_SetStateAsPassive.h"
-#include "AIControllerEnemyBase.h"
+#include "AI/Tasks/BTTask_SetStateAsPassive.h"
+#include "AI/Controllers/AIControllerEnemyBase.h"
 
 
 UBTTask_SetStateAsPassive::UBTTask_SetStateAsPassive()

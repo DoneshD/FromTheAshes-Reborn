@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "AIControllerEnemyBase.h"
+#include "Ai/Controllers/AIControllerEnemyBase.h"
 #include "Enums/EAIStates.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AIPerceptionComponent.h"
