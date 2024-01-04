@@ -20,7 +20,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	FBlackboardKeySelector AttackTargetKey;
 
-
 public:
 
 	UBTTask_FocusTarget();

@@ -4,28 +4,35 @@
 #include "BTTask_MoveToIdealRange.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Blueprint/AIAsyncTaskBlueprintProxy.h"
 #include "Characters/EnemyBase.h"
 
 
 UBTTask_MoveToIdealRange::UBTTask_MoveToIdealRange()
 {
-	NodeName = TEXT("BTTask_MoveToIdealRange");
+    NodeName = TEXT("BTTask_MoveToIdealRange");
 
 }
 
 EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	Super::ExecuteTask(OwnerComp, NodeMemory);
+    Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+    APawn* OwnerPawn = OwnerComp.GetAIOwner()->GetPawn();
+    APawn* TargetActor = Cast<APawn>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+    float AcceptanceRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
 
-	FAIMoveRequest MoveRequest;
-	MoveRequest.SetGoalActor(TargetActor);
-	MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
-	//Might need a pawn
-	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-	AEnemyBase* Enemy = Cast<AEnemyBase>(Pawn);
+    UAIAsyncTaskBlueprintProxy* MoveToProxy = UAIBlueprintHelperLibrary::CreateMoveToProxyObject
+	(GetWorld(), OwnerPawn, TargetActor->GetActorLocation(), TargetActor, AcceptanceRadius);
 
-	OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
-	return EBTNodeResult::Succeeded;
+    if (MoveToProxy)
+    {
+        // Optionally, you can bind to delegate functions for completion, success, or failure
+		MoveToProxy->OnSuccess.
+    }
+
+
+
+    return EBTNodeResult::Succeeded;
 }
