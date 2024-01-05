@@ -15,6 +15,8 @@ class FROMTHEASHESREBORN_API UBTTask_Heal : public UBTTask_BlackboardBase
 	GENERATED_BODY()
 
 protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	float HealPercentage = 0.3f;
 
 public:
