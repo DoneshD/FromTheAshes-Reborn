@@ -13,11 +13,13 @@ UBTD_IsHealthBelowThreshold::UBTD_IsHealthBelowThreshold()
 
 bool UBTD_IsHealthBelowThreshold::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
-	APawn* TargetActor = OwnerComp.GetAIOwner()->GetPawn();
+	Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
-	if (TargetActor)
+	APawn* OwnerPawn = OwnerComp.GetAIOwner()->GetPawn();
+
+	if (OwnerPawn)
 	{
-		AEnemyBase* EnemyBase = Cast<AEnemyBase>(TargetActor);
+		AEnemyBase* EnemyBase = Cast<AEnemyBase>(OwnerPawn);
 		if (EnemyBase)
 		{
 			float MaxHealth = EnemyBase->NativeGetMaxHealth();
