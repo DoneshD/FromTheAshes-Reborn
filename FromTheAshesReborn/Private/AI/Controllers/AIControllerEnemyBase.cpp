@@ -98,8 +98,9 @@ void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAISti
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
 	//fix
-	return EAIStates::EAIStates_Passive;
-	GetBlackboardComponent()->GetValueAsEnum(StateKeyName);
+	EAIStates CurrentState = static_cast<EAIStates>(GetBlackboardComponent()->GetValueAsEnum(StateKeyName));
+	return CurrentState;
+	//return EAIStates::EAIStates_Passive;
 }
 
 void AAIControllerEnemyBase::SetStateAsPassive()

@@ -90,6 +90,16 @@ float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 
 void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
-	OutAttackRadius = 50.0f;
-	OutDefendRadius = 350.0f;
+	//Melee
+	//OutAttackRadius = 50.0f;
+	//OutDefendRadius = 350.0f;
+
+	//Ranged
+	OutAttackRadius = 600.0f;
+	OutDefendRadius = 600.0f;
+}
+
+AActor* AEnemyBase::NativeGetPatrolRoute()
+{
+	return nullptr;
 }

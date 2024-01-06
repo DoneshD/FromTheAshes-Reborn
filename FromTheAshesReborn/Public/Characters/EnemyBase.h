@@ -69,5 +69,7 @@ public:
 	UFUNCTION()
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
+	UFUNCTION()
+	virtual AActor* NativeGetPatrolRoute() override;
 	
 };

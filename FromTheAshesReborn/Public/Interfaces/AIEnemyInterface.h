@@ -8,6 +8,8 @@
 #include "AIEnemyInterface.generated.h"
 
 // This class does not need to be modified.
+
+
 UINTERFACE(MinimalAPI)
 class UAIEnemyInterface : public UInterface
 {
@@ -21,6 +23,7 @@ class FROMTHEASHESREBORN_API IAIEnemyInterface
 {
 	GENERATED_BODY()
 
+
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
@@ -29,5 +32,8 @@ public:
 
 	UFUNCTION()
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) = 0;
+
+	UFUNCTION()
+	virtual AActor* NativeGetPatrolRoute() = 0;
 
 };
