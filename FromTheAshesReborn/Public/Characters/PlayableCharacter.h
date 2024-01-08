@@ -54,9 +54,6 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
-	class UDamageSystem* DamageSystemComponent;
-
 	//-----------------------------------------BeginPlay--------------------------------------------
 
 	virtual void BeginPlay() override;
@@ -242,7 +239,6 @@ private:
 	//-----------------------------------------Weapon Collision-------------------------------------
 
 	bool bActiveCollision = false;
-	TObjectPtr<AActor> WCHitActor;
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
 

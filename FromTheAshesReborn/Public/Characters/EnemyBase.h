@@ -8,7 +8,6 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
-#include "DamageSystem/DamageSystem.h"
 #include "EnemyBase.generated.h"
 
 /**
@@ -39,9 +38,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Custom", meta = (AllowPrivateAccess = "true"))
-	class UDamageSystem* DamageSystemComponent;
 
 	//Damagable Interface functions
 

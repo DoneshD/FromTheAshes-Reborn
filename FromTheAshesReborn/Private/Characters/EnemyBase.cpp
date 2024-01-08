@@ -4,14 +4,10 @@
 #include "AI/Controllers/AIControllerEnemyBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
-#include "DamageSystem/DamageSystem.h"
 
 AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	DamageSystemComponent = CreateDefaultSubobject<UDamageSystem>(TEXT("DamageSystemComponent"));
-	this->AddOwnedComponent(DamageSystemComponent);
 
 }
 void AEnemyBase::BeginPlay()

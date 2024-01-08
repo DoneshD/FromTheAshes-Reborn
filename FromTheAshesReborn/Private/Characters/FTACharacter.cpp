@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "DamageSystem/DamageSystem.h"
 #include "Components/ArrowComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)
@@ -40,6 +41,12 @@ AFTACharacter::AFTACharacter()
 
 	RightArrow = CreateDefaultSubobject<UArrowComponent>("RightArrowComp");
 	RightArrow->SetupAttachment(RootComponent);
+
+	DamageSystemComponent = CreateDefaultSubobject<UDamageSystem>(TEXT("DamageSystemComponent"));
+	this->AddOwnedComponent(DamageSystemComponent);
+
+	AttacksComponent = CreateDefaultSubobject<UAttacksComponent>(TEXT("AttacksComponent"));
+	this->AddOwnedComponent(AttacksComponent);
 
 }
 

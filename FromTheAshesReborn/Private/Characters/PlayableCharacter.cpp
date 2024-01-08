@@ -27,9 +27,6 @@ APlayableCharacter::APlayableCharacter()
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false;
 
-	DamageSystemComponent = CreateDefaultSubobject<UDamageSystem>(TEXT("DamageSystemComponent"));
-	this->AddOwnedComponent(DamageSystemComponent);
-
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
 	GetCharacterMovement()->GravityScale = 2.f;
@@ -224,10 +221,9 @@ void APlayableCharacter::Tick(float DeltaTime)
 			if (HitActor)
 			{
 				
-				WCHitActor = HitActor;
-				if (!AlreadyHitActors_R.Contains(CurrentHit.GetActor()))
+				if (!AlreadyHitActors_R.Contains(HitActor))
 				{
-					AlreadyHitActors_R.AddUnique(WCHitActor);
+					AlreadyHitActors_R.AddUnique(HitActor);
 					//TODO
 					//UGameplayStatics::ApplyDamage()
 				}
@@ -401,6 +397,7 @@ void APlayableCharacter::StartWeaponCollision()
 	AlreadyHitActors_R.Empty();
 	bActiveCollision = true;
 }
+
 void APlayableCharacter::EndWeaponCollision()
 {
 	bActiveCollision = false;

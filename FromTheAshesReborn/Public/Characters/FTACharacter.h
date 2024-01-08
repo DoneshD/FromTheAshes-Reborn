@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Enums/EStates.h"
+#include "DamageSystem/DamageSystem.h"
+#include "AttacksComponent.h"
 #include "FTACharacter.generated.h"
 
 class UArrowComponent;
@@ -28,6 +30,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> RightArrow;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DamageSystem", meta = (AllowPrivateAccess = "true"))
+	class UDamageSystem* DamageSystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attacks", meta = (AllowPrivateAccess = "true"))
+	class UAttacksComponent* AttacksComponent;
 
 	//FSM checks
 	bool CanJump();

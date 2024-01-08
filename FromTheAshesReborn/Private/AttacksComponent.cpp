@@ -1,0 +1,178 @@
+#include "AttacksComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "DamageSystem/DamageSystem.h"
+#include "Interfaces/DamagableInterface.h"
+
+UAttacksComponent::UAttacksComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+
+}
+
+
+
+void UAttacksComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	
+}
+
+
+void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+}
+
+
+bool UAttacksComponent::MeleeWeapomSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
+{
+	TArray<AActor*> ActorArray;
+	ActorArray.Add(GetOwner());
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetOwner());
+
+	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
+		GetWorld(),
+		StartLocation,
+		EndLocation,
+		20.f,
+		ObjectTypes,
+		false,
+		ActorArray,
+		EDrawDebugTrace::None,
+		Hits,
+		true);
+
+	return bHit;
+}
+
+void UAttacksComponent::MeleeTraceCollisions()
+{
+	TArray<FHitResult> Hits;
+	FVector StartLocation;
+	FVector EndLocation;
+
+	USkeletalMeshComponent* MeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
+	if (MeshComponent)
+	{
+		StartLocation = MeshComponent->GetSocketLocation("Start_L");
+		EndLocation = MeshComponent->GetSocketLocation("End_L");
+		// Use StartLocation as needed
+	}
+
+	bool bLeftSuccess = MeleeWeapomSphereTrace(StartLocation, EndLocation, Hits);
+
+	for (auto& CurrentHit : Hits)
+	{
+		AActor* HitActor = CurrentHit.GetActor();
+		if (HitActor)
+		{
+			IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
+
+			if (DamagableInterface)
+			{
+
+				if (!AlreadyHitActors_L.Contains(HitActor))
+				{
+					AlreadyHitActors_L.AddUnique(HitActor);
+					FDamageInfo DamageInfo{
+						20.0f,                            // DamageAmount
+						EDamageType::EDamageType_Melee,   // DamageType
+						EDamageResponse::EDamageResponse_None,  // DamageResponse
+						false,                            // ShouldDamageInvincible
+						false,                            // CanBeBlocked
+						false,                            // CanBeParried
+						false                             // ShouldForceInterrupt
+					};
+
+					DamagableInterface->NativeTakeDamage(DamageInfo);
+				}
+			}
+
+		}
+	}
+
+	StartLocation = MeshComponent->GetSocketLocation("Start_R");
+	EndLocation = MeshComponent->GetSocketLocation("End_R");
+
+	bool bRightSuccess = MeleeWeapomSphereTrace(StartLocation, EndLocation, Hits);
+
+	for (auto& CurrentHit : Hits)
+	{
+		AActor* HitActor = CurrentHit.GetActor();
+		if (HitActor)
+		{
+			IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
+
+			if (DamagableInterface)
+			{
+
+				if (!AlreadyHitActors_R.Contains(HitActor))
+				{
+					AlreadyHitActors_R.AddUnique(HitActor);
+					FDamageInfo DamageInfo{
+							20.0f,                            // DamageAmount
+							EDamageType::EDamageType_Melee,   // DamageType
+							EDamageResponse::EDamageResponse_None,  // DamageResponse
+							false,                            // ShouldDamageInvincible
+							false,                            // CanBeBlocked
+							false,                            // CanBeParried
+							false                             // ShouldForceInterrupt
+					};
+
+					DamagableInterface->NativeTakeDamage(DamageInfo);
+					
+				}
+			}
+		}
+	}
+}
+
+float UAttacksComponent::NativeGetCurrentHealth()
+{
+	if (GetOwner())
+	{
+		UDamageSystem* DamageSystemComponent = GetOwner()->FindComponentByClass<UDamageSystem>();
+
+		if (DamageSystemComponent)
+		{
+			return DamageSystemComponent->CurrentHealth;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UDamageSystemComponent not found in owner actor."));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Owning actor is not valid."));
+	}
+
+	return 0.0f;
+}
+float UAttacksComponent::NativeGetMaxHealth()
+{
+	return 0.0f;
+}
+
+bool UAttacksComponent::NativeIsDead()
+{
+	return false;
+}
+
+float UAttacksComponent::NativeHeal(float NewHeatlh)
+{
+	return 0.0f;
+}
+
+bool UAttacksComponent::NativeTakeDamage(FDamageInfo DamageInfo)
+{
+	return false;
+}
