@@ -11,7 +11,6 @@ APatrolRoute::APatrolRoute()
 
 }
 
-
 void APatrolRoute::BeginPlay()
 {
 	Super::BeginPlay();

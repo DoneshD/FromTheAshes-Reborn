@@ -66,10 +66,7 @@ public:
 	UFUNCTION()
 	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
-	UFUNCTION()
-	virtual AActor* NativeGetPatrolRoute() override;
-	
 };

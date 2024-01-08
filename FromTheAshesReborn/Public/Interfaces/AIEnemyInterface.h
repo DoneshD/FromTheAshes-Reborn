@@ -33,7 +33,4 @@ public:
 	UFUNCTION()
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) = 0;
 
-	UFUNCTION()
-	virtual AActor* NativeGetPatrolRoute() = 0;
-
 };

@@ -98,8 +98,3 @@ void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRad
 	OutAttackRadius = 600.0f;
 	OutDefendRadius = 600.0f;
 }
-
-AActor* AEnemyBase::NativeGetPatrolRoute()
-{
-	return nullptr;
-}

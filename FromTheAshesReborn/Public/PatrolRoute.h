@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -21,10 +19,6 @@ protected:
 
 	int PatrolPointIndex = 0;
 	int Direction = 0;
-
-
-	UPROPERTY(EditDefaultsOnly, Category = "Patrol")
-	AActor* PatrolRoute;
 
 private:	
 
