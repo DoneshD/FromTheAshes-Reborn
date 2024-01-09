@@ -10,8 +10,6 @@ UAttacksComponent::UAttacksComponent()
 
 }
 
-
-
 void UAttacksComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -19,13 +17,11 @@ void UAttacksComponent::BeginPlay()
 	
 }
 
-
 void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
-
 
 bool UAttacksComponent::MeleeWeapomSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
 {
@@ -53,6 +49,12 @@ bool UAttacksComponent::MeleeWeapomSphereTrace(FVector StartLocation, FVector En
 	return bHit;
 }
 
+void UAttacksComponent::EmptyHitActorsArray()
+{
+	AlreadyHitActors_L.Empty();
+	AlreadyHitActors_R.Empty();
+}
+
 void UAttacksComponent::MeleeTraceCollisions()
 {
 	TArray<FHitResult> Hits;
@@ -64,7 +66,6 @@ void UAttacksComponent::MeleeTraceCollisions()
 	{
 		StartLocation = MeshComponent->GetSocketLocation("Start_L");
 		EndLocation = MeshComponent->GetSocketLocation("End_L");
-		// Use StartLocation as needed
 	}
 
 	bool bLeftSuccess = MeleeWeapomSphereTrace(StartLocation, EndLocation, Hits);

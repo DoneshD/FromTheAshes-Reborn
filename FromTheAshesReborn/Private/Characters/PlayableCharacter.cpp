@@ -2,11 +2,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-
-#include "Kismet/GameplayStatics.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -175,64 +174,6 @@ void APlayableCharacter::Tick(float DeltaTime)
 	if (bActiveCollision)
 	{
 		AttacksComponent->MeleeTraceCollisions();
-		/*
-		TArray<FHitResult> Hits;
-		FVector StartLocation = GetMesh()->GetSocketLocation("Start_L");
-		FVector EndLocation = GetMesh()->GetSocketLocation("End_L");
-
-		bool bLeftSuccess = WeaponTrace(Hits, StartLocation, EndLocation);
-
-		for (auto& CurrentHit : Hits)
-		{
-			AActor* HitActor = CurrentHit.GetActor();
-			if (HitActor)
-			{
-				IDamagableInterface* EnemyInterface = Cast<IDamagableInterface>(HitActor);
-
-				if (EnemyInterface)
-				{
-
-					if (!AlreadyHitActors_L.Contains(HitActor))
-					{
-						AlreadyHitActors_L.AddUnique(HitActor);
-						FDamageInfo DamageInfo{
-							20.0f,                            // DamageAmount
-							EDamageType::EDamageType_Melee,   // DamageType
-							EDamageResponse::EDamageResponse_None,  // DamageResponse
-							false,                            // ShouldDamageInvincible
-							false,                            // CanBeBlocked
-							false,                            // CanBeParried
-							false                             // ShouldForceInterrupt
-						};
-
-						EnemyInterface->NativeTakeDamage(DamageInfo);
-					}
-				}
-				
-			}
-		}
-
-		StartLocation = GetMesh()->GetSocketLocation("Start_R");
-		EndLocation = GetMesh()->GetSocketLocation("End_R");
-
-		bool bRightSuccess = WeaponTrace(Hits, StartLocation, EndLocation);
-		
-		for (auto& CurrentHit : Hits)
-		{
-			AActor* HitActor = CurrentHit.GetActor();
-			if (HitActor)
-			{
-				
-				if (!AlreadyHitActors_R.Contains(HitActor))
-				{
-					AlreadyHitActors_R.AddUnique(HitActor);
-					//TODO
-					//UGameplayStatics::ApplyDamage()
-				}
-				
-			}
-		}
-		*/
 	}
 }
 
@@ -396,41 +337,13 @@ void APlayableCharacter::OnTimelineFinished()
 
 void APlayableCharacter::StartWeaponCollision()
 {
-	AlreadyHitActors_L.Empty();
-	AlreadyHitActors_R.Empty();
+	AttacksComponent->EmptyHitActorsArray();
 	bActiveCollision = true;
 }
 
 void APlayableCharacter::EndWeaponCollision()
 {
 	bActiveCollision = false;
-}
-
-bool APlayableCharacter::WeaponTrace(TArray<FHitResult>& Hit, FVector& StartLocation, FVector& EndLocation)
-{
-	TArray<AActor*> ActorArray;
-	ActorArray.Add(this);
-
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-	Params.AddIgnoredActor(GetOwner());
-
-	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
-		GetWorld(),
-		StartLocation,
-		EndLocation,
-		20.f,
-		ObjectTypes,
-		false,
-		ActorArray,
-		EDrawDebugTrace::None,
-		Hit,
-		true);
-
-	return bHit;
 }
 
 //------------------------------------------------------------- LockOn -----------------------------------------------------------------//
@@ -765,7 +678,6 @@ void APlayableCharacter::LightAttack()
 {
 	if (CanAttack())
 	{
-		bHeavyAttackPaused = false;
 		ResetHeavyAttack();
 		PerformLightAttack(LightAttackIndex);
 	}

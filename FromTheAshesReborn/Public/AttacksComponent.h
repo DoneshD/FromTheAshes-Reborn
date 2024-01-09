@@ -3,7 +3,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "AttacksComponent.generated.h"
 
@@ -24,17 +23,15 @@ protected:
 
 	bool MeleeWeapomSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
 
-
 private:
 
 public:	
+	void EmptyHitActorsArray();
+
 	void MeleeTraceCollisions();
 
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	//Damagable Interface functions
-
 
 };
