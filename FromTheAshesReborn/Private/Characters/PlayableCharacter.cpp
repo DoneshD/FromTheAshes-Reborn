@@ -174,6 +174,8 @@ void APlayableCharacter::Tick(float DeltaTime)
 
 	if (bActiveCollision)
 	{
+		AttacksComponent->MeleeTraceCollisions();
+		/*
 		TArray<FHitResult> Hits;
 		FVector StartLocation = GetMesh()->GetSocketLocation("Start_L");
 		FVector EndLocation = GetMesh()->GetSocketLocation("End_L");
@@ -230,6 +232,7 @@ void APlayableCharacter::Tick(float DeltaTime)
 				
 			}
 		}
+		*/
 	}
 }
 

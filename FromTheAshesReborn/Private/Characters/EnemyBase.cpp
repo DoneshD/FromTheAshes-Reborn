@@ -58,7 +58,7 @@ float AEnemyBase::NativeHeal(float HealAmount)
 bool AEnemyBase::NativeTakeDamage(FDamageInfo DamageInfo)
 {
 	
-	UE_LOG(LogTemp, Warning, TEXT("NativeTakeDamage() done"));
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::NativeTakeDamage"));
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 

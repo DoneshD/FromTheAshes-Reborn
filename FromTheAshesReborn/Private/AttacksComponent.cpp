@@ -93,6 +93,7 @@ void UAttacksComponent::MeleeTraceCollisions()
 					};
 
 					DamagableInterface->NativeTakeDamage(DamageInfo);
+
 				}
 			}
 
@@ -133,46 +134,4 @@ void UAttacksComponent::MeleeTraceCollisions()
 			}
 		}
 	}
-}
-
-float UAttacksComponent::NativeGetCurrentHealth()
-{
-	if (GetOwner())
-	{
-		UDamageSystem* DamageSystemComponent = GetOwner()->FindComponentByClass<UDamageSystem>();
-
-		if (DamageSystemComponent)
-		{
-			return DamageSystemComponent->CurrentHealth;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("UDamageSystemComponent not found in owner actor."));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Owning actor is not valid."));
-	}
-
-	return 0.0f;
-}
-float UAttacksComponent::NativeGetMaxHealth()
-{
-	return 0.0f;
-}
-
-bool UAttacksComponent::NativeIsDead()
-{
-	return false;
-}
-
-float UAttacksComponent::NativeHeal(float NewHeatlh)
-{
-	return 0.0f;
-}
-
-bool UAttacksComponent::NativeTakeDamage(FDamageInfo DamageInfo)
-{
-	return false;
 }
