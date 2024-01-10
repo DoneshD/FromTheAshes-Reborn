@@ -14,12 +14,20 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 	AController* EnemyController = this->GetController();
-	AAIController* AIEnemyController;
 	if (EnemyController)
 	{
-		AIEnemyController = Cast<AAIController>(EnemyController);
+		AAIController* AIEnemyController = Cast<AAIController>(EnemyController);
+		if (AIEnemyController)
+		{
+			AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(AIEnemyController);
+			if (AIControllerEnemyBase)
+			{
+				AICEnemyBase = AIControllerEnemyBase;
+			}
+		}
 	}
-	
+	//Bind Death Event
+	//Bind Hit Response Event
 }
 
 
@@ -86,11 +94,6 @@ float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 
 void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
-	//Melee
-	//OutAttackRadius = 50.0f;
-	//OutDefendRadius = 350.0f;
-
-	//Ranged
-	OutAttackRadius = 600.0f;
-	OutDefendRadius = 600.0f;
+	OutAttackRadius = 50.0f;
+	OutDefendRadius = 300.0f;
 }

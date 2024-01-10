@@ -28,7 +28,7 @@ private:
 
 
 public:
-	AIControllerEnemyBase* AICEnemyBase;
+	AAIControllerEnemyBase* AICEnemyBase;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBehaviorTree> BaseBehaviorTree;
