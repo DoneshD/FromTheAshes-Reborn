@@ -25,8 +25,19 @@ protected:
 
 private:
 
+	bool bActiveCollision = false;
+
 public:	
+
+	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
+	void StartAttackCollisions();
+
+	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
+	void EndAttackCollisions();
+
 	void EmptyHitActorsArray();
+
+	void LightMeleeAttack();
 
 	void MeleeTraceCollisions();
 

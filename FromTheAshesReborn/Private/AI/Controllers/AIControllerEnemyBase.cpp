@@ -48,9 +48,9 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 	AEnemyBase* Enemy = Cast<AEnemyBase>(InPawn);
 	if (Enemy)
 	{
-		if (Enemy->BaseBehaviorTree)
+		if (Enemy->BehaviorTree)
 		{
-			RunBehaviorTree(Enemy->BaseBehaviorTree);
+			RunBehaviorTree(Enemy->BehaviorTree);
 			SetStateAsPassive();
 			Enemy->NativeGetIdealRange(AttackRadius, DefendRadius);
 			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
@@ -97,10 +97,8 @@ void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAISti
 
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
-	//fix
 	EAIStates CurrentState = static_cast<EAIStates>(GetBlackboardComponent()->GetValueAsEnum(StateKeyName));
 	return CurrentState;
-	//return EAIStates::EAIStates_Passive;
 }
 
 void AAIControllerEnemyBase::SetStateAsPassive()

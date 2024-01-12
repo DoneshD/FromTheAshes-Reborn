@@ -20,6 +20,10 @@ void UAttacksComponent::BeginPlay()
 void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (bActiveCollision)
+	{
+		MeleeTraceCollisions();
+	}
 
 }
 
@@ -42,11 +46,23 @@ bool UAttacksComponent::MeleeWeapomSphereTrace(FVector StartLocation, FVector En
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		Hits,
 		true);
 
 	return bHit;
+}
+
+void UAttacksComponent::StartAttackCollisions()
+{
+	EmptyHitActorsArray();
+	bActiveCollision = true;
+}
+
+void UAttacksComponent::EndAttackCollisions()
+{
+	bActiveCollision = false;
+
 }
 
 void UAttacksComponent::EmptyHitActorsArray()
@@ -54,6 +70,7 @@ void UAttacksComponent::EmptyHitActorsArray()
 	AlreadyHitActors_L.Empty();
 	AlreadyHitActors_R.Empty();
 }
+
 
 void UAttacksComponent::MeleeTraceCollisions()
 {
@@ -135,4 +152,9 @@ void UAttacksComponent::MeleeTraceCollisions()
 			}
 		}
 	}
+}
+
+void UAttacksComponent::LightMeleeAttack()
+{
+
 }

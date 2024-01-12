@@ -25,7 +25,10 @@ bool UBTDecorator_IsWithinIdealRange::CalculateRawConditionValue(UBehaviorTreeCo
 		return false;
 	}
 
-	float Distance = TargetActor->GetDistanceTo(OtherActor);
-	return (Distance - ErrorMargin) <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
+	float Distance = TargetActor->GetDistanceTo(OtherActor) - ErrorMargin;
+	float IdealRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
+	//UE_LOG(LogTemp, Warning, TEXT("C++ IdealRange: %f"), IdealRange);
+	//UE_LOG(LogTemp, Warning, TEXT("C++ Distance: %f"), Distance);
+	return Distance <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
 	
 }

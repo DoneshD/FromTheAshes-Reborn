@@ -31,7 +31,7 @@ public:
 	AAIControllerEnemyBase* AICEnemyBase;
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UBehaviorTree> BaseBehaviorTree;
+	TObjectPtr<UBehaviorTree> BehaviorTree;
 
 	AEnemyBase();
 

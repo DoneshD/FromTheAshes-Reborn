@@ -10,10 +10,6 @@
 #include "AIController.h"
 #include "AIControllerEnemyBase.generated.h"
 
-/**
- * 
- */
-
 class UBehaviorTree;
 class UBlackboardComponent;
 class UAIPerceptionComponent;
@@ -65,7 +61,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAISenseConfig_Damage> AISenseConfigDamage;
-
 
 public:
 

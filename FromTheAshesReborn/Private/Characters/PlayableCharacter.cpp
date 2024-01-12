@@ -169,12 +169,6 @@ void APlayableCharacter::Tick(float DeltaTime)
 		}
 	}
 
-	//------------------------------------------------------------ TICK::Weapon Collisions -----------------------------------------------------------------//
-
-	if (bActiveCollision)
-	{
-		AttacksComponent->MeleeTraceCollisions();
-	}
 }
 
 //--------------------------------------------------------- PlayerInputComponent ---------------------------------------------------------------------//
@@ -333,18 +327,6 @@ void APlayableCharacter::OnTimelineFinished()
 	Timeline->Stop();
 }
 
-//------------------------------------------------------------ Weapon Collisions -----------------------------------------------------------------//
-
-void APlayableCharacter::StartWeaponCollision()
-{
-	AttacksComponent->EmptyHitActorsArray();
-	bActiveCollision = true;
-}
-
-void APlayableCharacter::EndWeaponCollision()
-{
-	bActiveCollision = false;
-}
 
 //------------------------------------------------------------- LockOn -----------------------------------------------------------------//
 

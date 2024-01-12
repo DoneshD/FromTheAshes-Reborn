@@ -156,15 +156,6 @@ protected:
 	void PerformComboFinisher(UAnimMontage* FinisherMontage);
 	void PerformComboSurge();
 
-	//-----------------------------------------Weapon Collision-------------------------------------
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon Collision")
-	void StartWeaponCollision();
-
-	UFUNCTION(BlueprintCallable, Category = "Weapon Collision")
-	void EndWeaponCollision();
-
-	bool WeaponTrace(TArray<FHitResult>& Hit, FVector& StartLocation, FVector& EndLocation);
 
 	//-----------------------------------------Dodge------------------------------------------------
 
