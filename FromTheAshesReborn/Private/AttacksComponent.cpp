@@ -15,7 +15,6 @@ void UAttacksComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 }
 
 void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -25,7 +24,6 @@ void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	{
 		MeleeTraceCollisions();
 	}
-
 }
 
 bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
@@ -64,7 +62,6 @@ void UAttacksComponent::StartAttackCollisions()
 void UAttacksComponent::EndAttackCollisions()
 {
 	bActiveCollision = false;
-
 }
 
 void UAttacksComponent::EmptyHitActorsArray()
@@ -72,7 +69,6 @@ void UAttacksComponent::EmptyHitActorsArray()
 	AlreadyHitActors_L.Empty();
 	AlreadyHitActors_R.Empty();
 }
-
 
 void UAttacksComponent::MeleeTraceCollisions()
 {
@@ -98,7 +94,6 @@ void UAttacksComponent::MeleeTraceCollisions()
 
 			if (DamagableInterface)
 			{
-
 				if (!AlreadyHitActors_L.Contains(HitActor))
 				{
 					AlreadyHitActors_L.AddUnique(HitActor);
@@ -111,11 +106,9 @@ void UAttacksComponent::MeleeTraceCollisions()
 						false,                            // CanBeParried
 						false                             // ShouldForceInterrupt
 					};
-
 					DamagableInterface->NativeTakeDamage(DamageInfo);
 				}
 			}
-
 		}
 	}
 

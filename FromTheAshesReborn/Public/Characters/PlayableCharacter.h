@@ -195,9 +195,6 @@ protected:
 	UFUNCTION()
 	void OnTimelineFinished();
 
-	//-----------------------------------------Kunai-------------------------------------------------
-
-
 
 private:
 
