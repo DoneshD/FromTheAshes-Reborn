@@ -11,6 +11,11 @@ void AEnemyMelee::BeginPlay()
 	
 }
 
+void AEnemyMelee::LightAttack()
+{
+	this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
+}
+
 void AEnemyMelee::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
     OutAttackRadius = 50.0f;

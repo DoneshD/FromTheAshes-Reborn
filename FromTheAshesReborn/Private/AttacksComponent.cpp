@@ -2,6 +2,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "DamageSystem/DamageSystem.h"
+#include "Characters/EnemyMelee.h"
 #include "Interfaces/DamagableInterface.h"
 
 UAttacksComponent::UAttacksComponent()
@@ -27,7 +28,7 @@ void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 }
 
-bool UAttacksComponent::MeleeWeapomSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
+bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
 {
 	TArray<AActor*> ActorArray;
 	ActorArray.Add(GetOwner());
@@ -55,6 +56,7 @@ bool UAttacksComponent::MeleeWeapomSphereTrace(FVector StartLocation, FVector En
 
 void UAttacksComponent::StartAttackCollisions()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Start Attack Collisions"));
 	EmptyHitActorsArray();
 	bActiveCollision = true;
 }
@@ -85,7 +87,7 @@ void UAttacksComponent::MeleeTraceCollisions()
 		EndLocation = MeshComponent->GetSocketLocation("End_L");
 	}
 
-	bool bLeftSuccess = MeleeWeapomSphereTrace(StartLocation, EndLocation, Hits);
+	bool bLeftSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 
 	for (auto& CurrentHit : Hits)
 	{
@@ -111,7 +113,6 @@ void UAttacksComponent::MeleeTraceCollisions()
 					};
 
 					DamagableInterface->NativeTakeDamage(DamageInfo);
-
 				}
 			}
 
@@ -121,7 +122,7 @@ void UAttacksComponent::MeleeTraceCollisions()
 	StartLocation = MeshComponent->GetSocketLocation("Start_R");
 	EndLocation = MeshComponent->GetSocketLocation("End_R");
 
-	bool bRightSuccess = MeleeWeapomSphereTrace(StartLocation, EndLocation, Hits);
+	bool bRightSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 
 	for (auto& CurrentHit : Hits)
 	{
@@ -154,7 +155,17 @@ void UAttacksComponent::MeleeTraceCollisions()
 	}
 }
 
-void UAttacksComponent::LightMeleeAttack()
+void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack)
 {
+	AActor* OwnerActor = GetOwner();
+	
+	if (OwnerActor)
+	{
+		AFTACharacter* FTACharacter = Cast<AFTACharacter>(OwnerActor);
 
+		if (FTACharacter)
+		{
+			FTACharacter->PlayAnimMontage(LightMeleeAttack);
+		}
+	}
 }

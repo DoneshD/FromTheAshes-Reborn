@@ -13,5 +13,11 @@ UCLASS()
 class FROMTHEASHESREBORN_API UBTTask_LightMeleeAttack : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
+
+protected:
+
+	UBTTask_LightMeleeAttack();
+
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	
 };

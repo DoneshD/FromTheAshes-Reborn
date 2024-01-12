@@ -21,7 +21,7 @@ protected:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
 
-	bool MeleeWeapomSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
+	bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
 
 private:
 
@@ -37,7 +37,7 @@ public:
 
 	void EmptyHitActorsArray();
 
-	void LightMeleeAttack();
+	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
 
 	void MeleeTraceCollisions();
 

@@ -10,7 +10,6 @@
 UBTTask_MoveToIdealRange::UBTTask_MoveToIdealRange()
 {
     NodeName = TEXT("BTTask_MoveToIdealRange");
-
 }
 
 EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -22,9 +21,6 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
     FAIMoveRequest MoveRequest;
     MoveRequest.SetGoalActor(TargetActor);
     MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
-    //Might need a pawn
-    APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-    AEnemyBase* Enemy = Cast<AEnemyBase>(Pawn);
 
     OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
     return EBTNodeResult::Succeeded;

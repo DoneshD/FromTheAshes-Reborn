@@ -16,6 +16,12 @@ protected:
 private:
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack")
+	TObjectPtr<UAnimMontage> LightAttackAnim;
+
+	void LightAttack();
+
 	AEnemyMelee();
 
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
