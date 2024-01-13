@@ -23,5 +23,24 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 	}
 
 	EnemyMelee->LightAttack();
-	return EBTNodeResult::Succeeded;
+
+	//EnemyMelee->FindComponentByClass<UAttacksComponent>()->
+		//OnAttackEnd.AddDynamic(this, &UBTTask_LightMeleeAttack::FinsihedAttacking);
+
+	if (bDoneAttacking)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EBTNodeResult::Succeeded"));
+		return EBTNodeResult::Succeeded;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EBTNodeResult::Failed"));
+		return EBTNodeResult::Failed;
+	}
+}
+
+void UBTTask_LightMeleeAttack::FinsihedAttacking()
+{
+	UE_LOG(LogTemp, Warning, TEXT("bDoneAttacking = true"));
+	bDoneAttacking = true;
 }

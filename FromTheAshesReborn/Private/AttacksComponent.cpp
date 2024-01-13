@@ -5,6 +5,8 @@
 #include "Characters/EnemyMelee.h"
 #include "Interfaces/DamagableInterface.h"
 
+#include "PlayMontageCallbackProxy.h"
+
 UAttacksComponent::UAttacksComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -20,6 +22,7 @@ void UAttacksComponent::BeginPlay()
 void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
 	if (bActiveCollision)
 	{
 		MeleeTraceCollisions();
@@ -54,7 +57,6 @@ bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector En
 
 void UAttacksComponent::StartAttackCollisions()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Start Attack Collisions"));
 	EmptyHitActorsArray();
 	bActiveCollision = true;
 }
@@ -148,6 +150,13 @@ void UAttacksComponent::MeleeTraceCollisions()
 	}
 }
 
+void UAttacksComponent::PlayMontage(USkeletalMeshComponent* InSkeletalMeshComponent, UAnimMontage* MontageToPlay, float PlayRate, float StartingPosition, FName StartingSection)
+{
+	UE_LOG(LogTemp, Warning, TEXT("UAttacksComponent::PlayMontage()"));
+	InSkeletalMeshComponent->GetAnimInstance()->Montage_Play(MontageToPlay);
+	
+}
+
 void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack)
 {
 	AActor* OwnerActor = GetOwner();
@@ -158,7 +167,7 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 		if (FTACharacter)
 		{
-			FTACharacter->PlayAnimMontage(LightMeleeAttack);
+			PlayMontage(FTACharacter->GetMesh(), LightMeleeAttack);
 		}
 	}
 }

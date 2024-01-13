@@ -17,11 +17,6 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackSurgePausedEvent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackHeavyPausedEvent);
 
-
-/**
- * 
- */
-
 USTRUCT()
 struct FSideDodgeArray
 {

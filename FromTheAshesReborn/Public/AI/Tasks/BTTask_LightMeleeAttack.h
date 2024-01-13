@@ -14,10 +14,14 @@ class FROMTHEASHESREBORN_API UBTTask_LightMeleeAttack : public UBTTask_Blackboar
 {
 	GENERATED_BODY()
 
+private:
+	bool bDoneAttacking = true;
 protected:
 
 	UBTTask_LightMeleeAttack();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-	
+
+	void FinsihedAttacking();
+
 };
