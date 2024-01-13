@@ -150,13 +150,6 @@ void UAttacksComponent::MeleeTraceCollisions()
 	}
 }
 
-void UAttacksComponent::PlayMontage(USkeletalMeshComponent* InSkeletalMeshComponent, UAnimMontage* MontageToPlay, float PlayRate, float StartingPosition, FName StartingSection)
-{
-	UE_LOG(LogTemp, Warning, TEXT("UAttacksComponent::PlayMontage()"));
-	InSkeletalMeshComponent->GetAnimInstance()->Montage_Play(MontageToPlay);
-	
-}
-
 void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack)
 {
 	AActor* OwnerActor = GetOwner();
@@ -167,7 +160,20 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 		if (FTACharacter)
 		{
-			PlayMontage(FTACharacter->GetMesh(), LightMeleeAttack);
+			UPlayMontageCallbackProxy* MontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(
+				FTACharacter->GetMesh(),
+				LightMeleeAttack);
+			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
 		}
 	}
+}
+
+void UAttacksComponent::HandleMontageCompleted(UAnimMontage* Montage, bool bInterrupted)
+{
+
+}
+
+void UAttacksComponent::HandleMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
+{
+
 }

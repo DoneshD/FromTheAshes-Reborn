@@ -47,12 +47,9 @@ public:
 
 	void MeleeTraceCollisions();
 
-	void PlayMontage(
-		class USkeletalMeshComponent* InSkeletalMeshComponent,
-		class UAnimMontage* MontageToPlay,
-		float PlayRate = 1.f,
-		float StartingPosition = 0.f,
-		FName StartingSection = NAME_None);
+	void HandleMontageCompleted(UAnimMontage* Montage, bool bInterrupted);
+
+	void HandleMontageInterrupted(UAnimMontage* Montage, bool bInterrupted);
 
 	virtual void BeginPlay() override;
 
