@@ -158,17 +158,10 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 		if (FTACharacter)
 		{
-			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
+			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
+			UE_LOG(LogTemp, Warning, TEXT("OnAttackEnd.Execute() done"));
 		}
 	}
 }
 
-void UAttacksComponent::HandleMontageCompleted(UAnimMontage* Montage, bool bInterrupted)
-{
 
-}
-
-void UAttacksComponent::HandleMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
-{
-
-}

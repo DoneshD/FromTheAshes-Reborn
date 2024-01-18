@@ -8,6 +8,7 @@
 UBTTask_LightMeleeAttack::UBTTask_LightMeleeAttack()
 {
 	NodeName = TEXT("BTTask_LightMeleeAttack");
+
 }
 
 EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -21,26 +22,15 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 	{
 		return EBTNodeResult::Failed;
 	}
-
+	EnemyMelee->FindComponentByClass<UAttacksComponent>()->
+		OnAttackEnd.AddDynamic(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
 	EnemyMelee->LightAttack();
-
-	//EnemyMelee->FindComponentByClass<UAttacksComponent>()->
-		//OnAttackEnd.AddDynamic(this, &UBTTask_LightMeleeAttack::FinsihedAttacking);
-
-	if (bDoneAttacking)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("EBTNodeResult::Succeeded"));
-		return EBTNodeResult::Succeeded;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("EBTNodeResult::Failed"));
-		return EBTNodeResult::Failed;
-	}
+	return EBTNodeResult::InProgress;
 }
 
-void UBTTask_LightMeleeAttack::FinsihedAttacking()
+void UBTTask_LightMeleeAttack::FinishedAttacking()
 {
 	UE_LOG(LogTemp, Warning, TEXT("bDoneAttacking = true"));
-	bDoneAttacking = true;
+	//return EBTNodeResult::Succeeded;
+
 }

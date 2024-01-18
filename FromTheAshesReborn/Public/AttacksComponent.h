@@ -8,6 +8,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
 
+class UPlayMontageCallbackProxy;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UAttacksComponent : public UActorComponent
 {
@@ -30,7 +32,6 @@ private:
 
 public:	
 
-	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnAttackEnd OnAttackEnd;
 
 	UFUNCTION(BlueprintCallable, Category = "Attack Collision")

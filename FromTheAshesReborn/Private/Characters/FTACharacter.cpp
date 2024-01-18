@@ -79,9 +79,6 @@ void AFTACharacter::SetState(EStates NewState)
 
 bool AFTACharacter::IsStateEqualToAny(TArray<EStates> StatesToCheck)
 {
-	bool test = false;
-	int testfds = 23;
-	float testing = 234214;
 	return StatesToCheck.Contains(CurrentState);
 }
 
