@@ -5,8 +5,6 @@
 #include "Characters/EnemyMelee.h"
 #include "Interfaces/DamagableInterface.h"
 
-#include "PlayMontageCallbackProxy.h"
-
 UAttacksComponent::UAttacksComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -160,9 +158,6 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 		if (FTACharacter)
 		{
-			UPlayMontageCallbackProxy* MontageCallbackProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(
-				FTACharacter->GetMesh(),
-				LightMeleeAttack);
 			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
 		}
 	}
