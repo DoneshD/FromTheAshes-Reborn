@@ -6,9 +6,7 @@
 #include "DamageSystem/DamageSystem.h"
 #include "AttacksComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEnd);
-
-class UPlayMontageCallbackProxy;
+DECLARE_DELEGATE(FOnAttackEnd);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UAttacksComponent : public UActorComponent
@@ -34,21 +32,20 @@ public:
 
 	FOnAttackEnd OnAttackEnd;
 
+	void EmptyHitActorsArray();
+
 	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
 	void StartAttackCollisions();
 
 	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
 	void EndAttackCollisions();
 
-	void EmptyHitActorsArray();
+	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
+	void FinishLightMeleeAttack();
 
 	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
 
 	void MeleeTraceCollisions();
-
-	void HandleMontageCompleted(UAnimMontage* Montage, bool bInterrupted);
-
-	void HandleMontageInterrupted(UAnimMontage* Montage, bool bInterrupted);
 
 	virtual void BeginPlay() override;
 

@@ -64,6 +64,7 @@ void UAttacksComponent::EndAttackCollisions()
 	bActiveCollision = false;
 }
 
+
 void UAttacksComponent::EmptyHitActorsArray()
 {
 	AlreadyHitActors_L.Empty();
@@ -151,17 +152,20 @@ void UAttacksComponent::MeleeTraceCollisions()
 void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack)
 {
 	AActor* OwnerActor = GetOwner();
-	
+
 	if (OwnerActor)
 	{
 		AFTACharacter* FTACharacter = Cast<AFTACharacter>(OwnerActor);
 
 		if (FTACharacter)
 		{
-			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
-			UE_LOG(LogTemp, Warning, TEXT("OnAttackEnd.Execute() done"));
+			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
 		}
 	}
 }
 
-
+void UAttacksComponent::FinishLightMeleeAttack()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FinishLightMeleeAttack"));
+	OnAttackEnd.Execute();
+}
