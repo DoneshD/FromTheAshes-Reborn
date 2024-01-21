@@ -3,6 +3,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "DamageSystem/DamageSystem.h"
 #include "Characters/EnemyMelee.h"
+
+#include "PlayMontageCallbackProxy.h"
+
 #include "Interfaces/DamagableInterface.h"
 
 UAttacksComponent::UAttacksComponent()
@@ -46,7 +49,7 @@ bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector En
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		Hits,
 		true);
 
@@ -160,12 +163,32 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 		if (FTACharacter)
 		{
 			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
+			FOnMontageEnded BlendOutDelegate;
+			BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
+			FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
+
+			FOnMontageEnded CompleteDelegate;
+			CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
+			FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
+
 		}
 	}
 }
 
-void UAttacksComponent::FinishLightMeleeAttack()
+void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)
 {
-	UE_LOG(LogTemp, Warning, TEXT("FinishLightMeleeAttack"));
-	OnAttackEnd.Execute();
+	if (bInterrupted)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION WAS INTERRUPTED!"));
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION IS BLENDING OUT!"));
+	}
 }
+
+void UAttacksComponent::FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted)
+{
+	UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION HAS COMPLETED!"));
+}
+
+

@@ -13,7 +13,6 @@ private:
 	UBehaviorTreeComponent* EnemyOwnerComp; 
 
 public:
-	bool bDoneAttacking = false;
 
 	UBTTask_LightMeleeAttack();
 

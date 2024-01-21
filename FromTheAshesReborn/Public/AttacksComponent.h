@@ -4,9 +4,12 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DamageSystem/DamageSystem.h"
+
 #include "AttacksComponent.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
+
+class UPlayMontageCallbackProxy;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UAttacksComponent : public UActorComponent
@@ -40,10 +43,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
 	void EndAttackCollisions();
 
-	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
-	void FinishLightMeleeAttack();
-
 	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
+
+	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
+
+	void FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted);
 
 	void MeleeTraceCollisions();
 
