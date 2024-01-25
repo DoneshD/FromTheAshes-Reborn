@@ -206,6 +206,8 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
 		InputComp->BindAction(Input_Dodge, ETriggerEvent::Started, this, &APlayableCharacter::InputDodge);
 		InputComp->BindAction(Input_LockOn, ETriggerEvent::Started, this, &APlayableCharacter::HardLockOn);
+		InputComp->BindAction(Input_Parry, ETriggerEvent::Started, this, &APlayableCharacter::InputParry);
+
 	}
 }
 
@@ -864,6 +866,21 @@ void APlayableCharacter::PerformComboSurge()
 	else
 	{
 		return;
+	}
+}
+
+
+//-------------------------------------Parry----------------------------------------
+
+void APlayableCharacter::InputParry()
+{
+	if (CanParry)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Parry"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cant parry"));
 	}
 }
 

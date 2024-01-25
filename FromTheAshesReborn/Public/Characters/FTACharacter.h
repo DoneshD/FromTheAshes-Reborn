@@ -52,6 +52,10 @@ protected:
 	bool IsStateEqualToAny(TArray<EStates> StatesToCheck);
 
 public:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool CanParry = false;
+
 	AFTACharacter();
 
 	virtual void Tick(float DeltaTime) override;

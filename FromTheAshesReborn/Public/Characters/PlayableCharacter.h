@@ -82,6 +82,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Parry;
+
 	//-----------------------------------------FSM Reset States-------------------------------------
 
 	UFUNCTION(BlueprintCallable, Category = "FSM")
@@ -111,6 +114,10 @@ protected:
 
 	bool CanAttack();
 	bool CanDodge();
+
+	//-----------------------------------------Parry-----------------------------------------------
+
+	void InputParry();
 
 	//-----------------------------------------Light Attacks----------------------------------------
 

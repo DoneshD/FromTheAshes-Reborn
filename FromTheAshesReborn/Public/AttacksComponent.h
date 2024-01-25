@@ -45,6 +45,9 @@ public:
 
 	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
 
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	void FinishLightMeleeAttack();
+
 	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
 
 	void FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted);
