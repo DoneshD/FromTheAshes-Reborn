@@ -57,6 +57,7 @@ void APlayableCharacter::BeginPlay()
 		Timeline->SetLooping(false);
 		Timeline->SetIgnoreTimeDilation(true);
 	}
+	EnemyReference = UGameplayStatics::GetActorOfClass(GetWorld(), AFTACharacter::StaticClass());
 }
 
 //------------------------------------------------------------- FSM Resets -----------------------------------------------------------------//
@@ -874,16 +875,27 @@ void APlayableCharacter::PerformComboSurge()
 
 void APlayableCharacter::InputParry()
 {
-	if (CanParry)
+	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(this);
+	if (DamagableInterface)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Parry"));
+		if (CanParry && DamagableInterface->WithinParryRange)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Parry"));
+			PerformParry();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cant parry"));
+		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cant parry"));
-	}
-}
 
+}
+void APlayableCharacter::PerformParry()
+{
+	AFTACharacter* ParryTarget = Cast<AFTACharacter>(EnemyReference);
+	FVector ParryMeshLocation = ParryTarget->ParryMesh->GetComponentLocation();
+	RootComponent->SetWorldLocation(ParryMeshLocation);
+}
 //--------------------------------Damage System-------------------------------------
 
 float APlayableCharacter::NativeGetCurrentHealth()

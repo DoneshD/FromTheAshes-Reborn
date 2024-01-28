@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Components/BoxComponent.h"
 #include "Enums/EStates.h"
 #include "DamageSystem/DamageSystem.h"
 #include "AttacksComponent.h"
@@ -37,6 +38,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attacks", meta = (AllowPrivateAccess = "true"))
 	class UAttacksComponent* AttacksComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attacks", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UBoxComponent> CollisionParry;
+
+
 	//FSM checks
 	bool CanJump();
 	bool bCanDodge;
@@ -52,6 +57,9 @@ protected:
 	bool IsStateEqualToAny(TArray<EStates> StatesToCheck);
 
 public:
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USkeletalMeshComponent> ParryMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool CanParry = false;

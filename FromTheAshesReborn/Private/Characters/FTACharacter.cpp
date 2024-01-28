@@ -48,6 +48,8 @@ AFTACharacter::AFTACharacter()
 	AttacksComponent = CreateDefaultSubobject<UAttacksComponent>(TEXT("AttacksComponent"));
 	this->AddOwnedComponent(AttacksComponent);
 
+	CollisionParry = CreateDefaultSubobject<UBoxComponent>(FName("Parry Box"));
+	CollisionParry->SetupAttachment(RootComponent);
 }
 
 void AFTACharacter::BeginPlay()
