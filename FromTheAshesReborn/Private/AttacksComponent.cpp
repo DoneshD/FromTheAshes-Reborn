@@ -186,7 +186,8 @@ void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animM
 	{
 		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION WAS INTERRUPTED!"));
 	}
-	else {
+	else 
+	{
 		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION IS BLENDING OUT!"));
 	}
 }

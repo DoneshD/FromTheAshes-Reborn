@@ -121,5 +121,4 @@ void AEnemyBase::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	{
 		DamagableInterface->WithinParryRange = false;
 	}
-
 }

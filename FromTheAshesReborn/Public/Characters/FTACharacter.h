@@ -58,6 +58,12 @@ protected:
 
 public:
 
+	UPROPERTY(EditDefaultsOnly, Category = "Parry Anim")
+	TObjectPtr<UAnimMontage> HitParryAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Parry Anim")
+	TObjectPtr<UAnimMontage> ParryAnim;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USkeletalMeshComponent> ParryMesh;
 

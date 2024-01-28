@@ -323,9 +323,6 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
 	TArray<FSideDodgeArray> CardinalRollArray;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Throw Anim")
-	TObjectPtr<UAnimMontage> KunaiThrow;
-
 	//-----------------------------------------Kunai---------------------------------------
 
 

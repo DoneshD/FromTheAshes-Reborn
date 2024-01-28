@@ -58,7 +58,6 @@ public:
 	UFUNCTION()
 	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
 
-
 	//Enemy Interface functions
 
 	UFUNCTION()
