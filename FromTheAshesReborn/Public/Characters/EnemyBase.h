@@ -26,12 +26,14 @@ protected:
 
 private:
 
-
 public:
 	AAIControllerEnemyBase* AICEnemyBase;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	//UPROPERTY(EditAnywhere)
+	//TObjectPtr<USkeletalMeshComponent> ParryMesh;
 
 	AEnemyBase();
 
@@ -56,7 +58,6 @@ public:
 	UFUNCTION()
 	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
 
-
 	//Enemy Interface functions
 
 	UFUNCTION()
@@ -64,5 +65,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+
+	UFUNCTION()
+	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };

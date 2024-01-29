@@ -118,6 +118,8 @@ protected:
 	//-----------------------------------------Parry-----------------------------------------------
 
 	void InputParry();
+	void PerformParry();
+	TObjectPtr<AActor> EnemyReference;
 
 	//-----------------------------------------Light Attacks----------------------------------------
 
@@ -320,9 +322,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
 	TArray<FSideDodgeArray> CardinalRollArray;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Throw Anim")
-	TObjectPtr<UAnimMontage> KunaiThrow;
 
 	//-----------------------------------------Kunai---------------------------------------
 

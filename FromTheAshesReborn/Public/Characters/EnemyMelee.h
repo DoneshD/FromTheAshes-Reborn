@@ -12,7 +12,6 @@ class FROMTHEASHESREBORN_API AEnemyMelee : public AEnemyBase
 protected:
 	virtual void BeginPlay() override;
 
-
 private:
 
 public:

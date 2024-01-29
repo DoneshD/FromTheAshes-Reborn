@@ -1,4 +1,5 @@
 #include "Characters/PlayableCharacter.h"
+#include "Characters/EnemyBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -57,6 +58,7 @@ void APlayableCharacter::BeginPlay()
 		Timeline->SetLooping(false);
 		Timeline->SetIgnoreTimeDilation(true);
 	}
+	EnemyReference = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyBase::StaticClass());
 }
 
 //------------------------------------------------------------- FSM Resets -----------------------------------------------------------------//
@@ -874,16 +876,31 @@ void APlayableCharacter::PerformComboSurge()
 
 void APlayableCharacter::InputParry()
 {
-	if (CanParry)
+	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(this);
+	if (DamagableInterface)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Parry"));
+		if (CanParry && DamagableInterface->WithinParryRange)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Parry"));
+			PerformParry();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cant parry"));
+		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cant parry"));
-	}
-}
 
+}
+void APlayableCharacter::PerformParry()
+{
+	AEnemyBase* ParryTarget = Cast<AEnemyBase>(EnemyReference);
+	FTransform ParryMeshTransform = ParryTarget->ParryMesh->GetComponentTransform();
+
+	RootComponent->SetWorldTransform(ParryMeshTransform);
+
+	PlayAnimMontage(ParryTarget->HitParryAnim);
+	PlayAnimMontage(ParryAnim);
+}
 //--------------------------------Damage System-------------------------------------
 
 float APlayableCharacter::NativeGetCurrentHealth()
