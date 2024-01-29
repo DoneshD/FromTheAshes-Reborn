@@ -38,6 +38,7 @@ void UBTTask_LightMeleeAttack::FinishedAttacking()
 {
 	if (EnemyOwnerComp)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("FinishedAttacking"));
 		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
 	}
 }

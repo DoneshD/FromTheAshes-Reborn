@@ -110,7 +110,7 @@ void UAttacksComponent::MeleeTraceCollisions()
 						false,                            // CanBeParried
 						false                             // ShouldForceInterrupt
 					};
-					DamagableInterface->NativeTakeDamage(DamageInfo);
+					//DamagableInterface->NativeTakeDamage(DamageInfo);
 				}
 			}
 		}
@@ -144,7 +144,7 @@ void UAttacksComponent::MeleeTraceCollisions()
 							false                             // ShouldForceInterrupt
 					};
 
-					DamagableInterface->NativeTakeDamage(DamageInfo);
+					//DamagableInterface->NativeTakeDamage(DamageInfo);
 					
 				}
 			}
@@ -163,13 +163,13 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 		if (FTACharacter)
 		{
 			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
-			FOnMontageEnded BlendOutDelegate;
-			BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
-			FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
+			//FOnMontageEnded BlendOutDelegate;
+			//BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
+			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
 
-			FOnMontageEnded CompleteDelegate;
-			CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
-			FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
+			//FOnMontageEnded CompleteDelegate;
+			//CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
+			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
 
 		}
 	}

@@ -29,12 +29,10 @@ void UBTS_StopAttackingIfTargetIsDead::TickNode(UBehaviorTreeComponent& OwnerCom
 				if (AICEnemyBase)
 				{
 					AICEnemyBase->SetStateAsPassive();
-					UE_LOG(LogTemp, Warning, TEXT("Keean Dimitri Smith"));
 				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Noah Grant Richter"));
 			}
 		}
 	}

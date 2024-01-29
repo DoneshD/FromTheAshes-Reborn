@@ -33,4 +33,7 @@ public:
 	UFUNCTION()
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) = 0;
 
+	UFUNCTION()
+	virtual void JumpToDestination(FVector Destination) = 0;
+
 };

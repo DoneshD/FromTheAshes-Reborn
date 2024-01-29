@@ -2,6 +2,7 @@
 
 #include "Characters/EnemyBase.h"
 #include "AI/Controllers/AIControllerEnemyBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 
@@ -102,6 +103,14 @@ float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
 	
+}
+
+void AEnemyBase::JumpToDestination(FVector Destination)
+{
+	FVector LaunchVelocity;
+	FVector EndDestination = Destination + FVector(0.0f, 0.0f, 250.0f);
+	UGameplayStatics::SuggestProjectileVelocity_CustomArc(GetWorld(), LaunchVelocity, GetActorLocation(), Destination);
+	LaunchCharacter(LaunchVelocity, true, true);
 }
 
 void AEnemyBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
