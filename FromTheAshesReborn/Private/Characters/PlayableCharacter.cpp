@@ -896,35 +896,10 @@ void APlayableCharacter::PerformParry()
 	AEnemyBase* ParryTarget = Cast<AEnemyBase>(EnemyReference);
 	FTransform ParryMeshTransform = ParryTarget->ParryMesh->GetComponentTransform();
 
-	FRotator ExistingRotation = ParryMeshTransform.Rotator();
-
-	// Add to the Z component (yaw) of the rotation
-	//float YawToAdd = 45.0f; // Adjust this value according to your needs
-	//FRotator NewRotation = FRotator(0.0f, 0.0f, 0.0f);
-	//FRotator FinalRotation = ExistingRotation + NewRotation;
-
-	// Set the new rotation in the FTransform
-	//ParryMeshTransform.SetRotation(FQuat(FinalRotation));
-
-	RootComponent->SetWorldTransform(ParryMeshTransform);
-	// Stop all animation montages on the ParryTarget
-	ParryTarget->StopAnimMontage();
-
-	// Set the new world transform for the RootComponent
 	RootComponent->SetWorldTransform(ParryMeshTransform);
 
-	UE_LOG(LogTemp, Warning, TEXT("Here1"));
-
-	// Enemy Parry Anim
-	ParryTarget->StopAnimMontage();
-
-	// Play the new animation montages
 	PlayAnimMontage(ParryTarget->HitParryAnim);
 	PlayAnimMontage(ParryAnim);
-
-	UE_LOG(LogTemp, Warning, TEXT("Here2"));
-
-
 }
 //--------------------------------Damage System-------------------------------------
 

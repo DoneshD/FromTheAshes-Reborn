@@ -163,13 +163,13 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 		if (FTACharacter)
 		{
 			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
-			//FOnMontageEnded BlendOutDelegate;
-			//BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
-			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
+			FOnMontageEnded BlendOutDelegate;
+			BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
+			FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
 
-			//FOnMontageEnded CompleteDelegate;
-			//CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
-			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
+			FOnMontageEnded CompleteDelegate;
+			CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
+			FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
 
 		}
 	}
@@ -184,7 +184,7 @@ void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animM
 {
 	if (bInterrupted)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION WAS INTERRUPTED!"));
+		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION HAS INTERRUPTED!"));
 	}
 	else 
 	{
