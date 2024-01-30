@@ -179,7 +179,6 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 void UAttacksComponent::FinishLightMeleeAttack()
 {
 	OnAttackEnd.Execute();
-
 }
 
 void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)

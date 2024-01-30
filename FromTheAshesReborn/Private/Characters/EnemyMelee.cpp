@@ -34,5 +34,3 @@ void AEnemyMelee::LightAttack(AActor* AttackTarget)
 		}
 	}
 }
-
-

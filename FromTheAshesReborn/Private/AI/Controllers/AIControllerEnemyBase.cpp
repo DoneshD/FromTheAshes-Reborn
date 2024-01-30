@@ -8,6 +8,8 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
+//Not good!!!!!!!!
+#include "Characters/PlayableCharacter.h"
 #include "Characters/EnemyBase.h"
 
 AAIControllerEnemyBase::AAIControllerEnemyBase()
@@ -112,6 +114,7 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	AActor* NewAttackTarget;
 	if (AttackTarget && UseLastKnownAttackTarget)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Last Known Attack Target: %s"), *AttackTarget->GetName());
 		NewAttackTarget = AttackTarget;
 	}
 	else
@@ -124,6 +127,11 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
 		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
 		AttackTarget = NewAttackTarget;
+
+		//APlayableCharacter* PlayableCharacter = Cast<APlayableCharacter>(NewAttackTarget);
+		//GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, PlayableCharacter);
+		//GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
+		//AttackTarget = NewAttackTarget;
 	}
 	else
 	{
@@ -197,14 +205,14 @@ void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 	switch (GetCurrentState())
 	{
 	case EAIStates::EAIStates_Passive:
-		SetStateAsAttacking(Actor, false);
+		SetStateAsAttacking(Actor, true);
 
 
 	case EAIStates::EAIStates_Attacking:
 		//Nothing
 
 	case EAIStates::EAIStates_Investigating:
-		SetStateAsAttacking(Actor, false);
+		SetStateAsAttacking(Actor, true);
 
 	case EAIStates::EAIStates_Frozen:
 		//Nothing
@@ -246,13 +254,13 @@ void AAIControllerEnemyBase::HandleSensedDamage(AActor* Actor)
 	switch (GetCurrentState())
 	{
 	case EAIStates::EAIStates_Passive:
-		SetStateAsAttacking(Actor, false);
+		SetStateAsAttacking(Actor, true);
 
 	case EAIStates::EAIStates_Attacking:
 		//Nothing
 
 	case EAIStates::EAIStates_Investigating:
-		SetStateAsAttacking(Actor, false);
+		SetStateAsAttacking(Actor, true);
 
 	case EAIStates::EAIStates_Frozen:
 		//Nothing
