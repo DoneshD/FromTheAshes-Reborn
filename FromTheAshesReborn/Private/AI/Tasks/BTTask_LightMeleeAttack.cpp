@@ -1,4 +1,6 @@
 #include "AI/Tasks/BTTask_LightMeleeAttack.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 #include "AIController.h"
 #include "Characters/EnemyMelee.h"
 
@@ -24,13 +26,23 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 	EnemyMelee->FindComponentByClass<UAttacksComponent>()->
 		OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
 
-	EnemyMelee->LightAttack();
+	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+	EnemyMelee->LightAttack(TargetActor);
 	return EBTNodeResult::InProgress;
 }
 
 void UBTTask_LightMeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
 	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
+
+	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(TargetActor);
+
+	if (DamagableInterface)
+	{
+		DamagableInterface->ReturnAttackToken(1);
+	}
+
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 }
 

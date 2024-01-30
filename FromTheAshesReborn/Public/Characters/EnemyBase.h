@@ -75,6 +75,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void JumpToDestination(FVector Destination) override;
 
+	UFUNCTION(BlueprintCallable)
+	virtual void LightAttack(AActor* AttackTarget) override;
+
 	// Overlap functions
 	UFUNCTION()
 	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

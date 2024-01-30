@@ -158,6 +158,7 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 	if (OwnerActor)
 	{
+		//useless cast?
 		AFTACharacter* FTACharacter = Cast<AFTACharacter>(OwnerActor);
 
 		if (FTACharacter)
@@ -178,6 +179,7 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 void UAttacksComponent::FinishLightMeleeAttack()
 {
 	OnAttackEnd.Execute();
+
 }
 
 void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)

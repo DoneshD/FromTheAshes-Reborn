@@ -19,9 +19,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack")
 	TObjectPtr<UAnimMontage> LightAttackAnim;
 
-	void LightAttack();
-
 	AEnemyMelee();
 
+	//Enemy Interface functions
+
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+
+	virtual void LightAttack(AActor* AttackTarget) override;
 };
