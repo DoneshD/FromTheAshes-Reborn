@@ -36,4 +36,7 @@ public:
 	UFUNCTION()
 	virtual void JumpToDestination(FVector Destination) = 0;
 
+	UFUNCTION()
+	virtual void Attack(AActor* AttackTarget) = 0;
+
 };

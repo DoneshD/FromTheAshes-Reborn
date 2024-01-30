@@ -40,6 +40,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsBlocking = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int AttackTokensCount = 1;
+
 	ECanBeDamaged DamageOutput;
 
 protected:
@@ -53,6 +56,10 @@ public:
 	bool TakeDamage(FDamageInfo DamageInfo);
 
 	ECanBeDamaged CanBeDamaged(bool ShouldDamageInvincible, bool CanBeBlocked);
+
+	bool ReserveAttackTokens(int Amount);
+
+	void ReturnAttackTokens(int Amount);
 
 		
 };

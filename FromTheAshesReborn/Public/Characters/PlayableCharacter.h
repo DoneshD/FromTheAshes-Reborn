@@ -349,6 +349,11 @@ public:
 	UFUNCTION()
 	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
 
+	UFUNCTION()
+	virtual bool ReserveAttackToken(int Amount) override;
+
+	UFUNCTION()
+	virtual void ReturnAttackToken(int Amount) override;
 
 };
 

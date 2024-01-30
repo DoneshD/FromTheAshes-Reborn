@@ -78,6 +78,15 @@ bool AEnemyBase::NativeTakeDamage(FDamageInfo DamageInfo)
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
+bool AEnemyBase::ReserveAttackToken(int Amount)
+{
+	return false;
+}
+
+void AEnemyBase::ReturnAttackToken(int Amount)
+{
+}
+
 float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 {
 	switch (SpeedState)

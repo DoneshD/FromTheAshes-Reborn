@@ -45,6 +45,8 @@ APlayableCharacter::APlayableCharacter()
 
 	InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
 	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
+
+	DamageSystemComponent->AttackTokensCount = 1;
 }
 
 void APlayableCharacter::BeginPlay()
@@ -927,4 +929,14 @@ float APlayableCharacter::NativeHeal(float HealAmount)
 bool APlayableCharacter::NativeTakeDamage(FDamageInfo DamageInfo)
 {
 	return DamageSystemComponent->TakeDamage(DamageInfo);
+}
+
+bool APlayableCharacter::ReserveAttackToken(int Amount)
+{
+	return DamageSystemComponent->ReserveAttackTokens(Amount);
+}
+
+void APlayableCharacter::ReturnAttackToken(int Amount)
+{
+	DamageSystemComponent->ReturnAttackTokens(Amount);
 }

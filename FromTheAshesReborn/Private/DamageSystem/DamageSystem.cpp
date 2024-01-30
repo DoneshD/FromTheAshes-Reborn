@@ -37,6 +37,24 @@ ECanBeDamaged UDamageSystem::CanBeDamaged(bool ShouldDamageInvincible, bool CanB
 	}
 }
 
+bool UDamageSystem::ReserveAttackTokens(int Amount)
+{
+	if (AttackTokensCount >= Amount)
+	{
+		AttackTokensCount -= Amount;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void UDamageSystem::ReturnAttackTokens(int Amount)
+{
+	AttackTokensCount += Amount;
+}
+
 float UDamageSystem::Heal(float HealAmount)
 {
 	if (!IsDead)
