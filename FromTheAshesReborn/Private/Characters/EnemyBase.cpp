@@ -127,6 +127,47 @@ void AEnemyBase::LightAttack(AActor* AttackTarget)
 
 }
 
+bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
+{
+	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
+	if (DamagableInterface)
+	{
+		if (DamagableInterface->ReserveAttackToken(TokensNeeded))
+		{
+			StoreAttackTokens(AttackTarget, TokensNeeded);
+			TokensUsedInCurrentAttack = TokensNeeded;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return false;
+}
+
+void AEnemyBase::AttackEnd(AActor* AttackTarget)
+{
+	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
+	if (DamagableInterface)
+	{
+		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
+		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
+	}
+}
+
+void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
+{
+	if (ReservedAttackTokensMap.Find(AttackTarget))
+	{
+		ReservedAttackTokensMap[AttackTarget] += Amount;
+	}
+	else
+	{
+		ReservedAttackTokensMap.Add(AttackTarget, Amount);
+	}
+}
+
 void AEnemyBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(OtherActor);

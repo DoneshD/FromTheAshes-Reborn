@@ -21,20 +21,25 @@ class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagabl
 {
 	GENERATED_BODY()
 
-protected:
-	virtual void BeginPlay() override;
-
-private:
-
 public:
 	AAIControllerEnemyBase* AICEnemyBase;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
+	TMap<AActor*, int> ReservedAttackTokensMap;
+
+	int TokensUsedInCurrentAttack;
+
 	//UPROPERTY(EditAnywhere)
 	//TObjectPtr<USkeletalMeshComponent> ParryMesh;
 
+protected:
+	virtual void BeginPlay() override;
+
+private:
+
+public:
 	AEnemyBase();
 
 	virtual void Tick(float DeltaTime) override;
@@ -77,6 +82,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void LightAttack(AActor* AttackTarget) override;
+
+	UFUNCTION()
+	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) override;
+
+	UFUNCTION()
+	virtual void AttackEnd(AActor* AttackTarget) override;
+
+	UFUNCTION()
+	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
 
 	// Overlap functions
 	UFUNCTION()
