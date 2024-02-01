@@ -37,6 +37,15 @@ public:
 	virtual void JumpToDestination(FVector Destination) = 0;
 
 	UFUNCTION()
-	virtual void Attack(AActor* AttackTarget) = 0;
+	virtual void LightAttack(AActor* AttackTarget) = 0;
+
+	UFUNCTION()
+	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) = 0;
+
+	UFUNCTION()
+	virtual void AttackEnd(AActor* AttackTarget) = 0;
+
+	UFUNCTION()
+	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) = 0;
 
 };

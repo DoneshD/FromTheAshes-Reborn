@@ -122,6 +122,57 @@ void AEnemyBase::JumpToDestination(FVector Destination)
 	LaunchCharacter(LaunchVelocity, true, true);
 }
 
+void AEnemyBase::LightAttack(AActor* AttackTarget)
+{
+
+}
+
+bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::AttackStart"));
+
+	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
+	if (DamagableInterface)
+	{
+		if (DamagableInterface->ReserveAttackToken(TokensNeeded))
+		{
+			StoreAttackTokens(AttackTarget, TokensNeeded);
+			TokensUsedInCurrentAttack = TokensNeeded;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return false;
+}
+
+void AEnemyBase::AttackEnd(AActor* AttackTarget)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::AttackEnd"));
+
+	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
+	if (DamagableInterface)
+	{
+		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
+		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
+	}
+}
+
+void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::StoreAttackTokens"));
+	if (ReservedAttackTokensMap.Find(AttackTarget))
+	{
+		ReservedAttackTokensMap[AttackTarget] += Amount;
+	}
+	else
+	{
+		ReservedAttackTokensMap.Add(AttackTarget, Amount);
+	}
+}
+
 void AEnemyBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(OtherActor);

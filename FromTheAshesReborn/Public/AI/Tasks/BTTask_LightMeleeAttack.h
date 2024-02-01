@@ -14,6 +14,9 @@ private:
 
 public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
+	FBlackboardKeySelector AttackTargetKey;
+
 	UBTTask_LightMeleeAttack();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
