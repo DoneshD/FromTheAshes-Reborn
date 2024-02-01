@@ -25,5 +25,7 @@ public:
 
 	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
+	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
+
 	virtual void LightAttack(AActor* AttackTarget) override;
 };

@@ -22,6 +22,6 @@ EBTNodeResult::Type UBTTask_FocusTarget::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 
-	OwnerComp.GetAIOwner()->SetFocus(TargetActor);
+	OwnerComp.GetAIOwner()->SetFocus(TargetActor, EAIFocusPriority::Gameplay);
 	return EBTNodeResult::Succeeded;
 }

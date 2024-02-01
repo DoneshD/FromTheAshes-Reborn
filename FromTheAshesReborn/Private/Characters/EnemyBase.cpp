@@ -3,7 +3,6 @@
 #include "Characters/EnemyBase.h"
 #include "AI/Controllers/AIControllerEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 
 AEnemyBase::AEnemyBase()
@@ -89,24 +88,7 @@ void AEnemyBase::ReturnAttackToken(int Amount)
 
 float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 {
-	switch (SpeedState)
-	{
-	case EMovementSpeed::EMovementSpeed_Idle:
-		return GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-
-	case EMovementSpeed::EMovementSpeed_Walking:
-		return GetCharacterMovement()->MaxWalkSpeed = 100.0f;
-
-	case EMovementSpeed::EMovementSpeed_Jogging :
-		return GetCharacterMovement()->MaxWalkSpeed = 400.0f;
-
-	case EMovementSpeed::EMovementSpeed_Sprinting:
-		return GetCharacterMovement()->MaxWalkSpeed = 500.0f;
-
-	default:
-		return 0.0f;
-		break;
-	}
+	return 0.0f;
 }
 
 void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
@@ -124,6 +106,7 @@ void AEnemyBase::JumpToDestination(FVector Destination)
 
 void AEnemyBase::LightAttack(AActor* AttackTarget)
 {
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::LightAttack"));
 
 }
 

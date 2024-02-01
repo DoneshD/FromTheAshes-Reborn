@@ -2,7 +2,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 
 #include "AIController.h"
-#include "Characters/EnemyMelee.h"
+#include "Characters/EnemyBase.h"
 
 UBTTask_LightMeleeAttack::UBTTask_LightMeleeAttack()
 {
@@ -16,18 +16,24 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 	EnemyOwnerComp = &OwnerComp;
 
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-	AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
+	AEnemyBase* EnemyBase = Cast<AEnemyBase>(Pawn);
 
-	if (!EnemyMelee)
+	if (!EnemyBase)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	EnemyMelee->FindComponentByClass<UAttacksComponent>()->
+	EnemyBase->FindComponentByClass<UAttacksComponent>()->
 		OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
 
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-	EnemyMelee->LightAttack(TargetActor);
+	UE_LOG(LogTemp, Warning, TEXT("Here1"));
+
+	if (EnemyBase->AttackStart(TargetActor, 1))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Here2"));
+		EnemyBase->LightAttack(TargetActor);
+	}
 	return EBTNodeResult::InProgress;
 }
 
@@ -40,7 +46,14 @@ void UBTTask_LightMeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp,
 
 	if (DamagableInterface)
 	{
+
 		DamagableInterface->ReturnAttackToken(1);
+	}
+
+	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(this);
+	if (AIEnemyInterface)
+	{
+		AIEnemyInterface->AttackEnd(TargetActor);
 	}
 
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
@@ -50,7 +63,6 @@ void UBTTask_LightMeleeAttack::FinishedAttacking()
 {
 	if (EnemyOwnerComp)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FinishedAttacking"));
 		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
 	}
 }
