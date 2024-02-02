@@ -81,7 +81,7 @@ public:
 	virtual void JumpToDestination(FVector Destination) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void LightAttack(AActor* AttackTarget) override;
+	virtual void LightAttack() override;
 
 	UFUNCTION()
 	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) override;

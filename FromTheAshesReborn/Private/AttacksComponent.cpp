@@ -160,17 +160,11 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 	{
 		//useless cast?
 		AFTACharacter* FTACharacter = Cast<AFTACharacter>(OwnerActor);
+		ACharacter* Character = Cast<ACharacter>(OwnerActor);
 
 		if (FTACharacter)
 		{
-			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
-			//FOnMontageEnded BlendOutDelegate;
-			//BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
-			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
-
-			//FOnMontageEnded CompleteDelegate;
-			//CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
-			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
+			Character->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
 
 		}
 	}

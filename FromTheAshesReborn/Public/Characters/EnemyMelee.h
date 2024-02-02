@@ -27,5 +27,5 @@ public:
 
 	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
 
-	virtual void LightAttack(AActor* AttackTarget) override;
+	virtual void LightAttack() override;
 };

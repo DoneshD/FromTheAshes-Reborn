@@ -22,8 +22,6 @@ void AEnemyMelee::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRa
 
 float AEnemyMelee::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyMelee::NativeSetMovementSpeed"));
-
 	switch (SpeedState)
 	{
 	case EMovementSpeed::EMovementSpeed_Idle:
@@ -44,24 +42,7 @@ float AEnemyMelee::NativeSetMovementSpeed(EMovementSpeed SpeedState)
 	}
 }
 
-void AEnemyMelee::LightAttack(AActor* AttackTarget)
+void AEnemyMelee::LightAttack()
 {
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyMelee::LightAttack"));
-
-	if (DamagableInterface)
-	{
-		if (DamagableInterface->ReserveAttackToken(1))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("DamagableInterface->ReserveAttackToken(1) is true"));
-
-			this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("DamagableInterface->ReserveAttackToken(1) is false"));
-
-			this->FindComponentByClass<UAttacksComponent>()->OnAttackEnd.Execute();
-		}
-	}
+	this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
 }

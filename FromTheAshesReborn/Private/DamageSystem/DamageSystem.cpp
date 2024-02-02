@@ -39,9 +39,12 @@ ECanBeDamaged UDamageSystem::CanBeDamaged(bool ShouldDamageInvincible, bool CanB
 
 bool UDamageSystem::ReserveAttackTokens(int Amount)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ReserveAttackTokens hagfdhdhhd: %d"), Amount);
+	UE_LOG(LogTemp, Warning, TEXT("AttackTokensCount hagfdhdhhd: %d"), AttackTokensCount);
 	if (AttackTokensCount >= Amount)
 	{
 		AttackTokensCount -= Amount;
+		UE_LOG(LogTemp, Warning, TEXT("ReserveAttackTokens is True"));
 		return true;
 	}
 	else

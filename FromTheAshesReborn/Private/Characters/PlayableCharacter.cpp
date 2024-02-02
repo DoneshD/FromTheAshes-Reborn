@@ -933,6 +933,7 @@ bool APlayableCharacter::NativeTakeDamage(FDamageInfo DamageInfo)
 
 bool APlayableCharacter::ReserveAttackToken(int Amount)
 {
+	UE_LOG(LogTemp, Warning, TEXT("In Player - ReserveAttackToken interface"));
 	return DamageSystemComponent->ReserveAttackTokens(Amount);
 }
 

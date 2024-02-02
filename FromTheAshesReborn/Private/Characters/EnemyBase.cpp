@@ -14,6 +14,7 @@ AEnemyBase::AEnemyBase()
 
 	ParryMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ParryMesh"));
 	ParryMesh->SetupAttachment(GetMesh());
+
 }
 void AEnemyBase::BeginPlay()
 {
@@ -79,7 +80,7 @@ bool AEnemyBase::NativeTakeDamage(FDamageInfo DamageInfo)
 
 bool AEnemyBase::ReserveAttackToken(int Amount)
 {
-	return false;
+	return true;
 }
 
 void AEnemyBase::ReturnAttackToken(int Amount)
@@ -104,15 +105,13 @@ void AEnemyBase::JumpToDestination(FVector Destination)
 	LaunchCharacter(LaunchVelocity, true, true);
 }
 
-void AEnemyBase::LightAttack(AActor* AttackTarget)
+void AEnemyBase::LightAttack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::LightAttack"));
 
 }
 
 bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::AttackStart"));
 
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
@@ -133,7 +132,6 @@ bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
 
 void AEnemyBase::AttackEnd(AActor* AttackTarget)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::AttackEnd"));
 
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
@@ -145,7 +143,6 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 
 void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::StoreAttackTokens"));
 	if (ReservedAttackTokensMap.Find(AttackTarget))
 	{
 		ReservedAttackTokensMap[AttackTarget] += Amount;

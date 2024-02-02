@@ -23,8 +23,6 @@ class FROMTHEASHESREBORN_API IAIEnemyInterface
 {
 	GENERATED_BODY()
 
-
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
 	UFUNCTION()
@@ -37,7 +35,7 @@ public:
 	virtual void JumpToDestination(FVector Destination) = 0;
 
 	UFUNCTION()
-	virtual void LightAttack(AActor* AttackTarget) = 0;
+	virtual void LightAttack() = 0;
 
 	UFUNCTION()
 	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) = 0;
