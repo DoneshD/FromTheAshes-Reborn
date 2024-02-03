@@ -23,9 +23,9 @@ public:
 
 	//Enemy Interface functions
 
-	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
-	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
+	virtual float SetMovementSpeed(EMovementSpeed SpeedState) override;
 
 	virtual void LightAttack() override;
 };

@@ -26,19 +26,19 @@ public:
 	bool WithinParryRange = false;
 
 	UFUNCTION()
-	virtual float NativeGetCurrentHealth() = 0;
+	virtual float GetCurrentHealth() = 0;
 
 	UFUNCTION()
-	virtual float NativeGetMaxHealth() = 0;
+	virtual float GetMaxHealth() = 0;
 
 	UFUNCTION()
-	virtual bool NativeIsDead() = 0;
+	virtual bool IsDead() = 0;
 
 	UFUNCTION()
-	virtual float NativeHeal(float HealAmount) = 0;
+	virtual float Heal(float HealAmount) = 0;
 
 	UFUNCTION()
-	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) = 0;
+	virtual bool TakeDamage(FDamageInfo DamageInfo) = 0;
 
 	UFUNCTION()
 	virtual bool ReserveAttackToken(int Amount) = 0;

@@ -35,9 +35,7 @@ void AEnemyBase::BeginPlay()
 
 	//Bind Death Event
 	//Bind Hit Response Event
-	
 }
-
 
 void AEnemyBase::Tick(float DeltaTime)
 {
@@ -51,48 +49,47 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
-float AEnemyBase::NativeGetCurrentHealth()
+float AEnemyBase::GetCurrentHealth()
 {
 	return DamageSystemComponent->CurrentHealth;
 }
 
-float AEnemyBase::NativeGetMaxHealth()
+float AEnemyBase::GetMaxHealth()
 {
 	return DamageSystemComponent->MaxHealth;
 }
 
-bool AEnemyBase::NativeIsDead()
+bool AEnemyBase::IsDead()
 {
 	return DamageSystemComponent->IsDead;
 }
 
-float AEnemyBase::NativeHeal(float HealAmount)
+float AEnemyBase::Heal(float HealAmount)
 {
 	return DamageSystemComponent->Heal(HealAmount);
 }
 
-bool AEnemyBase::NativeTakeDamage(FDamageInfo DamageInfo)
+bool AEnemyBase::TakeDamage(FDamageInfo DamageInfo)
 {
-	
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::NativeTakeDamage"));
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
 bool AEnemyBase::ReserveAttackToken(int Amount)
 {
-	return true;
+	return DamageSystemComponent->ReserveAttackTokens(Amount);
 }
 
 void AEnemyBase::ReturnAttackToken(int Amount)
 {
+	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
 
-float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
+float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
 {
 	return 0.0f;
 }
 
-void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
+void AEnemyBase::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
 	
 }
@@ -160,7 +157,6 @@ void AEnemyBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 	{
 		DamagableInterface->WithinParryRange = true;
 	}
-	
 }
 
 void AEnemyBase::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

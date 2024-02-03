@@ -611,20 +611,16 @@ void APlayableCharacter::StartHeavyAttackPausedTimer()
 void APlayableCharacter::ClearHeavyAttackPausedTimer()
 {
 	GetWorldTimerManager().ClearTimer(HeavyAttackPauseHandle);
-
 }
 
 void APlayableCharacter::StartSurgeAttackPausedTimer()
 {
 	GetWorldTimerManager().SetTimer(SurgeAttackPauseHandle, this, &APlayableCharacter::SurgeAttackPaused, .8, true);
-
 }
 
 void APlayableCharacter::ClearSurgeAttackPausedTimer()
 {
 	GetWorldTimerManager().ClearTimer(SurgeAttackPauseHandle);
-
-
 }
 void APlayableCharacter::HeavyAttackPaused()
 {
@@ -906,34 +902,33 @@ void APlayableCharacter::PerformParry()
 }
 //--------------------------------Damage System-------------------------------------
 
-float APlayableCharacter::NativeGetCurrentHealth()
+float APlayableCharacter::GetCurrentHealth()
 {
 	return DamageSystemComponent->CurrentHealth;
 }
 
-float APlayableCharacter::NativeGetMaxHealth()
+float APlayableCharacter::GetMaxHealth()
 {
 	return DamageSystemComponent->MaxHealth;
 }
 
-bool APlayableCharacter::NativeIsDead()
+bool APlayableCharacter::IsDead()
 {
 	return DamageSystemComponent->IsDead;
 }
 
-float APlayableCharacter::NativeHeal(float HealAmount)
+float APlayableCharacter::Heal(float HealAmount)
 {
 	return DamageSystemComponent->Heal(HealAmount);
 }
 
-bool APlayableCharacter::NativeTakeDamage(FDamageInfo DamageInfo)
+bool APlayableCharacter::TakeDamage(FDamageInfo DamageInfo)
 {
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
 bool APlayableCharacter::ReserveAttackToken(int Amount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("In Player - ReserveAttackToken interface"));
 	return DamageSystemComponent->ReserveAttackTokens(Amount);
 }
 

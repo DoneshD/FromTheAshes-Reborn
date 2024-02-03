@@ -23,7 +23,7 @@ void UBTS_StopAttackingIfTargetIsDead::TickNode(UBehaviorTreeComponent& OwnerCom
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(TargetActor);
 		if (EnemyBase)
 		{
-			if (EnemyBase->NativeIsDead())
+			if (EnemyBase->IsDead())
 			{
 				AAIControllerEnemyBase* AICEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
 				if (AICEnemyBase)
@@ -33,6 +33,7 @@ void UBTS_StopAttackingIfTargetIsDead::TickNode(UBehaviorTreeComponent& OwnerCom
 			}
 			else
 			{
+
 			}
 		}
 	}

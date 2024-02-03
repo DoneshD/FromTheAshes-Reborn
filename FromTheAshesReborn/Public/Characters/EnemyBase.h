@@ -49,19 +49,19 @@ public:
 	//Damagable Interface functions
 
 	UFUNCTION()
-	virtual float NativeGetCurrentHealth() override;
+	virtual float GetCurrentHealth() override;
 
 	UFUNCTION()
-	virtual float NativeGetMaxHealth() override;
+	virtual float GetMaxHealth() override;
 
 	UFUNCTION()
-	virtual bool NativeIsDead() override;
+	virtual bool IsDead() override;
 
 	UFUNCTION()
-	virtual float NativeHeal(float NewHeatlh) override;
+	virtual float Heal(float NewHeatlh) override;
 
 	UFUNCTION()
-	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
+	virtual bool TakeDamage(FDamageInfo DamageInfo) override;
 
 	UFUNCTION()
 	virtual bool ReserveAttackToken(int Amount) override;
@@ -72,10 +72,10 @@ public:
 	//Enemy Interface functions
 
 	UFUNCTION()
-	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
+	virtual float SetMovementSpeed(EMovementSpeed SpeedState) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void JumpToDestination(FVector Destination) override;

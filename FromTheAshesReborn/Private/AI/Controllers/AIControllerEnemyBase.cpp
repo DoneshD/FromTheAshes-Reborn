@@ -8,8 +8,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
-//Not good!!!!!!!!
-#include "Characters/PlayableCharacter.h"
+
 #include "Characters/EnemyBase.h"
 
 AAIControllerEnemyBase::AAIControllerEnemyBase()
@@ -54,7 +53,7 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 		{
 			RunBehaviorTree(Enemy->BehaviorTree);
 			SetStateAsPassive();
-			Enemy->NativeGetIdealRange(AttackRadius, DefendRadius);
+			Enemy->GetIdealRange(AttackRadius, DefendRadius);
 			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
 			GetBlackboardComponent()->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
 		}
@@ -127,11 +126,6 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
 		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
 		AttackTarget = NewAttackTarget;
-
-		//APlayableCharacter* PlayableCharacter = Cast<APlayableCharacter>(NewAttackTarget);
-		//GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, PlayableCharacter);
-		//GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
-		//AttackTarget = NewAttackTarget;
 	}
 	else
 	{

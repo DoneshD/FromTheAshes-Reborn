@@ -14,13 +14,13 @@ void AEnemyMelee::BeginPlay()
 }
 
 
-void AEnemyMelee::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
+void AEnemyMelee::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
 	OutAttackRadius = 50.0f;
 	OutDefendRadius = 350.0f;
 }
 
-float AEnemyMelee::NativeSetMovementSpeed(EMovementSpeed SpeedState)
+float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 {
 	switch (SpeedState)
 	{

@@ -30,6 +30,17 @@ void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	}
 }
 
+void UAttacksComponent::StartAttackCollisions()
+{
+	EmptyHitActorsArray();
+	bActiveCollision = true;
+}
+
+void UAttacksComponent::EndAttackCollisions()
+{
+	bActiveCollision = false;
+}
+
 bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
 {
 	TArray<AActor*> ActorArray;
@@ -55,18 +66,6 @@ bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector En
 
 	return bHit;
 }
-
-void UAttacksComponent::StartAttackCollisions()
-{
-	EmptyHitActorsArray();
-	bActiveCollision = true;
-}
-
-void UAttacksComponent::EndAttackCollisions()
-{
-	bActiveCollision = false;
-}
-
 
 void UAttacksComponent::EmptyHitActorsArray()
 {
@@ -158,14 +157,11 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 	if (OwnerActor)
 	{
-		//useless cast?
-		AFTACharacter* FTACharacter = Cast<AFTACharacter>(OwnerActor);
 		ACharacter* Character = Cast<ACharacter>(OwnerActor);
 
-		if (FTACharacter)
+		if (Character)
 		{
 			Character->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
-
 		}
 	}
 }

@@ -22,8 +22,8 @@ bool UBTD_IsHealthBelowThreshold::CalculateRawConditionValue(UBehaviorTreeCompon
 		AEnemyBase* EnemyBase = Cast<AEnemyBase>(OwnerPawn);
 		if (EnemyBase)
 		{
-			float MaxHealth = EnemyBase->NativeGetMaxHealth();
-			float CurrentHealth = EnemyBase->NativeGetCurrentHealth();
+			float MaxHealth = EnemyBase->GetMaxHealth();
+			float CurrentHealth = EnemyBase->GetCurrentHealth();
 
 			return CurrentHealth / MaxHealth <= HealthThreshold;
 		}
