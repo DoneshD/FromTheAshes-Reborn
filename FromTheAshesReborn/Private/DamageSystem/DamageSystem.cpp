@@ -37,27 +37,6 @@ ECanBeDamaged UDamageSystem::CanBeDamaged(bool ShouldDamageInvincible, bool CanB
 	}
 }
 
-bool UDamageSystem::ReserveAttackTokens(int Amount)
-{
-	UE_LOG(LogTemp, Warning, TEXT("ReserveAttackTokens hagfdhdhhd: %d"), Amount);
-	UE_LOG(LogTemp, Warning, TEXT("AttackTokensCount hagfdhdhhd: %d"), AttackTokensCount);
-	if (AttackTokensCount >= Amount)
-	{
-		AttackTokensCount -= Amount;
-		UE_LOG(LogTemp, Warning, TEXT("ReserveAttackTokens is True"));
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-void UDamageSystem::ReturnAttackTokens(int Amount)
-{
-	AttackTokensCount += Amount;
-}
-
 float UDamageSystem::Heal(float HealAmount)
 {
 	if (!IsDead)
@@ -108,4 +87,22 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 	{
 		return false;
 	}
+}
+
+bool UDamageSystem::ReserveAttackTokens(int Amount)
+{
+	if (AttackTokensCount >= Amount)
+	{
+		AttackTokensCount -= Amount;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void UDamageSystem::ReturnAttackTokens(int Amount)
+{
+	AttackTokensCount += Amount;
 }

@@ -23,8 +23,6 @@ class FROMTHEASHESREBORN_API IDamagableInterface
 
 public:
 
-	bool WithinParryRange = false;
-
 	UFUNCTION()
 	virtual float GetCurrentHealth() = 0;
 

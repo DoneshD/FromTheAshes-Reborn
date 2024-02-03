@@ -28,7 +28,7 @@ float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 		return GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 
 	case EMovementSpeed::EMovementSpeed_Walking:
-		return GetCharacterMovement()->MaxWalkSpeed = 100.0f;
+		return GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 
 	case EMovementSpeed::EMovementSpeed_Jogging:
 		return GetCharacterMovement()->MaxWalkSpeed = 400.0f;

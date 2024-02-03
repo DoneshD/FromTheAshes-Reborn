@@ -9,8 +9,6 @@ AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	CollisionParry->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBoxBeginOverlap);
-	CollisionParry->OnComponentEndOverlap.AddDynamic(this, &AEnemyBase::OnBoxEndOverlap);
 
 	ParryMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ParryMesh"));
 	ParryMesh->SetupAttachment(GetMesh());
@@ -135,7 +133,14 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 	{
 		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
 		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
+		//OnAttackEnd.Execute();
 	}
+}
+
+void AEnemyBase::FinishLightMeleeAttack()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Correct FinishLightMeleeAttack"));
+	OnAttackEnd.Execute();
 }
 
 void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
@@ -147,23 +152,5 @@ void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 	else
 	{
 		ReservedAttackTokensMap.Add(AttackTarget, Amount);
-	}
-}
-
-void AEnemyBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(OtherActor);
-	if (DamagableInterface)
-	{
-		DamagableInterface->WithinParryRange = true;
-	}
-}
-
-void AEnemyBase::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(OtherActor);
-	if (DamagableInterface)
-	{
-		DamagableInterface->WithinParryRange = false;
 	}
 }

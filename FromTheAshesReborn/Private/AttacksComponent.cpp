@@ -168,7 +168,7 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 void UAttacksComponent::FinishLightMeleeAttack()
 {
-	OnAttackEnd.Execute();
+	UE_LOG(LogTemp, Warning, TEXT("Incorrect FinishLightMeleeAttack"));
 }
 
 void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)

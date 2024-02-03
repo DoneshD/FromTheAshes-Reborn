@@ -51,11 +51,11 @@ protected:
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	ECanBeDamaged CanBeDamaged(bool ShouldDamageInvincible, bool CanBeBlocked);
+
 	float Heal(float HealAmount);
 
 	bool TakeDamage(FDamageInfo DamageInfo);
-
-	ECanBeDamaged CanBeDamaged(bool ShouldDamageInvincible, bool CanBeBlocked);
 
 	bool ReserveAttackTokens(int Amount);
 

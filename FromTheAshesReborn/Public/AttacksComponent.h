@@ -7,7 +7,6 @@
 
 #include "AttacksComponent.generated.h"
 
-DECLARE_DELEGATE(FOnAttackEnd);
 
 class UPlayMontageCallbackProxy;
 
@@ -33,7 +32,6 @@ private:
 
 public:	
 
-	FOnAttackEnd OnAttackEnd;
 
 	void EmptyHitActorsArray();
 

@@ -22,8 +22,7 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
-	EnemyBase->FindComponentByClass<UAttacksComponent>()->
-		OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
+	EnemyBase->OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
 
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 

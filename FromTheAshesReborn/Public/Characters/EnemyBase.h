@@ -10,9 +10,7 @@
 #include "Interfaces/DamagableInterface.h"
 #include "EnemyBase.generated.h"
 
-/**
- * 
- */
+DECLARE_DELEGATE(FOnAttackEnd);
 
 class AIControllerEnemyBase;
 
@@ -31,8 +29,7 @@ public:
 
 	int TokensUsedInCurrentAttack;
 
-	//UPROPERTY(EditAnywhere)
-	//TObjectPtr<USkeletalMeshComponent> ParryMesh;
+	FOnAttackEnd OnAttackEnd;
 
 protected:
 	virtual void BeginPlay() override;
@@ -45,6 +42,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	void FinishLightMeleeAttack();
 
 	//Damagable Interface functions
 
@@ -86,17 +86,10 @@ public:
 	UFUNCTION()
 	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd(AActor* AttackTarget) override;
 
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
-
-	// Overlap functions
-	UFUNCTION()
-	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };
