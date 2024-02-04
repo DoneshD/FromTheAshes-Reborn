@@ -113,7 +113,6 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	AActor* NewAttackTarget;
 	if (AttackTarget && UseLastKnownAttackTarget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Last Known Attack Target: %s"), *AttackTarget->GetName());
 		NewAttackTarget = AttackTarget;
 	}
 	else
