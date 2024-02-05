@@ -38,8 +38,8 @@ public:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	//UFUNCTION()
-	//void OnMoveCompleted(FAIRequestID RequestID, FPathFollowingResult Result);
+	//void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
+	
 
 	//UFUNCTION()
 	// //virtual void OnMoveCompleted(FAIRequestID RequestID, FPathFollowingResult Result) override;

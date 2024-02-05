@@ -895,5 +895,6 @@ bool APlayableCharacter::ReserveAttackToken(int Amount)
 
 void APlayableCharacter::ReturnAttackToken(int Amount)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ReturnAttackToken"));
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }

@@ -131,15 +131,17 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("ReturnAttackToken AttackEnd"));
 		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
+		UE_LOG(LogTemp, Warning, TEXT("StoreAttackTokens AttackEnd"));
 		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
+		//FinishLightMeleeAttack();
 		//OnAttackEnd.Execute();
 	}
 }
 
 void AEnemyBase::FinishLightMeleeAttack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Correct FinishLightMeleeAttack"));
 	OnAttackEnd.Execute();
 }
 

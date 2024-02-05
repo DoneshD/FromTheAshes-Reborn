@@ -16,19 +16,13 @@ bool UBTDecorator_IsWithinIdealRange::CalculateRawConditionValue(UBehaviorTreeCo
 {
 	Super::CalculateRawConditionValue(OwnerComp, NodeMemory);
 
-	AActor* TargetActor = OwnerComp.GetAIOwner()->GetPawn();
-	AActor* OtherActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+	AActor* Enemy = OwnerComp.GetAIOwner()->GetPawn();
+	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 
-	if (!OtherActor || !TargetActor)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Error in BTDecorator_IsWithinIdealRange::CalculateRawConditionValue()"));
-		return false;
-	}
-
-	float Distance = TargetActor->GetDistanceTo(OtherActor) - ErrorMargin;
+	float Distance = Enemy->GetDistanceTo(AttackTarget) - ErrorMargin;
 	float IdealRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
-	//UE_LOG(LogTemp, Warning, TEXT("C++ IdealRange: %f"), IdealRange);
-	//UE_LOG(LogTemp, Warning, TEXT("C++ Distance: %f"), Distance);
+
+
 	return Distance <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
 	
 }

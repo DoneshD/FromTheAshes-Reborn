@@ -18,7 +18,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
 	AEnemyBase* Enemy = Cast<AEnemyBase>(Pawn);
 
-	Enemy->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
+	//Enemy->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
 
 	if (!Enemy)
 	{
