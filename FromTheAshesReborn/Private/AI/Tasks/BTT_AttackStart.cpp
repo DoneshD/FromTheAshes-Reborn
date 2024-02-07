@@ -26,10 +26,8 @@ EBTNodeResult::Type UBTT_AttackStart::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	}
 	else
 	{
-		//OwnerComp.GetBlackboardComponent()->ClearValue(AttackTargetKey.SelectedKeyName);	
 		UE_LOG(LogTemp, Warning, TEXT("Attack Start Failed"));
 		return EBTNodeResult::Failed;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("Attack Start None"));
-	//EBTNodeResult::Succeeded;
 }

@@ -13,7 +13,6 @@ void AEnemyMelee::BeginPlay()
 	
 }
 
-
 void AEnemyMelee::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
 	OutAttackRadius = 50.0f;

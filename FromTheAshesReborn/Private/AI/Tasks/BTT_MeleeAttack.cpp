@@ -18,7 +18,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
 	AEnemyBase* Enemy = Cast<AEnemyBase>(Pawn);
 
-	//Enemy->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
+	Enemy->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
 
 	if (!Enemy)
 	{
@@ -46,8 +46,9 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		FAIMoveRequest MoveRequest;
 		MoveRequest.SetGoalActor(TargetActor);
 		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
+		float AttackRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName);
 
-		EnemyController->MoveTo(MoveRequest);
+		EnemyController->MoveToActor(TargetActor, AttackRadius);
 
 		//Set focus
 		EnemyController->SetFocus(TargetActor);
@@ -55,7 +56,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		//Attack
 		Enemy->LightAttack();
 
-		return EBTNodeResult::InProgress;
+		return EBTNodeResult::Succeeded;
 	}
 
 	return EBTNodeResult::Failed;
@@ -65,6 +66,9 @@ void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 
+	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
+	AEnemyBase* EnemyBase = Cast<AEnemyBase>(Pawn);
+
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(TargetActor);
 
@@ -73,9 +77,10 @@ void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* 
 		DamagableInterface->ReturnAttackToken(1);
 	}
 
-	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(this);
+	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyBase);
 	if (AIEnemyInterface)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Keean!@#$@$!"));
 		AIEnemyInterface->AttackEnd(TargetActor);
 	}
 
@@ -83,7 +88,7 @@ void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* 
 }
 
 void UBTT_MeleeAttack::FinishedAttacking()
-{
+{	
 	if (EnemyOwnerComp)
 	{
 		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);

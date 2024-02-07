@@ -8,11 +8,6 @@
 AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-
-	ParryMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ParryMesh"));
-	ParryMesh->SetupAttachment(GetMesh());
-
 }
 void AEnemyBase::BeginPlay()
 {
@@ -107,12 +102,12 @@ void AEnemyBase::LightAttack()
 
 bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
 {
-
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
 	{
 		if (DamagableInterface->ReserveAttackToken(TokensNeeded))
 		{
+
 			StoreAttackTokens(AttackTarget, TokensNeeded);
 			TokensUsedInCurrentAttack = TokensNeeded;
 			return true;
@@ -131,9 +126,7 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ReturnAttackToken AttackEnd"));
 		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
-		UE_LOG(LogTemp, Warning, TEXT("StoreAttackTokens AttackEnd"));
 		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
 		//FinishLightMeleeAttack();
 		//OnAttackEnd.Execute();
@@ -149,10 +142,18 @@ void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 {
 	if (ReservedAttackTokensMap.Find(AttackTarget))
 	{
-		ReservedAttackTokensMap[AttackTarget] += Amount;
+		//ReservedAttackTokensMap[AttackTarget] += Amount;
+		Amount += ReservedAttackTokensMap[AttackTarget];
 	}
-	else
-	{
-		ReservedAttackTokensMap.Add(AttackTarget, Amount);
-	}
+	ReservedAttackTokensMap.Add(AttackTarget, Amount);
+
+	//for (auto& Pair : ReservedAttackTokensMap)
+	//{
+		//AActor* AttackTarget = Pair.Key;
+		//int Amount = Pair.Value;
+
+		//FString AttackTargetIdentifier = AttackTarget->GetName(); // Change this line as needed.
+
+		//UE_LOG(LogTemp, Warning, TEXT("AttackTarget: %s, Amount: %d"), *AttackTargetIdentifier, Amount);
+	//}
 }

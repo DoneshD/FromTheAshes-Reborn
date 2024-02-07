@@ -8,7 +8,8 @@
 #include "AttacksComponent.generated.h"
 
 
-class UPlayMontageCallbackProxy;
+DECLARE_DELEGATE(FOnAttackEnd);
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UAttacksComponent : public UActorComponent
@@ -23,6 +24,8 @@ protected:
 
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
+
+	FOnAttackEnd OnAttackEnd;
 
 	bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
 

@@ -21,7 +21,7 @@ bool UBTDecorator_IsWithinIdealRange::CalculateRawConditionValue(UBehaviorTreeCo
 
 	float Distance = Enemy->GetDistanceTo(AttackTarget) - ErrorMargin;
 	float IdealRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
-
+	//UE_LOG(LogTemp, Warning, TEXT("Distance: %f, Ideal Range: %f"), Distance, IdealRange);)
 
 	return Distance <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
 	

@@ -22,11 +22,9 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
-	EnemyBase->OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
+	//EnemyBase->OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
 
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-
-	//if (EnemyBase->AttackStart(TargetActor, 1))
 	
 	EnemyBase->LightAttack();
 	
@@ -36,17 +34,16 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 void UBTTask_LightMeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
 	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
+
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
 	AEnemyBase* EnemyBase = Cast<AEnemyBase>(Pawn);
 
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(TargetActor);
 
-	UE_LOG(LogTemp, Warning, TEXT("OnTaskFinished"));
 	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyBase);
 	if (AIEnemyInterface)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Calling AttackEnd"));
 		AIEnemyInterface->AttackEnd(TargetActor);
 	}
 

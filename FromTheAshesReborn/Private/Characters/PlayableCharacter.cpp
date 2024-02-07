@@ -46,6 +46,8 @@ APlayableCharacter::APlayableCharacter()
 	InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
 	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
 
+	DamageSystemComponent->AttackTokensCount = 1;
+
 }
 
 void APlayableCharacter::BeginPlay()
@@ -895,6 +897,5 @@ bool APlayableCharacter::ReserveAttackToken(int Amount)
 
 void APlayableCharacter::ReturnAttackToken(int Amount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ReturnAttackToken"));
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }

@@ -8,10 +8,12 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
+#include "Navigation/CrowdFollowingComponent.h"
 
 #include "Characters/EnemyBase.h"
 
-AAIControllerEnemyBase::AAIControllerEnemyBase()
+AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
 

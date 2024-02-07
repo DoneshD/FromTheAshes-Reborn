@@ -162,6 +162,13 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 		if (Character)
 		{
 			Character->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
+			//FOnMontageEnded BlendOutDelegate;
+			//BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
+			//Character->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
+
+			//FOnMontageEnded CompleteDelegate;
+			//CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
+			//Character->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
 		}
 	}
 }
