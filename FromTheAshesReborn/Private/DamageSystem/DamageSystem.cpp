@@ -53,6 +53,8 @@ float UDamageSystem::Heal(float HealAmount)
 
 bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 {
+	
+	UE_LOG(LogTemp, Warning, TEXT("DamageInfo.HitDirection: %d"), static_cast<int32>(DamageInfo.HitReactionDirection));
 	DamageOutput = CanBeDamaged(DamageInfo.ShouldDamageInvincible, DamageInfo.CanBeBlocked);
 	if (DamageOutput == ECanBeDamaged::ECanBeDamaged_BlockedDamage)
 	{

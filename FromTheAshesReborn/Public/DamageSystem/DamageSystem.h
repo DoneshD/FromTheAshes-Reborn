@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DamageInfo.h"
+#include "EHitReactionDirection.h"
 #include "DamageSystem.generated.h"
 
 UENUM(BlueprintType)
@@ -60,6 +61,5 @@ public:
 	bool ReserveAttackTokens(int Amount);
 
 	void ReturnAttackTokens(int Amount);
-
 		
 };

@@ -147,13 +147,4 @@ void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 	}
 	ReservedAttackTokensMap.Add(AttackTarget, Amount);
 
-	//for (auto& Pair : ReservedAttackTokensMap)
-	//{
-		//AActor* AttackTarget = Pair.Key;
-		//int Amount = Pair.Value;
-
-		//FString AttackTargetIdentifier = AttackTarget->GetName(); // Change this line as needed.
-
-		//UE_LOG(LogTemp, Warning, TEXT("AttackTarget: %s, Amount: %d"), *AttackTargetIdentifier, Amount);
-	//}
 }

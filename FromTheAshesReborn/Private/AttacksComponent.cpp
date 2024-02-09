@@ -101,15 +101,16 @@ void UAttacksComponent::MeleeTraceCollisions()
 				{
 					AlreadyHitActors_L.AddUnique(HitActor);
 					FDamageInfo DamageInfo{
-						20.0f,                            // DamageAmount
-						EDamageType::EDamageType_Melee,   // DamageType
+						20.0f,                               // DamageAmount
+						EDamageType::EDamageType_Melee,      // DamageType
 						EDamageResponse::EDamageResponse_None,  // DamageResponse
-						false,                            // ShouldDamageInvincible
-						false,                            // CanBeBlocked
-						false,                            // CanBeParried
-						false                             // ShouldForceInterrupt
+						false,                                // ShouldDamageInvincible
+						false,                                // CanBeBlocked
+						false,                                // CanBeParried
+						false,                                // ShouldForceInterrupt
+						HitReactionDirection        // HitReactionDirection
 					};
-					//DamagableInterface->NativeTakeDamage(DamageInfo);
+					DamagableInterface->TakeDamage(DamageInfo);
 				}
 			}
 		}
@@ -140,10 +141,11 @@ void UAttacksComponent::MeleeTraceCollisions()
 							false,                            // ShouldDamageInvincible
 							false,                            // CanBeBlocked
 							false,                            // CanBeParried
-							false                             // ShouldForceInterrupt
+							false,                             // ShouldForceInterrupt
+							HitReactionDirection
 					};
-
-					//DamagableInterface->NativeTakeDamage(DamageInfo);
+					
+					DamagableInterface->TakeDamage(DamageInfo);
 					
 				}
 			}
@@ -176,6 +178,11 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 void UAttacksComponent::FinishLightMeleeAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Incorrect FinishLightMeleeAttack"));
+}
+
+void UAttacksComponent::SetHitDirection(EHitReactionDirection Direction)
+{
+	HitReactionDirection = Direction;
 }
 
 void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)

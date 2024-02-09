@@ -27,6 +27,9 @@ protected:
 
 	FOnAttackEnd OnAttackEnd;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EHitReactionDirection HitReactionDirection;
+
 	bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
 
 private:
@@ -44,10 +47,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
 	void EndAttackCollisions();
 
-	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
-
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void SetHitDirection(EHitReactionDirection Direction);
+
+	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
 
 	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
 
