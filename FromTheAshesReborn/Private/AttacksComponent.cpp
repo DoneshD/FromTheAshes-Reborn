@@ -103,7 +103,7 @@ void UAttacksComponent::MeleeTraceCollisions()
 					FDamageInfo DamageInfo{
 						20.0f,                               // DamageAmount
 						EDamageType::EDamageType_Melee,      // DamageType
-						EDamageResponse::EDamageResponse_None,  // DamageResponse
+						EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
 						false,                                // ShouldDamageInvincible
 						false,                                // CanBeBlocked
 						false,                                // CanBeParried
@@ -137,16 +137,14 @@ void UAttacksComponent::MeleeTraceCollisions()
 					FDamageInfo DamageInfo{
 							20.0f,                            // DamageAmount
 							EDamageType::EDamageType_Melee,   // DamageType
-							EDamageResponse::EDamageResponse_None,  // DamageResponse
+							EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
 							false,                            // ShouldDamageInvincible
 							false,                            // CanBeBlocked
 							false,                            // CanBeParried
 							false,                             // ShouldForceInterrupt
 							HitReactionDirection
 					};
-					
 					DamagableInterface->TakeDamage(DamageInfo);
-					
 				}
 			}
 		}

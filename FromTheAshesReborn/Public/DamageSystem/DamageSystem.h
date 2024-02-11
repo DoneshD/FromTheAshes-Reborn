@@ -6,6 +6,8 @@
 #include "EHitReactionDirection.h"
 #include "DamageSystem.generated.h"
 
+DECLARE_DELEGATE(FOnDamageResponse);
+
 UENUM(BlueprintType)
 enum class ECanBeDamaged : uint8
 {
@@ -45,6 +47,9 @@ public:
 	int AttackTokensCount = 1;
 
 	ECanBeDamaged DamageOutput;
+
+	FOnDamageResponse OnDamageResponse;
+
 
 protected:
 	virtual void BeginPlay() override;

@@ -3,13 +3,12 @@
 UDamageSystem::UDamageSystem()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 void UDamageSystem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void UDamageSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -74,9 +73,9 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 		{
 			if (DamageInfo.ShouldForceInterrupt || IsInterruptible)
 			{
-				//CallOnDamageResponse(EDamageResponse::DamageInfo.DamageResponse)
+				OnDamageResponse.Execute();
 				UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth);
-				//should return true
+				return true;
 			}
 			return true;
 		}

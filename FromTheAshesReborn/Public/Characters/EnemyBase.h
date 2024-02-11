@@ -11,6 +11,7 @@
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
+//DECLARE_DELEGATE_OneParam(FOnDamageResponse, FDamageInfo);
 
 class AIControllerEnemyBase;
 
@@ -31,6 +32,7 @@ public:
 
 	FOnAttackEnd OnAttackEnd;
 
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -45,6 +47,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
+
+	void HandleHitReaction();
 
 	//Damagable Interface functions
 

@@ -6,7 +6,6 @@
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "BTT_MeleeAttack.generated.h"
 
-
 UCLASS()
 class FROMTHEASHESREBORN_API UBTT_MeleeAttack : public UBTTask_BlackboardBase
 {

@@ -28,6 +28,8 @@ void AEnemyBase::BeginPlay()
 
 	//Bind Death Event
 	//Bind Hit Response Event
+	DamageSystemComponent->OnDamageResponse.BindUObject(this, &AEnemyBase::HandleHitReaction);
+
 }
 
 void AEnemyBase::Tick(float DeltaTime)
@@ -128,8 +130,6 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 	{
 		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
 		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
-		//FinishLightMeleeAttack();
-		//OnAttackEnd.Execute();
 	}
 }
 
@@ -138,13 +138,17 @@ void AEnemyBase::FinishLightMeleeAttack()
 	OnAttackEnd.Execute();
 }
 
+void AEnemyBase::HandleHitReaction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::Handle Hit Reaction"));
+}
+
 void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 {
 	if (ReservedAttackTokensMap.Find(AttackTarget))
 	{
-		//ReservedAttackTokensMap[AttackTarget] += Amount;
 		Amount += ReservedAttackTokensMap[AttackTarget];
 	}
 	ReservedAttackTokensMap.Add(AttackTarget, Amount);
-
 }
+
