@@ -11,5 +11,4 @@ UENUM(BlueprintType) enum class EHitReactionDirection : uint8
 	EHitReactionDirection_Right		UMETA(DisplayName = "Right"),
 	EHitReactionDirection_Front	UMETA(DisplayName = "Front"),
 	EHitReactionDirection_Back	UMETA(DisplayName = "Back")
-
 };

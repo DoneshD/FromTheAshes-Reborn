@@ -73,7 +73,7 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 		{
 			if (DamageInfo.ShouldForceInterrupt || IsInterruptible)
 			{
-				OnDamageResponse.Execute();
+				OnDamageResponse.Broadcast(DamageInfo);
 				UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth);
 				return true;
 			}

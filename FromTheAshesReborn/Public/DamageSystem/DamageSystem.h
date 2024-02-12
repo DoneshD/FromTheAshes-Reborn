@@ -6,7 +6,9 @@
 #include "EHitReactionDirection.h"
 #include "DamageSystem.generated.h"
 
-DECLARE_DELEGATE(FOnDamageResponse);
+//DECLARE_DELEGATE(FOnDamageResponse);
+//DECLARE_DELEGATE_OneParam(FOnDamageResponse, uint8)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, FDamageInfo)
 
 UENUM(BlueprintType)
 enum class ECanBeDamaged : uint8
@@ -26,10 +28,10 @@ public:
 	UDamageSystem();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentHealth = 100;
+	float CurrentHealth = 10000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth = 100;
+	float MaxHealth = 10000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsInvincible = false;

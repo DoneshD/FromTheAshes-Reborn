@@ -11,7 +11,6 @@
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
-//DECLARE_DELEGATE_OneParam(FOnDamageResponse, FDamageInfo);
 
 class AIControllerEnemyBase;
 
@@ -32,6 +31,20 @@ public:
 
 	FOnAttackEnd OnAttackEnd;
 
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> LeftHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> RightHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> FrontHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> BackHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> KnockbackHitReaction;
 
 protected:
 	virtual void BeginPlay() override;
@@ -48,7 +61,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
 
-	void HandleHitReaction();
+	void HandleHitReaction(FDamageInfo DamageInfo);
+
+	void OnMontageCompleted(UAnimMontage* Montage, bool bInterrupted);
+
+	void OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted);
 
 	//Damagable Interface functions
 

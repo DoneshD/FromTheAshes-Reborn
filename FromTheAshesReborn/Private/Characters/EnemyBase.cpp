@@ -3,6 +3,8 @@
 #include "Characters/EnemyBase.h"
 #include "AI/Controllers/AIControllerEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 
 AEnemyBase::AEnemyBase()
@@ -28,13 +30,19 @@ void AEnemyBase::BeginPlay()
 
 	//Bind Death Event
 	//Bind Hit Response Event
-	DamageSystemComponent->OnDamageResponse.BindUObject(this, &AEnemyBase::HandleHitReaction);
+	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
 
 }
 
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//not good!!!!!!!
+	if (AICEnemyBase->AttackTarget)
+	{
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
+	}
 
 }
 
@@ -138,9 +146,60 @@ void AEnemyBase::FinishLightMeleeAttack()
 	OnAttackEnd.Execute();
 }
 
-void AEnemyBase::HandleHitReaction()
+void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::Handle Hit Reaction"));
+	GetCharacterMovement()->StopMovementImmediately();
+	AICEnemyBase->SetStateAsFrozen();
+	
+	UAnimMontage* HitReactionMontage = FrontHitReaction;
+
+	switch (DamageInfo.HitReactionDirection)
+	{
+	case EHitReactionDirection::EHitReactionDirection_Left:
+		UE_LOG(LogTemp, Warning, TEXT("Left Hit Reaction"));
+		HitReactionMontage = LeftHitReaction;
+		break;
+
+	case EHitReactionDirection::EHitReactionDirection_Right:
+		HitReactionMontage = RightHitReaction;
+		break;
+
+	case EHitReactionDirection::EHitReactionDirection_Front:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EHitReactionDirection::EHitReactionDirection_Back:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+
+	//case EHitReactionDirection::EHitReactionDirection_None:
+		//HitReactionMontage = KnockBackHitReaction;
+		//break;
+	}
+	if (HitReactionMontage)
+	{
+		PlayAnimMontage(HitReactionMontage);
+
+		FOnMontageEnded CompleteDelegate;
+		CompleteDelegate.BindUObject(this, &AEnemyBase::OnMontageCompleted);
+		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, HitReactionMontage);
+
+		FOnMontageEnded BlendOutDelegate;
+		BlendOutDelegate.BindUObject(this, &AEnemyBase::OnMontageInterrupted);
+		GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, HitReactionMontage);
+	}
+	
+}
+
+void AEnemyBase::OnMontageCompleted(UAnimMontage* Montage, bool bInterrupted)
+{
+	AICEnemyBase->SetStateAsAttacking(AICEnemyBase->AttackTarget, true);
+}
+
+void AEnemyBase::OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
+{
+
 }
 
 void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)

@@ -202,7 +202,6 @@ void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 	case EAIStates::EAIStates_Passive:
 		SetStateAsAttacking(Actor, true);
 
-
 	case EAIStates::EAIStates_Attacking:
 		//Nothing
 
