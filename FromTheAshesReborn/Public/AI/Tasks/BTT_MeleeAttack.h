@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
+#include "AIController.h"
 #include "BTT_MeleeAttack.generated.h"
 
 UCLASS()
@@ -37,7 +38,9 @@ public:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	//void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
+	//virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
+
+	void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
 	
 
 	//UFUNCTION()

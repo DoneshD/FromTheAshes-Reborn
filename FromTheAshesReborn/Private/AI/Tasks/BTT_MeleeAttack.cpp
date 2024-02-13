@@ -25,41 +25,66 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		return EBTNodeResult::Failed;
 	}
 
-	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	AAIController* EnemyController = Enemy->GetController<AAIController>();
 
+	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Enemy);
+
 	//Start Attack interface function
-	if (Enemy->AttackStart(TargetActor, TokensNeeded))
+	if (AIEnemyInterface->AttackStart(AttackTarget, TokensNeeded))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Attack Start Succeeded"));
 		//Set the movement speed
 		Enemy->SetMovementSpeed(MovementSpeed);
 
 		//Clear focus
 		EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
 	
-		//Move to the ideal range
-
-		//FAIRequestID RequestID;
-		//EnemyController->OnMoveCompleted(RequestID, EPathFollowingResult::Success);
-		//EnemyController->OnMoveCompleted.AddDynamic(this, &UBTT_MeleeAttack::OnMoveCompleted);
 
 		FAIMoveRequest MoveRequest;
-		MoveRequest.SetGoalActor(TargetActor);
-		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
+		MoveRequest.SetGoalActor(AttackTarget);
+		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName));
+	
+		float IdealRangeValue = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
+		float AttackRadiusValue = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName);
+
 		float AttackRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName);
 
-		EnemyController->MoveToActor(TargetActor, AttackRadius);
+		UE_LOG(LogTemp, Warning, TEXT("Ideal Range Value: %f"), IdealRangeValue);
+		UE_LOG(LogTemp, Warning, TEXT("Attack Radius Value: %f"), AttackRadiusValue);
 
-		//Set focus
-		EnemyController->SetFocus(TargetActor);
 
-		//Attack
-		Enemy->LightAttack();
+		FPathFollowingResult MoveToResult = EnemyController->MoveTo(MoveRequest);
+		UE_LOG(LogTemp, Warning, TEXT("MoveTo: %s"), *MoveToResult.ToString());
+		if (MoveToResult.Code == EPathFollowingResult::Success)
+		{
+			//Set focus
+			EnemyController->SetFocus(AttackTarget);
 
-		return EBTNodeResult::Succeeded;
+			//Attack
+			Enemy->LightAttack();
+
+			return EBTNodeResult::Succeeded;
+		}
+		else if (MoveToResult.Code == EPathFollowingResult::Blocked)
+		{
+			AIEnemyInterface->AttackEnd(AttackTarget);
+			return EBTNodeResult::Failed;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("None"));
+		}
+	
 	}
+	UE_LOG(LogTemp, Warning, TEXT("How tf am i here"));
 
 	return EBTNodeResult::Failed;
+}
+
+void UBTT_MeleeAttack::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnMoveCompleted"));
 }
 
 void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
@@ -80,7 +105,6 @@ void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* 
 	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyBase);
 	if (AIEnemyInterface)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Keean!@#$@$!"));
 		AIEnemyInterface->AttackEnd(TargetActor);
 	}
 
