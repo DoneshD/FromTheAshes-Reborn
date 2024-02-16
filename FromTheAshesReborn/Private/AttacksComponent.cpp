@@ -30,6 +30,17 @@ void UAttacksComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	}
 }
 
+void UAttacksComponent::StartAttackCollisions()
+{
+	EmptyHitActorsArray();
+	bActiveCollision = true;
+}
+
+void UAttacksComponent::EndAttackCollisions()
+{
+	bActiveCollision = false;
+}
+
 bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
 {
 	TArray<AActor*> ActorArray;
@@ -55,18 +66,6 @@ bool UAttacksComponent::MeleeWeaponSphereTrace(FVector StartLocation, FVector En
 
 	return bHit;
 }
-
-void UAttacksComponent::StartAttackCollisions()
-{
-	EmptyHitActorsArray();
-	bActiveCollision = true;
-}
-
-void UAttacksComponent::EndAttackCollisions()
-{
-	bActiveCollision = false;
-}
-
 
 void UAttacksComponent::EmptyHitActorsArray()
 {
@@ -102,15 +101,16 @@ void UAttacksComponent::MeleeTraceCollisions()
 				{
 					AlreadyHitActors_L.AddUnique(HitActor);
 					FDamageInfo DamageInfo{
-						20.0f,                            // DamageAmount
-						EDamageType::EDamageType_Melee,   // DamageType
-						EDamageResponse::EDamageResponse_None,  // DamageResponse
-						false,                            // ShouldDamageInvincible
-						false,                            // CanBeBlocked
-						false,                            // CanBeParried
-						false                             // ShouldForceInterrupt
+						20.0f,                               // DamageAmount
+						EDamageType::EDamageType_Melee,      // DamageType
+						EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
+						false,                                // ShouldDamageInvincible
+						false,                                // CanBeBlocked
+						false,                                // CanBeParried
+						false,                                // ShouldForceInterrupt
+						HitReactionDirection        // HitReactionDirection
 					};
-					//DamagableInterface->NativeTakeDamage(DamageInfo);
+					DamagableInterface->TakeDamage(DamageInfo);
 				}
 			}
 		}
@@ -137,15 +137,14 @@ void UAttacksComponent::MeleeTraceCollisions()
 					FDamageInfo DamageInfo{
 							20.0f,                            // DamageAmount
 							EDamageType::EDamageType_Melee,   // DamageType
-							EDamageResponse::EDamageResponse_None,  // DamageResponse
+							EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
 							false,                            // ShouldDamageInvincible
 							false,                            // CanBeBlocked
 							false,                            // CanBeParried
-							false                             // ShouldForceInterrupt
+							false,                             // ShouldForceInterrupt
+							HitReactionDirection
 					};
-
-					//DamagableInterface->NativeTakeDamage(DamageInfo);
-					
+					DamagableInterface->TakeDamage(DamageInfo);
 				}
 			}
 		}
@@ -158,27 +157,30 @@ void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAtta
 
 	if (OwnerActor)
 	{
-		//useless cast?
-		AFTACharacter* FTACharacter = Cast<AFTACharacter>(OwnerActor);
+		ACharacter* Character = Cast<ACharacter>(OwnerActor);
 
-		if (FTACharacter)
+		if (Character)
 		{
-			FTACharacter->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
+			Character->GetMesh()->GetAnimInstance()->Montage_Play(LightMeleeAttack);
 			//FOnMontageEnded BlendOutDelegate;
 			//BlendOutDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationBlendOut);
-			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
+			//Character->GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, LightMeleeAttack);
 
 			//FOnMontageEnded CompleteDelegate;
 			//CompleteDelegate.BindUObject(this, &UAttacksComponent::FunctionToExecuteOnAnimationEnd);
-			//FTACharacter->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
-
+			//Character->GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, LightMeleeAttack);
 		}
 	}
 }
 
 void UAttacksComponent::FinishLightMeleeAttack()
 {
-	OnAttackEnd.Execute();
+	UE_LOG(LogTemp, Warning, TEXT("Incorrect FinishLightMeleeAttack"));
+}
+
+void UAttacksComponent::SetHitDirection(EHitReactionDirection Direction)
+{
+	HitReactionDirection = Direction;
 }
 
 void UAttacksComponent::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)

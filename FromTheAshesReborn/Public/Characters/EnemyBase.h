@@ -10,9 +10,7 @@
 #include "Interfaces/DamagableInterface.h"
 #include "EnemyBase.generated.h"
 
-/**
- * 
- */
+DECLARE_DELEGATE(FOnAttackEnd);
 
 class AIControllerEnemyBase;
 
@@ -31,8 +29,22 @@ public:
 
 	int TokensUsedInCurrentAttack;
 
-	//UPROPERTY(EditAnywhere)
-	//TObjectPtr<USkeletalMeshComponent> ParryMesh;
+	FOnAttackEnd OnAttackEnd;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> LeftHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> RightHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> FrontHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> BackHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> KnockbackHitReaction;
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,22 +58,31 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION(BlueprintCallable, Category = "Attack")
+	void FinishLightMeleeAttack();
+
+	void HandleHitReaction(FDamageInfo DamageInfo);
+
+	void OnMontageCompleted(UAnimMontage* Montage, bool bInterrupted);
+
+	void OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted);
+
 	//Damagable Interface functions
 
 	UFUNCTION()
-	virtual float NativeGetCurrentHealth() override;
+	virtual float GetCurrentHealth() override;
 
 	UFUNCTION()
-	virtual float NativeGetMaxHealth() override;
+	virtual float GetMaxHealth() override;
 
 	UFUNCTION()
-	virtual bool NativeIsDead() override;
+	virtual bool IsDead() override;
 
 	UFUNCTION()
-	virtual float NativeHeal(float NewHeatlh) override;
+	virtual float Heal(float NewHeatlh) override;
 
 	UFUNCTION()
-	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
+	virtual bool TakeDamage(FDamageInfo DamageInfo) override;
 
 	UFUNCTION()
 	virtual bool ReserveAttackToken(int Amount) override;
@@ -72,31 +93,24 @@ public:
 	//Enemy Interface functions
 
 	UFUNCTION()
-	virtual float NativeSetMovementSpeed(EMovementSpeed SpeedState) override;
+	virtual float SetMovementSpeed(EMovementSpeed SpeedState) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void JumpToDestination(FVector Destination) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void LightAttack(AActor* AttackTarget) override;
+	virtual void LightAttack() override;
 
 	UFUNCTION()
 	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd(AActor* AttackTarget) override;
 
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
-
-	// Overlap functions
-	UFUNCTION()
-	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	void OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 };

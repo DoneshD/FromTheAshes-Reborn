@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-#include "BTTask_MoveToIdealRange.generated.h"
+#include "BTT_AttackStart.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class FROMTHEASHESREBORN_API UBTTask_MoveToIdealRange : public UBTTask_BlackboardBase
+class FROMTHEASHESREBORN_API UBTT_AttackStart : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 	
@@ -16,12 +19,13 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	FBlackboardKeySelector AttackTargetKey;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
-	FBlackboardKeySelector IdealRangeKey;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tokens")
+	int TokensNeeded = 1;
+	
 
 public:
 
-	UBTTask_MoveToIdealRange();
+	UBTT_AttackStart();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

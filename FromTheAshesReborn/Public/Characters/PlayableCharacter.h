@@ -11,6 +11,7 @@
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
 
+
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
@@ -82,8 +83,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Parry;
+
 
 	//-----------------------------------------FSM Reset States-------------------------------------
 
@@ -115,11 +115,6 @@ protected:
 	bool CanAttack();
 	bool CanDodge();
 
-	//-----------------------------------------Parry-----------------------------------------------
-
-	void InputParry();
-	void PerformParry();
-	TObjectPtr<AActor> EnemyReference;
 
 	//-----------------------------------------Light Attacks----------------------------------------
 
@@ -335,19 +330,19 @@ public:
 	//Damagable Interface functions
 
 	UFUNCTION()
-	virtual float NativeGetCurrentHealth() override;
+	virtual float GetCurrentHealth() override;
 
 	UFUNCTION()
-	virtual float NativeGetMaxHealth() override;
+	virtual float GetMaxHealth() override;
 
 	UFUNCTION()
-	virtual bool NativeIsDead() override;
+	virtual bool IsDead() override;
 
 	UFUNCTION()
-	virtual float NativeHeal(float NewHeatlh) override;
+	virtual float Heal(float NewHeatlh) override;
 
 	UFUNCTION()
-	virtual bool NativeTakeDamage(FDamageInfo DamageInfo) override;
+	virtual bool TakeDamage(FDamageInfo DamageInfo) override;
 
 	UFUNCTION()
 	virtual bool ReserveAttackToken(int Amount) override;

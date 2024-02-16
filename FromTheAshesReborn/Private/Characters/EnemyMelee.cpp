@@ -1,4 +1,6 @@
 #include "Characters/EnemyMelee.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 AEnemyMelee::AEnemyMelee()
 {
@@ -11,26 +13,35 @@ void AEnemyMelee::BeginPlay()
 	
 }
 
-
-void AEnemyMelee::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
+void AEnemyMelee::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
 	OutAttackRadius = 50.0f;
-	OutDefendRadius = 350.0f;
+	OutDefendRadius = 600.0f;
 }
 
-void AEnemyMelee::LightAttack(AActor* AttackTarget)
+float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 {
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
-
-	if (DamagableInterface)
+	switch (SpeedState)
 	{
-		if (DamagableInterface->ReserveAttackToken(1))
-		{
-			this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
-		}
-		else
-		{
-			this->FindComponentByClass<UAttacksComponent>()->OnAttackEnd.Execute();
-		}
+	case EMovementSpeed::EMovementSpeed_Idle:
+		return GetCharacterMovement()->MaxWalkSpeed = 0.0f;
+
+	case EMovementSpeed::EMovementSpeed_Walking:
+		return GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+
+	case EMovementSpeed::EMovementSpeed_Jogging:
+		return GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+
+	case EMovementSpeed::EMovementSpeed_Sprinting:
+		return GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+
+	default:
+		return 0.0f;
+		break;
 	}
+}
+
+void AEnemyMelee::LightAttack()
+{
+	this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
 }

@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Enums/EDamageResponse.h"
 #include "Enums/EDamageType.h"
+#include "EHitReactionDirection.h"
 #include "DamageInfo.generated.h"
 
 USTRUCT(BlueprintType)
@@ -14,8 +15,10 @@ public:
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
     float DamageAmount;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     EDamageType DamageType;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
     EDamageResponse DamageResponse;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -30,4 +33,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool ShouldForceInterrupt;
 
+    UPROPERTY(BlueprintReadWrite, EditAnywhere)
+    EHitReactionDirection HitReactionDirection;
 };

@@ -3,6 +3,8 @@
 
 #include "AI/Tasks/BTTask_FocusTarget.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Characters/EnemyBase.h"
+
 #include "AIController.h"
 #
 
@@ -22,6 +24,17 @@ EBTNodeResult::Type UBTTask_FocusTarget::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 	}
 
-	OwnerComp.GetAIOwner()->SetFocus(TargetActor);
+	//OwnerComp.GetAIOwner()->SetFocus(TargetActor, EAIFocusPriority::Gameplay);
+
+	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
+	AEnemyBase* Enemy = Cast<AEnemyBase>(Pawn);
+
+	if (!Enemy)
+	{
+		return EBTNodeResult::Failed;
+	}
+	AAIController* EnemyController = Enemy->GetController<AAIController>();
+	EnemyController->SetFocus(TargetActor);
+
 	return EBTNodeResult::Succeeded;
 }

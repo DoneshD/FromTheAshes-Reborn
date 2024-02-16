@@ -47,6 +47,7 @@ APlayableCharacter::APlayableCharacter()
 	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
 
 	DamageSystemComponent->AttackTokensCount = 1;
+
 }
 
 void APlayableCharacter::BeginPlay()
@@ -60,7 +61,6 @@ void APlayableCharacter::BeginPlay()
 		Timeline->SetLooping(false);
 		Timeline->SetIgnoreTimeDilation(true);
 	}
-	EnemyReference = UGameplayStatics::GetActorOfClass(GetWorld(), AEnemyBase::StaticClass());
 }
 
 //------------------------------------------------------------- FSM Resets -----------------------------------------------------------------//
@@ -210,8 +210,6 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
 		InputComp->BindAction(Input_Dodge, ETriggerEvent::Started, this, &APlayableCharacter::InputDodge);
 		InputComp->BindAction(Input_LockOn, ETriggerEvent::Started, this, &APlayableCharacter::HardLockOn);
-		InputComp->BindAction(Input_Parry, ETriggerEvent::Started, this, &APlayableCharacter::InputParry);
-
 	}
 }
 
@@ -241,7 +239,6 @@ void APlayableCharacter::LookMouse(const FInputActionValue& InputValue)
 
 	AddControllerYawInput(Value.X);
 
-	//Invert depend on controller or mouse
 	AddControllerPitchInput(-Value.Y);
 }
 
@@ -539,7 +536,6 @@ void APlayableCharacter::SaveLightAttack()
 			PerformComboSurge();
 		}
 
-		//move inside else if 
 
 		else if (HeavyAttackIndex > 1)
 		{
@@ -569,7 +565,6 @@ void APlayableCharacter::SaveHeavyAttack()
 	if (bHeavyAttackSaved)
 	{
 		bHeavyAttackSaved = false;
-		//Air Slam()
 		if (IsStateEqualToAny(MakeArray))
 		{
 			SetState(EStates::EState_Nothing);
@@ -611,25 +606,20 @@ void APlayableCharacter::StartHeavyAttackPausedTimer()
 void APlayableCharacter::ClearHeavyAttackPausedTimer()
 {
 	GetWorldTimerManager().ClearTimer(HeavyAttackPauseHandle);
-
 }
 
 void APlayableCharacter::StartSurgeAttackPausedTimer()
 {
 	GetWorldTimerManager().SetTimer(SurgeAttackPauseHandle, this, &APlayableCharacter::SurgeAttackPaused, .8, true);
-
 }
 
 void APlayableCharacter::ClearSurgeAttackPausedTimer()
 {
 	GetWorldTimerManager().ClearTimer(SurgeAttackPauseHandle);
-
-
 }
 void APlayableCharacter::HeavyAttackPaused()
 {
 	bHeavyAttackPaused = true;
-	//Not needed, why?
 	OnAttackHeavyPausedEvent.Broadcast();
 }
 
@@ -873,60 +863,29 @@ void APlayableCharacter::PerformComboSurge()
 	}
 }
 
-
-//-------------------------------------Parry----------------------------------------
-
-void APlayableCharacter::InputParry()
-{
-
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(this);
-	if (DamagableInterface)
-	{
-		if (CanParry && DamagableInterface->WithinParryRange)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Parry"));
-			PerformParry();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Cant parry"));
-		}
-	}
-
-}
-void APlayableCharacter::PerformParry()
-{
-	AEnemyBase* ParryTarget = Cast<AEnemyBase>(EnemyReference);
-	FTransform ParryMeshTransform = ParryTarget->ParryMesh->GetComponentTransform();
-
-	RootComponent->SetWorldTransform(ParryMeshTransform);
-
-	PlayAnimMontage(ParryTarget->HitParryAnim);
-	PlayAnimMontage(ParryAnim);
-}
 //--------------------------------Damage System-------------------------------------
 
-float APlayableCharacter::NativeGetCurrentHealth()
+float APlayableCharacter::GetCurrentHealth()
 {
 	return DamageSystemComponent->CurrentHealth;
 }
 
-float APlayableCharacter::NativeGetMaxHealth()
+float APlayableCharacter::GetMaxHealth()
 {
 	return DamageSystemComponent->MaxHealth;
 }
 
-bool APlayableCharacter::NativeIsDead()
+bool APlayableCharacter::IsDead()
 {
 	return DamageSystemComponent->IsDead;
 }
 
-float APlayableCharacter::NativeHeal(float HealAmount)
+float APlayableCharacter::Heal(float HealAmount)
 {
 	return DamageSystemComponent->Heal(HealAmount);
 }
 
-bool APlayableCharacter::NativeTakeDamage(FDamageInfo DamageInfo)
+bool APlayableCharacter::TakeDamage(FDamageInfo DamageInfo)
 {
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }

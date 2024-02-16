@@ -21,6 +21,6 @@ EBTNodeResult::Type UBTTask_Heal::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 		return EBTNodeResult::Failed;
 	}
 
-	Enemy->NativeHeal(Enemy->NativeGetMaxHealth() * HealPercentage);
+	Enemy->Heal(Enemy->GetMaxHealth() * HealPercentage);
 	return EBTNodeResult::Succeeded;
 }

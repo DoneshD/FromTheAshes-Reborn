@@ -3,18 +3,13 @@
 #include "Characters/EnemyBase.h"
 #include "AI/Controllers/AIControllerEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 
 AEnemyBase::AEnemyBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	CollisionParry->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBase::OnBoxBeginOverlap);
-	CollisionParry->OnComponentEndOverlap.AddDynamic(this, &AEnemyBase::OnBoxEndOverlap);
-
-	ParryMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("ParryMesh"));
-	ParryMesh->SetupAttachment(GetMesh());
 }
 void AEnemyBase::BeginPlay()
 {
@@ -35,13 +30,19 @@ void AEnemyBase::BeginPlay()
 
 	//Bind Death Event
 	//Bind Hit Response Event
-	
-}
+	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
 
+}
 
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//not good!!!!!!!
+	if (AICEnemyBase->AttackTarget)
+	{
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
+	}
 
 }
 
@@ -51,65 +52,47 @@ void AEnemyBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 }
 
-float AEnemyBase::NativeGetCurrentHealth()
+float AEnemyBase::GetCurrentHealth()
 {
 	return DamageSystemComponent->CurrentHealth;
 }
 
-float AEnemyBase::NativeGetMaxHealth()
+float AEnemyBase::GetMaxHealth()
 {
 	return DamageSystemComponent->MaxHealth;
 }
 
-bool AEnemyBase::NativeIsDead()
+bool AEnemyBase::IsDead()
 {
 	return DamageSystemComponent->IsDead;
 }
 
-float AEnemyBase::NativeHeal(float HealAmount)
+float AEnemyBase::Heal(float HealAmount)
 {
 	return DamageSystemComponent->Heal(HealAmount);
 }
 
-bool AEnemyBase::NativeTakeDamage(FDamageInfo DamageInfo)
+bool AEnemyBase::TakeDamage(FDamageInfo DamageInfo)
 {
-	
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::NativeTakeDamage"));
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
 bool AEnemyBase::ReserveAttackToken(int Amount)
 {
-	return false;
+	return DamageSystemComponent->ReserveAttackTokens(Amount);
 }
 
 void AEnemyBase::ReturnAttackToken(int Amount)
 {
+	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
 
-float AEnemyBase::NativeSetMovementSpeed(EMovementSpeed SpeedState)
+float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
 {
-	switch (SpeedState)
-	{
-	case EMovementSpeed::EMovementSpeed_Idle:
-		return GetCharacterMovement()->MaxWalkSpeed = 0.0f;
-
-	case EMovementSpeed::EMovementSpeed_Walking:
-		return GetCharacterMovement()->MaxWalkSpeed = 100.0f;
-
-	case EMovementSpeed::EMovementSpeed_Jogging :
-		return GetCharacterMovement()->MaxWalkSpeed = 400.0f;
-
-	case EMovementSpeed::EMovementSpeed_Sprinting:
-		return GetCharacterMovement()->MaxWalkSpeed = 500.0f;
-
-	default:
-		return 0.0f;
-		break;
-	}
+	return 0.0f;
 }
 
-void AEnemyBase::NativeGetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
+void AEnemyBase::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
 {
 	
 }
@@ -122,20 +105,19 @@ void AEnemyBase::JumpToDestination(FVector Destination)
 	LaunchCharacter(LaunchVelocity, true, true);
 }
 
-void AEnemyBase::LightAttack(AActor* AttackTarget)
+void AEnemyBase::LightAttack()
 {
 
 }
 
 bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::AttackStart"));
-
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
 	{
 		if (DamagableInterface->ReserveAttackToken(TokensNeeded))
 		{
+
 			StoreAttackTokens(AttackTarget, TokensNeeded);
 			TokensUsedInCurrentAttack = TokensNeeded;
 			return true;
@@ -150,7 +132,6 @@ bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
 
 void AEnemyBase::AttackEnd(AActor* AttackTarget)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::AttackEnd"));
 
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
@@ -160,34 +141,73 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 	}
 }
 
-void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
+void AEnemyBase::FinishLightMeleeAttack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::StoreAttackTokens"));
-	if (ReservedAttackTokensMap.Find(AttackTarget))
-	{
-		ReservedAttackTokensMap[AttackTarget] += Amount;
-	}
-	else
-	{
-		ReservedAttackTokensMap.Add(AttackTarget, Amount);
-	}
+	OnAttackEnd.Execute();
 }
 
-void AEnemyBase::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 {
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(OtherActor);
-	if (DamagableInterface)
+	GetCharacterMovement()->StopMovementImmediately();
+	AICEnemyBase->SetStateAsFrozen();
+	
+	UAnimMontage* HitReactionMontage = FrontHitReaction;
+
+	switch (DamageInfo.HitReactionDirection)
 	{
-		DamagableInterface->WithinParryRange = true;
+	case EHitReactionDirection::EHitReactionDirection_Left:
+		UE_LOG(LogTemp, Warning, TEXT("Left Hit Reaction"));
+		HitReactionMontage = LeftHitReaction;
+		break;
+
+	case EHitReactionDirection::EHitReactionDirection_Right:
+		HitReactionMontage = RightHitReaction;
+		break;
+
+	case EHitReactionDirection::EHitReactionDirection_Front:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EHitReactionDirection::EHitReactionDirection_Back:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+
+	//case EHitReactionDirection::EHitReactionDirection_None:
+		//HitReactionMontage = KnockBackHitReaction;
+		//break;
+	}
+	if (HitReactionMontage)
+	{
+		PlayAnimMontage(HitReactionMontage);
+
+		FOnMontageEnded CompleteDelegate;
+		CompleteDelegate.BindUObject(this, &AEnemyBase::OnMontageCompleted);
+		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, HitReactionMontage);
+
+		FOnMontageEnded BlendOutDelegate;
+		BlendOutDelegate.BindUObject(this, &AEnemyBase::OnMontageInterrupted);
+		GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, HitReactionMontage);
 	}
 	
 }
 
-void AEnemyBase::OnBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AEnemyBase::OnMontageCompleted(UAnimMontage* Montage, bool bInterrupted)
 {
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(OtherActor);
-	if (DamagableInterface)
-	{
-		DamagableInterface->WithinParryRange = false;
-	}
+	AICEnemyBase->SetStateAsAttacking(AICEnemyBase->AttackTarget, true);
 }
+
+void AEnemyBase::OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
+{
+
+}
+
+void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
+{
+	if (ReservedAttackTokensMap.Find(AttackTarget))
+	{
+		Amount += ReservedAttackTokensMap[AttackTarget];
+	}
+	ReservedAttackTokensMap.Add(AttackTarget, Amount);
+}
+

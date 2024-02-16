@@ -1,8 +1,7 @@
 #include "AI/Tasks/BTTask_LightMeleeAttack.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
 #include "AIController.h"
-#include "Characters/EnemyMelee.h"
+#include "Characters/EnemyBase.h"
 
 UBTTask_LightMeleeAttack::UBTTask_LightMeleeAttack()
 {
@@ -16,31 +15,36 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 	EnemyOwnerComp = &OwnerComp;
 
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-	AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
+	AEnemyBase* EnemyBase = Cast<AEnemyBase>(Pawn);
 
-	if (!EnemyMelee)
+	if (!EnemyBase)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	EnemyMelee->FindComponentByClass<UAttacksComponent>()->
-		OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
+	//EnemyBase->OnAttackEnd.BindUObject(this, &UBTTask_LightMeleeAttack::FinishedAttacking);
 
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-	EnemyMelee->LightAttack(TargetActor);
-	return EBTNodeResult::InProgress;
+	
+	EnemyBase->LightAttack();
+	
+	return EBTNodeResult::Succeeded;
 }
 
 void UBTTask_LightMeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
 {
 	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 
+	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
+	AEnemyBase* EnemyBase = Cast<AEnemyBase>(Pawn);
+
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(TargetActor);
 
-	if (DamagableInterface)
+	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyBase);
+	if (AIEnemyInterface)
 	{
-		DamagableInterface->ReturnAttackToken(1);
+		AIEnemyInterface->AttackEnd(TargetActor);
 	}
 
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
@@ -50,7 +54,6 @@ void UBTTask_LightMeleeAttack::FinishedAttacking()
 {
 	if (EnemyOwnerComp)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FinishedAttacking"));
 		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
 	}
 }

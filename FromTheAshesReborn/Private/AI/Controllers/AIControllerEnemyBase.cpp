@@ -8,11 +8,12 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
-//Not good!!!!!!!!
-#include "Characters/PlayableCharacter.h"
+#include "Navigation/CrowdFollowingComponent.h"
+
 #include "Characters/EnemyBase.h"
 
-AAIControllerEnemyBase::AAIControllerEnemyBase()
+AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
 
@@ -54,7 +55,7 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 		{
 			RunBehaviorTree(Enemy->BehaviorTree);
 			SetStateAsPassive();
-			Enemy->NativeGetIdealRange(AttackRadius, DefendRadius);
+			Enemy->GetIdealRange(AttackRadius, DefendRadius);
 			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
 			GetBlackboardComponent()->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
 		}
@@ -114,7 +115,6 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	AActor* NewAttackTarget;
 	if (AttackTarget && UseLastKnownAttackTarget)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Last Known Attack Target: %s"), *AttackTarget->GetName());
 		NewAttackTarget = AttackTarget;
 	}
 	else
@@ -127,11 +127,6 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
 		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
 		AttackTarget = NewAttackTarget;
-
-		//APlayableCharacter* PlayableCharacter = Cast<APlayableCharacter>(NewAttackTarget);
-		//GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, PlayableCharacter);
-		//GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
-		//AttackTarget = NewAttackTarget;
 	}
 	else
 	{
@@ -206,7 +201,6 @@ void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 	{
 	case EAIStates::EAIStates_Passive:
 		SetStateAsAttacking(Actor, true);
-
 
 	case EAIStates::EAIStates_Attacking:
 		//Nothing

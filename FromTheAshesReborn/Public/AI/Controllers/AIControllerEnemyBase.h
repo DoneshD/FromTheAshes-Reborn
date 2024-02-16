@@ -17,6 +17,7 @@ class UAISenseConfig_Sight;
 class UAISenseConfig_Hearing;
 class UAISenseConfig_Damage;
 
+
 UCLASS()
 class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
 {
@@ -35,7 +36,7 @@ public:
 	float AttackRadius = 0.0f;
 	float DefendRadius = 0.0f;
 
-	AAIControllerEnemyBase();
+	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 
 protected:
 	virtual void OnPossess(APawn* InPawn) override;

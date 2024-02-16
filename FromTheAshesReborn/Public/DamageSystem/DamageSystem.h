@@ -3,7 +3,12 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DamageInfo.h"
+#include "EHitReactionDirection.h"
 #include "DamageSystem.generated.h"
+
+//DECLARE_DELEGATE(FOnDamageResponse);
+//DECLARE_DELEGATE_OneParam(FOnDamageResponse, uint8)
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, FDamageInfo)
 
 UENUM(BlueprintType)
 enum class ECanBeDamaged : uint8
@@ -23,10 +28,10 @@ public:
 	UDamageSystem();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentHealth = 100;
+	float CurrentHealth = 10000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth = 100;
+	float MaxHealth = 10000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsInvincible = false;
@@ -45,21 +50,23 @@ public:
 
 	ECanBeDamaged DamageOutput;
 
+	FOnDamageResponse OnDamageResponse;
+
+
 protected:
 	virtual void BeginPlay() override;
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	ECanBeDamaged CanBeDamaged(bool ShouldDamageInvincible, bool CanBeBlocked);
+
 	float Heal(float HealAmount);
 
 	bool TakeDamage(FDamageInfo DamageInfo);
 
-	ECanBeDamaged CanBeDamaged(bool ShouldDamageInvincible, bool CanBeBlocked);
-
 	bool ReserveAttackTokens(int Amount);
 
 	void ReturnAttackTokens(int Amount);
-
 		
 };

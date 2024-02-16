@@ -3,13 +3,12 @@
 UDamageSystem::UDamageSystem()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 void UDamageSystem::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 void UDamageSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -37,24 +36,6 @@ ECanBeDamaged UDamageSystem::CanBeDamaged(bool ShouldDamageInvincible, bool CanB
 	}
 }
 
-bool UDamageSystem::ReserveAttackTokens(int Amount)
-{
-	if (AttackTokensCount >= Amount)
-	{
-		AttackTokensCount -= Amount;
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-void UDamageSystem::ReturnAttackTokens(int Amount)
-{
-	AttackTokensCount += Amount;
-}
-
 float UDamageSystem::Heal(float HealAmount)
 {
 	if (!IsDead)
@@ -71,6 +52,8 @@ float UDamageSystem::Heal(float HealAmount)
 
 bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 {
+	
+	UE_LOG(LogTemp, Warning, TEXT("DamageInfo.HitDirection: %d"), static_cast<int32>(DamageInfo.HitReactionDirection));
 	DamageOutput = CanBeDamaged(DamageInfo.ShouldDamageInvincible, DamageInfo.CanBeBlocked);
 	if (DamageOutput == ECanBeDamaged::ECanBeDamaged_BlockedDamage)
 	{
@@ -90,9 +73,9 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 		{
 			if (DamageInfo.ShouldForceInterrupt || IsInterruptible)
 			{
-				//CallOnDamageResponse(EDamageResponse::DamageInfo.DamageResponse)
+				OnDamageResponse.Broadcast(DamageInfo);
 				UE_LOG(LogTemp, Warning, TEXT("Health: %f"), CurrentHealth);
-				//should return true
+				return true;
 			}
 			return true;
 		}
@@ -105,4 +88,22 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 	{
 		return false;
 	}
+}
+
+bool UDamageSystem::ReserveAttackTokens(int Amount)
+{
+	if (AttackTokensCount >= Amount)
+	{
+		AttackTokensCount -= Amount;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void UDamageSystem::ReturnAttackTokens(int Amount)
+{
+	AttackTokensCount += Amount;
 }

@@ -7,9 +7,9 @@
 
 #include "AttacksComponent.generated.h"
 
+
 DECLARE_DELEGATE(FOnAttackEnd);
 
-class UPlayMontageCallbackProxy;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UAttacksComponent : public UActorComponent
@@ -25,6 +25,11 @@ protected:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
 
+	FOnAttackEnd OnAttackEnd;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EHitReactionDirection HitReactionDirection;
+
 	bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
 
 private:
@@ -33,7 +38,6 @@ private:
 
 public:	
 
-	FOnAttackEnd OnAttackEnd;
 
 	void EmptyHitActorsArray();
 
@@ -43,10 +47,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack Collision")
 	void EndAttackCollisions();
 
-	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
-
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
+
+	UFUNCTION(BlueprintCallable)
+	void SetHitDirection(EHitReactionDirection Direction);
+
+	void LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack);
 
 	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
 

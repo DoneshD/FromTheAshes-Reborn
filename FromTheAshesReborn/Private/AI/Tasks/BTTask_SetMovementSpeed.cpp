@@ -22,6 +22,6 @@ EBTNodeResult::Type UBTTask_SetMovementSpeed::ExecuteTask(UBehaviorTreeComponent
 		return EBTNodeResult::Failed;
 	}
 
-	Enemy->NativeSetMovementSpeed(MovementSpeed);
+	Enemy->SetMovementSpeed(MovementSpeed);
 	return EBTNodeResult::Succeeded;
 }
