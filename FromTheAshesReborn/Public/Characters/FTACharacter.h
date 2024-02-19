@@ -4,13 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Components/BoxComponent.h"
 #include "Enums/EStates.h"
-#include "DamageSystem/DamageSystem.h"
-#include "AttacksComponent.h"
 #include "FTACharacter.generated.h"
 
 class UArrowComponent;
+class UDamageSystem;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter
@@ -18,7 +16,11 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
-	virtual void BeginPlay() override;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DamageSystemComponent", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UDamageSystem> DamageSystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AttacksComponent", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UAttacksComponent> AttacksComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> FrontArrow;
@@ -32,48 +34,26 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> RightArrow;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DamageSystem", meta = (AllowPrivateAccess = "true"))
-	class UDamageSystem* DamageSystemComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attacks", meta = (AllowPrivateAccess = "true"))
-	class UAttacksComponent* AttacksComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Attacks", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UBoxComponent> CollisionParry;
-
-
-	//FSM checks
-	bool CanJump();
-	bool bCanDodge;
-
-	FVector2D InputDirection;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")
 	int JumpCount = 0;
 
-	//FSM functions
-	EStates GetState() const;
-	void SetState(EStates NewState);
-	bool IsStateEqualToAny(TArray<EStates> StatesToCheck);
+	FVector2D InputDirection;
+	EStates CurrentState;
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Parry Anim")
-	TObjectPtr<UAnimMontage> HitParryAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Parry Anim")
-	TObjectPtr<UAnimMontage> ParryAnim;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<USkeletalMeshComponent> ParryMesh;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-	bool CanParry = false;
-
 	AFTACharacter();
 
-	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
-	EStates CurrentState;
+	virtual void Tick(float DeltaTime) override;
 	
+	EStates GetState() const;
+
+	void SetState(EStates NewState);
+
+	bool IsStateEqualToAny(TArray<EStates> StatesToCheck);
+
+	bool CanJump();
+
 };

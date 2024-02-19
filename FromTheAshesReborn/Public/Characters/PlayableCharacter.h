@@ -11,21 +11,11 @@
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
 
-
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackSurgePausedEvent);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackHeavyPausedEvent);
-
-USTRUCT()
-struct FSideDodgeArray
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
-	TArray<TObjectPtr<UAnimMontage>> SideDodgeArray;
-};
 
 class UInputMappingContext;
 class UCameraComponent;
@@ -39,20 +29,11 @@ class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public I
 	GENERATED_BODY()
 
 protected:
-
-	//-----------------------------------------Constructor------------------------------------------
-
-	APlayableCharacter();
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
-
-	//-----------------------------------------BeginPlay--------------------------------------------
-
-	virtual void BeginPlay() override;
 
 	//-----------------------------------------Inputs-----------------------------------------------
 
@@ -82,120 +63,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
-
-
-
-	//-----------------------------------------FSM Reset States-------------------------------------
-
-	UFUNCTION(BlueprintCallable, Category = "FSM")
-	void ResetState();
-
-	void ResetLightAttack();
-	void ResetHeavyAttack();
-	void ResetAirAttack();
-	void ResetDodge();
-	void ResetCombos();
-	void ResetSurgeCombo();
-
-	//-----------------------------------------Movement---------------------------------------------
-
-	//Basic controls
-	void Move(const FInputActionInstance& Instance);
-	void LookMouse(const FInputActionValue& InputValue);
-	void LookStick(const FInputActionValue& InputValue);
-
-	void DoubleJump();
-	void StopJump();
-
-	UFUNCTION(BlueprintCallable, Category = "Movement")
-	void EnableRootRotation();
-
-	//-----------------------------------------FSM Attack Check-------------------------------------
-
-	bool CanAttack();
-	bool CanDodge();
-
-
-	//-----------------------------------------Light Attacks----------------------------------------
-
-	void InputLightAttack();
-	void LightAttack();
-	void PerformLightAttack(int LightAttackIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Light Attack")
-	void SaveLightAttack();
-
-	//-----------------------------------------Heavy Attacks----------------------------------------
-
-	void InputHeavyAttack();
-	void HeavyAttack();
-	void PerformHeavyAttack(int HeavyAttackIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Heavy Attack")
-	void SaveHeavyAttack();
-
-	//-----------------------------------------Pause Combos-----------------------------------------
-
-	void HeavyAttackPaused();
-	void SelectHeavyPauseCombo();
-	void NewHeavyCombo();
-	void PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo);
-
-	void SurgeAttackPaused();
-
-	void StartHeavyAttackPausedTimer();
-	void ClearHeavyAttackPausedTimer();
-
-	void StartSurgeAttackPausedTimer();
-	void ClearSurgeAttackPausedTimer();
-
-	//-----------------------------------------Attack Strings---------------------------------------
-
-	void PerformComboExtender(int ComboExtenderIndex);
-	void PerformComboFinisher(UAnimMontage* FinisherMontage);
-	void PerformComboSurge();
-
-
-	//-----------------------------------------Dodge------------------------------------------------
-
-	void InputDodge();
-	void PerformDodge();
-	void DodgeSystem(float X, float Y);
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void SaveDodge();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void EnableRoll();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void DisableRoll();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void EnableDodge();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void DisableDodge();
-
-	//-----------------------------------------LockOn----------------------------------------------
-
-	UFUNCTION(BlueprintCallable, Category = "Lock On")
-	void RotationToTarget();
-	void StopRotation();
-
-	void SoftLockOn(float Distance);
-	void HardLockOn();
-
-	//-----------------------------------------Timelines--------------------------------------------
-
-	UFUNCTION()
-	void TimelineFloatReturn(float value);
-
-	UFUNCTION()
-	void OnTimelineFinished();
-
-
-private:
 
 	//-----------------------------------------Light Attack-----------------------------------------
 
@@ -312,17 +179,121 @@ private:
 	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
 	TObjectPtr<UAnimMontage> BackRollAnim;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
-	TArray<FSideDodgeArray> CardinalDodgeArray;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
-	TArray<FSideDodgeArray> CardinalRollArray;
-
-	//-----------------------------------------Kunai---------------------------------------
-
-
+private:
 
 public:
+	APlayableCharacter();
+
+	virtual void BeginPlay() override;
+
+	//-----------------------------------------FSM Reset States-------------------------------------
+
+	UFUNCTION(BlueprintCallable, Category = "FSM")
+	void ResetState();
+
+	void ResetLightAttack();
+	void ResetHeavyAttack();
+	void ResetAirAttack();
+	void ResetDodge();
+	void ResetCombos();
+	void ResetSurgeCombo();
+
+	//-----------------------------------------Movement---------------------------------------------
+
+	void Move(const FInputActionInstance& Instance);
+	void LookMouse(const FInputActionValue& InputValue);
+	void LookStick(const FInputActionValue& InputValue);
+
+	void DoubleJump();
+	void StopJump();
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void EnableRootRotation();
+
+	//-----------------------------------------FSM Attack Check-------------------------------------
+
+	bool CanAttack();
+	bool CanDodge();
+
+
+	//-----------------------------------------Light Attacks----------------------------------------
+
+	void InputLightAttack();
+	void LightAttack();
+	void PerformLightAttack(int LightAttackIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Light Attack")
+	void SaveLightAttack();
+
+	//-----------------------------------------Heavy Attacks----------------------------------------
+
+	void InputHeavyAttack();
+	void HeavyAttack();
+	void PerformHeavyAttack(int HeavyAttackIndex);
+
+	UFUNCTION(BlueprintCallable, Category = "Heavy Attack")
+	void SaveHeavyAttack();
+
+	//-----------------------------------------Pause Combos-----------------------------------------
+
+	void HeavyAttackPaused();
+	void SelectHeavyPauseCombo();
+	void NewHeavyCombo();
+	void PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo);
+
+	void SurgeAttackPaused();
+
+	void StartHeavyAttackPausedTimer();
+	void ClearHeavyAttackPausedTimer();
+
+	void StartSurgeAttackPausedTimer();
+	void ClearSurgeAttackPausedTimer();
+
+	//-----------------------------------------Attack Strings---------------------------------------
+
+	void PerformComboExtender(int ComboExtenderIndex);
+	void PerformComboFinisher(UAnimMontage* FinisherMontage);
+	void PerformComboSurge();
+
+
+	//-----------------------------------------Dodge------------------------------------------------
+
+	void InputDodge();
+	void PerformDodge();
+	void DodgeSystem(float X, float Y);
+
+	UFUNCTION(BlueprintCallable, Category = "Dodge")
+	void SaveDodge();
+
+	UFUNCTION(BlueprintCallable, Category = "Dodge")
+	void EnableRoll();
+
+	UFUNCTION(BlueprintCallable, Category = "Dodge")
+	void DisableRoll();
+
+	UFUNCTION(BlueprintCallable, Category = "Dodge")
+	void EnableDodge();
+
+	UFUNCTION(BlueprintCallable, Category = "Dodge")
+	void DisableDodge();
+
+	//-----------------------------------------LockOn----------------------------------------------
+
+	UFUNCTION(BlueprintCallable, Category = "Lock On")
+	void RotationToTarget();
+	void StopRotation();
+
+	void SoftLockOn(float Distance);
+	void HardLockOn();
+
+	//-----------------------------------------Timelines--------------------------------------------
+
+	UFUNCTION()
+	void TimelineFloatReturn(float value);
+
+	UFUNCTION()
+	void OnTimelineFinished();
+
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void Tick(float DeltaTime) override;
@@ -349,6 +320,5 @@ public:
 
 	UFUNCTION()
 	virtual void ReturnAttackToken(int Amount) override;
-
 };
 
