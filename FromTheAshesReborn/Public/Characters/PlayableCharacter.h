@@ -22,18 +22,23 @@ class UCameraComponent;
 class USpringArmComponent;
 class UTimelineComponent;
 class UCurveFloat;
+class UTargetingComponent;
+class UComboSystemComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCameraComponent> CameraComp;
+	TObjectPtr<UTargetingComponent> TargetingComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UComboSystemComponent> ComboSystemComponent;
 
 	//-----------------------------------------Inputs-----------------------------------------------
 
@@ -259,5 +264,7 @@ public:
 
 	UFUNCTION()
 	virtual void ReturnAttackToken(int Amount) override;
-};
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> CameraComp;
+};

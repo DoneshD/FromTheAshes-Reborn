@@ -7,6 +7,8 @@
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
+#include "TargetingComponent.h"
+#include "ComboSystemComponent.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -26,6 +28,12 @@ APlayableCharacter::APlayableCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false;
+
+	TargetingComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("TargetingComponent"));
+	this->AddOwnedComponent(TargetingComponent);
+
+	ComboSystemComponent = CreateDefaultSubobject<UComboSystemComponent>(TEXT("ComboSystemComponent"));
+	this->AddOwnedComponent(ComboSystemComponent);
 
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
@@ -363,53 +371,12 @@ void APlayableCharacter::SoftLockOn(float Distance)
 			SoftTarget = NULL;
 		}
 	}
+	
 }
 
 void APlayableCharacter::HardLockOn()
 {
-	if (!IsTargeting && !HardTarget)
-	{
-
-		if (UCameraComponent* FollowCamera = this->CameraComp)
-		{
-			FVector CameraVector = FollowCamera->GetForwardVector();
-			FVector EndLocation = (CameraVector * 2000.f) + GetActorLocation();
-			FHitResult OutHit;
-
-			TArray<AActor*> ActorArray;
-			ActorArray.Add(this);
-
-			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-			ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-			bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
-				GetWorld(),
-				GetActorLocation(),
-				EndLocation,
-				100.f,
-				ObjectTypes,
-				false,
-				ActorArray,
-				EDrawDebugTrace::ForDuration,
-				OutHit,
-				true);
-
-			if (TargetHit)
-			{
-				AActor* HitActor = OutHit.GetActor();
-				
-				GetCharacterMovement()->bOrientRotationToMovement = false;
-				IsTargeting = true;
-				HardTarget = HitActor;
-			}
-		}
-	}
-	else
-	{
-		IsTargeting = false;
-		HardTarget = NULL;
-		GetCharacterMovement()->bOrientRotationToMovement = true;
-	}
+	TargetingComponent->HardLockOn();
 }
 
 
@@ -417,77 +384,12 @@ void APlayableCharacter::HardLockOn()
 
 void APlayableCharacter::SaveLightAttack()
 {
-	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if (IsLightAttackSaved)
-	{
-		IsLightAttackSaved = false;
-		if (IsStateEqualToAny(MakeArray))
-		{
-			SetState(EStates::EState_Nothing);
-		}
-		if (IsSurgeAttackPaused)
-		{
-			PerformComboSurge();
-		}
-
-
-		else if (HeavyAttackIndex > 1)
-		{
-			PerformComboFinisher(ComboExtenderFinishers[3]);
-		}
-		else if (ComboExtenderIndex > 0)
-		{
-			if (BranchFinisher)
-			{
-				PerformComboFinisher(ComboExtenderFinishers[0]);
-			}
-			else if (HeavyAttackIndex == 0)
-			{
-				PerformComboExtender(ComboExtenderIndex);
-			}
-		}
-		else
-		{
-			LightAttack();
-		}
-	}
+	ComboSystemComponent->SaveLightAttack();
 }
 
 void APlayableCharacter::SaveHeavyAttack()
 {
-	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if (IsHeavyAttackSaved)
-	{
-		IsHeavyAttackSaved = false;
-		if (IsStateEqualToAny(MakeArray))
-		{
-			SetState(EStates::EState_Nothing);
-		}
-		if (IsHeavyAttackPaused)
-		{
-			NewHeavyCombo();
-		}
-		else if (LightAttackIndex == 3)
-		{
-			PerformComboFinisher(ComboExtenderFinishers[2]);
-		}
-		else if (LightAttackIndex == 2)
-		{
-			if(ComboExtenderIndex == 0)
-			{
-				PerformComboExtender(ComboExtenderIndex);
-			}
-			else if (BranchFinisher)
-			{
-				PerformComboFinisher(ComboExtenderFinishers[1]);
-			}
-		}
-		else
-		{
-			HeavyAttack();
-		}
-	}
-	
+	ComboSystemComponent->SaveHeavyAttack();
 }
 
 //------------------------------------------------------ Pause Attacks -----------------------------------------------------------------//
@@ -532,6 +434,10 @@ void APlayableCharacter::PerformLightAttack(int AttackIndex)
 	{
 		SetState(EStates::EState_Attack);
 		SoftLockOn(250.0f);
+		//UE_LOG(LogTemp, Warning, TEXT("Before TargetingComponent->SoftLockOn"));
+		//TargetingComponent->SoftLockOn(250.0f);
+		//UE_LOG(LogTemp, Warning, TEXT("After TargetingComponent->SoftLockOn"));
+
 		PlayAnimMontage(CurrentMontage);
 		ResetSurgeCombo();
 		LightAttackIndex++;
@@ -555,7 +461,6 @@ void APlayableCharacter::LightAttack()
 	}
 	else
 	{
-		//Air attack logic
 	}
 }
 
@@ -594,17 +499,12 @@ void APlayableCharacter::PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>>
 	}
 }
 
-//TODO: Select combo for scalability
 void APlayableCharacter::SelectHeavyPauseCombo()
 {
 	if (HeavyAttackIndex == 1)
 	{
 		PerformHeavyPauseCombo(PausedHeavyAttackCombo1);
 	}
-	//if (HeavyAttackIndex == 2)
-	//{
-	//	PerformHeavyCombo(PausedHeavyAttackCombo2);
-	//}
 }
 void APlayableCharacter::NewHeavyCombo()
 {

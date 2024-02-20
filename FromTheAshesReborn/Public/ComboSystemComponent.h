@@ -2,38 +2,30 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "TargetingComponent.generated.h"
+#include "ComboSystemComponent.generated.h"
 
 class APlayableCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class FROMTHEASHESREBORN_API UTargetingComponent : public UActorComponent
+class FROMTHEASHESREBORN_API UComboSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-protected:
+public:	
 
 	TObjectPtr<APlayableCharacter> PlayableCharacter;
 
-
-	bool IsTargeting = false;
-	FVector TargetRotateLocation;
-
-	TObjectPtr<AActor> HardTarget;
-	TObjectPtr<AActor> SoftTarget;
-
-private:
+protected:
 
 public:	
-	
-	UTargetingComponent();
+	UComboSystemComponent();
 
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void SoftLockOn(float Distance);
+	void SaveLightAttack();
 
-	void HardLockOn();
-		
+	void SaveHeavyAttack();
+
 };
