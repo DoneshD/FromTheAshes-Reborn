@@ -133,34 +133,8 @@ bool APlayableCharacter::CanAttack()
 void APlayableCharacter::Tick(float DeltaTime)
 {
 
-	//------------------------------------------------------------ TICK::Targeting -----------------------------------------------------------------//
-
 	Super::Tick(DeltaTime);
 	
-	if (IsTargeting && HardTarget)
-	{
-		if (GetDistanceTo(HardTarget) < 2000.f)
-		{
-			if (GetCharacterMovement()->IsFalling() || GetCharacterMovement()->IsFlying())
-			{
-				FVector ResultVectorAVector(0, 0, 80.f);
-			}
-
-			FVector ResultVector(0, 0, 0);
-			FVector TargetLocation = HardTarget->GetActorLocation() - ResultVector;
-			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
-			FRotator InterpRot = FMath::RInterpTo(GetControlRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.f);
-
-			GetController()->SetControlRotation(InterpRot);
-		}
-		else
-		{
-			IsTargeting = false;
-			HardTarget = NULL;
-			GetCharacterMovement()->bOrientRotationToMovement = true;
-		}
-	}
-
 }
 
 //--------------------------------------------------------- PlayerInputComponent ---------------------------------------------------------------------//
@@ -461,6 +435,7 @@ void APlayableCharacter::LightAttack()
 	}
 	else
 	{
+
 	}
 }
 
@@ -582,6 +557,8 @@ void APlayableCharacter::InputHeavyAttack()
 
 void APlayableCharacter::PerformComboExtender(int ExtenderIndex)
 {
+	ComboSystemComponent->PerformComboExtender(ExtenderIndex);
+	/*
 	UAnimMontage* CurrentMontage = ComboExtender[ExtenderIndex];
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
 	if (!IsStateEqualToAny(MakeArray))
@@ -604,12 +581,13 @@ void APlayableCharacter::PerformComboExtender(int ExtenderIndex)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
 	}
+	*/
 }
-
-//add parameter to pass anim montage
 
 void APlayableCharacter::PerformComboFinisher(UAnimMontage* FinisherMontage)
 {
+	ComboSystemComponent->PerformComboFinisher(FinisherMontage);
+	/*
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
 	if (!IsStateEqualToAny(MakeArray))
 	{
@@ -631,6 +609,7 @@ void APlayableCharacter::PerformComboFinisher(UAnimMontage* FinisherMontage)
 	{
 		return;
 	}
+	*/
 }
 
 void APlayableCharacter::PerformComboSurge()

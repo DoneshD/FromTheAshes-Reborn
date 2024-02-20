@@ -11,7 +11,7 @@ UComboSystemComponent::UComboSystemComponent()
 void UComboSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	PlayableCharacter = Cast<APlayableCharacter>(GetOwner());
+	PC = Cast<APlayableCharacter>(GetOwner());
 }
 
 void UComboSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -23,37 +23,37 @@ void UComboSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 void UComboSystemComponent::SaveLightAttack()
 {
 	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if (PlayableCharacter->IsLightAttackSaved)
+	if (PC->IsLightAttackSaved)
 	{
-		PlayableCharacter->IsLightAttackSaved = false;
-		if (PlayableCharacter->IsStateEqualToAny(MakeArray))
+		PC->IsLightAttackSaved = false;
+		if (PC->IsStateEqualToAny(MakeArray))
 		{
-			PlayableCharacter->SetState(EStates::EState_Nothing);
+			PC->SetState(EStates::EState_Nothing);
 		}
-		if (PlayableCharacter->IsSurgeAttackPaused)
+		if (PC->IsSurgeAttackPaused)
 		{
-			PlayableCharacter->PerformComboSurge();
+			PC->PerformComboSurge();
 		}
 
 
-		else if (PlayableCharacter->HeavyAttackIndex > 1)
+		else if (PC->HeavyAttackIndex > 1)
 		{
-			PlayableCharacter->PerformComboFinisher(PlayableCharacter->ComboExtenderFinishers[3]);
+			PC->PerformComboFinisher(PC->ComboExtenderFinishers[3]);
 		}
-		else if (PlayableCharacter->ComboExtenderIndex > 0)
+		else if (PC->ComboExtenderIndex > 0)
 		{
-			if (PlayableCharacter->BranchFinisher)
+			if (PC->BranchFinisher)
 			{
-				PlayableCharacter->PerformComboFinisher(PlayableCharacter->ComboExtenderFinishers[0]);
+				PC->PerformComboFinisher(PC->ComboExtenderFinishers[0]);
 			}
-			else if (PlayableCharacter->HeavyAttackIndex == 0)
+			else if (PC->HeavyAttackIndex == 0)
 			{
-				PlayableCharacter->PerformComboExtender(PlayableCharacter->ComboExtenderIndex);
+				PC->PerformComboExtender(PC->ComboExtenderIndex);
 			}
 		}
 		else
 		{
-			PlayableCharacter->LightAttack();
+			PC->LightAttack();
 		}
 	}
 }
@@ -61,36 +61,90 @@ void UComboSystemComponent::SaveLightAttack()
 void UComboSystemComponent::SaveHeavyAttack()
 {
 	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if (PlayableCharacter->IsHeavyAttackSaved)
+	if (PC->IsHeavyAttackSaved)
 	{
-		PlayableCharacter->IsHeavyAttackSaved = false;
-		if (PlayableCharacter->IsStateEqualToAny(MakeArray))
+		PC->IsHeavyAttackSaved = false;
+		if (PC->IsStateEqualToAny(MakeArray))
 		{
-			PlayableCharacter->SetState(EStates::EState_Nothing);
+			PC->SetState(EStates::EState_Nothing);
 		}
-		if (PlayableCharacter->IsHeavyAttackPaused)
+		if (PC->IsHeavyAttackPaused)
 		{
-			PlayableCharacter->NewHeavyCombo();
+			PC->NewHeavyCombo();
 		}
-		else if (PlayableCharacter->LightAttackIndex == 3)
+		else if (PC->LightAttackIndex == 3)
 		{
-			PlayableCharacter->PerformComboFinisher(PlayableCharacter->ComboExtenderFinishers[2]);
+			PC->PerformComboFinisher(PC->ComboExtenderFinishers[2]);
 		}
-		else if (PlayableCharacter->LightAttackIndex == 2)
+		else if (PC->LightAttackIndex == 2)
 		{
-			if (PlayableCharacter->ComboExtenderIndex == 0)
+			if (PC->ComboExtenderIndex == 0)
 			{
-				PlayableCharacter->PerformComboExtender(PlayableCharacter->ComboExtenderIndex);
+				PC->PerformComboExtender(PC->ComboExtenderIndex);
 			}
-			else if (PlayableCharacter->BranchFinisher)
+			else if (PC->BranchFinisher)
 			{
-				PlayableCharacter->PerformComboFinisher(PlayableCharacter->ComboExtenderFinishers[1]);
+				PC->PerformComboFinisher(PC->ComboExtenderFinishers[1]);
 			}
 		}
 		else
 		{
-			PlayableCharacter->HeavyAttack();
+			PC->HeavyAttack();
 		}
+	}
+}
+
+void UComboSystemComponent::PerformComboExtender(int ExtenderIndex)
+{
+	UAnimMontage* CurrentMontage = PC->ComboExtender[ExtenderIndex];
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
+	if (!PC->IsStateEqualToAny(MakeArray))
+	{
+		if (CurrentMontage)
+		{
+			PC->IsHeavyAttackPaused = false;
+			PC->SetState(EStates::EState_Attack);
+			PC->SoftLockOn(500.0f);
+			PC->ComboExtenderIndex++;
+			PC->PlayAnimMontage(CurrentMontage);
+
+			if (PC->ComboExtenderIndex >= PC->ComboExtender.Num())
+			{
+				PC->BranchFinisher = true;
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Extender"));
+
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
+	}
+}
+
+void UComboSystemComponent::PerformComboFinisher(UAnimMontage* FinisherMontage)
+{
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
+	if (!PC->IsStateEqualToAny(MakeArray))
+	{
+		if (FinisherMontage)
+		{
+			PC->IsHeavyAttackPaused = false;
+			PC->ResetLightAttack();
+			PC->ResetHeavyAttack();
+			PC->SetState(EStates::EState_Attack);
+			PC->SoftLockOn(500.0f);
+			PC->PlayAnimMontage(FinisherMontage);
+			UE_LOG(LogTemp, Warning, TEXT("Finisher"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
+		}
+	}
+	else
+	{
+		return;
 	}
 }
 

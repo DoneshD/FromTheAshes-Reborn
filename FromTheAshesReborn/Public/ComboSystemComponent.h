@@ -13,7 +13,7 @@ class FROMTHEASHESREBORN_API UComboSystemComponent : public UActorComponent
 
 public:	
 
-	TObjectPtr<APlayableCharacter> PlayableCharacter;
+	TObjectPtr<APlayableCharacter> PC;
 
 protected:
 
@@ -27,5 +27,9 @@ public:
 	void SaveLightAttack();
 
 	void SaveHeavyAttack();
+
+	void PerformComboExtender(int ExtenderIndex);
+
+	void PerformComboFinisher(UAnimMontage* FinisherMontage);
 
 };
