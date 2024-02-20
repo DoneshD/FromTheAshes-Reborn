@@ -371,6 +371,7 @@ void APlayableCharacter::SaveHeavyAttack()
 void APlayableCharacter::StartHeavyAttackPausedTimer()
 {
 	GetWorldTimerManager().SetTimer(HeavyAttackPauseHandle, this, &APlayableCharacter::HeavyAttackPaused, .8, true);
+	UE_LOG(LogTemp, Warning, TEXT("StartHeavyAttackPausedTimer"));
 }
 
 void APlayableCharacter::ClearHeavyAttackPausedTimer()
@@ -391,6 +392,7 @@ void APlayableCharacter::HeavyAttackPaused()
 {
 	IsHeavyAttackPaused = true;
 	OnAttackHeavyPausedEvent.Broadcast();
+	UE_LOG(LogTemp, Warning, TEXT("HeavyAttackPaused"));
 }
 
 void APlayableCharacter::SurgeAttackPaused()
@@ -403,27 +405,7 @@ void APlayableCharacter::SurgeAttackPaused()
 
 void APlayableCharacter::PerformLightAttack(int AttackIndex)
 {
-	UAnimMontage* CurrentMontage = LightAttackCombo[AttackIndex];
-	if (CurrentMontage)
-	{
-		SetState(EStates::EState_Attack);
-		SoftLockOn(250.0f);
-		//UE_LOG(LogTemp, Warning, TEXT("Before TargetingComponent->SoftLockOn"));
-		//TargetingComponent->SoftLockOn(250.0f);
-		//UE_LOG(LogTemp, Warning, TEXT("After TargetingComponent->SoftLockOn"));
-
-		PlayAnimMontage(CurrentMontage);
-		ResetSurgeCombo();
-		LightAttackIndex++;
-		if (LightAttackIndex >= LightAttackCombo.Num())
-		{
-			LightAttackIndex = 0;
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
-	}
+	ComboSystemComponent->PerformLightAttack(AttackIndex);
 }
 
 void APlayableCharacter::LightAttack()
@@ -435,7 +417,7 @@ void APlayableCharacter::LightAttack()
 	}
 	else
 	{
-
+		return;
 	}
 }
 
@@ -459,19 +441,7 @@ void APlayableCharacter::InputLightAttack()
 
 void APlayableCharacter::PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo)
 {
-	UAnimMontage* AttackMontage = PausedHeavyAttackCombo[NewHeavyAttackIndex];
-	if (AttackMontage)
-	{
-		SetState(EStates::EState_Attack);
-		SoftLockOn(250.0f);
-		PlayAnimMontage(AttackMontage);
-		NewHeavyAttackIndex++;
-		if (NewHeavyAttackIndex >= PausedHeavyAttackCombo.Num())
-		{
-			NewHeavyAttackIndex = 0;
-			IsHeavyAttackPaused = false;
-		}
-	}
+	ComboSystemComponent->PerformHeavyPauseCombo(PausedHeavyAttackCombo);
 }
 
 void APlayableCharacter::SelectHeavyPauseCombo()
@@ -492,34 +462,7 @@ void APlayableCharacter::NewHeavyCombo()
 
 void APlayableCharacter::PerformHeavyAttack(int AttackIndex)
 {
-	UAnimMontage* CurrentMontage = HeavyAttackCombo[AttackIndex];
-	if (CurrentMontage)
-	{
-		SetState(EStates::EState_Attack);
-		SoftLockOn(500.0f);
-		PlayAnimMontage(CurrentMontage);
-		StartHeavyAttackPausedTimer();
-		if (HeavyAttackIndex == 0)
-		{
-			StartSurgeAttackPausedTimer();
-		}
-		else
-		{
-			ClearSurgeAttackPausedTimer();
-			IsSurgeAttackPaused = false;
-		}
-		HeavyAttackIndex++;
-		if (HeavyAttackIndex >= HeavyAttackCombo.Num())
-		{
-			HeavyAttackIndex = 0;
-			ClearHeavyAttackPausedTimer();
-			IsHeavyAttackPaused = false;
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
-	}
+	ComboSystemComponent->PerformHeavyAttack(AttackIndex);
 }
 
 void APlayableCharacter::HeavyAttack()
@@ -558,80 +501,16 @@ void APlayableCharacter::InputHeavyAttack()
 void APlayableCharacter::PerformComboExtender(int ExtenderIndex)
 {
 	ComboSystemComponent->PerformComboExtender(ExtenderIndex);
-	/*
-	UAnimMontage* CurrentMontage = ComboExtender[ExtenderIndex];
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
-	if (!IsStateEqualToAny(MakeArray))
-	{
-		if (CurrentMontage)
-		{
-			IsHeavyAttackPaused = false;
-			SetState(EStates::EState_Attack);
-			SoftLockOn(500.0f);
-			ComboExtenderIndex++;
-			PlayAnimMontage(CurrentMontage);
-
-			if (ComboExtenderIndex >= ComboExtender.Num())
-			{
-				BranchFinisher = true;
-			}
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
-	}
-	*/
 }
 
 void APlayableCharacter::PerformComboFinisher(UAnimMontage* FinisherMontage)
 {
 	ComboSystemComponent->PerformComboFinisher(FinisherMontage);
-	/*
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
-	if (!IsStateEqualToAny(MakeArray))
-	{
-		if (FinisherMontage)
-		{
-			IsHeavyAttackPaused = false;
-			ResetLightAttack();
-			ResetHeavyAttack();
-			SetState(EStates::EState_Attack);
-			SoftLockOn(500.0f);
-			PlayAnimMontage(FinisherMontage);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
-		}
-	}
-	else
-	{
-		return;
-	}
-	*/
 }
 
 void APlayableCharacter::PerformComboSurge()
 {
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
-
-	if (!IsStateEqualToAny(MakeArray))
-	{
-		IsHeavyAttackPaused = false;
-		ResetLightAttack();
-		ResetHeavyAttack();
-		SetState(EStates::EState_Attack);
-		SoftLockOn(500.0f);
-
-		PlayAnimMontage((ComboSurgeCount % 2 == 0) ? ComboSurge_L : ComboSurge_R, ComboSurgeSpeed);
-		ComboSurgeCount += 1;
-		ComboSurgeSpeed = (ComboSurgeCount > 5) ? 1.6 : (ComboSurgeCount > 2) ? 1.4 : 1.2;
-	}
-	else
-	{
-		return;
-	}
+	ComboSystemComponent->PerformComboSurge();
 }
 
 //--------------------------------Damage System-------------------------------------

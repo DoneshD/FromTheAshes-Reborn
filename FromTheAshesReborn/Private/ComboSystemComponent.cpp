@@ -32,23 +32,23 @@ void UComboSystemComponent::SaveLightAttack()
 		}
 		if (PC->IsSurgeAttackPaused)
 		{
-			PC->PerformComboSurge();
+			PerformComboSurge();
 		}
 
 
 		else if (PC->HeavyAttackIndex > 1)
 		{
-			PC->PerformComboFinisher(PC->ComboExtenderFinishers[3]);
+			PerformComboFinisher(PC->ComboExtenderFinishers[3]);
 		}
 		else if (PC->ComboExtenderIndex > 0)
 		{
 			if (PC->BranchFinisher)
 			{
-				PC->PerformComboFinisher(PC->ComboExtenderFinishers[0]);
+				PerformComboFinisher(PC->ComboExtenderFinishers[0]);
 			}
 			else if (PC->HeavyAttackIndex == 0)
 			{
-				PC->PerformComboExtender(PC->ComboExtenderIndex);
+				PerformComboExtender(PC->ComboExtenderIndex);
 			}
 		}
 		else
@@ -74,22 +74,92 @@ void UComboSystemComponent::SaveHeavyAttack()
 		}
 		else if (PC->LightAttackIndex == 3)
 		{
-			PC->PerformComboFinisher(PC->ComboExtenderFinishers[2]);
+			PerformComboFinisher(PC->ComboExtenderFinishers[2]);
 		}
 		else if (PC->LightAttackIndex == 2)
 		{
 			if (PC->ComboExtenderIndex == 0)
 			{
-				PC->PerformComboExtender(PC->ComboExtenderIndex);
+				PerformComboExtender(PC->ComboExtenderIndex);
 			}
 			else if (PC->BranchFinisher)
 			{
-				PC->PerformComboFinisher(PC->ComboExtenderFinishers[1]);
+				PerformComboFinisher(PC->ComboExtenderFinishers[1]);
 			}
 		}
 		else
 		{
 			PC->HeavyAttack();
+		}
+	}
+}
+
+void UComboSystemComponent::PerformLightAttack(int AttackIndex)
+{
+	UAnimMontage* CurrentMontage = PC->LightAttackCombo[AttackIndex];
+	if (CurrentMontage)
+	{
+		PC->SetState(EStates::EState_Attack);
+		PC->SoftLockOn(250.0f);
+		PC->PlayAnimMontage(CurrentMontage);
+		PC->ResetSurgeCombo();
+		PC->LightAttackIndex++;
+		if (PC->LightAttackIndex >= PC->LightAttackCombo.Num())
+		{
+			PC->LightAttackIndex = 0;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
+	}
+}
+
+void UComboSystemComponent::PerformHeavyAttack(int HeavyAttackIndex)
+{
+	UAnimMontage* CurrentMontage = PC->HeavyAttackCombo[HeavyAttackIndex];
+	if (CurrentMontage)
+	{
+		PC->SetState(EStates::EState_Attack);
+		PC->SoftLockOn(500.0f);
+		PC->PlayAnimMontage(CurrentMontage);
+		PC->StartHeavyAttackPausedTimer();
+		if (HeavyAttackIndex == 0)
+		{
+			PC->StartSurgeAttackPausedTimer();
+		}
+		else
+		{
+			PC->ClearSurgeAttackPausedTimer();
+			PC->IsSurgeAttackPaused = false;
+		}
+		PC->HeavyAttackIndex++;
+		if (HeavyAttackIndex >= PC->HeavyAttackCombo.Num())
+		{
+			HeavyAttackIndex = 0;
+			PC->ClearHeavyAttackPausedTimer();
+			PC->IsHeavyAttackPaused = false;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
+	}
+}
+
+void UComboSystemComponent::PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo)
+{
+	UAnimMontage* AttackMontage = PausedHeavyAttackCombo[PC->NewHeavyAttackIndex];
+	if (AttackMontage)
+	{
+		PC->SetState(EStates::EState_Attack);
+		PC->SoftLockOn(250.0f);
+		PC->PlayAnimMontage(AttackMontage);
+		PC->NewHeavyAttackIndex++;
+		if (PC->NewHeavyAttackIndex >= PausedHeavyAttackCombo.Num())
+		{
+			PC->NewHeavyAttackIndex = 0;
+			PC->IsHeavyAttackPaused = false;
 		}
 	}
 }
@@ -112,7 +182,6 @@ void UComboSystemComponent::PerformComboExtender(int ExtenderIndex)
 			{
 				PC->BranchFinisher = true;
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Extender"));
 
 		}
 	}
@@ -135,12 +204,33 @@ void UComboSystemComponent::PerformComboFinisher(UAnimMontage* FinisherMontage)
 			PC->SetState(EStates::EState_Attack);
 			PC->SoftLockOn(500.0f);
 			PC->PlayAnimMontage(FinisherMontage);
-			UE_LOG(LogTemp, Warning, TEXT("Finisher"));
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Invalid Montage"));
 		}
+	}
+	else
+	{
+		return;
+	}
+}
+
+void UComboSystemComponent::PerformComboSurge()
+{
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
+
+	if (!PC->IsStateEqualToAny(MakeArray))
+	{
+		PC->IsHeavyAttackPaused = false;
+		PC->ResetLightAttack();
+		PC->ResetHeavyAttack();
+		PC->SetState(EStates::EState_Attack);
+		PC->SoftLockOn(500.0f);
+
+		PC->PlayAnimMontage((PC->ComboSurgeCount % 2 == 0) ? PC->ComboSurge_L : PC->ComboSurge_R, PC->ComboSurgeSpeed);
+		PC->ComboSurgeCount += 1;
+		PC->ComboSurgeSpeed = (PC->ComboSurgeCount > 5) ? 1.6 : (PC->ComboSurgeCount > 2) ? 1.4 : 1.2;
 	}
 	else
 	{

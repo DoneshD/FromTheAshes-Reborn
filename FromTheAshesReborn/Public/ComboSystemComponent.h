@@ -28,8 +28,16 @@ public:
 
 	void SaveHeavyAttack();
 
+	void PerformLightAttack(int LightAttackIndex);
+
+	void PerformHeavyAttack(int HeavyAttackIndex);
+
+	void PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo);
+
 	void PerformComboExtender(int ExtenderIndex);
 
 	void PerformComboFinisher(UAnimMontage* FinisherMontage);
+
+	void PerformComboSurge();
 
 };
