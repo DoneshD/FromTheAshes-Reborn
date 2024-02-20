@@ -67,46 +67,29 @@ protected:
 	//-----------------------------------------Light Attack-----------------------------------------
 
 	int LightAttackIndex = 0;
-	bool bLightAttackSaved;
+	bool IsLightAttackSaved;
 
 	//-----------------------------------------Heavy Attack-----------------------------------------
 
 	int HeavyAttackIndex = 0;
 	int NewHeavyAttackIndex = 0;
-	bool bHeavyAttackSaved;
-	bool bHeavyAttackPaused = false;
-	bool bSurgeAttackPaused = false;
+	bool IsHeavyAttackSaved;
+	bool IsHeavyAttackPaused = false;
+	bool IsSurgeAttackPaused = false;
 
 	//-----------------------------------------Combo Strings---------------------------------------
 	int ComboExtenderIndex = 0;
 
 	int ComboSurgeCount = 0;
 	float ComboSurgeSpeed = 1.0;
-	bool bSurging = false;
+	bool IsSurging = false;
 
 	bool BranchFinisher = false;
-	//-----------------------------------------Air attack-------------------------------------------
 
-	int AirComboIndex;
-	bool bLaunched;
-
-	//-----------------------------------------Weapon Collision-------------------------------------
-
-	bool bActiveCollision = false;
-	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
-	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
-
-	//-----------------------------------------Dodge-----------------------------------------------
-
-	bool bDodgeSaved;
-	bool bCanRoll;
-	bool bCanDodge = true;
-	bool isDodging = false;
-	TMap<int, int> YCardinalMapping;
 
 	//-----------------------------------------Lock Ons--------------------------------------------
 
-	bool bTargeting = false;
+	bool IsTargeting = false;
 	FVector TargetRotateLocation;
 
 	TObjectPtr<AActor> HardTarget;
@@ -134,10 +117,6 @@ protected:
 
 	float BufferAmount;
 
-	//-----------------------------------------Execution-------------------------------------------
-
-	bool bExecuting;
-
 	//-----------------------------------------Anim Montages---------------------------------------
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
@@ -155,9 +134,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo1;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo2;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Surge")
 	TObjectPtr<UAnimMontage> ComboSurge_L;
 
@@ -166,18 +142,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Bybass")
 	TObjectPtr<UAnimMontage> ComboBybass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
-	TObjectPtr<UAnimMontage> ForwardDodgeAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
-	TObjectPtr<UAnimMontage> BackDodgeAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
-	TObjectPtr<UAnimMontage> ForwardRollAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dodge Anim")
-	TObjectPtr<UAnimMontage> BackRollAnim;
 
 private:
 
@@ -193,8 +157,6 @@ public:
 
 	void ResetLightAttack();
 	void ResetHeavyAttack();
-	void ResetAirAttack();
-	void ResetDodge();
 	void ResetCombos();
 	void ResetSurgeCombo();
 
@@ -213,8 +175,6 @@ public:
 	//-----------------------------------------FSM Attack Check-------------------------------------
 
 	bool CanAttack();
-	bool CanDodge();
-
 
 	//-----------------------------------------Light Attacks----------------------------------------
 
@@ -255,27 +215,6 @@ public:
 	void PerformComboFinisher(UAnimMontage* FinisherMontage);
 	void PerformComboSurge();
 
-
-	//-----------------------------------------Dodge------------------------------------------------
-
-	void InputDodge();
-	void PerformDodge();
-	void DodgeSystem(float X, float Y);
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void SaveDodge();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void EnableRoll();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void DisableRoll();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void EnableDodge();
-
-	UFUNCTION(BlueprintCallable, Category = "Dodge")
-	void DisableDodge();
 
 	//-----------------------------------------LockOn----------------------------------------------
 
