@@ -9,6 +9,7 @@
 
 class UArrowComponent;
 class UDamageSystem;
+class UAttacksComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter

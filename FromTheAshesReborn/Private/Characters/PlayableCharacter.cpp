@@ -433,10 +433,7 @@ void APlayableCharacter::HardLockOn()
 
 //------------------------------------------------------------ Dodge -----------------------------------------------------------------//
 
-void APlayableCharacter::EnableRoll()
-{
-	bCanRoll = true;
-}
+
 
 void APlayableCharacter::DisableRoll()
 {
