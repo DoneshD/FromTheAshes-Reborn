@@ -371,7 +371,6 @@ void APlayableCharacter::SaveHeavyAttack()
 void APlayableCharacter::StartHeavyAttackPausedTimer()
 {
 	GetWorldTimerManager().SetTimer(HeavyAttackPauseHandle, this, &APlayableCharacter::HeavyAttackPaused, .8, true);
-	UE_LOG(LogTemp, Warning, TEXT("StartHeavyAttackPausedTimer"));
 }
 
 void APlayableCharacter::ClearHeavyAttackPausedTimer()
@@ -391,14 +390,11 @@ void APlayableCharacter::ClearSurgeAttackPausedTimer()
 void APlayableCharacter::HeavyAttackPaused()
 {
 	IsHeavyAttackPaused = true;
-	OnAttackHeavyPausedEvent.Broadcast();
-	UE_LOG(LogTemp, Warning, TEXT("HeavyAttackPaused"));
 }
 
 void APlayableCharacter::SurgeAttackPaused()
 {
 	IsSurgeAttackPaused = true;
-	OnAttackSurgePausedEvent.Broadcast();
 }
 
 //------------------------------------------------------ Light Attack Actions -----------------------------------------------------------------//

@@ -117,7 +117,7 @@ void UComboSystemComponent::PerformLightAttack(int AttackIndex)
 
 void UComboSystemComponent::PerformHeavyAttack(int HeavyAttackIndex)
 {
-	UAnimMontage* CurrentMontage = PC->HeavyAttackCombo[HeavyAttackIndex];
+	UAnimMontage* CurrentMontage = PC->HeavyAttackCombo[PC->HeavyAttackIndex];
 	if (CurrentMontage)
 	{
 		PC->SetState(EStates::EState_Attack);
@@ -134,9 +134,9 @@ void UComboSystemComponent::PerformHeavyAttack(int HeavyAttackIndex)
 			PC->IsSurgeAttackPaused = false;
 		}
 		PC->HeavyAttackIndex++;
-		if (HeavyAttackIndex >= PC->HeavyAttackCombo.Num())
+		if (PC->HeavyAttackIndex >= PC->HeavyAttackCombo.Num())
 		{
-			HeavyAttackIndex = 0;
+			PC->HeavyAttackIndex = 0;
 			PC->ClearHeavyAttackPausedTimer();
 			PC->IsHeavyAttackPaused = false;
 		}

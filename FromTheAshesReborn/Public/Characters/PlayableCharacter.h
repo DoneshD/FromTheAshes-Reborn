@@ -14,8 +14,6 @@
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackSurgePausedEvent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackHeavyPausedEvent);
 
 class UInputMappingContext;
 class UCameraComponent;
@@ -33,6 +31,9 @@ class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public I
 public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> CameraComp;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UTargetingComponent> TargetingComponent;
@@ -72,6 +73,8 @@ public:
 	//-----------------------------------------Light Attack-----------------------------------------
 
 	int LightAttackIndex = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsLightAttackSaved;
 
 	//-----------------------------------------Heavy Attack-----------------------------------------
@@ -104,8 +107,6 @@ public:
 
 	FTimerHandle HeavyAttackPauseHandle;
 	FTimerHandle SurgeAttackPauseHandle;
-	FOnAttackSurgePausedEvent OnAttackSurgePausedEvent;
-	FOnAttackSurgePausedEvent OnAttackHeavyPausedEvent;
 
 	//-----------------------------------------Timelines-------------------------------------------
 
@@ -264,7 +265,4 @@ public:
 
 	UFUNCTION()
 	virtual void ReturnAttackToken(int Amount) override;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UCameraComponent> CameraComp;
 };
