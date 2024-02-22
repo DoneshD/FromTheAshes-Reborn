@@ -9,6 +9,7 @@
 #include "DamageSystem/DamageInfo.h"
 #include "TargetingComponent.h"
 #include "ComboSystemComponent.h"
+#include "TimelineHelper.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -49,10 +50,13 @@ APlayableCharacter::APlayableCharacter()
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
-	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
+	//Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
 
-	InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
-	TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
+	//InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
+	//TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
+
+	TimelineTEST = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
+
 
 	DamageSystemComponent->AttackTokensCount = 1;
 
@@ -63,11 +67,15 @@ void APlayableCharacter::BeginPlay()
 	Super::BeginPlay();
 	if (RotationCurve)
 	{
-		Timeline->AddInterpFloat(RotationCurve, InterpFunction, FName("Alpha"));
-		Timeline->SetTimelinePostUpdateFunc(TimelineFinished);
+		//Timeline->AddInterpFloat(RotationCurve, InterpFunction, FName("Alpha"));
+		//Timeline->SetTimelinePostUpdateFunc(TimelineFinished);
 
-		Timeline->SetLooping(false);
-		Timeline->SetIgnoreTimeDilation(true);
+		//Timeline->SetLooping(false);
+		//Timeline->SetIgnoreTimeDilation(true);
+	}
+	if (RotationCurve)
+	{
+		Timeline = TimelineHelper::CreateTimeline(TimelineTEST, this, RotationCurve, TEXT("Timeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"));
 	}
 }
 
@@ -127,12 +135,10 @@ bool APlayableCharacter::CanAttack()
 	return !GetCharacterMovement()->IsFalling() && !GetCharacterMovement()->IsFlying() && !IsStateEqualToAny(MakeArray);
 }
 
-
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
 
 void APlayableCharacter::Tick(float DeltaTime)
 {
-
 	Super::Tick(DeltaTime);
 	
 }
@@ -298,11 +304,14 @@ void APlayableCharacter::OnTimelineFinished()
 
 void APlayableCharacter::StopRotation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("StopRotation"));
+
 	Timeline->Stop();
 }
 
 void APlayableCharacter::RotationToTarget()
 {
+	UE_LOG(LogTemp, Warning, TEXT("RotationToTarget"));
 	Timeline->PlayFromStart();
 }
 

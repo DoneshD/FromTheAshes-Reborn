@@ -112,6 +112,8 @@ public:
 
 	TObjectPtr<UTimelineComponent> Timeline;
 
+	TObjectPtr<UTimelineComponent> TimelineTEST;
+
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 	TObjectPtr<UCurveFloat> BufferCurve;
 
