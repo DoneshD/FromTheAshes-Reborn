@@ -50,32 +50,18 @@ APlayableCharacter::APlayableCharacter()
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
-	//Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
-
-	//InterpFunction.BindUFunction(this, FName("TimelineFloatReturn"));
-	//TimelineFinished.BindUFunction(this, FName("OnTimelineFinished"));
-
-	TimelineTEST = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
-
+	RotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeline"));
 
 	DamageSystemComponent->AttackTokensCount = 1;
-
 }
 
 void APlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	if (RotationCurve)
-	{
-		//Timeline->AddInterpFloat(RotationCurve, InterpFunction, FName("Alpha"));
-		//Timeline->SetTimelinePostUpdateFunc(TimelineFinished);
 
-		//Timeline->SetLooping(false);
-		//Timeline->SetIgnoreTimeDilation(true);
-	}
 	if (RotationCurve)
 	{
-		Timeline = TimelineHelper::CreateTimeline(TimelineTEST, this, RotationCurve, TEXT("Timeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"));
+		RotationTimeline = TimelineHelper::CreateTimeline(RotationTimeline, this, RotationCurve, TEXT("RotationTimeline"), FName("TimelifneFloatReturn"), FName("OnTimelineFinished"));
 	}
 }
 
@@ -169,6 +155,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	if (InputComp)
 	{
 		InputComp->BindAction(Input_Move, ETriggerEvent::Triggered, this, &APlayableCharacter::Move);
+		InputComp->BindAction(Input_Move, ETriggerEvent::Completed, this, &APlayableCharacter::MoveCanceled);
 		InputComp->BindAction(Input_Jump, ETriggerEvent::Started, this, &APlayableCharacter::DoubleJump);
 		InputComp->BindAction(Input_Jump, ETriggerEvent::Completed, this, &APlayableCharacter::StopJump);
 		InputComp->BindAction(Input_LookMouse, ETriggerEvent::Triggered, this, &APlayableCharacter::LookMouse);
@@ -183,6 +170,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 //------------------------------------------------------------ Movement -----------------------------------------------------------------//
 void APlayableCharacter::Move(const FInputActionInstance& Instance)
 {
+	
 	FRotator ControlRot = GetControlRotation();
 	ControlRot.Pitch = 0.0f;
 	ControlRot.Roll = 0.0f;
@@ -197,7 +185,14 @@ void APlayableCharacter::Move(const FInputActionInstance& Instance)
 
 	const FRotationMatrix RotationMatrix(ControlRot);
 	const FVector RightVector = RotationMatrix.GetScaledAxis(EAxis::Y);
+	HasMovementInput = true;
 	AddMovementInput(RightVector, InputDirection.X);
+}
+
+void APlayableCharacter::MoveCanceled()
+{
+	UE_LOG(LogTemp, Warning, TEXT("MoveCanceled"));
+	HasMovementInput = false;
 }
 
 void APlayableCharacter::LookMouse(const FInputActionValue& InputValue)
@@ -289,30 +284,24 @@ void APlayableCharacter::TimelineFloatReturn(float value)
 	FRotator MakeRotator(TargetRotation.Roll, GetActorRotation().Pitch, TargetRotation.Yaw);
 	FRotator InterpRot = FMath::RInterpTo(GetControlRotation(), TargetRotation, value, false);
 
-	UE_LOG(LogTemp, Warning, TEXT("InterpRot: %f"), InterpRot.Yaw);
-
 	SetActorRotation(InterpRot);
 }
 
 void APlayableCharacter::OnTimelineFinished()
 {
-	Timeline->Stop();
+	RotationTimeline->Stop();
 }
-
 
 //------------------------------------------------------------- LockOn -----------------------------------------------------------------//
 
 void APlayableCharacter::StopRotation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("StopRotation"));
-
-	Timeline->Stop();
+	RotationTimeline->Stop();
 }
 
 void APlayableCharacter::RotationToTarget()
 {
-	UE_LOG(LogTemp, Warning, TEXT("RotationToTarget"));
-	Timeline->PlayFromStart();
+	RotationTimeline->PlayFromStart();
 }
 
 void APlayableCharacter::SoftLockOn(float Distance)
@@ -387,6 +376,17 @@ void APlayableCharacter::ClearHeavyAttackPausedTimer()
 	GetWorldTimerManager().ClearTimer(HeavyAttackPauseHandle);
 }
 
+void APlayableCharacter::StartIdleCombatTimer()
+{
+	GetWorldTimerManager().SetTimer(IdleCombatHandle, this, &APlayableCharacter::ClearIdleCombatTimer, 5, true);
+	IsIdleCombat = true;
+}
+
+void APlayableCharacter::ClearIdleCombatTimer()
+{
+	IsIdleCombat = false;
+}
+
 void APlayableCharacter::StartSurgeAttackPausedTimer()
 {
 	GetWorldTimerManager().SetTimer(SurgeAttackPauseHandle, this, &APlayableCharacter::SurgeAttackPaused, .8, true);
@@ -429,8 +429,9 @@ void APlayableCharacter::LightAttack()
 void APlayableCharacter::InputLightAttack()
 {
 	IsHeavyAttackSaved = false;
-	ClearHeavyAttackPausedTimer();
+	StartIdleCombatTimer();
 
+	ClearHeavyAttackPausedTimer();
 	TArray<EStates> MakeArray = { EStates::EState_Attack };
 	if (IsStateEqualToAny(MakeArray))
 	{
@@ -489,7 +490,7 @@ void APlayableCharacter::HeavyAttack()
 void APlayableCharacter::InputHeavyAttack()
 {
 	IsLightAttackSaved = false;
-
+	StartIdleCombatTimer();
 	TArray<EStates> MakeArray = { EStates::EState_Attack };
 	if (IsStateEqualToAny(MakeArray))
 	{

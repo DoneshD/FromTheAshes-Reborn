@@ -72,6 +72,12 @@ public:
 
 	//-----------------------------------------Light Attack-----------------------------------------
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool HasMovementInput;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsIdleCombat = false;
+
 	int LightAttackIndex = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -108,17 +114,19 @@ public:
 	FTimerHandle HeavyAttackPauseHandle;
 	FTimerHandle SurgeAttackPauseHandle;
 
+	FTimerHandle IdleCombatHandle;
+
 	//-----------------------------------------Timelines-------------------------------------------
 
-	TObjectPtr<UTimelineComponent> Timeline;
+	TObjectPtr<UTimelineComponent> RotationTimeline;
 
-	TObjectPtr<UTimelineComponent> TimelineTEST;
+	TObjectPtr<UTimelineComponent> AimingTimeline;
 
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 	TObjectPtr<UCurveFloat> BufferCurve;
 
 	UPROPERTY(EditAnywhere, Category = "Timeline")
-	TObjectPtr <UCurveFloat> RotationCurve;
+	TObjectPtr<UCurveFloat> RotationCurve;
 
 	FOnTimelineFloat InterpFunction{};
 	FOnTimelineEvent TimelineFinished{};
@@ -171,6 +179,7 @@ public:
 	//-----------------------------------------Movement---------------------------------------------
 
 	void Move(const FInputActionInstance& Instance);
+	void MoveCanceled();
 	void LookMouse(const FInputActionValue& InputValue);
 	void LookStick(const FInputActionValue& InputValue);
 
@@ -213,6 +222,9 @@ public:
 
 	void StartHeavyAttackPausedTimer();
 	void ClearHeavyAttackPausedTimer();
+
+	void StartIdleCombatTimer();
+	void ClearIdleCombatTimer();
 
 	void StartSurgeAttackPausedTimer();
 	void ClearSurgeAttackPausedTimer();
