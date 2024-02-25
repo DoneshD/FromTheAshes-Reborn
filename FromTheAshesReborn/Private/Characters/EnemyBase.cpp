@@ -4,6 +4,7 @@
 #include "AI/Controllers/AIControllerEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "DamageSystem/DamageSystem.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 
@@ -209,5 +210,10 @@ void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 		Amount += ReservedAttackTokensMap[AttackTarget];
 	}
 	ReservedAttackTokensMap.Add(AttackTarget, Amount);
+}
+
+void AEnemyBase::OnTargeted()
+{
+	GetMesh()->SetOverlayMaterial(TargetedMaterial);
 }
 

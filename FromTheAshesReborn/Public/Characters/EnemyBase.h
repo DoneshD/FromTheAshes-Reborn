@@ -13,6 +13,7 @@
 DECLARE_DELEGATE(FOnAttackEnd);
 
 class AIControllerEnemyBase;
+//class UMaterialInterface;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
@@ -30,6 +31,9 @@ public:
 	int TokensUsedInCurrentAttack;
 
 	FOnAttackEnd OnAttackEnd;
+
+	UPROPERTY(EditAnywhere, Category = "Targeting")
+	TObjectPtr<UMaterialInterface> TargetedMaterial;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
 	TObjectPtr<UAnimMontage> LeftHitReaction;
@@ -112,5 +116,8 @@ public:
 
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
+
+	UFUNCTION()
+	virtual void OnTargeted() override;
 
 };

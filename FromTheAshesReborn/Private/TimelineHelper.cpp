@@ -9,8 +9,8 @@ UTimelineComponent* TimelineHelper::CreateTimeline(UTimelineComponent* Timeline,
     TimelineFinished.BindUFunction(Target, FinishedFunctionName);
 
     Timeline->AddInterpFloat(LerpCurve, InterpFunction, FName("Alpha"));
-    Timeline->SetTimelinePostUpdateFunc(TimelineFinished);
 
+    Timeline->SetTimelineFinishedFunc(TimelineFinished);
     Timeline->SetLooping(false);
     Timeline->SetIgnoreTimeDilation(true);
 

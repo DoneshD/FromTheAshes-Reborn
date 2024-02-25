@@ -70,6 +70,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Teleport;
+
+	bool IsTeleportActive = false;
+
 	//-----------------------------------------Light Attack-----------------------------------------
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -120,13 +125,16 @@ public:
 
 	TObjectPtr<UTimelineComponent> RotationTimeline;
 
-	TObjectPtr<UTimelineComponent> AimingTimeline;
+	TObjectPtr<UTimelineComponent> TeleportTimeline;
 
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 	TObjectPtr<UCurveFloat> BufferCurve;
 
 	UPROPERTY(EditAnywhere, Category = "Timeline")
 	TObjectPtr<UCurveFloat> RotationCurve;
+
+	UPROPERTY(EditAnywhere, Category = "Timeline")
+	TObjectPtr<UCurveFloat> TeleportCurve;
 
 	FOnTimelineFloat InterpFunction{};
 	FOnTimelineEvent TimelineFinished{};
@@ -192,6 +200,7 @@ public:
 	//-----------------------------------------FSM Attack Check-------------------------------------
 
 	bool CanAttack();
+	void InputTeleport();
 
 	//-----------------------------------------Light Attacks----------------------------------------
 

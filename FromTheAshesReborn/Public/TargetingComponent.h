@@ -22,6 +22,9 @@ protected:
 	TObjectPtr<AActor> HardTarget;
 	TObjectPtr<AActor> SoftTarget;
 
+	AActor* TeleportTarget;
+
+
 private:
 
 public:	

@@ -46,4 +46,7 @@ public:
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) = 0;
 
+	UFUNCTION()
+	virtual void OnTargeted() = 0;
+
 };

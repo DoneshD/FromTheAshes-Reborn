@@ -51,6 +51,7 @@ APlayableCharacter::APlayableCharacter()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	RotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeline"));
+	//TeleportTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("TeleportTimeline"));
 
 	DamageSystemComponent->AttackTokensCount = 1;
 }
@@ -61,7 +62,8 @@ void APlayableCharacter::BeginPlay()
 
 	if (RotationCurve)
 	{
-		RotationTimeline = TimelineHelper::CreateTimeline(RotationTimeline, this, RotationCurve, TEXT("RotationTimeline"), FName("TimelifneFloatReturn"), FName("OnTimelineFinished"));
+		RotationTimeline = TimelineHelper::CreateTimeline(RotationTimeline, this, RotationCurve, TEXT("RotationTimeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"));
+		//TeleportTimeline = TimelineHelper::CreateTimeline(TeleportTimeline, this, TEXT("TeleportTimeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"), 5.0f);
 	}
 }
 
@@ -77,10 +79,8 @@ void APlayableCharacter::ResetHeavyAttack()
 {
 	HeavyAttackIndex = 0;
 	NewHeavyAttackIndex = 0;
-
 	IsHeavyAttackSaved = false;
 	IsHeavyAttackPaused = false;
-
 	ClearHeavyAttackPausedTimer();
 }
 
@@ -119,6 +119,22 @@ bool APlayableCharacter::CanAttack()
 {
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Execution };
 	return !GetCharacterMovement()->IsFalling() && !GetCharacterMovement()->IsFlying() && !IsStateEqualToAny(MakeArray);
+}
+
+void APlayableCharacter::InputTeleport()
+{
+	if(!IsTeleportActive)
+	{
+		IsTeleportActive = true;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
+		//TargetingComponent->
+	
+	}
+	else
+	{
+		IsTeleportActive = false;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+	}
 }
 
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
@@ -163,7 +179,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		InputComp->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputLightAttack);
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
-		InputComp->BindAction(Input_LockOn, ETriggerEvent::Started, this, &APlayableCharacter::HardLockOn);
+		InputComp->BindAction(Input_Teleport, ETriggerEvent::Started, this, &APlayableCharacter::InputTeleport);
 	}
 }
 
@@ -191,7 +207,6 @@ void APlayableCharacter::Move(const FInputActionInstance& Instance)
 
 void APlayableCharacter::MoveCanceled()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveCanceled"));
 	HasMovementInput = false;
 }
 
@@ -283,7 +298,6 @@ void APlayableCharacter::TimelineFloatReturn(float value)
 
 	FRotator MakeRotator(TargetRotation.Roll, GetActorRotation().Pitch, TargetRotation.Yaw);
 	FRotator InterpRot = FMath::RInterpTo(GetControlRotation(), TargetRotation, value, false);
-
 	SetActorRotation(InterpRot);
 }
 

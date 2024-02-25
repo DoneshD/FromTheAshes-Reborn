@@ -23,6 +23,60 @@ void UTargetingComponent::BeginPlay()
 void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (PlayableCharacter->IsTeleportActive)
+	{
+		if (UCameraComponent* FollowCamera = PlayableCharacter->CameraComp)
+		{
+			FVector CameraVector = FollowCamera->GetForwardVector();
+			FVector EndLocation = (CameraVector * 2000.f) + PlayableCharacter->GetActorLocation();
+			FHitResult OutHit;
+
+			TArray<AActor*> ActorArray;
+			ActorArray.Add(PlayableCharacter);
+
+			TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+			ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+			bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+				GetWorld(),
+				PlayableCharacter->GetActorLocation(),
+				EndLocation,
+				100.f,
+				ObjectTypes,
+				false,
+				ActorArray,
+				EDrawDebugTrace::None,
+				OutHit,
+				true);
+
+			if (TargetHit)
+			{
+				AActor* HitActor = OutHit.GetActor();
+				if (HitActor)
+				{
+					if (HitActor && HitActor != TeleportTarget)
+					{
+						TeleportTarget = HitActor;
+						UE_LOG(LogTemp, Warning, TEXT("Teleport Target: %s"), *TeleportTarget->GetName());
+					}
+					else
+					{
+
+					}
+				}
+				else
+				{
+					TeleportTarget = NULL;
+				}
+			}
+			else
+			{
+				TeleportTarget = NULL;
+			}
+		}
+	}
+
 	if (IsTargeting && HardTarget)
 	{
 		if (PlayableCharacter->GetDistanceTo(HardTarget) < 2000.f)
