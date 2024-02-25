@@ -27,6 +27,8 @@ public:
 	void SaveLightAttack();
 
 	void SaveHeavyAttack();
+	
+	void PerformCurrentAttack(float WarpingDistance, TObjectPtr<UAnimMontage> CurrentAttackMontage);
 
 	void PerformLightAttack(int LightAttackIndex);
 
@@ -36,7 +38,7 @@ public:
 
 	void PerformComboExtender(int ExtenderIndex);
 
-	void PerformComboFinisher(UAnimMontage* FinisherMontage);
+	void PerformComboFinisher(TObjectPtr<UAnimMontage> FinisherMontage);
 
 	void PerformComboSurge();
 
