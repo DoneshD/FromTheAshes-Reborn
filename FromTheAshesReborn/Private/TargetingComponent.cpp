@@ -3,6 +3,7 @@
 #include "Characters/PlayableCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
+#include "Interfaces/AIEnemyInterface.h"
 #include "Kismet/KismetMathLibrary.h"
 
 
@@ -59,6 +60,12 @@ void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 					{
 						TeleportTarget = HitActor;
 						UE_LOG(LogTemp, Warning, TEXT("Teleport Target: %s"), *TeleportTarget->GetName());
+						IAIEnemyInterface* EnemyInterface = Cast<IAIEnemyInterface>(TeleportTarget);
+						if (EnemyInterface)
+						{
+							EnemyInterface->OnTargeted();
+							UE_LOG(LogTemp, Warning, TEXT("Teleportadfas"));
+						}
 					}
 					else
 					{
@@ -67,12 +74,30 @@ void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 				}
 				else
 				{
-					TeleportTarget = NULL;
+					if (TeleportTarget)
+					{
+						IAIEnemyInterface* EnemyInterface = Cast<IAIEnemyInterface>(TeleportTarget);
+						if (EnemyInterface)
+						{
+							EnemyInterface->EndTargeted();
+							TeleportTarget = NULL;
+						}
+					}
 				}
 			}
 			else
 			{
-				TeleportTarget = NULL;
+				if (TeleportTarget)
+				{
+					IAIEnemyInterface* EnemyInterface = Cast<IAIEnemyInterface>(TeleportTarget);
+					if (EnemyInterface)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Teleportadfas"));
+						EnemyInterface->EndTargeted();
+						TeleportTarget = NULL;
+					}
+				}
+
 			}
 		}
 	}
@@ -194,6 +219,18 @@ void UTargetingComponent::HardLockOn()
 		IsTargeting = false;
 		HardTarget = NULL;
 		PlayableCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
+	}
+}
+
+void UTargetingComponent::StartTeleport()
+{
+	if (PlayableCharacter->IsTeleportActive && TeleportTarget)
+	{
+		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TeleportTarget->GetActorLocation());
+		PlayableCharacter->SetActorRotation(TargetRotation);
+		PlayableCharacter->SetActorLocation(TeleportTarget->GetActorLocation());
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+		PlayableCharacter->PlayAnimMontage(PlayableCharacter->ComboBybass);
 	}
 }
 

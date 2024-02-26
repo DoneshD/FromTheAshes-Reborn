@@ -38,5 +38,7 @@ public:
 	void SoftLockOn(float Distance);
 
 	void HardLockOn();
+
+	void StartTeleport();
 		
 };

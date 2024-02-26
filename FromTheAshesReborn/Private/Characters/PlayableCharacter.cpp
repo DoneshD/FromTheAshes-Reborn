@@ -137,6 +137,13 @@ void APlayableCharacter::InputTeleport()
 	}
 }
 
+void APlayableCharacter::InputTelportStrike()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input_TelportStrike"));
+	TargetingComponent->StartTeleport();
+
+}
+
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
 
 void APlayableCharacter::Tick(float DeltaTime)
@@ -180,6 +187,8 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputComp->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputLightAttack);
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
 		InputComp->BindAction(Input_Teleport, ETriggerEvent::Started, this, &APlayableCharacter::InputTeleport);
+		InputComp->BindAction(Input_TelportStrike, ETriggerEvent::Started, this, &APlayableCharacter::InputTelportStrike);
+
 	}
 }
 

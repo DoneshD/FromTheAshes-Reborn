@@ -49,4 +49,7 @@ public:
 	UFUNCTION()
 	virtual void OnTargeted() = 0;
 
+	UFUNCTION()
+	virtual void EndTargeted() = 0;
+
 };

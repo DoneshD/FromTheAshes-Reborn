@@ -73,6 +73,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Teleport;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_TelportStrike;
+
 	bool IsTeleportActive = false;
 
 	//-----------------------------------------Light Attack-----------------------------------------
@@ -201,6 +204,7 @@ public:
 
 	bool CanAttack();
 	void InputTeleport();
+	void InputTelportStrike();
 
 	//-----------------------------------------Light Attacks----------------------------------------
 

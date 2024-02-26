@@ -120,4 +120,7 @@ public:
 	UFUNCTION()
 	virtual void OnTargeted() override;
 
+	UFUNCTION()
+	virtual void EndTargeted() override;
+
 };

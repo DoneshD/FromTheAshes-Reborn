@@ -217,3 +217,9 @@ void AEnemyBase::OnTargeted()
 	GetMesh()->SetOverlayMaterial(TargetedMaterial);
 }
 
+void AEnemyBase::EndTargeted()
+{
+	UMaterialInterface* DefaultMaterial = GetMesh()->GetMaterial(1);
+	GetMesh()->SetOverlayMaterial(DefaultMaterial);
+}
+
