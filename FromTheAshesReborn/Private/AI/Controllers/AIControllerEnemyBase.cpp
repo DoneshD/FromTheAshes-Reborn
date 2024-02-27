@@ -70,7 +70,7 @@ void AAIControllerEnemyBase::BeginPlay()
 
 void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-
+	/*
 	for (AActor* Actor : UpdatedActors)
 	{
 		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
@@ -91,6 +91,7 @@ void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& Upda
 			HandleSensedDamage(Actor);
 		}
 	}
+	*/
 }
 
 void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)

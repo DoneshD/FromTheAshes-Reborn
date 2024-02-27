@@ -157,7 +157,6 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 	switch (DamageInfo.HitReactionDirection)
 	{
 	case EHitReactionDirection::EHitReactionDirection_Left:
-		UE_LOG(LogTemp, Warning, TEXT("Left Hit Reaction"));
 		HitReactionMontage = LeftHitReaction;
 		break;
 

@@ -26,7 +26,6 @@ protected:
 
 	AActor* TeleportTarget;
 
-
 private:
 
 public:	

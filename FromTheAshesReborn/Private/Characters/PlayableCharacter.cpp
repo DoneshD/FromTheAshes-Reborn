@@ -51,7 +51,6 @@ APlayableCharacter::APlayableCharacter()
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	RotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeline"));
-	//TeleportTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("TeleportTimeline"));
 
 	DamageSystemComponent->AttackTokensCount = 1;
 }
@@ -63,7 +62,6 @@ void APlayableCharacter::BeginPlay()
 	if (RotationCurve)
 	{
 		RotationTimeline = TimelineHelper::CreateTimeline(RotationTimeline, this, RotationCurve, TEXT("RotationTimeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"));
-		//TeleportTimeline = TimelineHelper::CreateTimeline(TeleportTimeline, this, TEXT("TeleportTimeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"), 5.0f);
 	}
 }
 
@@ -127,8 +125,6 @@ void APlayableCharacter::InputTeleport()
 	{
 		IsTeleportActive = true;
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
-		//TargetingComponent->
-	
 	}
 	else
 	{
@@ -139,9 +135,7 @@ void APlayableCharacter::InputTeleport()
 
 void APlayableCharacter::InputTelportStrike()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input_TelportStrike"));
 	TargetingComponent->StartTeleport();
-
 }
 
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//

@@ -229,13 +229,6 @@ void UTargetingComponent::StartTeleport()
 {
 	if (PlayableCharacter->IsTeleportActive && TeleportTarget)
 	{
-		//FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), 
-		//	TeleportTarget->GetActorLocation());
-		//PlayableCharacter->SetActorRotation(
-		//	FRotator(PlayableCharacter->GetActorRotation().Roll, 
-			//PlayableCharacter->GetActorRotation().Pitch, 
-		//	TargetRotation.Yaw));
-
 		float ResultFloat;
 
 		if (HitFromFront)
@@ -251,7 +244,6 @@ void UTargetingComponent::StartTeleport()
 		
 		PlayableCharacter->SetActorRotation(TargetRotation, ETeleportType::TeleportPhysics);
 		PlayableCharacter->SetActorLocation(ResultVector, false, NULL, ETeleportType::TeleportPhysics);
-		PlayableCharacter->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation("Target", TeleportTarget->GetActorLocation(), TargetRotation);
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 
 		PlayableCharacter->PlayAnimMontage(PlayableCharacter->ComboBybass);
