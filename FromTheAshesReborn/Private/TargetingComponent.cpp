@@ -59,10 +59,10 @@ void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 					if (HitActor && HitActor != TeleportTarget)
 					{
 						TeleportTarget = HitActor;
-						UE_LOG(LogTemp, Warning, TEXT("Teleport Target: %s"), *TeleportTarget->GetName());
 						IAIEnemyInterface* EnemyInterface = Cast<IAIEnemyInterface>(TeleportTarget);
 						if (EnemyInterface)
 						{
+							TeleportTarget->GetDotProductToTarget(PlayableCharacter->GetActorLocation());
 							EnemyInterface->OnTargeted();
 							UE_LOG(LogTemp, Warning, TEXT("Teleportadfas"));
 						}
@@ -227,10 +227,11 @@ void UTargetingComponent::StartTeleport()
 	if (PlayableCharacter->IsTeleportActive && TeleportTarget)
 	{
 		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TeleportTarget->GetActorLocation());
-		PlayableCharacter->SetActorRotation(TargetRotation);
-		PlayableCharacter->SetActorLocation(TeleportTarget->GetActorLocation());
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
-		PlayableCharacter->PlayAnimMontage(PlayableCharacter->ComboBybass);
+		PlayableCharacter->SetActorRotation(FRotator(PlayableCharacter->GetActorRotation().Roll, 
+			PlayableCharacter->GetActorRotation().Pitch, 
+			TargetRotation.Yaw));
+
+		PlayableCharacter->SetActorLocation(TeleportTarget->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
 	}
 }
 
