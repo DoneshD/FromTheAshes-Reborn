@@ -17,6 +17,8 @@ protected:
 
 
 	bool IsTargeting = false;
+	bool HitFromFront;
+
 	FVector TargetRotateLocation;
 
 	TObjectPtr<AActor> HardTarget;

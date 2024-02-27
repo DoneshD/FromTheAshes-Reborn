@@ -62,9 +62,18 @@ void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 						IAIEnemyInterface* EnemyInterface = Cast<IAIEnemyInterface>(TeleportTarget);
 						if (EnemyInterface)
 						{
-							TeleportTarget->GetDotProductToTarget(PlayableCharacter->GetActorLocation());
+							float DotProduct = FVector::DotProduct(TeleportTarget->GetActorLocation(), PlayableCharacter->GetActorLocation());
+
+							UE_LOG(LogTemp, Warning, TEXT("DotProduct: %f"), DotProduct);
+							if (-0.1 < DotProduct && DotProduct < 1.0)
+							{
+								HitFromFront = true;
+							}
+							else
+							{
+								HitFromFront = false;
+							}
 							EnemyInterface->OnTargeted();
-							UE_LOG(LogTemp, Warning, TEXT("Teleportadfas"));
 						}
 					}
 					else
@@ -92,7 +101,6 @@ void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 					IAIEnemyInterface* EnemyInterface = Cast<IAIEnemyInterface>(TeleportTarget);
 					if (EnemyInterface)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Teleportadfas"));
 						EnemyInterface->EndTargeted();
 						TeleportTarget = NULL;
 					}
@@ -130,9 +138,6 @@ void UTargetingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UTargetingComponent::SoftLockOn(float Distance)
 {
-	UE_LOG(LogTemp, Warning, TEXT("In UTargetingComponent"));
-
-	//APlayableCharacter* PlayableCharacter = Cast<APlayableCharacter>(GetOwner());
 	if (!IsTargeting && !HardTarget)
 	{
 		FVector StartLocation = (PlayableCharacter->GetActorLocation() + PlayableCharacter->GetCharacterMovement()->GetLastInputVector() * 100.f);
@@ -170,13 +175,11 @@ void UTargetingComponent::SoftLockOn(float Distance)
 			SoftTarget = NULL;
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Leaving UTargetingComponent"));
 
 }
 
 void UTargetingComponent::HardLockOn()
 {
-	UE_LOG(LogTemp, Warning, TEXT("In UTargetingComponent::HardLockOn"));
 	if (!IsTargeting && !HardTarget)
 	{
 
@@ -226,12 +229,32 @@ void UTargetingComponent::StartTeleport()
 {
 	if (PlayableCharacter->IsTeleportActive && TeleportTarget)
 	{
-		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TeleportTarget->GetActorLocation());
-		PlayableCharacter->SetActorRotation(FRotator(PlayableCharacter->GetActorRotation().Roll, 
-			PlayableCharacter->GetActorRotation().Pitch, 
-			TargetRotation.Yaw));
+		//FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), 
+		//	TeleportTarget->GetActorLocation());
+		//PlayableCharacter->SetActorRotation(
+		//	FRotator(PlayableCharacter->GetActorRotation().Roll, 
+			//PlayableCharacter->GetActorRotation().Pitch, 
+		//	TargetRotation.Yaw));
 
-		PlayableCharacter->SetActorLocation(TeleportTarget->GetActorLocation(), false, nullptr, ETeleportType::TeleportPhysics);
+		float ResultFloat;
+
+		if (HitFromFront)
+		{
+			ResultFloat = 100.f;
+		}
+		else
+		{ 
+			ResultFloat = -100.f;
+		}
+		FVector ResultVector = TeleportTarget->GetActorLocation() + TeleportTarget->GetActorForwardVector() * ResultFloat;
+		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TeleportTarget->GetActorLocation());
+		
+		PlayableCharacter->SetActorRotation(TargetRotation, ETeleportType::TeleportPhysics);
+		PlayableCharacter->SetActorLocation(ResultVector, false, NULL, ETeleportType::TeleportPhysics);
+		PlayableCharacter->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation("Target", TeleportTarget->GetActorLocation(), TargetRotation);
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
+
+		PlayableCharacter->PlayAnimMontage(PlayableCharacter->ComboBybass);
 	}
 }
 

@@ -48,6 +48,9 @@ AFTACharacter::AFTACharacter()
 	AttacksComponent = CreateDefaultSubobject<UAttacksComponent>(TEXT("AttacksComponent"));
 	this->AddOwnedComponent(AttacksComponent);
 
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+	this->AddOwnedComponent(MotionWarpingComponent);
+
 }
 
 void AFTACharacter::BeginPlay()
