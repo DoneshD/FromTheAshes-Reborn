@@ -158,7 +158,7 @@ void UTargetingComponent::SoftLockOn(float Distance)
 			ObjectTypes,
 			false,
 			ActorArray,
-			EDrawDebugTrace::ForDuration,
+			EDrawDebugTrace::None,
 			OutHit,
 			true);
 
@@ -203,7 +203,7 @@ void UTargetingComponent::HardLockOn()
 				ObjectTypes,
 				false,
 				ActorArray,
-				EDrawDebugTrace::ForDuration,
+				EDrawDebugTrace::None,
 				OutHit,
 				true);
 

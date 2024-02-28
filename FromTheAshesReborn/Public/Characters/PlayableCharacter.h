@@ -301,6 +301,10 @@ public:
 	UFUNCTION()
 	virtual void ResetWarpTarget() override;
 
+	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) override;
+
 	TObjectPtr<AActor> WarpTarget;
+
+	TObjectPtr<UArrowComponent> WarpTargetArrow;
 
 };

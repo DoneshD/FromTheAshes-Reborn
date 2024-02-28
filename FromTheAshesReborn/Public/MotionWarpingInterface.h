@@ -26,4 +26,6 @@ public:
 	virtual void UpdateKatanaWarpTarget() = 0;
 
 	virtual void ResetWarpTarget() = 0;
+
+	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) = 0;
 };

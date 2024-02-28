@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "DamageSystem/DamageSystem.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "AIController.h"
 
@@ -224,7 +225,68 @@ void AEnemyBase::EndTargeted()
 
 EHitReactionDirection AEnemyBase::GetHitKatanaEnemyDirection(FVector HitLocation)
 {
+	TArray<float> DistanceArray;
+	float ClosestArrowDistance = 1000.0f;
+	int ClosestArrowIndex = 0;
 
+	DistanceArray.Add(FVector::Dist(HitLocation, LeftArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(HitLocation, RightArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(HitLocation, FrontArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(HitLocation, BackArrow->GetComponentLocation()));
+
+	for (const float& EachArrowDistance : DistanceArray)
+	{
+		if (EachArrowDistance < ClosestArrowDistance)
+		{
+			ClosestArrowDistance = EachArrowDistance;
+			ClosestArrowIndex = DistanceArray.Find(EachArrowDistance);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowIndex: %d"), ClosestArrowIndex);
+	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowDistance: %f"), ClosestArrowDistance);
+	switch (ClosestArrowIndex)
+	{
+	case 0:
+		return EHitReactionDirection::EHitReactionDirection_Left;
+
+	case 1:
+		return EHitReactionDirection::EHitReactionDirection_Right;
+
+	case 2:
+		return EHitReactionDirection::EHitReactionDirection_Front;
+
+	case 3:
+		return EHitReactionDirection::EHitReactionDirection_Back;
+
+	default:
+		break;
+	}
 	return EHitReactionDirection::EHitReactionDirection_None;
+}
+
+void AEnemyBase::UpdateKatanaWarpTarget()
+{
+}
+
+void AEnemyBase::ResetWarpTarget()
+{
+}
+
+TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitReactionDirection HitDirection)
+{
+	switch (HitDirection)
+	{
+	case EHitReactionDirection::EHitReactionDirection_Left:
+		return LeftArrow;
+
+		case EHitReactionDirection::EHitReactionDirection_Back:
+		return BackArrow;
+
+	case EHitReactionDirection::EHitReactionDirection_Front:
+		return FrontArrow;
+
+	case EHitReactionDirection::EHitReactionDirection_Right:
+		return RightArrow;
 }
 

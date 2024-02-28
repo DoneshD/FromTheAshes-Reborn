@@ -9,6 +9,7 @@
 #include "DamageSystem/DamageInfo.h"
 #include "TargetingComponent.h"
 #include "ComboSystemComponent.h"
+#include "Components/ArrowComponent.h"
 #include "TimelineHelper.h"
 
 #include "EnhancedInputComponent.h"
@@ -589,11 +590,11 @@ void APlayableCharacter::UpdateKatanaWarpTarget()
 		GetWorld(),
 		GetActorLocation(),
 		EndLocation,
-		50.f,
+		35.f,
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHit,
 		true
 	);
@@ -604,10 +605,31 @@ void APlayableCharacter::UpdateKatanaWarpTarget()
 		if (HitActor)
 		{
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(HitActor);
+			IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(HitActor);
 			if(AIEnemyInterface)
 			{
 				WarpTarget = HitActor;
-				AIEnemyInterface->GetHitKatanaEnemyDirection(GetActorLocation());
+				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitKatanaEnemyDirection(GetActorLocation());
+				UE_LOG(LogTemp, Warning, TEXT("HitDirection: %d"), static_cast<int32>(HitDirection));
+				if (MotionWarpingInterface)
+				{
+					WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
+					FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
+
+					FVector TargetLocation = WarpTarget->GetActorLocation() - WarpTarget->GetActorForwardVector();
+					FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
+
+					FMotionWarpingTarget MotionWarpingTargetParams;
+					MotionWarpingTargetParams.Name = "CombatTarget";
+					MotionWarpingTargetParams.Location = WarpTargetLocation;
+					MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
+					MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
+					MotionWarpingTargetParams.BoneName = "root";
+
+					MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
+					
+				}
+		
 			}
 		}
 	}
@@ -615,5 +637,10 @@ void APlayableCharacter::UpdateKatanaWarpTarget()
 
 void APlayableCharacter::ResetWarpTarget()
 {
+}
+
+TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitReactionDirection HitDirection)
+{
+	return nullptr;
 }
 
