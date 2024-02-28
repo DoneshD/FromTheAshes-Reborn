@@ -572,3 +572,48 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 {
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
+
+void APlayableCharacter::UpdateKatanaWarpTarget()
+{
+
+	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
+	FHitResult OutHit;
+
+	TArray<AActor*> ActorArray;
+	ActorArray.Add(this);
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+		GetWorld(),
+		GetActorLocation(),
+		EndLocation,
+		50.f,
+		ObjectTypes,
+		false,
+		ActorArray,
+		EDrawDebugTrace::None,
+		OutHit,
+		true
+	);
+
+	if (TargetHit)
+	{
+		AActor* HitActor = OutHit.GetActor();
+		if (HitActor)
+		{
+			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(HitActor);
+			if(AIEnemyInterface)
+			{
+				WarpTarget = HitActor;
+				AIEnemyInterface->GetHitKatanaEnemyDirection(GetActorLocation());
+			}
+		}
+	}
+}
+
+void APlayableCharacter::ResetWarpTarget()
+{
+}
+

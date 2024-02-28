@@ -222,3 +222,9 @@ void AEnemyBase::EndTargeted()
 	GetMesh()->SetOverlayMaterial(DefaultMaterial);
 }
 
+EHitReactionDirection AEnemyBase::GetHitKatanaEnemyDirection(FVector HitLocation)
+{
+
+	return EHitReactionDirection::EHitReactionDirection_None;
+}
+

@@ -123,4 +123,7 @@ public:
 	UFUNCTION()
 	virtual void EndTargeted() override;
 
+	UFUNCTION()
+	virtual EHitReactionDirection GetHitKatanaEnemyDirection(FVector HitLocation) override;
+
 };

@@ -6,7 +6,7 @@
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
-
+#include "MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
@@ -24,7 +24,7 @@ class UTargetingComponent;
 class UComboSystemComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface
+class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface
 {
 	GENERATED_BODY()
 
@@ -292,4 +292,15 @@ public:
 
 	UFUNCTION()
 	virtual void ReturnAttackToken(int Amount) override;
+	
+	//Motion Warping Interface
+
+	UFUNCTION(BlueprintCallable)
+	virtual void UpdateKatanaWarpTarget() override;
+
+	UFUNCTION()
+	virtual void ResetWarpTarget() override;
+
+	TObjectPtr<AActor> WarpTarget;
+
 };
