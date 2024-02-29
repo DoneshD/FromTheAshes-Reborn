@@ -280,7 +280,7 @@ TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitReactionDirection H
 	case EHitReactionDirection::EHitReactionDirection_Left:
 		return LeftArrow;
 
-		case EHitReactionDirection::EHitReactionDirection_Back:
+	case EHitReactionDirection::EHitReactionDirection_Back:
 		return BackArrow;
 
 	case EHitReactionDirection::EHitReactionDirection_Front:
@@ -288,5 +288,9 @@ TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitReactionDirection H
 
 	case EHitReactionDirection::EHitReactionDirection_Right:
 		return RightArrow;
+
+	default:
+		return FrontArrow;
+	}
 }
 
