@@ -296,7 +296,7 @@ public:
 	//Motion Warping Interface
 
 	UFUNCTION(BlueprintCallable)
-	virtual void UpdateKatanaWarpTarget() override;
+	virtual void UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
 
 	UFUNCTION()
 	virtual void ResetWarpTarget() override;

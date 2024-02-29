@@ -5,6 +5,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "DamageSystem/DamageSystem.h"
+#include "MotionWarpingComponent.h"
+#include "AttacksComponent.h"
 #include "Components/ArrowComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)
@@ -48,7 +50,11 @@ AFTACharacter::AFTACharacter()
 	AttacksComponent = CreateDefaultSubobject<UAttacksComponent>(TEXT("AttacksComponent"));
 	this->AddOwnedComponent(AttacksComponent);
 
+	//MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+	//this->AddOwnedComponent(MotionWarpingComponent);
+
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+	//MotionWarpingComponent->
 	this->AddOwnedComponent(MotionWarpingComponent);
 
 }

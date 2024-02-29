@@ -265,7 +265,7 @@ EHitReactionDirection AEnemyBase::GetHitKatanaEnemyDirection(FVector HitLocation
 	return EHitReactionDirection::EHitReactionDirection_None;
 }
 
-void AEnemyBase::UpdateKatanaWarpTarget()
+void AEnemyBase::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
 }
 

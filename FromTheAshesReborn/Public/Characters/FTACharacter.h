@@ -25,7 +25,7 @@ public:
 	TObjectPtr<UAttacksComponent> AttacksComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "MotionWarpingComponent", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+	UMotionWarpingComponent* MotionWarpingComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> FrontArrow;

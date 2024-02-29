@@ -11,6 +11,7 @@
 #include "ComboSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "TimelineHelper.h"
+#include "MotionWarpingComponent.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -574,7 +575,7 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
 
-void APlayableCharacter::UpdateKatanaWarpTarget()
+void APlayableCharacter::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
 
 	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
@@ -613,20 +614,31 @@ void APlayableCharacter::UpdateKatanaWarpTarget()
 				UE_LOG(LogTemp, Warning, TEXT("HitDirection: %d"), static_cast<int32>(HitDirection));
 				if (MotionWarpingInterface)
 				{
-					WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
-					FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
+					UE_LOG(LogTemp, Display, TEXT("MotionWarpingInterface"));
+					UMotionWarpingComponent* NewMotionWarpingComponent = FindComponentByClass<UMotionWarpingComponent>();
+					if (NewMotionWarpingComponent)
+					{
 
-					FVector TargetLocation = WarpTarget->GetActorLocation() - WarpTarget->GetActorForwardVector();
-					FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
+						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
+						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
 
-					FMotionWarpingTarget MotionWarpingTargetParams;
-					MotionWarpingTargetParams.Name = "CombatTarget";
-					MotionWarpingTargetParams.Location = WarpTargetLocation;
-					MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
-					MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
-					MotionWarpingTargetParams.BoneName = "root";
+						FVector TargetLocation = WarpTarget->GetActorLocation() - WarpTarget->GetActorForwardVector();
+						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
 
-					MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
+						MotionWarpingTargetParams.Name = FName("CombatTarget");
+						MotionWarpingTargetParams.Location = WarpTargetLocation;
+						MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
+						MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
+						MotionWarpingTargetParams.BoneName = FName("root");
+
+						UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *MotionWarpingTargetParams.Name.ToString());
+						UE_LOG(LogTemp, Warning, TEXT("Location: %s"), *WarpTargetLocation.ToString());
+						UE_LOG(LogTemp, Warning, TEXT("Roll: %f, Yaw: %f"), TargetRotation.Roll, TargetRotation.Yaw);
+						UE_LOG(LogTemp, Warning, TEXT("BoneName: %s"), *MotionWarpingTargetParams.BoneName.ToString());
+
+
+						NewMotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
+					}
 					
 				}
 		
