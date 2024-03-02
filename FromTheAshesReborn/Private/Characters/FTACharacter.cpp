@@ -53,9 +53,8 @@ AFTACharacter::AFTACharacter()
 	//MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	//this->AddOwnedComponent(MotionWarpingComponent);
 
-	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
-	//MotionWarpingComponent->
-	this->AddOwnedComponent(MotionWarpingComponent);
+	//MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+	//this->AddOwnedComponent(MotionWarpingComponent);
 
 }
 

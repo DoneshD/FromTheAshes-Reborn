@@ -615,7 +615,7 @@ void APlayableCharacter::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarp
 				if (MotionWarpingInterface)
 				{
 					UE_LOG(LogTemp, Display, TEXT("MotionWarpingInterface"));
-					UMotionWarpingComponent* NewMotionWarpingComponent = FindComponentByClass<UMotionWarpingComponent>();
+					UMotionWarpingComponent* NewMotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
 					if (NewMotionWarpingComponent)
 					{
 
