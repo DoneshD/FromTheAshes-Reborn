@@ -53,6 +53,6 @@ public:
 	virtual void EndTargeted() = 0;
 
 	UFUNCTION()
-	virtual EHitReactionDirection GetHitKatanaEnemyDirection(FVector HitLocation) = 0;
+	virtual EHitReactionDirection GetHitEnemyDirection(FVector HitLocation) = 0;
 
 };

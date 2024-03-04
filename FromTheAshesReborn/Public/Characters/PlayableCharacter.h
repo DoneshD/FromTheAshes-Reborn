@@ -6,7 +6,7 @@
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
-#include "MotionWarpingInterface.h"
+#include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
@@ -296,9 +296,9 @@ public:
 	//Motion Warping Interface
 
 	UFUNCTION(BlueprintCallable)
-	virtual void UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+	virtual void UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void ResetWarpTarget() override;
 
 	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) override;

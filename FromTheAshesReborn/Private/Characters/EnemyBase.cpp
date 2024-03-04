@@ -223,7 +223,7 @@ void AEnemyBase::EndTargeted()
 	GetMesh()->SetOverlayMaterial(DefaultMaterial);
 }
 
-EHitReactionDirection AEnemyBase::GetHitKatanaEnemyDirection(FVector HitLocation)
+EHitReactionDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 {
 	TArray<float> DistanceArray;
 	float ClosestArrowDistance = 1000.0f;
@@ -265,7 +265,7 @@ EHitReactionDirection AEnemyBase::GetHitKatanaEnemyDirection(FVector HitLocation
 	return EHitReactionDirection::EHitReactionDirection_None;
 }
 
-void AEnemyBase::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
 }
 

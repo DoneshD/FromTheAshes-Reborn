@@ -8,7 +8,7 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
-#include "MotionWarpingInterface.h"
+#include "Interfaces/MotionWarpingInterface.h"
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
@@ -125,12 +125,12 @@ public:
 	virtual void EndTargeted() override;
 
 	UFUNCTION()
-	virtual EHitReactionDirection GetHitKatanaEnemyDirection(FVector HitLocation) override;
+	virtual EHitReactionDirection GetHitEnemyDirection(FVector HitLocation) override;
 
 	//Motion Warping Interface
 
 	UFUNCTION(BlueprintCallable)
-	virtual void UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+	virtual void UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
 
 	UFUNCTION()
 	virtual void ResetWarpTarget() override;

@@ -1,4 +1,4 @@
-#include "AttacksComponent.h"
+#include "CombatComponents/AttacksComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "DamageSystem/DamageSystem.h"

@@ -7,10 +7,10 @@
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-#include "TargetingComponent.h"
-#include "ComboSystemComponent.h"
+#include "TargetingComponents/TargetingComponent.h"
+#include "CombatComponents/ComboSystemComponent.h"
 #include "Components/ArrowComponent.h"
-#include "TimelineHelper.h"
+#include "Helpers/TimelineHelper.h"
 #include "MotionWarpingComponent.h"
 
 #include "EnhancedInputComponent.h"
@@ -137,7 +137,16 @@ void APlayableCharacter::InputTeleport()
 
 void APlayableCharacter::InputTelportStrike()
 {
-	TargetingComponent->StartTeleport();
+	if (TargetingComponent) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TargetingCompoLL"));
+
+		TargetingComponent->StartTeleport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TargetingComponent is NULL"));
+	}
 }
 
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
@@ -575,7 +584,7 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
 
-void APlayableCharacter::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+void APlayableCharacter::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
 
 	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
@@ -610,13 +619,11 @@ void APlayableCharacter::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarp
 			if(AIEnemyInterface)
 			{
 				WarpTarget = HitActor;
-				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitKatanaEnemyDirection(GetActorLocation());
-				UE_LOG(LogTemp, Warning, TEXT("HitDirection: %d"), static_cast<int32>(HitDirection));
+				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetActorLocation());
 				if (MotionWarpingInterface)
 				{
-					UE_LOG(LogTemp, Display, TEXT("MotionWarpingInterface"));
-					UMotionWarpingComponent* NewMotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
-					if (NewMotionWarpingComponent)
+					UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
+					if (MotionWarpingComponent)
 					{
 
 						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
@@ -631,17 +638,9 @@ void APlayableCharacter::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarp
 						MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
 						MotionWarpingTargetParams.BoneName = FName("root");
 
-						UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *MotionWarpingTargetParams.Name.ToString());
-						UE_LOG(LogTemp, Warning, TEXT("Location: %s"), *WarpTargetLocation.ToString());
-						UE_LOG(LogTemp, Warning, TEXT("Roll: %f, Yaw: %f"), TargetRotation.Roll, TargetRotation.Yaw);
-						UE_LOG(LogTemp, Warning, TEXT("BoneName: %s"), *MotionWarpingTargetParams.BoneName.ToString());
-
-
-						NewMotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
+						MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
 					}
-					
 				}
-		
 			}
 		}
 	}
@@ -649,6 +648,16 @@ void APlayableCharacter::UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarp
 
 void APlayableCharacter::ResetWarpTarget()
 {
+	IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(this);
+	if (MotionWarpingInterface)
+	{
+		UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
+		if (MotionWarpingComponent)
+		{
+			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
+			WarpTargetArrow = NULL;
+		}
+	}
 }
 
 TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitReactionDirection HitDirection)

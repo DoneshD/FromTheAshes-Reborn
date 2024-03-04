@@ -1,5 +1,5 @@
 
-#include "TargetingComponent.h"
+#include "TargetingComponents/TargetingComponent.h"
 #include "Characters/PlayableCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Camera/CameraComponent.h"
@@ -227,8 +227,11 @@ void UTargetingComponent::HardLockOn()
 
 void UTargetingComponent::StartTeleport()
 {
+	
 	if (PlayableCharacter->IsTeleportActive && TeleportTarget)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Teleporting"));
+		/*
 		float ResultFloat;
 
 		if (HitFromFront)
@@ -247,6 +250,8 @@ void UTargetingComponent::StartTeleport()
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
 
 		PlayableCharacter->PlayAnimMontage(PlayableCharacter->ComboBybass);
+		*/
 	}
+	
 }
 

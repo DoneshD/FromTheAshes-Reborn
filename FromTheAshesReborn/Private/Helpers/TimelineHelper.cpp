@@ -1,4 +1,4 @@
-#include "TimelineHelper.h"
+#include "Helpers/TimelineHelper.h"
 
 UTimelineComponent* TimelineHelper::CreateTimeline(UTimelineComponent* Timeline, AActor* Target, UCurveFloat* LerpCurve, FName TimelineName, FName InterpFunctionName, FName FinishedFunctionName)
 {

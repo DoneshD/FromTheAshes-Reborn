@@ -6,7 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "DamageSystem/DamageSystem.h"
 #include "MotionWarpingComponent.h"
-#include "AttacksComponent.h"
+#include "CombatComponents/AttacksComponent.h"
 #include "Components/ArrowComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)

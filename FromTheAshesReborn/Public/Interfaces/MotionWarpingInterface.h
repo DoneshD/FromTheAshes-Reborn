@@ -23,7 +23,7 @@ class FROMTHEASHESREBORN_API IMotionWarpingInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void UpdateKatanaWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
+	virtual void UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
 
 	virtual void ResetWarpTarget() = 0;
 
