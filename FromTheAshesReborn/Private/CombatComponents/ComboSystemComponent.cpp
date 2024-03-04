@@ -1,4 +1,4 @@
-#include "ComboSystemComponent.h"
+#include "CombatComponents/ComboSystemComponent.h"
 #include "Enums/EStates.h"
 #include "Characters/PlayableCharacter.h"
 

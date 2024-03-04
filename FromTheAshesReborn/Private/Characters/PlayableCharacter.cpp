@@ -7,9 +7,11 @@
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-#include "TargetingComponent.h"
-#include "ComboSystemComponent.h"
-#include "TimelineHelper.h"
+#include "TargetingComponents/TargetingComponent.h"
+#include "CombatComponents/ComboSystemComponent.h"
+#include "Components/ArrowComponent.h"
+#include "Helpers/TimelineHelper.h"
+#include "MotionWarpingComponent.h"
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -135,7 +137,16 @@ void APlayableCharacter::InputTeleport()
 
 void APlayableCharacter::InputTelportStrike()
 {
-	TargetingComponent->StartTeleport();
+	if (TargetingComponent) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TargetingCompoLL"));
+
+		TargetingComponent->StartTeleport();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TargetingComponent is NULL"));
+	}
 }
 
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
@@ -572,3 +583,85 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 {
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
+
+void APlayableCharacter::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+{
+
+	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
+	FHitResult OutHit;
+
+	TArray<AActor*> ActorArray;
+	ActorArray.Add(this);
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+		GetWorld(),
+		GetActorLocation(),
+		EndLocation,
+		35.f,
+		ObjectTypes,
+		false,
+		ActorArray,
+		EDrawDebugTrace::ForDuration,
+		OutHit,
+		true
+	);
+
+	if (TargetHit)
+	{
+		AActor* HitActor = OutHit.GetActor();
+		if (HitActor)
+		{
+			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(HitActor);
+			IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(HitActor);
+			if(AIEnemyInterface)
+			{
+				WarpTarget = HitActor;
+				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetActorLocation());
+				if (MotionWarpingInterface)
+				{
+					UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
+					if (MotionWarpingComponent)
+					{
+
+						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
+						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
+
+						FVector TargetLocation = WarpTarget->GetActorLocation() - WarpTarget->GetActorForwardVector();
+						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
+
+						MotionWarpingTargetParams.Name = FName("CombatTarget");
+						MotionWarpingTargetParams.Location = WarpTargetLocation;
+						MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
+						MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
+						MotionWarpingTargetParams.BoneName = FName("root");
+
+						MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
+					}
+				}
+			}
+		}
+	}
+}
+
+void APlayableCharacter::ResetWarpTarget()
+{
+	IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(this);
+	if (MotionWarpingInterface)
+	{
+		UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
+		if (MotionWarpingComponent)
+		{
+			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
+			WarpTargetArrow = NULL;
+		}
+	}
+}
+
+TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitReactionDirection HitDirection)
+{
+	return nullptr;
+}
+

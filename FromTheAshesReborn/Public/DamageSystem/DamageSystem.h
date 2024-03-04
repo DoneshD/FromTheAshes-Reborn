@@ -3,11 +3,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DamageInfo.h"
-#include "EHitReactionDirection.h"
+#include "Enums/EHitReactionDirection.h"
 #include "DamageSystem.generated.h"
 
-//DECLARE_DELEGATE(FOnDamageResponse);
-//DECLARE_DELEGATE_OneParam(FOnDamageResponse, uint8)
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, FDamageInfo)
 
 UENUM(BlueprintType)

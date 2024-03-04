@@ -8,6 +8,7 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
+#include "Interfaces/MotionWarpingInterface.h"
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
@@ -16,7 +17,7 @@ class AIControllerEnemyBase;
 //class UMaterialInterface;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface, public IMotionWarpingInterface
 {
 	GENERATED_BODY()
 
@@ -122,5 +123,17 @@ public:
 
 	UFUNCTION()
 	virtual void EndTargeted() override;
+
+	UFUNCTION()
+	virtual EHitReactionDirection GetHitEnemyDirection(FVector HitLocation) override;
+
+	//Motion Warping Interface
+
+	UFUNCTION(BlueprintCallable)
+	virtual void UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+
+	UFUNCTION()
+	virtual void ResetWarpTarget() override;
+	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) override;
 
 };

@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Enums/EDamageResponse.h"
 #include "Enums/EDamageType.h"
-#include "EHitReactionDirection.h"
+#include "Enums/EHitReactionDirection.h"
 #include "DamageInfo.generated.h"
 
 USTRUCT(BlueprintType)
