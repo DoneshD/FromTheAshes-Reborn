@@ -6,6 +6,7 @@
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
+#include "TargetingComponents/TargetingComponent.h"
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
