@@ -1,7 +1,11 @@
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DamageSystem/DamageSystem.h"
+#include "MotionWarpingComponent.h"
 #include "Interfaces/DamagableInterface.h"
+#include "Interfaces/MotionWarpingInterface.h"
+#include "Interfaces/AIEnemyInterface.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
 {
@@ -146,21 +150,21 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 	}
 }
 
-void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget()
+void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-	/*
-	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
+	
+	FVector EndLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 250.f;
 	FHitResult OutHit;
 
 	TArray<AActor*> ActorArray;
-	ActorArray.Add(this);
+	ActorArray.Add(GetOwner());
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 
 	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
 		GetWorld(),
-		GetActorLocation(),
+		GetOwner()->GetActorLocation(),
 		EndLocation,
 		35.f,
 		ObjectTypes,
@@ -181,18 +185,18 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget()
 			if (AIEnemyInterface)
 			{
 				WarpTarget = HitActor;
-				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetActorLocation());
+				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetOwner()->GetActorLocation());
 				if (MotionWarpingInterface)
 				{
-					UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
+					UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
 					if (MotionWarpingComponent)
 					{
 
 						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
 						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
 
-						FVector TargetLocation = WarpTarget->GetActorLocation() - WarpTarget->GetActorForwardVector();
-						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
+						FVector TargetLocation = HitActor->GetActorLocation() - HitActor->GetActorForwardVector();
+						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
 
 						MotionWarpingTargetParams.Name = FName("CombatTarget");
 						MotionWarpingTargetParams.Location = WarpTargetLocation;
@@ -206,7 +210,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget()
 			}
 		}
 	}
-	*/
+	
 }
 
 void UMeleeAttackLogicComponent::ResetMeleeAttackWarpToTarget()

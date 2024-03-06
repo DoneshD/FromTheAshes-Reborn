@@ -25,6 +25,10 @@ protected:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
 
+	TObjectPtr<UArrowComponent> WarpTargetArrow;
+
+	TObjectPtr<AActor> WarpTarget;
+
 	FOnAttackEnd OnAttackEnd;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -46,7 +50,7 @@ public:
 
 	void MeleeTraceCollisions();
 
-	void MeleeAttackWarpToTarget();
+	void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams);
 
 	void ResetMeleeAttackWarpToTarget();
 

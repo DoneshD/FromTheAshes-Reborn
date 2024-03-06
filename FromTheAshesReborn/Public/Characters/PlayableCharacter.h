@@ -312,25 +312,25 @@ public:
 	//Melee Combatant Interface
 
 	UFUNCTION()
-	virtual void EmptyHitActorsArray();
+	virtual void EmptyHitActorsArray() override;
 
 	UFUNCTION()
-	virtual void StartMeleeAttackCollisions();
+	virtual void StartMeleeAttackCollisions() override;
 
 	UFUNCTION()
-	virtual void EndMeleeAttackCollisions();
+	virtual void EndMeleeAttackCollisions() override;
 
 	UFUNCTION()
-	virtual bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
+	virtual bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits) override;
 
 	UFUNCTION()
-	virtual void MeleeTraceCollisions();
+	virtual void MeleeTraceCollisions() override;
 
 	UFUNCTION()
-	virtual void MeleeAttackWarpToTarget();
+	virtual void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
 
 	UFUNCTION()
-	virtual void ResetMeleeAttackWarpToTarget();
+	virtual void ResetMeleeAttackWarpToTarget() override;
 
 	TObjectPtr<AActor> WarpTarget;
 

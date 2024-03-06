@@ -590,7 +590,6 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 
 void APlayableCharacter::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-	MeleeAttackLogicComponent->MeleeAttackWarpToTarget();
 	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
 	FHitResult OutHit;
 
@@ -694,9 +693,9 @@ void APlayableCharacter::MeleeTraceCollisions()
 	MeleeAttackLogicComponent->MeleeTraceCollisions();
 }
 
-void APlayableCharacter::MeleeAttackWarpToTarget()
+void APlayableCharacter::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-	MeleeAttackLogicComponent->MeleeAttackWarpToTarget();
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MotionWarpingTargetParams);
 }
 
 void APlayableCharacter::ResetMeleeAttackWarpToTarget()

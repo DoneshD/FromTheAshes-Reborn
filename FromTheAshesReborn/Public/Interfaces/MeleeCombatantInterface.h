@@ -32,7 +32,7 @@ public:
 	virtual void MeleeTraceCollisions() = 0;
 
 	UFUNCTION()
-	virtual void MeleeAttackWarpToTarget() = 0;
+	virtual void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
 
 	UFUNCTION()
 	virtual void ResetMeleeAttackWarpToTarget() = 0;
