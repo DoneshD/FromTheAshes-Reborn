@@ -9,6 +9,7 @@
 #include "DamageSystem/DamageInfo.h"
 #include "TargetingComponents/TargetingComponent.h"
 #include "CombatComponents/ComboSystemComponent.h"
+#include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "MotionWarpingComponent.h"
@@ -37,6 +38,9 @@ APlayableCharacter::APlayableCharacter()
 
 	ComboSystemComponent = CreateDefaultSubobject<UComboSystemComponent>(TEXT("ComboSystemComponent"));
 	this->AddOwnedComponent(ComboSystemComponent);
+
+	MeleeAttackLogicComponent = CreateDefaultSubobject<UMeleeAttackLogicComponent>(TEXT("MeleeAttackLogicComponent"));
+	this->AddOwnedComponent(MeleeAttackLogicComponent);
 
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
@@ -586,7 +590,7 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 
 void APlayableCharacter::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget();
 	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
 	FHitResult OutHit;
 
@@ -663,5 +667,40 @@ void APlayableCharacter::ResetWarpTarget()
 TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitReactionDirection HitDirection)
 {
 	return nullptr;
+}
+
+void APlayableCharacter::EmptyHitActorsArray()
+{
+	MeleeAttackLogicComponent->EmptyHitActorsArray();
+}
+
+void APlayableCharacter::StartMeleeAttackCollisions()
+{
+	MeleeAttackLogicComponent->StartMeleeAttackCollisions();
+}
+
+void APlayableCharacter::EndMeleeAttackCollisions()
+{
+	MeleeAttackLogicComponent->EndMeleeAttackCollisions();
+}
+
+bool APlayableCharacter::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
+{
+	return MeleeAttackLogicComponent->MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
+}
+
+void APlayableCharacter::MeleeTraceCollisions()
+{
+	MeleeAttackLogicComponent->MeleeTraceCollisions();
+}
+
+void APlayableCharacter::MeleeAttackWarpToTarget()
+{
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget();
+}
+
+void APlayableCharacter::ResetMeleeAttackWarpToTarget()
+{
+	MeleeAttackLogicComponent->ResetMeleeAttackWarpToTarget();
 }
 

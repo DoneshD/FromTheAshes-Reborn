@@ -9,6 +9,7 @@
 #include "TargetingComponents/TargetingComponent.h"
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
+#include "Interfaces/MeleeCombatantInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
 
@@ -23,9 +24,10 @@ class UTimelineComponent;
 class UCurveFloat;
 class UTargetingComponent;
 class UComboSystemComponent;
+class UMeleeAttackLogicComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface
+class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface, public IMeleeCombatantInterface
 {
 	GENERATED_BODY()
 
@@ -41,6 +43,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UComboSystemComponent> ComboSystemComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMeleeAttackLogicComponent> MeleeAttackLogicComponent;
 
 	//-----------------------------------------Inputs-----------------------------------------------
 
@@ -303,6 +308,29 @@ public:
 	virtual void ResetWarpTarget() override;
 
 	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) override;
+
+	//Melee Combatant Interface
+
+	UFUNCTION()
+	virtual void EmptyHitActorsArray();
+
+	UFUNCTION()
+	virtual void StartMeleeAttackCollisions();
+
+	UFUNCTION()
+	virtual void EndMeleeAttackCollisions();
+
+	UFUNCTION()
+	virtual bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
+
+	UFUNCTION()
+	virtual void MeleeTraceCollisions();
+
+	UFUNCTION()
+	virtual void MeleeAttackWarpToTarget();
+
+	UFUNCTION()
+	virtual void ResetMeleeAttackWarpToTarget();
 
 	TObjectPtr<AActor> WarpTarget;
 

@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "DamageSystem/DamageSystem.h"
+
 #include "MeleeAttackLogicComponent.generated.h"
+
+DECLARE_DELEGATE(FOnAttackEnd);
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -12,17 +16,42 @@ class FROMTHEASHESREBORN_API UMeleeAttackLogicComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
-	// Sets default values for this component's properties
+protected:
+
 	UMeleeAttackLogicComponent();
 
-protected:
-	// Called when the game starts
+	UDamageSystem* DamageSystemComponent;
+
+	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
+	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
+
+	FOnAttackEnd OnAttackEnd;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EHitReactionDirection HitReactionDirection;
+
+	bool IsActiveCollision = false;
+
+public:
+
+	void EmptyHitActorsArray();
+
+	UFUNCTION(BlueprintCallable, Category = "Melee Attack")
+	void StartMeleeAttackCollisions();
+
+	UFUNCTION(BlueprintCallable, Category = "Melee Attack")
+	void EndMeleeAttackCollisions();
+
+	bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
+
+	void MeleeTraceCollisions();
+
+	void MeleeAttackWarpToTarget();
+
+	void ResetMeleeAttackWarpToTarget();
+
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
 };
