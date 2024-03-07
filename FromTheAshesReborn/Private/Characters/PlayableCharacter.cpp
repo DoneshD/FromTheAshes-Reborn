@@ -618,14 +618,14 @@ void APlayableCharacter::EndMeleeAttackCollisions()
 	MeleeAttackLogicComponent->EndMeleeAttackCollisions();
 }
 
-bool APlayableCharacter::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
-{
-	return MeleeAttackLogicComponent->MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
-}
-
 void APlayableCharacter::MeleeTraceCollisions()
 {
 	MeleeAttackLogicComponent->MeleeTraceCollisions();
+}
+
+bool APlayableCharacter::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
+{
+	return MeleeAttackLogicComponent->MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 }
 
 void APlayableCharacter::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)

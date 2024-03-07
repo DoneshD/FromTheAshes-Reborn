@@ -5,6 +5,7 @@
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/AIEnemyInterface.h"
+#include "GameFramework/Character.h"
 #include "EMeleeAttackRange.h"
 
 #include "Kismet/KismetMathLibrary.h"
@@ -176,7 +177,9 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 	
 	float WarpRange = GetMeleeAttackRange(AttackRange);
 
-	FVector EndLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * WarpRange;
+	ACharacter* Character = Cast<ACharacter>(GetOwner());
+
+	FVector EndLocation = GetOwner()->GetActorLocation() + Character->GetCharacterMovement()->GetLastInputVector() * WarpRange;
 	FHitResult OutHit;
 
 	TArray<AActor*> ActorArray;
@@ -228,8 +231,6 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 						MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
 						MotionWarpingTargetParams.BoneName = FName("root");
 						MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
-
-						UE_LOG(LogTemp, Warning, TEXT("NIce dude"));
 					}
 				}
 			}
@@ -248,7 +249,6 @@ void UMeleeAttackLogicComponent::ResetMeleeAttackWarpToTarget()
 		{
 			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
 			WarpTargetArrow = NULL;
-			UE_LOG(LogTemp, Warning, TEXT("very nice"));
 
 		}
 	}
