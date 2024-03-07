@@ -322,7 +322,7 @@ public:
 
 	UFUNCTION()
 	virtual bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits) override;
-
+	 
 	UFUNCTION()
 	virtual void MeleeTraceCollisions() override;
 

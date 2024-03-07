@@ -5,6 +5,8 @@
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/AIEnemyInterface.h"
+#include "EMeleeAttackRange.h"
+
 #include "Kismet/KismetMathLibrary.h"
 
 UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
@@ -16,7 +18,7 @@ UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
 void UMeleeAttackLogicComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 }
 
 void UMeleeAttackLogicComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -27,6 +29,25 @@ void UMeleeAttackLogicComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	{
 		MeleeTraceCollisions();
 	}
+}
+
+float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRange)
+{
+	switch (MeleeAttackRange)
+	{
+	case EMeleeAttackRange::EMeleeAttackRange_Close:
+		return 250.0f;
+
+	case EMeleeAttackRange::EMeleeAttackRange_Mid:
+		return 400.0f;
+
+	case EMeleeAttackRange::EMeleeAttackRange_Far:
+		return 750.0f;
+
+	default:
+		return 250.0f;
+	}
+	return 0.0f;
 }
 
 void UMeleeAttackLogicComponent::EmptyHitActorsArray()
@@ -150,10 +171,12 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 	}
 }
 
-void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams, EMeleeAttackRange AttackRange)
 {
 	
-	FVector EndLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 250.f;
+	float WarpRange = GetMeleeAttackRange(AttackRange);
+
+	FVector EndLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * WarpRange;
 	FHitResult OutHit;
 
 	TArray<AActor*> ActorArray;
@@ -161,6 +184,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
 
 	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
 		GetWorld(),
@@ -192,7 +216,6 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 					UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
 					if (MotionWarpingComponent)
 					{
-
 						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
 						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
 
@@ -204,8 +227,9 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 						MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
 						MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
 						MotionWarpingTargetParams.BoneName = FName("root");
-						UE_LOG(LogTemp, Warning, TEXT("FSFHSFSF"));
 						MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
+
+						UE_LOG(LogTemp, Warning, TEXT("NIce dude"));
 					}
 				}
 			}
@@ -224,7 +248,8 @@ void UMeleeAttackLogicComponent::ResetMeleeAttackWarpToTarget()
 		{
 			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
 			WarpTargetArrow = NULL;
+			UE_LOG(LogTemp, Warning, TEXT("very nice"));
+
 		}
 	}
-	
 }

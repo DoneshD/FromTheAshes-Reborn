@@ -243,8 +243,6 @@ EHitReactionDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowIndex: %d"), ClosestArrowIndex);
-	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowDistance: %f"), ClosestArrowDistance);
 	switch (ClosestArrowIndex)
 	{
 	case 0:

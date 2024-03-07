@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DamageSystem/DamageSystem.h"
+#include "EMeleeAttackRange.h"
 
 #include "MeleeAttackLogicComponent.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
-
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UMeleeAttackLogicComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-protected:
+public:
 
 	UMeleeAttackLogicComponent();
 
@@ -34,9 +34,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EHitReactionDirection HitReactionDirection;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EMeleeAttackRange MeleeAttackRange;
+
 	bool IsActiveCollision = false;
 
 public:
+
+	float GetMeleeAttackRange(EMeleeAttackRange AttackRange);
 
 	void EmptyHitActorsArray();
 
@@ -50,7 +55,7 @@ public:
 
 	void MeleeTraceCollisions();
 
-	void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams);
+	void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams, EMeleeAttackRange WarpRange);
 
 	void ResetMeleeAttackWarpToTarget();
 

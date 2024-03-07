@@ -590,77 +590,12 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 
 void APlayableCharacter::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
-	FHitResult OutHit;
-
-	TArray<AActor*> ActorArray;
-	ActorArray.Add(this);
-
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
-		GetWorld(),
-		GetActorLocation(),
-		EndLocation,
-		35.f,
-		ObjectTypes,
-		false,
-		ActorArray,
-		EDrawDebugTrace::ForDuration,
-		OutHit,
-		true
-	);
-
-	if (TargetHit)
-	{
-		AActor* HitActor = OutHit.GetActor();
-		if (HitActor)
-		{
-			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(HitActor);
-			IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(HitActor);
-			if(AIEnemyInterface)
-			{
-				WarpTarget = HitActor;
-				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetActorLocation());
-				if (MotionWarpingInterface)
-				{
-					UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
-					if (MotionWarpingComponent)
-					{
-
-						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
-						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
-
-						FVector TargetLocation = WarpTarget->GetActorLocation() - WarpTarget->GetActorForwardVector();
-						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
-
-						MotionWarpingTargetParams.Name = FName("CombatTarget");
-						MotionWarpingTargetParams.Location = WarpTargetLocation;
-						MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
-						MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
-						MotionWarpingTargetParams.BoneName = FName("root");
-
-						MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
-					}
-				}
-			}
-		}
-	}
+	
 }
 
 void APlayableCharacter::ResetWarpTarget()
 {
-	IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(this);
-	if (MotionWarpingInterface)
-	{
-		UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
-		if (MotionWarpingComponent)
-		{
-			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
-			WarpTargetArrow = NULL;
-		}
-	}
+	
 }
 
 TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitReactionDirection HitDirection)
@@ -695,7 +630,7 @@ void APlayableCharacter::MeleeTraceCollisions()
 
 void APlayableCharacter::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MotionWarpingTargetParams);
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MotionWarpingTargetParams, MeleeAttackLogicComponent->MeleeAttackRange);
 }
 
 void APlayableCharacter::ResetMeleeAttackWarpToTarget()
