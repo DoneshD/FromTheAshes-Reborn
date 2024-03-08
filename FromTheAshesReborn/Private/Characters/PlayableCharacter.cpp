@@ -598,7 +598,7 @@ void APlayableCharacter::ResetWarpTarget()
 	
 }
 
-TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitReactionDirection HitDirection)
+TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitDirection HitDirection)
 {
 	return nullptr;
 }

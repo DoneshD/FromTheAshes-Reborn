@@ -193,7 +193,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 		GetWorld(),
 		GetOwner()->GetActorLocation(),
 		EndLocation,
-		35.f,
+		75.f,
 		ObjectTypes,
 		false,
 		ActorArray,
@@ -212,7 +212,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 			if (AIEnemyInterface)
 			{
 				WarpTarget = HitActor;
-				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetOwner()->GetActorLocation());
+				EHitDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetOwner()->GetActorLocation());
 				if (MotionWarpingInterface)
 				{
 					MotionWarpingInterface->UpdateWarpTarget(MotionWarpingTargetParams);

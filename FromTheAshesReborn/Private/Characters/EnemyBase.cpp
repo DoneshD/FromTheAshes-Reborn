@@ -223,7 +223,7 @@ void AEnemyBase::EndTargeted()
 	GetMesh()->SetOverlayMaterial(DefaultMaterial);
 }
 
-EHitReactionDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
+EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 {
 	TArray<float> DistanceArray;
 	float ClosestArrowDistance = 1000.0f;
@@ -246,25 +246,37 @@ EHitReactionDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 			ClosestArrowIndex = DistanceArray.Find(EachArrowDistance);
 		}
 	}
-
+	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowIndex: %d"), ClosestArrowIndex);
 	switch (ClosestArrowIndex)
 	{
 	case 0:
-		return EHitReactionDirection::EHitReactionDirection_Left;
+		return EHitDirection::EHitDirection_Left;
 
 	case 1:
-		return EHitReactionDirection::EHitReactionDirection_Right;
+		return EHitDirection::EHitDirection_Right;
 
 	case 2:
-		return EHitReactionDirection::EHitReactionDirection_Front;
+		return EHitDirection::EHitDirection_Front;
 
 	case 3:
-		return EHitReactionDirection::EHitReactionDirection_Back;
+		return EHitDirection::EHitDirection_Back;
+
+	case 4:
+		return EHitDirection::EHitDirection_FrontLeft;
+
+	case 5:
+		return EHitDirection::EHitDirection_FrontRight;
+
+	case 6:
+		return EHitDirection::EHitDirection_BackLeft;
+
+	case 7:
+		return EHitDirection::EHitDirection_BackRight;
 
 	default:
 		break;
 	}
-	return EHitReactionDirection::EHitReactionDirection_None;
+	return EHitDirection::EHitDirection_None;
 }
 
 void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
@@ -275,21 +287,33 @@ void AEnemyBase::ResetWarpTarget()
 {
 }
 
-TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitReactionDirection HitDirection)
+TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitDirection HitDirection)
 {
 	switch (HitDirection)
 	{
-	case EHitReactionDirection::EHitReactionDirection_Left:
+	case EHitDirection::EHitDirection_Left:
 		return LeftArrow;
 
-	case EHitReactionDirection::EHitReactionDirection_Back:
-		return BackArrow;
+	case EHitDirection::EHitDirection_Right:
+		return RightArrow;
 
-	case EHitReactionDirection::EHitReactionDirection_Front:
+	case EHitDirection::EHitDirection_Front:
 		return FrontArrow;
 
-	case EHitReactionDirection::EHitReactionDirection_Right:
-		return RightArrow;
+	case EHitDirection::EHitDirection_Back:
+		return BackArrow;
+
+	case EHitDirection::EHitDirection_FrontLeft:
+		return FrontLeftArrow;
+
+	case EHitDirection::EHitDirection_FrontRight:
+		return FrontRightArrow;
+
+	case EHitDirection::EHitDirection_BackLeft:
+		return BackLeftArrow;
+
+	case EHitDirection::EHitDirection_BackRight:
+		return BackRightArrow;
 
 	default:
 		return FrontArrow;

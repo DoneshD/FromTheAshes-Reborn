@@ -307,7 +307,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetWarpTarget() override;
 
-	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) override;
+	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) override;
 
 	//Melee Combatant Interface
 
