@@ -44,6 +44,18 @@ AFTACharacter::AFTACharacter()
 	RightArrow = CreateDefaultSubobject<UArrowComponent>("RightArrowComp");
 	RightArrow->SetupAttachment(RootComponent);
 
+	FrontLeftArrow = CreateDefaultSubobject<UArrowComponent>("FrontLeftArrowComp");
+	FrontLeftArrow->SetupAttachment(RootComponent);
+
+	BackLeftArrow = CreateDefaultSubobject<UArrowComponent>("BackLeftArrowComp");
+	BackLeftArrow->SetupAttachment(RootComponent);
+
+	FrontRightArrow = CreateDefaultSubobject<UArrowComponent>("FrontRightArrowComp");
+	FrontRightArrow->SetupAttachment(RootComponent);
+
+	BackRightArrow = CreateDefaultSubobject<UArrowComponent>("BackRightArrowComp");
+	BackRightArrow->SetupAttachment(RootComponent);
+
 	DamageSystemComponent = CreateDefaultSubobject<UDamageSystem>(TEXT("DamageSystemComponent"));
 	this->AddOwnedComponent(DamageSystemComponent);
 

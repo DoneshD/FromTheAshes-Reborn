@@ -222,6 +222,9 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
 						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
 
+						UE_LOG(LogTemp, Warning, TEXT("WarpTargetArrow Name: %s"), *WarpTargetArrow->GetName());
+
+
 						FVector TargetLocation = HitActor->GetActorLocation() - HitActor->GetActorForwardVector();
 						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
 

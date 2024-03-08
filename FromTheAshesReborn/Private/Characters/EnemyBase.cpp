@@ -233,6 +233,10 @@ EHitReactionDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 	DistanceArray.Add(FVector::Dist(HitLocation, RightArrow->GetComponentLocation()));
 	DistanceArray.Add(FVector::Dist(HitLocation, FrontArrow->GetComponentLocation()));
 	DistanceArray.Add(FVector::Dist(HitLocation, BackArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(HitLocation, FrontLeftArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(HitLocation, FrontRightArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(HitLocation, BackLeftArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(HitLocation, BackRightArrow->GetComponentLocation()));
 
 	for (const float& EachArrowDistance : DistanceArray)
 	{

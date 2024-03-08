@@ -36,6 +36,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> RightArrow;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<UArrowComponent> FrontLeftArrow;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<UArrowComponent> BackLeftArrow;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<UArrowComponent> FrontRightArrow;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<UArrowComponent> BackRightArrow;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")
 	int JumpCount = 0;
 
