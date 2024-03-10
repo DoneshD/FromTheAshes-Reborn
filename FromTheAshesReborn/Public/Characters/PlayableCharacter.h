@@ -6,8 +6,10 @@
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
+#include "TargetingComponents/TargetingComponent.h"
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
+#include "Interfaces/MeleeCombatantInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
 
@@ -22,9 +24,10 @@ class UTimelineComponent;
 class UCurveFloat;
 class UTargetingComponent;
 class UComboSystemComponent;
+class UMeleeAttackLogicComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface
+class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface, public IMeleeCombatantInterface
 {
 	GENERATED_BODY()
 
@@ -40,6 +43,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UComboSystemComponent> ComboSystemComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UMeleeAttackLogicComponent> MeleeAttackLogicComponent;
 
 	//-----------------------------------------Inputs-----------------------------------------------
 
@@ -301,7 +307,30 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetWarpTarget() override;
 
-	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) override;
+	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) override;
+
+	//Melee Combatant Interface
+
+	UFUNCTION()
+	virtual void EmptyHitActorsArray() override;
+
+	UFUNCTION()
+	virtual void StartMeleeAttackCollisions() override;
+
+	UFUNCTION()
+	virtual void EndMeleeAttackCollisions() override;
+
+	UFUNCTION()
+	virtual bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits) override;
+	 
+	UFUNCTION()
+	virtual void MeleeTraceCollisions() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ResetMeleeAttackWarpToTarget() override;
 
 	TObjectPtr<AActor> WarpTarget;
 

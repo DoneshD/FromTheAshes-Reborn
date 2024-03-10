@@ -9,6 +9,7 @@
 #include "DamageSystem/DamageInfo.h"
 #include "TargetingComponents/TargetingComponent.h"
 #include "CombatComponents/ComboSystemComponent.h"
+#include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "MotionWarpingComponent.h"
@@ -37,6 +38,9 @@ APlayableCharacter::APlayableCharacter()
 
 	ComboSystemComponent = CreateDefaultSubobject<UComboSystemComponent>(TEXT("ComboSystemComponent"));
 	this->AddOwnedComponent(ComboSystemComponent);
+
+	MeleeAttackLogicComponent = CreateDefaultSubobject<UMeleeAttackLogicComponent>(TEXT("MeleeAttackLogicComponent"));
+	this->AddOwnedComponent(MeleeAttackLogicComponent);
 
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
@@ -586,82 +590,51 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 
 void APlayableCharacter::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-
-	FVector EndLocation = GetActorLocation() + GetActorForwardVector() * 250.f;
-	FHitResult OutHit;
-
-	TArray<AActor*> ActorArray;
-	ActorArray.Add(this);
-
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
-		GetWorld(),
-		GetActorLocation(),
-		EndLocation,
-		35.f,
-		ObjectTypes,
-		false,
-		ActorArray,
-		EDrawDebugTrace::ForDuration,
-		OutHit,
-		true
-	);
-
-	if (TargetHit)
-	{
-		AActor* HitActor = OutHit.GetActor();
-		if (HitActor)
-		{
-			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(HitActor);
-			IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(HitActor);
-			if(AIEnemyInterface)
-			{
-				WarpTarget = HitActor;
-				EHitReactionDirection HitDirection = AIEnemyInterface->GetHitEnemyDirection(GetActorLocation());
-				if (MotionWarpingInterface)
-				{
-					UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
-					if (MotionWarpingComponent)
-					{
-
-						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
-						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
-
-						FVector TargetLocation = WarpTarget->GetActorLocation() - WarpTarget->GetActorForwardVector();
-						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetLocation);
-
-						MotionWarpingTargetParams.Name = FName("CombatTarget");
-						MotionWarpingTargetParams.Location = WarpTargetLocation;
-						MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
-						MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
-						MotionWarpingTargetParams.BoneName = FName("root");
-
-						MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
-					}
-				}
-			}
-		}
-	}
+	
 }
 
 void APlayableCharacter::ResetWarpTarget()
 {
-	IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(this);
-	if (MotionWarpingInterface)
-	{
-		UMotionWarpingComponent* MotionWarpingComponent = this->FindComponentByClass<UMotionWarpingComponent>();
-		if (MotionWarpingComponent)
-		{
-			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
-			WarpTargetArrow = NULL;
-		}
-	}
+	
 }
 
-TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitReactionDirection HitDirection)
+TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitDirection HitDirection)
 {
 	return nullptr;
+}
+
+void APlayableCharacter::EmptyHitActorsArray()
+{
+	MeleeAttackLogicComponent->EmptyHitActorsArray();
+}
+
+void APlayableCharacter::StartMeleeAttackCollisions()
+{
+	MeleeAttackLogicComponent->StartMeleeAttackCollisions();
+}
+
+void APlayableCharacter::EndMeleeAttackCollisions()
+{
+	MeleeAttackLogicComponent->EndMeleeAttackCollisions();
+}
+
+void APlayableCharacter::MeleeTraceCollisions()
+{
+	MeleeAttackLogicComponent->MeleeTraceCollisions();
+}
+
+bool APlayableCharacter::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
+{
+	return MeleeAttackLogicComponent->MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
+}
+
+void APlayableCharacter::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+{
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MotionWarpingTargetParams, MeleeAttackLogicComponent->MeleeAttackRange);
+}
+
+void APlayableCharacter::ResetMeleeAttackWarpToTarget()
+{
+	MeleeAttackLogicComponent->ResetMeleeAttackWarpToTarget();
 }
 

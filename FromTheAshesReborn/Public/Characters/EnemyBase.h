@@ -125,7 +125,7 @@ public:
 	virtual void EndTargeted() override;
 
 	UFUNCTION()
-	virtual EHitReactionDirection GetHitEnemyDirection(FVector HitLocation) override;
+	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) override;
 
 	//Motion Warping Interface
 
@@ -134,6 +134,6 @@ public:
 
 	UFUNCTION()
 	virtual void ResetWarpTarget() override;
-	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitReactionDirection HitDirection) override;
+	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) override;
 
 };
