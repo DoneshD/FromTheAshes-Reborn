@@ -209,9 +209,6 @@ public:
 	//-----------------------------------------FSM Attack Check-------------------------------------
 
 	bool CanAttack();
-	void InputTeleport();
-	void InputTelportStrike();
-
 	//-----------------------------------------Light Attacks----------------------------------------
 
 	void InputLightAttack();
@@ -331,9 +328,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetMeleeAttackWarpToTarget() override;
-
-	TObjectPtr<AActor> WarpTarget;
-
-	TObjectPtr<UArrowComponent> WarpTargetArrow;
 
 };

@@ -55,7 +55,7 @@ public:
 
 	void MeleeTraceCollisions();
 
-	void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams, EMeleeAttackRange WarpRange);
+	void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams, EMeleeAttackRange WarpRange, bool HasInput);
 
 	void ResetMeleeAttackWarpToTarget();
 

@@ -125,34 +125,6 @@ bool APlayableCharacter::CanAttack()
 	return !GetCharacterMovement()->IsFalling() && !GetCharacterMovement()->IsFlying() && !IsStateEqualToAny(MakeArray);
 }
 
-void APlayableCharacter::InputTeleport()
-{
-	if(!IsTeleportActive)
-	{
-		IsTeleportActive = true;
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
-	}
-	else
-	{
-		IsTeleportActive = false;
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0f);
-	}
-}
-
-void APlayableCharacter::InputTelportStrike()
-{
-	if (TargetingComponent) 
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TargetingCompoLL"));
-
-		TargetingComponent->StartTeleport();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TargetingComponent is NULL"));
-	}
-}
-
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
 
 void APlayableCharacter::Tick(float DeltaTime)
@@ -195,9 +167,6 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		InputComp->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputLightAttack);
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
-		InputComp->BindAction(Input_Teleport, ETriggerEvent::Started, this, &APlayableCharacter::InputTeleport);
-		InputComp->BindAction(Input_TelportStrike, ETriggerEvent::Started, this, &APlayableCharacter::InputTelportStrike);
-
 	}
 }
 
@@ -630,7 +599,7 @@ bool APlayableCharacter::MeleeWeaponSphereTrace(FVector StartLocation, FVector E
 
 void APlayableCharacter::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MotionWarpingTargetParams, MeleeAttackLogicComponent->MeleeAttackRange);
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MotionWarpingTargetParams, MeleeAttackLogicComponent->MeleeAttackRange, HasMovementInput);
 }
 
 void APlayableCharacter::ResetMeleeAttackWarpToTarget()

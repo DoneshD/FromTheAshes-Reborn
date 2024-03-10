@@ -6,6 +6,8 @@
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/ArrowComponent.h"
 #include "EMeleeAttackRange.h"
 
 #include "Kismet/KismetMathLibrary.h"
@@ -172,13 +174,27 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 	}
 }
 
-void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams, EMeleeAttackRange AttackRange)
+void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams, EMeleeAttackRange AttackRange, bool HasInput)
 {
 	
 	float WarpRange = GetMeleeAttackRange(AttackRange);
+	FVector EndLocation;
+	if (AActor* OwnerActor = GetOwner())
+	{
+		if (HasInput)
+		{
+			if (ACharacter* CharacterOwner = Cast<ACharacter>(OwnerActor))
+			{
+				UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
+				EndLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * WarpRange;
+			}
+		}
+		else
+		{
+			EndLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * WarpRange;
+		}
+	}
 
-	ACharacter* MeleeCharacter = Cast<ACharacter>(GetOwner());
-	FVector EndLocation = GetOwner()->GetActorLocation() + MeleeCharacter->GetCharacterMovement()->GetLastInputVector() * WarpRange;
 	FHitResult OutHit;
 
 	TArray<AActor*> ActorArray;
@@ -186,7 +202,6 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
 
 	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
 		GetWorld(),
@@ -221,11 +236,8 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
 						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
 
-						UE_LOG(LogTemp, Warning, TEXT("WarpTadgsgsdgsgsg"));
-						UE_LOG(LogTemp, Warning, TEXT("WarpTargetArrow Name: %s"), *WarpTargetArrow->GetName());
-
-
 						FVector TargetLocation = HitActor->GetActorLocation() - HitActor->GetActorForwardVector();
+
 						FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
 
 						MotionWarpingTargetParams.Name = FName("CombatTarget");
@@ -252,7 +264,6 @@ void UMeleeAttackLogicComponent::ResetMeleeAttackWarpToTarget()
 		{
 			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
 			WarpTargetArrow = NULL;
-
 		}
 	}
 }
