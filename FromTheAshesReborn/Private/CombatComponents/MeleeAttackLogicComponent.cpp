@@ -177,9 +177,8 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 	
 	float WarpRange = GetMeleeAttackRange(AttackRange);
 
-	ACharacter* Character = Cast<ACharacter>(GetOwner());
-
-	FVector EndLocation = GetOwner()->GetActorLocation() + Character->GetCharacterMovement()->GetLastInputVector() * WarpRange;
+	ACharacter* MeleeCharacter = Cast<ACharacter>(GetOwner());
+	FVector EndLocation = GetOwner()->GetActorLocation() + MeleeCharacter->GetCharacterMovement()->GetLastInputVector() * WarpRange;
 	FHitResult OutHit;
 
 	TArray<AActor*> ActorArray;
@@ -222,6 +221,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 						WarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
 						FVector WarpTargetLocation = WarpTargetArrow->GetComponentLocation();
 
+						UE_LOG(LogTemp, Warning, TEXT("WarpTadgsgsdgsgsg"));
 						UE_LOG(LogTemp, Warning, TEXT("WarpTargetArrow Name: %s"), *WarpTargetArrow->GetName());
 
 
