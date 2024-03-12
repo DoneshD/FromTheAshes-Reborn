@@ -7,7 +7,6 @@
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-#include "TargetingComponents/TargetingComponent.h"
 #include "CombatComponents/ComboSystemComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "Components/ArrowComponent.h"
@@ -32,9 +31,6 @@ APlayableCharacter::APlayableCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false;
-
-	TargetingComponent = CreateDefaultSubobject<UTargetingComponent>(TEXT("TargetingComponent"));
-	this->AddOwnedComponent(TargetingComponent);
 
 	ComboSystemComponent = CreateDefaultSubobject<UComboSystemComponent>(TEXT("ComboSystemComponent"));
 	this->AddOwnedComponent(ComboSystemComponent);
@@ -349,7 +345,6 @@ void APlayableCharacter::SoftLockOn(float Distance)
 
 void APlayableCharacter::HardLockOn()
 {
-	TargetingComponent->HardLockOn();
 }
 
 

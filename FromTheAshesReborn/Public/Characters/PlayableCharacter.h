@@ -6,7 +6,6 @@
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
-#include "TargetingComponents/TargetingComponent.h"
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
@@ -22,7 +21,6 @@ class UCameraComponent;
 class USpringArmComponent;
 class UTimelineComponent;
 class UCurveFloat;
-class UTargetingComponent;
 class UComboSystemComponent;
 class UMeleeAttackLogicComponent;
 
@@ -37,10 +35,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UTargetingComponent> TargetingComponent;
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UComboSystemComponent> ComboSystemComponent;
 

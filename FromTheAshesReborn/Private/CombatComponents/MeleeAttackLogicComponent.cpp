@@ -8,7 +8,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/ArrowComponent.h"
-#include "EMeleeAttackRange.h"
+#include "Enums/EMeleeAttackRange.h"
 
 #include "Kismet/KismetMathLibrary.h"
 

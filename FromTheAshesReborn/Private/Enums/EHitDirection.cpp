@@ -1,3 +1,3 @@
 
-#include "EHitDirection.h"
+#include "Enums/EHitDirection.h"
 

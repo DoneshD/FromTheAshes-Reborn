@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "DamageSystem/DamageSystem.h"
-#include "EMeleeAttackRange.h"
+#include "Enums/EMeleeAttackRange.h"
 
 #include "MeleeAttackLogicComponent.generated.h"
 

@@ -4,7 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "DamageInfo.h"
 #include "Enums/EHitReactionDirection.h"
-#include "EHitDirection.h"
+#include "Enums/EHitDirection.h"
 #include "DamageSystem.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, FDamageInfo)
