@@ -12,11 +12,18 @@ class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 
 public:	
 
+	TObjectPtr<APlayableCharacter> PlayableCharacter;
+
+	bool IsTargeting = false;
+	FVector TargetRotateLocation;
+
+	TObjectPtr<AActor> HardTarget;
+	TObjectPtr<AActor> SoftTarget;
+
+
 protected:
 
 public:	
-
-	
 
 	UTargetingSystemComponent();
 
@@ -24,5 +31,6 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void HardLockOn();
 		
 };

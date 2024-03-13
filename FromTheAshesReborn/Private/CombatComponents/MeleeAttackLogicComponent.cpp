@@ -206,7 +206,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 
 	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
 		GetWorld(),
-		GetOwner()->GetActorLocation(),
+		GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector(),
 		EndLocation,
 		75.f,
 		ObjectTypes,

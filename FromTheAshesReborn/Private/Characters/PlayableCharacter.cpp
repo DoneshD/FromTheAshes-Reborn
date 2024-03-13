@@ -172,6 +172,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 		InputComp->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputLightAttack);
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
 		InputComp->BindAction(Input_Dash, ETriggerEvent::Started, this, &APlayableCharacter::InputDash);
+		InputComp->BindAction(Input_LockOn, ETriggerEvent::Started, this, &APlayableCharacter::InputLockOn);
 
 	}
 }
@@ -370,6 +371,17 @@ void APlayableCharacter::HardLockOn()
 {
 }
 
+void APlayableCharacter::InputLockOn()
+{
+	if (TargetingSystemComponent)
+	{
+		TargetingSystemComponent->HardLockOn();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Error: No TargetingSystemComponent"));
+	}
+}
 
 //---------------------------------------------------------- Attack Saves -----------------------------------------------------------------//
 
