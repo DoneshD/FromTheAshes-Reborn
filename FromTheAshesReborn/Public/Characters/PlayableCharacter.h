@@ -24,6 +24,7 @@ class UCurveFloat;
 class UComboSystemComponent;
 class UMeleeAttackLogicComponent;
 class UDashSystemComponent;
+class UTargetingSystemComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface, public IMeleeCombatantInterface, public IDashingCombatantInterface
@@ -45,6 +46,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UDashSystemComponent> DashSystemComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 
 	//-----------------------------------------Inputs-----------------------------------------------
 

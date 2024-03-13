@@ -37,11 +37,12 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 	{
 		UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
-		FVector EndLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 500.0f;
-		UE_LOG(LogTemp, Warning, TEXT("End Location: %s"), *EndLocation.ToString());
-		DrawDebugSphere(GetWorld(), EndLocation, 10.0, 10, FColor::Red, false, 5.0f);
+		FVector TargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
+		UE_LOG(LogTemp, Warning, TEXT("End Location: %s"), *TargetLocation.ToString());
+		DrawDebugSphere(GetWorld(), TargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 
 		AActor* OwnerActor = GetOwner();
+		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
 
 
 		IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(OwnerActor);
@@ -51,10 +52,10 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 			if (MotionWarpingComponent)
 			{
 
-				MotionWarpingTargetParams.Name = FName("CombatTarget");
-				MotionWarpingTargetParams.Location = EndLocation;
-				//MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
-				//MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
+				MotionWarpingTargetParams.Name = FName("DashTarget");
+				MotionWarpingTargetParams.Location = TargetLocation;
+				MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
+				MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
 				MotionWarpingTargetParams.BoneName = FName("root");
 
 				MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);

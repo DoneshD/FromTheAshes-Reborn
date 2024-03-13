@@ -10,6 +10,7 @@
 #include "CombatComponents/ComboSystemComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "DashSystemComponent.h"
+#include "TargetingSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "MotionWarpingComponent.h"
@@ -41,6 +42,9 @@ APlayableCharacter::APlayableCharacter()
 
 	DashSystemComponent = CreateDefaultSubobject<UDashSystemComponent>(TEXT("DashSystemComponent"));
 	this->AddOwnedComponent(DashSystemComponent);
+
+	TargetingSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>(TEXT("TargetingSystemComponent"));
+	this->AddOwnedComponent(TargetingSystemComponent);
 
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
