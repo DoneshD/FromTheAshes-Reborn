@@ -11,7 +11,7 @@
 #include "Interfaces/MeleeCombatantInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-
+#include "DashingCombatantInterface.h"
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
@@ -23,9 +23,10 @@ class UTimelineComponent;
 class UCurveFloat;
 class UComboSystemComponent;
 class UMeleeAttackLogicComponent;
+class UDashSystemComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface, public IMeleeCombatantInterface
+class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface, public IMeleeCombatantInterface, public IDashingCombatantInterface
 {
 	GENERATED_BODY()
 
@@ -35,11 +36,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UComboSystemComponent> ComboSystemComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMeleeAttackLogicComponent> MeleeAttackLogicComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UDashSystemComponent> DashSystemComponent;
 
 	//-----------------------------------------Inputs-----------------------------------------------
 
@@ -65,18 +70,10 @@ public:
 	TObjectPtr<UInputAction> Input_HeavyAttack;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Dodge;
+	TObjectPtr<UInputAction> Input_Dash;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Teleport;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_TelportStrike;
-
-	bool IsTeleportActive = false;
 
 	//-----------------------------------------Light Attack-----------------------------------------
 
@@ -161,14 +158,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo1;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Surge")
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TObjectPtr<UAnimMontage> ComboSurge_L;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Surge")
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TObjectPtr<UAnimMontage> ComboSurge_R;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Bybass")
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TObjectPtr<UAnimMontage> ComboBybass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> ForwardDashAnim;
 
 private:
 
@@ -199,6 +199,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	void EnableRootRotation();
+
+	void InputDash();
 
 	//-----------------------------------------FSM Attack Check-------------------------------------
 
@@ -300,6 +302,9 @@ public:
 
 	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) override;
 
+	UFUNCTION()
+	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) override;
+
 	//Melee Combatant Interface
 
 	UFUNCTION()
@@ -322,5 +327,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetMeleeAttackWarpToTarget() override;
+
+	//Dashing Combatant Interface
+
+	UFUNCTION(BlueprintCallable)
+	virtual void StartDash() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
 
 };

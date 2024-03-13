@@ -280,6 +280,7 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 
 void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::UpdateWarpTarget"));
 }
 
 void AEnemyBase::ResetWarpTarget()

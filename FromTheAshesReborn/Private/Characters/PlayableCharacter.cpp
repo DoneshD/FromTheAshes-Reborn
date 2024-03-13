@@ -9,6 +9,7 @@
 #include "DamageSystem/DamageInfo.h"
 #include "CombatComponents/ComboSystemComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
+#include "DashSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "MotionWarpingComponent.h"
@@ -37,6 +38,9 @@ APlayableCharacter::APlayableCharacter()
 
 	MeleeAttackLogicComponent = CreateDefaultSubobject<UMeleeAttackLogicComponent>(TEXT("MeleeAttackLogicComponent"));
 	this->AddOwnedComponent(MeleeAttackLogicComponent);
+
+	DashSystemComponent = CreateDefaultSubobject<UDashSystemComponent>(TEXT("DashSystemComponent"));
+	this->AddOwnedComponent(DashSystemComponent);
 
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
@@ -163,6 +167,8 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		InputComp->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputLightAttack);
 		InputComp->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &APlayableCharacter::InputHeavyAttack);
+		InputComp->BindAction(Input_Dash, ETriggerEvent::Started, this, &APlayableCharacter::InputDash);
+
 	}
 }
 
@@ -231,6 +237,19 @@ void APlayableCharacter::EnableRootRotation()
 	if (!SoftTarget && !HardTarget)
 	{
 		GetCharacterMovement()->bAllowPhysicsRotationDuringAnimRootMotion = true;
+	}
+}
+
+void APlayableCharacter::InputDash()
+{
+	if (DashSystemComponent)
+	{
+		//DashSystemComponent->StartDash();
+		PlayAnimMontage(ForwardDashAnim);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Error: No DashSystemComponent"));
 	}
 }
 
@@ -567,6 +586,11 @@ TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitDirection H
 	return nullptr;
 }
 
+EHitDirection APlayableCharacter::GetHitEnemyDirection(FVector HitLocation)
+{
+	return EHitDirection();
+}
+
 void APlayableCharacter::EmptyHitActorsArray()
 {
 	MeleeAttackLogicComponent->EmptyHitActorsArray();
@@ -600,5 +624,15 @@ void APlayableCharacter::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWar
 void APlayableCharacter::ResetMeleeAttackWarpToTarget()
 {
 	MeleeAttackLogicComponent->ResetMeleeAttackWarpToTarget();
+}
+
+void APlayableCharacter::StartDash()
+{
+
+}
+
+void APlayableCharacter::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+{
+	DashSystemComponent->DashWarpToTarget(MotionWarpingTargetParams);
 }
 

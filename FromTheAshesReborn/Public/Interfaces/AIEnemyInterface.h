@@ -52,7 +52,6 @@ public:
 	UFUNCTION()
 	virtual void EndTargeted() = 0;
 
-	UFUNCTION()
-	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) = 0;
+	
 
 };

@@ -14,6 +14,7 @@
 DECLARE_DELEGATE(FOnAttackEnd);
 
 class AIControllerEnemyBase;
+class UArrowComponent;
 //class UMaterialInterface;
 
 UCLASS()
@@ -124,8 +125,6 @@ public:
 	UFUNCTION()
 	virtual void EndTargeted() override;
 
-	UFUNCTION()
-	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) override;
 
 	//Motion Warping Interface
 
@@ -134,6 +133,10 @@ public:
 
 	UFUNCTION()
 	virtual void ResetWarpTarget() override;
+
 	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) override;
+
+	UFUNCTION()
+	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) override;
 
 };

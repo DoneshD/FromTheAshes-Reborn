@@ -19,9 +19,14 @@ class FROMTHEASHESREBORN_API IMotionWarpingInterface
 
 public:
 
+	UFUNCTION()
 	virtual void UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
 
+	UFUNCTION()
 	virtual void ResetWarpTarget() = 0;
 
 	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) = 0;
+
+	UFUNCTION()
+	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) = 0;
 };
