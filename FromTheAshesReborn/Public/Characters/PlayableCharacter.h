@@ -205,6 +205,7 @@ public:
 	void EnableRootRotation();
 
 	void InputDash();
+	bool CanDash();
 
 	//-----------------------------------------FSM Attack Check-------------------------------------
 

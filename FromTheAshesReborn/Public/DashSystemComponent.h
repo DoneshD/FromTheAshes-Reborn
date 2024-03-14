@@ -11,11 +11,16 @@ class FROMTHEASHESREBORN_API UDashSystemComponent : public UActorComponent
 
 public:	
 
+	TObjectPtr<APlayableCharacter> PC;
+
+
 protected:
 
 public:	
 
-	void StartDash();
+	void LockOnDash();
+
+	void FreeLockDash();
 
 	void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams);
 

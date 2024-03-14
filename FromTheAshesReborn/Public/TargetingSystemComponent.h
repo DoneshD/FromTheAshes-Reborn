@@ -14,7 +14,9 @@ public:
 
 	TObjectPtr<APlayableCharacter> PlayableCharacter;
 
+	UPROPERTY(BlueprintReadWrite)
 	bool IsTargeting = false;
+
 	FVector TargetRotateLocation;
 
 	TObjectPtr<AActor> HardTarget;

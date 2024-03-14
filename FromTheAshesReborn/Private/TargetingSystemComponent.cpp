@@ -17,7 +17,6 @@ void UTargetingSystemComponent::BeginPlay()
 
 }
 
-
 void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -48,7 +47,6 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 void UTargetingSystemComponent::HardLockOn()
 {
-	UE_LOG(LogTemp, Warning, TEXT("In UTargetingComponent::HardLockOn"));
 	if (!IsTargeting && !HardTarget)
 	{
 

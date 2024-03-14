@@ -4,6 +4,7 @@
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Math/UnrealMathUtility.h"
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
@@ -245,16 +246,28 @@ void APlayableCharacter::EnableRootRotation()
 	}
 }
 
+bool APlayableCharacter::CanDash()
+{
+	TArray<EStates> MakeArray = { EStates::EState_Dodge, EStates::EState_Execution };
+	return !GetCharacterMovement()->IsFalling() && !IsStateEqualToAny(MakeArray);
+}
+
 void APlayableCharacter::InputDash()
 {
-	if (DashSystemComponent)
+	if (CanDash())
 	{
-		//DashSystemComponent->StartDash();
-		PlayAnimMontage(ForwardDashAnim);
+		if (TargetingSystemComponent->HardTarget)
+		{
+			DashSystemComponent->LockOnDash();
+		}
+		else
+		{
+			DashSystemComponent->FreeLockDash();
+		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Error: No DashSystemComponent"));
+		//DodgeSaved = true;
 	}
 }
 

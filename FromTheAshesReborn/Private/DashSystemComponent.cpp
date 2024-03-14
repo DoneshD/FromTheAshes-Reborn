@@ -5,7 +5,7 @@
 #include "GameFramework/Character.h"
 #include "MotionWarpingComponent.h"
 #include "Interfaces/MotionWarpingInterface.h"
-
+#include "Characters/PlayableCharacter.h"
 
 UDashSystemComponent::UDashSystemComponent()
 {
@@ -16,7 +16,8 @@ UDashSystemComponent::UDashSystemComponent()
 void UDashSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	PC = Cast<APlayableCharacter>(GetOwner());
+
 }
 
 void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -25,11 +26,36 @@ void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 }
 
-void UDashSystemComponent::StartDash()
+void UDashSystemComponent::LockOnDash()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Start Dash"));
+	UE_LOG(LogTemp, Warning, TEXT("LockOnDash"));
 	
+	FVector AttackTargetLocation = PC->TargetingSystemComponent->HardTarget->GetActorLocation();
+	FVector OwnerLocation = PC->GetActorLocation();
+	FVector MovementVectorAnchored = PC->GetCharacterMovement()->GetLastInputVector() + PC->GetActorLocation();
+
+	float AngleOfDodge = 0.0f;
+
+	FVector TargetDifference = AttackTargetLocation - OwnerLocation;
+	FVector TargetVector = FVector(TargetDifference.X, TargetDifference.Y, 0.0f);
+
+	FVector MovementDifference = MovementVectorAnchored - OwnerLocation;
+	FVector MovementVector = FVector(MovementDifference.X, MovementDifference.Y, 0.0f);
+
+	FVector CrossProduct = FVector::CrossProduct(TargetVector, MovementVector);
+
+	float TargetDotProduct = FVector::DotProduct(CrossProduct, FVector(0.0f, 0.0f, 1.0f));
+	float DotProduct = FVector::DotProduct(TargetVector, MovementVector);
+
+	AngleOfDodge = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
+	UE_LOG(LogTemp, Warning, TEXT("AngleOfDodge: %f"), AngleOfDodge);
+
 	
+}
+
+void UDashSystemComponent::FreeLockDash()
+{
+	UE_LOG(LogTemp, Warning, TEXT("FreeLockDash"));
 }
 
 void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
