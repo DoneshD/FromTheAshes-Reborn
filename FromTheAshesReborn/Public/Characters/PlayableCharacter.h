@@ -174,6 +174,15 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> ForwardDashAnim;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> BackwardDashAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> RightDashAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> LeftDashAnim;
+
 private:
 
 public:

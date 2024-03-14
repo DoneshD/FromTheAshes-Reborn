@@ -28,7 +28,6 @@ void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 void UDashSystemComponent::LockOnDash()
 {
-	UE_LOG(LogTemp, Warning, TEXT("LockOnDash"));
 	
 	FVector AttackTargetLocation = PC->TargetingSystemComponent->HardTarget->GetActorLocation();
 	FVector OwnerLocation = PC->GetActorLocation();
@@ -48,14 +47,33 @@ void UDashSystemComponent::LockOnDash()
 	float DotProduct = FVector::DotProduct(TargetVector, MovementVector);
 
 	AngleOfDodge = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
-	UE_LOG(LogTemp, Warning, TEXT("AngleOfDodge: %f"), AngleOfDodge);
 
-	
+	if (AngleOfDodge >= -45 && AngleOfDodge < 45)
+	{
+		PC->PlayAnimMontage(PC->ForwardDashAnim);
+	}
+	else if (AngleOfDodge >= 45 && AngleOfDodge <= 135)
+	{
+		PC->PlayAnimMontage(PC->RightDashAnim);
+	}
+
+	else if (AngleOfDodge >= 135 || AngleOfDodge <= -135)
+	{
+		PC->PlayAnimMontage(PC->BackwardDashAnim);
+	}
+	else if (AngleOfDodge >= -135 && AngleOfDodge <= -45)
+	{
+		PC->PlayAnimMontage(PC->LeftDashAnim);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Error"));
+	}
 }
 
 void UDashSystemComponent::FreeLockDash()
 {
-	UE_LOG(LogTemp, Warning, TEXT("FreeLockDash"));
+	PC->PlayAnimMontage(PC->ForwardDashAnim);
 }
 
 void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
