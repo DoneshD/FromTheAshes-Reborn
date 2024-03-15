@@ -6,6 +6,7 @@
 #include "MotionWarpingComponent.h"
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Components/ArrowComponent.h"
+#include "Characters/EnemyBase.h"
 #include "Characters/PlayableCharacter.h"
 
 UDashSystemComponent::UDashSystemComponent()
@@ -101,14 +102,30 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 		{
 			TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
 		}
+
 		IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
+
 		if (MotionWarpingInterface)
 		{
 			EHitDirection HitDirection = MotionWarpingInterface->GetHitEnemyDirection(GetOwner()->GetActorLocation());
-
-
 			DashWarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
-			FVector WarpTargetLocation = DashWarpTargetArrow->GetComponentLocation();
+			FVector WarpTargetLocation;
+			AEnemyBase* EnemyBase = Cast<AEnemyBase>(PC->TargetingSystemComponent->HardTarget);
+			if (EnemyBase && DashWarpTargetArrow == EnemyBase->FrontArrow)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Yes"));
+				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("EnemyBase->FrontArrow"));
+				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("DashWarpTargetArrow"));
+
+				WarpTargetLocation = EnemyBase->RightArrow->GetComponentLocation();
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No"));
+				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("PC->FrontArrow"));
+				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("DashWarpTargetArrow"));
+
+			}
 
 			UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
 			if (MotionWarpingComponent)

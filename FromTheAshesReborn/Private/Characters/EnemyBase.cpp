@@ -256,6 +256,7 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 		return EHitDirection::EHitDirection_Right;
 
 	case 2:
+		UE_LOG(LogTemp, Warning, TEXT("EHitDirection_Front"));
 		return EHitDirection::EHitDirection_Front;
 
 	case 3:
@@ -299,6 +300,7 @@ TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitDirection HitDirect
 		return RightArrow;
 
 	case EHitDirection::EHitDirection_Front:
+		UE_LOG(LogTemp, Warning, TEXT("FrontArrow"));
 		return FrontArrow;
 
 	case EHitDirection::EHitDirection_Back:

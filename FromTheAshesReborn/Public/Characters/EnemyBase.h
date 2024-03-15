@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -15,7 +13,6 @@ DECLARE_DELEGATE(FOnAttackEnd);
 
 class AIControllerEnemyBase;
 class UArrowComponent;
-//class UMaterialInterface;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface, public IMotionWarpingInterface
