@@ -4,6 +4,9 @@
 #include "Components/ActorComponent.h"
 #include "DashSystemComponent.generated.h"
 
+
+class UArrowComponent;
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UDashSystemComponent : public UActorComponent
 {
@@ -13,16 +16,23 @@ public:
 
 	TObjectPtr<APlayableCharacter> PC;
 
+	FVector DashEndLocation;
+
+	TObjectPtr<UArrowComponent> DashWarpTargetArrow;
 
 protected:
 
 public:	
+
+	float GetAngleOfDash();
 
 	void LockOnDash();
 
 	void FreeLockDash();
 
 	void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams);
+
+	void ResetDashWarpToTarget();
 
 	UDashSystemComponent();
 

@@ -22,4 +22,6 @@ public:
 	UFUNCTION()
 	virtual void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
 
+	UFUNCTION()
+	virtual void ResetDashWarpToTarget() = 0;
 };

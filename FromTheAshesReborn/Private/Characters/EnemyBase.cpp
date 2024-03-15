@@ -246,6 +246,7 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 			ClosestArrowIndex = DistanceArray.Find(EachArrowDistance);
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowIndex: %d"), ClosestArrowIndex);
 	switch (ClosestArrowIndex)
 	{
 	case 0:

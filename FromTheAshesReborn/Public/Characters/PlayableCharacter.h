@@ -79,6 +79,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_SlowTime;
+
 	//-----------------------------------------Light Attack-----------------------------------------
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -183,12 +186,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> LeftDashAnim;
 
+	bool IsSlowTime = false;
+
 private:
 
 public:
 	APlayableCharacter();
 
 	virtual void BeginPlay() override;
+
+	void InputSlowTime();
 
 	//-----------------------------------------FSM Reset States-------------------------------------
 
@@ -351,5 +358,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ResetDashWarpToTarget() override;
 
 };

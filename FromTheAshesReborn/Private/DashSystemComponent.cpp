@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "MotionWarpingComponent.h"
 #include "Interfaces/MotionWarpingInterface.h"
+#include "Components/ArrowComponent.h"
 #include "Characters/PlayableCharacter.h"
 
 UDashSystemComponent::UDashSystemComponent()
@@ -26,14 +27,13 @@ void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 }
 
-void UDashSystemComponent::LockOnDash()
+float UDashSystemComponent::GetAngleOfDash()
 {
-	
 	FVector AttackTargetLocation = PC->TargetingSystemComponent->HardTarget->GetActorLocation();
 	FVector OwnerLocation = PC->GetActorLocation();
 	FVector MovementVectorAnchored = PC->GetCharacterMovement()->GetLastInputVector() + PC->GetActorLocation();
 
-	float AngleOfDodge = 0.0f;
+	float AngleOfDash = 0.0f;
 
 	FVector TargetDifference = AttackTargetLocation - OwnerLocation;
 	FVector TargetVector = FVector(TargetDifference.X, TargetDifference.Y, 0.0f);
@@ -46,24 +46,32 @@ void UDashSystemComponent::LockOnDash()
 	float TargetDotProduct = FVector::DotProduct(CrossProduct, FVector(0.0f, 0.0f, 1.0f));
 	float DotProduct = FVector::DotProduct(TargetVector, MovementVector);
 
-	AngleOfDodge = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
+	AngleOfDash = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
 
-	if (AngleOfDodge >= -45 && AngleOfDodge < 45)
+	return AngleOfDash;
+}
+
+void UDashSystemComponent::LockOnDash()
+{
+	
+	float AngleOfDash = GetAngleOfDash();
+
+	if (AngleOfDash >= -45 && AngleOfDash < 45)
 	{
 		PC->PlayAnimMontage(PC->ForwardDashAnim);
 	}
-	else if (AngleOfDodge >= 45 && AngleOfDodge <= 135)
+	else if (AngleOfDash >= 45 && AngleOfDash <= 135)
 	{
 		PC->PlayAnimMontage(PC->RightDashAnim);
 	}
-
-	else if (AngleOfDodge >= 135 || AngleOfDodge <= -135)
+	else if (AngleOfDash >= 135 || AngleOfDash <= -135)
 	{
 		PC->PlayAnimMontage(PC->BackwardDashAnim);
 	}
-	else if (AngleOfDodge >= -135 && AngleOfDodge <= -45)
+	else if (AngleOfDash >= -135 && AngleOfDash <= -45)
 	{
 		PC->PlayAnimMontage(PC->LeftDashAnim);
+		
 	}
 	else
 	{
@@ -82,22 +90,32 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 	{
 		UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
 		FVector TargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
-		UE_LOG(LogTemp, Warning, TEXT("End Location: %s"), *TargetLocation.ToString());
 		DrawDebugSphere(GetWorld(), TargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 
-		AActor* OwnerActor = GetOwner();
-		FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
-
-
-		IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(OwnerActor);
+		FRotator TargetRotation;
+		if (PC->TargetingSystemComponent->HardTarget)
+		{
+			TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), PC->TargetingSystemComponent->HardTarget->GetActorLocation());
+		}
+		else
+		{
+			TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
+		}
+		IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
 		if (MotionWarpingInterface)
 		{
+			EHitDirection HitDirection = MotionWarpingInterface->GetHitEnemyDirection(GetOwner()->GetActorLocation());
+
+
+			DashWarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
+			FVector WarpTargetLocation = DashWarpTargetArrow->GetComponentLocation();
+
 			UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
 			if (MotionWarpingComponent)
 			{
 
 				MotionWarpingTargetParams.Name = FName("DashTarget");
-				MotionWarpingTargetParams.Location = TargetLocation;
+				MotionWarpingTargetParams.Location = WarpTargetLocation;
 				MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
 				MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
 				MotionWarpingTargetParams.BoneName = FName("root");
@@ -106,6 +124,19 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 			}
 		}
 
+	}
+}
+
+void UDashSystemComponent::ResetDashWarpToTarget()
+{
+	IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(GetOwner());
+	if (MotionWarpingInterface)
+	{
+		UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
+		if (MotionWarpingComponent)
+		{
+			MotionWarpingComponent->RemoveWarpTarget(FName("DashTarget"));
+		}
 	}
 }
 
