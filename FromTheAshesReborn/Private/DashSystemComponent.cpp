@@ -114,16 +114,14 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 			if (EnemyBase && DashWarpTargetArrow == EnemyBase->FrontArrow)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Yes"));
-				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("EnemyBase->FrontArrow"));
-				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("DashWarpTargetArrow"));
+				
 
 				WarpTargetLocation = EnemyBase->RightArrow->GetComponentLocation();
 			}
 			else
 			{
 				UE_LOG(LogTemp, Warning, TEXT("No"));
-				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("PC->FrontArrow"));
-				UE_LOG(LogTemp, Log, TEXT("Actor Name: %s"), *FString("DashWarpTargetArrow"));
+				
 
 			}
 
