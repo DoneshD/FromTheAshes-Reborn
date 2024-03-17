@@ -8,6 +8,7 @@
 #include "MotionWarpingComponent.h"
 #include "CombatComponents/AttacksComponent.h"
 #include "Components/ArrowComponent.h"
+#include "EFacingDirection.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)
 
@@ -100,4 +101,100 @@ bool AFTACharacter::CanJump()
 {
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
 	return !IsStateEqualToAny(MakeArray);
+}
+
+void AFTACharacter::UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams)
+{
+}
+
+void AFTACharacter::ResetWarpTargetPostion()
+{
+}
+
+TObjectPtr<UArrowComponent> AFTACharacter::GetPositionalArrow(EFacingDirection FacingDirection)
+{
+	switch (FacingDirection)
+	{
+	case EFacingDirection::EFacingDirection_Left:
+		return LeftArrow;
+
+	case EFacingDirection::EFacingDirection_Right:
+		return RightArrow;
+
+	case EFacingDirection::EFacingDirection_Front:
+		return FrontArrow;
+
+	case EFacingDirection::EFacingDirection_Back:
+		return BackArrow;
+
+	case EFacingDirection::EFacingDirection_FrontLeft:
+		return FrontLeftArrow;
+
+	case EFacingDirection::EFacingDirection_FrontRight:
+		return FrontRightArrow;
+
+	case EFacingDirection::EFacingDirection_BackLeft:
+		return BackLeftArrow;
+
+	case EFacingDirection::EFacingDirection_BackRight:
+		return BackRightArrow;
+
+	default:
+		return FrontArrow;
+	}
+}
+
+EFacingDirection AFTACharacter::GetFacingDirection(FVector FacingLocation)
+{
+	TArray<float> DistanceArray;
+	float ClosestArrowDistance = 1000.0f;
+	int ClosestArrowIndex = 0;
+
+	DistanceArray.Add(FVector::Dist(FacingLocation, LeftArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(FacingLocation, RightArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(FacingLocation, FrontArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(FacingLocation, BackArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(FacingLocation, FrontLeftArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(FacingLocation, FrontRightArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(FacingLocation, BackLeftArrow->GetComponentLocation()));
+	DistanceArray.Add(FVector::Dist(FacingLocation, BackRightArrow->GetComponentLocation()));
+
+	for (const float& EachArrowDistance : DistanceArray)
+	{
+		if (EachArrowDistance < ClosestArrowDistance)
+		{
+			ClosestArrowDistance = EachArrowDistance;
+			ClosestArrowIndex = DistanceArray.Find(EachArrowDistance);
+		}
+	}
+	switch (ClosestArrowIndex)
+	{
+	case 0:
+		return EFacingDirection::EFacingDirection_Left;
+
+	case 1:
+		return EFacingDirection::EFacingDirection_Right;
+
+	case 2:
+		return EFacingDirection::EFacingDirection_Front;
+
+	case 3:
+		return EFacingDirection::EFacingDirection_Back;
+
+	case 4:
+		return EFacingDirection::EFacingDirection_FrontLeft;
+
+	case 5:
+		return EFacingDirection::EFacingDirection_FrontRight;
+
+	case 6:
+		return EFacingDirection::EFacingDirection_BackLeft;
+
+	case 7:
+		return EFacingDirection::EFacingDirection_BackRight;
+
+	default:
+		break;
+	}
+	return EFacingDirection::EFacingDirection_None;
 }

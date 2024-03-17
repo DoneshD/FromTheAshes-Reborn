@@ -10,5 +10,7 @@ class AFromTheAshesRebornGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+
 	AFromTheAshesRebornGameMode();
+
 };

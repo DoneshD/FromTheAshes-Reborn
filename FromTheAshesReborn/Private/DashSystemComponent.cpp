@@ -94,6 +94,7 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 		DrawDebugSphere(GetWorld(), TargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 
 		FRotator TargetRotation;
+
 		if (PC->TargetingSystemComponent->HardTarget)
 		{
 			TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), PC->TargetingSystemComponent->HardTarget->GetActorLocation());
@@ -109,28 +110,13 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 		{
 			EHitDirection HitDirection = MotionWarpingInterface->GetHitEnemyDirection(GetOwner()->GetActorLocation());
 			DashWarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
-			FVector WarpTargetLocation;
-			AEnemyBase* EnemyBase = Cast<AEnemyBase>(PC->TargetingSystemComponent->HardTarget);
-			if (EnemyBase && DashWarpTargetArrow == EnemyBase->FrontArrow)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Yes"));
-				
-
-				WarpTargetLocation = EnemyBase->RightArrow->GetComponentLocation();
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("No"));
-				
-
-			}
 
 			UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
 			if (MotionWarpingComponent)
 			{
-
+				UE_LOG(LogTemp, Warning, TEXT("Warping target"));
 				MotionWarpingTargetParams.Name = FName("DashTarget");
-				MotionWarpingTargetParams.Location = WarpTargetLocation;
+				MotionWarpingTargetParams.Location = TargetLocation;
 				MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
 				MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
 				MotionWarpingTargetParams.BoneName = FName("root");
@@ -138,7 +124,6 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 				MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
 			}
 		}
-
 	}
 }
 

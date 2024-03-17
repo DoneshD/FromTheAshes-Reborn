@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Enums/EStates.h"
 #include "MotionWarpingComponent.h"
+#include "Interfaces/PositionalWarpingInterface.h"
 #include "FTACharacter.generated.h"
 
 class UArrowComponent;
@@ -13,7 +14,7 @@ class UDamageSystem;
 class UAttacksComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter
+class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IPositionalWarpingInterface
 {
 	GENERATED_BODY()
 
@@ -69,5 +70,18 @@ public:
 	bool IsStateEqualToAny(TArray<EStates> StatesToCheck);
 
 	bool CanJump();
+
+	// IPositionalWarpingInterface
+
+	UFUNCTION()
+	virtual void UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+
+	UFUNCTION()
+	virtual void ResetWarpTargetPostion() override;
+
+	virtual TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection) override;
+
+	UFUNCTION()
+	virtual EFacingDirection GetFacingDirection(FVector HitLocation) override;
 
 };
