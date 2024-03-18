@@ -129,14 +129,10 @@ void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingT
 
 void UDashSystemComponent::ResetDashWarpToTarget()
 {
-	IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(GetOwner());
-	if (MotionWarpingInterface)
+	IPositionalWarpingInterface* PositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
+	if (PositionalWarpingInterface)
 	{
-		UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
-		if (MotionWarpingComponent)
-		{
-			MotionWarpingComponent->RemoveWarpTarget(FName("DashTarget"));
-		}
+		PositionalWarpingInterface->ResetWarpTargetPostion(FName("DashTarget"));
 	}
 }
 

@@ -17,7 +17,7 @@ class FROMTHEASHESREBORN_API IPositionalWarpingInterface
 public:
 
 	UFUNCTION()
-	virtual void UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
+	virtual void UpdateWarpTargetPostion(FMotionWarpingTarget MotionWarpingTargetParams) = 0;
 
 	UFUNCTION()
 	virtual void ResetWarpTargetPostion(FName TargetName) = 0;

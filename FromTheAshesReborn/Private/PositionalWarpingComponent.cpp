@@ -22,17 +22,24 @@ void UPositionalWarpingComponent::TickComponent(float DeltaTime, ELevelTick Tick
 
 }
 
-void UPositionalWarpingComponent::UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams)
+void UPositionalWarpingComponent::UpdateWarpTargetPostion(FMotionWarpingTarget MotionWarpingTargetParams)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Outside"));
+	UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
+	if (MotionWarpingComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Inside"));
+		MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
+	}
+
 }
 
 void UPositionalWarpingComponent::ResetWarpTargetPostion(FName TargetName)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UPositionalWarpingComponent Resetsdgsagasgsdgsdgagdsagdg"));
 	UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
 	if (MotionWarpingComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UPositionalWarpingComponent Warp target removed"));
+		UE_LOG(LogTemp, Warning, TEXT("Inside ResetWarpTargetPostion"));
 		MotionWarpingComponent->RemoveWarpTarget(TargetName);
 		WarpPositionalArrow = NULL;
 	}

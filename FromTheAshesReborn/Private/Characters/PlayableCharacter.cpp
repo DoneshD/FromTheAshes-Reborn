@@ -741,9 +741,9 @@ bool APlayableCharacter::MeleeWeaponSphereTrace(FVector StartLocation, FVector E
 	return MeleeAttackLogicComponent->MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 }
 
-void APlayableCharacter::MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+void APlayableCharacter::MeleeAttackWarpToTarget()
 {
-	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MotionWarpingTargetParams, MeleeAttackLogicComponent->MeleeAttackRange, HasMovementInput);
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MeleeAttackLogicComponent->MeleeAttackRange, HasMovementInput);
 }
 
 void APlayableCharacter::ResetMeleeAttackWarpToTarget()

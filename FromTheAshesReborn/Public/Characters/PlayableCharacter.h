@@ -346,7 +346,7 @@ public:
 	virtual void MeleeTraceCollisions() override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void MeleeAttackWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+	virtual void MeleeAttackWarpToTarget() override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetMeleeAttackWarpToTarget() override;

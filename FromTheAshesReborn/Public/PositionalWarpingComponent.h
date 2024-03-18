@@ -23,14 +23,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION()
-	void UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams);
+	void UpdateWarpTargetPostion(FMotionWarpingTarget MotionWarpingTargetParams);
 
 	UFUNCTION()
 	void ResetWarpTargetPostion(FName TargetName);
 
-	TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection);
+	TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection FacingDirection);
 
 	UFUNCTION()
-	EFacingDirection GetFacingDirection(FVector HitLocation);
+	EFacingDirection GetFacingDirection(FVector FacingLocation);
 
 };

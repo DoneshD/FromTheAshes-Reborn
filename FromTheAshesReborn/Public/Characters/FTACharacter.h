@@ -82,7 +82,7 @@ public:
 	// IPositionalWarpingInterface
 
 	UFUNCTION()
-	virtual void UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+	virtual void UpdateWarpTargetPostion(FMotionWarpingTarget MotionWarpingTargetParams) override;
 
 	UFUNCTION()
 	virtual void ResetWarpTargetPostion(FName TargetName) override;
