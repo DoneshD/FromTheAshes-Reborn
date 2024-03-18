@@ -20,7 +20,7 @@ public:
 	virtual void UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
 
 	UFUNCTION()
-	virtual void ResetWarpTargetPostion() = 0;
+	virtual void ResetWarpTargetPostion(FName TargetName) = 0;
 
 	virtual TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection) = 0;
 

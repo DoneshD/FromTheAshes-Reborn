@@ -8,7 +8,9 @@
 #include "MotionWarpingComponent.h"
 #include "CombatComponents/AttacksComponent.h"
 #include "Components/ArrowComponent.h"
+#include "PositionalWarpingComponent.h"
 #include "EFacingDirection.h"
+#include "Interfaces/PositionalWarpingInterface.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)
 
@@ -63,6 +65,9 @@ AFTACharacter::AFTACharacter()
 	AttacksComponent = CreateDefaultSubobject<UAttacksComponent>(TEXT("AttacksComponent"));
 	this->AddOwnedComponent(AttacksComponent);
 
+	PositionalWarpingComponent = CreateDefaultSubobject<UPositionalWarpingComponent>(TEXT("PositionalWarpingComponent"));
+	this->AddOwnedComponent(PositionalWarpingComponent);
+
 }
 
 void AFTACharacter::BeginPlay()
@@ -105,10 +110,24 @@ bool AFTACharacter::CanJump()
 
 void AFTACharacter::UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
+
 }
 
-void AFTACharacter::ResetWarpTargetPostion()
+void AFTACharacter::ResetWarpTargetPostion(FName TargetName)
 {
+	PositionalWarpingComponent->ResetWarpTargetPostion(TargetName);
+	/*
+	IPositionalWarpingInterface* PositionalWarpingInterface = Cast<IPositionalWarpingInterface>(this);
+	if (PositionalWarpingInterface)
+	{
+		UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
+		if (MotionWarpingComponent)
+		{
+			MotionWarpingComponent->RemoveWarpTarget(TargetName);
+			WarpTargetArrow = NULL;
+		}
+	}
+	*/
 }
 
 TObjectPtr<UArrowComponent> AFTACharacter::GetPositionalArrow(EFacingDirection FacingDirection)
@@ -146,6 +165,7 @@ TObjectPtr<UArrowComponent> AFTACharacter::GetPositionalArrow(EFacingDirection F
 
 EFacingDirection AFTACharacter::GetFacingDirection(FVector FacingLocation)
 {
+	//PositionalWarpingComponent->GetFacingDirection(FacingLocation);
 	TArray<float> DistanceArray;
 	float ClosestArrowDistance = 1000.0f;
 	int ClosestArrowIndex = 0;

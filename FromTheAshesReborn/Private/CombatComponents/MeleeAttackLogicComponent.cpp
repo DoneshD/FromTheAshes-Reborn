@@ -10,6 +10,7 @@
 #include "CombatComponents/ComboSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Enums/EMeleeAttackRange.h"
+#include "Interfaces/PositionalWarpingInterface.h"
 
 #include "Kismet/KismetMathLibrary.h"
 
@@ -252,6 +253,13 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(FMotionWarpingTarget& M
 void UMeleeAttackLogicComponent::ResetMeleeAttackWarpToTarget()
 {
 	
+	IPositionalWarpingInterface* PositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
+	if (PositionalWarpingInterface)
+	{
+		PositionalWarpingInterface->ResetWarpTargetPostion(FName("CombatTarget"));
+	}
+	
+	/*
 	IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(GetOwner());
 	if (MotionWarpingInterface)
 	{
@@ -259,7 +267,10 @@ void UMeleeAttackLogicComponent::ResetMeleeAttackWarpToTarget()
 		if (MotionWarpingComponent)
 		{
 			MotionWarpingComponent->RemoveWarpTarget(FName("CombatTarget"));
+			UE_LOG(LogTemp, Warning, TEXT("ResetMeleeAttackWarpToTarget"));
 			WarpTargetArrow = NULL;
 		}
 	}
+	*/
+	
 }

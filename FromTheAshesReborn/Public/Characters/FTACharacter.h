@@ -12,6 +12,7 @@
 class UArrowComponent;
 class UDamageSystem;
 class UAttacksComponent;
+class UPositionalWarpingComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IPositionalWarpingInterface
@@ -24,6 +25,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AttacksComponent", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UAttacksComponent> AttacksComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PositionalWarpingComponent", meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UPositionalWarpingComponent> PositionalWarpingComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> FrontArrow;
@@ -49,11 +53,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> BackRightArrow;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<UArrowComponent> WarpTargetArrow;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Jump")
 	int JumpCount = 0;
 
 	FVector2D InputDirection;
 	EStates CurrentState;
+	//FMotionWarpingTarget& MotionWarpingTargetParams;
 
 public:
 
@@ -77,7 +85,7 @@ public:
 	virtual void UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams) override;
 
 	UFUNCTION()
-	virtual void ResetWarpTargetPostion() override;
+	virtual void ResetWarpTargetPostion(FName TargetName) override;
 
 	virtual TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection) override;
 

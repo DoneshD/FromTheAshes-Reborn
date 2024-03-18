@@ -10,7 +10,7 @@ class FROMTHEASHESREBORN_API UPositionalWarpingComponent : public UActorComponen
 	GENERATED_BODY()
 
 public:	
-
+	TObjectPtr<UArrowComponent> WarpPositionalArrow;
 
 protected:
 
@@ -21,5 +21,16 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UFUNCTION()
+	void UpdateWarpTargetPostion(FMotionWarpingTarget& MotionWarpingTargetParams);
+
+	UFUNCTION()
+	void ResetWarpTargetPostion(FName TargetName);
+
+	TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection);
+
+	UFUNCTION()
+	EFacingDirection GetFacingDirection(FVector HitLocation);
 
 };
