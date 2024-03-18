@@ -25,10 +25,6 @@ public:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_L;
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
 
-	TObjectPtr<UArrowComponent> WarpTargetArrow;
-
-	TObjectPtr<AActor> WarpTarget;
-
 	FOnAttackEnd OnAttackEnd;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

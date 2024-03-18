@@ -28,7 +28,7 @@ public:
 
 	void FreeLockDash();
 
-	void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams);
+	void DashWarpToTarget();
 
 	void ResetDashWarpToTarget();
 

@@ -85,46 +85,41 @@ void UDashSystemComponent::FreeLockDash()
 	PC->PlayAnimMontage(PC->ForwardDashAnim);
 }
 
-void UDashSystemComponent::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+void UDashSystemComponent::DashWarpToTarget()
 {
+	
 	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 	{
 		UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
-		FVector TargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
-		DrawDebugSphere(GetWorld(), TargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
+		FVector DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
+		DrawDebugSphere(GetWorld(), DashTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 
-		FRotator TargetRotation;
+		FRotator DashTargetRotation;
 
 		if (PC->TargetingSystemComponent->HardTarget)
 		{
-			TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), PC->TargetingSystemComponent->HardTarget->GetActorLocation());
+			DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), PC->TargetingSystemComponent->HardTarget->GetActorLocation());
 		}
 		else
 		{
-			TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
+			DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), DashTargetLocation);
 		}
+		IPositionalWarpingInterface* OwnerPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
 
-		IMotionWarpingInterface* MotionWarpingInterface = Cast<IMotionWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
-
-		if (MotionWarpingInterface)
+		if (OwnerPositionalWarpingInterface)
 		{
-			EHitDirection HitDirection = MotionWarpingInterface->GetHitEnemyDirection(GetOwner()->GetActorLocation());
-			DashWarpTargetArrow = MotionWarpingInterface->GetPositionArrow(HitDirection);
+			FMotionWarpingTarget MotionWarpingTargetParams;
 
-			UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
-			if (MotionWarpingComponent)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Warping target"));
-				MotionWarpingTargetParams.Name = FName("DashTarget");
-				MotionWarpingTargetParams.Location = TargetLocation;
-				MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
-				MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
-				MotionWarpingTargetParams.BoneName = FName("root");
+			MotionWarpingTargetParams.Name = FName("DashTarget");
+			MotionWarpingTargetParams.Location = DashTargetLocation;
+			MotionWarpingTargetParams.Rotation.Roll = DashTargetRotation.Roll;
+			MotionWarpingTargetParams.Rotation.Yaw = DashTargetRotation.Yaw;
+			MotionWarpingTargetParams.BoneName = FName("root");
 
-				MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
-			}
+			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 		}
 	}
+	
 }
 
 void UDashSystemComponent::ResetDashWarpToTarget()

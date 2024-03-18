@@ -20,7 +20,7 @@ public:
 	virtual void StartDash() = 0;
 
 	UFUNCTION()
-	virtual void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) = 0;
+	virtual void DashWarpToTarget() = 0;
 
 	UFUNCTION()
 	virtual void ResetDashWarpToTarget() = 0;

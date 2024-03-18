@@ -617,105 +617,6 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
 
-void APlayableCharacter::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
-{
-	
-}
-
-void APlayableCharacter::ResetWarpTarget()
-{
-	
-}
-
-TObjectPtr<UArrowComponent> APlayableCharacter::GetPositionArrow(EHitDirection HitDirection)
-{
-	switch (HitDirection)
-	{
-	case EHitDirection::EHitDirection_Left:
-		return LeftArrow;
-
-	case EHitDirection::EHitDirection_Right:
-		return RightArrow;
-
-	case EHitDirection::EHitDirection_Front:
-		return FrontArrow;
-
-	case EHitDirection::EHitDirection_Back:
-		return BackArrow;
-
-	case EHitDirection::EHitDirection_FrontLeft:
-		return FrontLeftArrow;
-
-	case EHitDirection::EHitDirection_FrontRight:
-		return FrontRightArrow;
-
-	case EHitDirection::EHitDirection_BackLeft:
-		return BackLeftArrow;
-
-	case EHitDirection::EHitDirection_BackRight:
-		return BackRightArrow;
-
-	default:
-		return FrontArrow;
-	}
-}
-
-EHitDirection APlayableCharacter::GetHitEnemyDirection(FVector HitLocation)
-{
-	TArray<float> DistanceArray;
-	float ClosestArrowDistance = 1000.0f;
-	int ClosestArrowIndex = 0;
-
-	DistanceArray.Add(FVector::Dist(HitLocation, LeftArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, RightArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, FrontArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, BackArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, FrontLeftArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, FrontRightArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, BackLeftArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, BackRightArrow->GetComponentLocation()));
-
-	for (const float& EachArrowDistance : DistanceArray)
-	{
-		if (EachArrowDistance < ClosestArrowDistance)
-		{
-			ClosestArrowDistance = EachArrowDistance;
-			ClosestArrowIndex = DistanceArray.Find(EachArrowDistance);
-		}
-	}
-	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowIndex: %d"), ClosestArrowIndex);
-	switch (ClosestArrowIndex)
-	{
-	case 0:
-		return EHitDirection::EHitDirection_Left;
-
-	case 1:
-		return EHitDirection::EHitDirection_Right;
-
-	case 2:
-		return EHitDirection::EHitDirection_Front;
-
-	case 3:
-		return EHitDirection::EHitDirection_Back;
-
-	case 4:
-		return EHitDirection::EHitDirection_FrontLeft;
-
-	case 5:
-		return EHitDirection::EHitDirection_FrontRight;
-
-	case 6:
-		return EHitDirection::EHitDirection_BackLeft;
-
-	case 7:
-		return EHitDirection::EHitDirection_BackRight;
-
-	default:
-		break;
-	}
-	return EHitDirection::EHitDirection_None;
-}
-
 void APlayableCharacter::EmptyHitActorsArray()
 {
 	MeleeAttackLogicComponent->EmptyHitActorsArray();
@@ -756,9 +657,9 @@ void APlayableCharacter::StartDash()
 
 }
 
-void APlayableCharacter::DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
+void APlayableCharacter::DashWarpToTarget()
 {
-	DashSystemComponent->DashWarpToTarget(MotionWarpingTargetParams);
+	DashSystemComponent->DashWarpToTarget();
 }
 
 void APlayableCharacter::ResetDashWarpToTarget()

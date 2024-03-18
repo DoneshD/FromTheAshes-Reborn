@@ -27,7 +27,7 @@ class UDashSystemComponent;
 class UTargetingSystemComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMotionWarpingInterface, public IMeleeCombatantInterface, public IDashingCombatantInterface
+class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, public IDashingCombatantInterface
 {
 	GENERATED_BODY()
 
@@ -314,19 +314,6 @@ public:
 
 	UFUNCTION()
 	virtual void ReturnAttackToken(int Amount) override;
-	
-	//Motion Warping Interface
-
-	UFUNCTION(BlueprintCallable)
-	virtual void UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ResetWarpTarget() override;
-
-	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) override;
-
-	UFUNCTION()
-	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) override;
 
 	//Melee Combatant Interface
 
@@ -357,7 +344,7 @@ public:
 	virtual void StartDash() override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DashWarpToTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
+	virtual void DashWarpToTarget() override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetDashWarpToTarget() override;
