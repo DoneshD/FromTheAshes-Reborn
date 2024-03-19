@@ -22,7 +22,6 @@ class FROMTHEASHESREBORN_API UDamageSystem : public UActorComponent
 {
 	GENERATED_BODY()
 
-
 public:	
 	UDamageSystem();
 

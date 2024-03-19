@@ -10,7 +10,15 @@ class FROMTHEASHESREBORN_API UPositionalWarpingComponent : public UActorComponen
 	GENERATED_BODY()
 
 public:	
-	TObjectPtr<UArrowComponent> WarpPositionalArrow;
+	TObjectPtr<UArrowComponent> CurrentWarpPositionalArrow;
+
+	struct ArrowNeighbors
+	{
+		TObjectPtr<UArrowComponent> LeftNeighbor;
+		TObjectPtr<UArrowComponent> RightNeighbor;
+	};
+
+	TMap<TObjectPtr<UArrowComponent>, ArrowNeighbors> ArrowNeighborMap;
 
 protected:
 
@@ -22,6 +30,13 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintCallable)
+	void InitializeArrowNeighbors();
+
+	TObjectPtr<UArrowComponent> GetLeftArrowNeighbor(TObjectPtr<UArrowComponent> Arrow);
+
+	TObjectPtr<UArrowComponent> GetRightArrowNeighbor(TObjectPtr<UArrowComponent> Arrow);
+
 	UFUNCTION()
 	void UpdateWarpTargetPostion(FMotionWarpingTarget MotionWarpingTargetParams);
 
@@ -32,5 +47,7 @@ public:
 
 	UFUNCTION()
 	EFacingDirection GetFacingDirection(FVector FacingLocation);
+
+	void PrintArrowNeighbors();
 
 };

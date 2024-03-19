@@ -60,8 +60,8 @@ public:
 	int JumpCount = 0;
 
 	FVector2D InputDirection;
+
 	EStates CurrentState;
-	//FMotionWarpingTarget& MotionWarpingTargetParams;
 
 public:
 

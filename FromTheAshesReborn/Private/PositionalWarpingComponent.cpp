@@ -13,6 +13,7 @@ UPositionalWarpingComponent::UPositionalWarpingComponent()
 void UPositionalWarpingComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	InitializeArrowNeighbors();
 
 }
 
@@ -22,6 +23,56 @@ void UPositionalWarpingComponent::TickComponent(float DeltaTime, ELevelTick Tick
 
 }
 
+void UPositionalWarpingComponent::InitializeArrowNeighbors()
+{
+	AFTACharacter* OwningCharacter = Cast<AFTACharacter>(GetOwner());
+
+	ArrowNeighborMap.Add(OwningCharacter->FrontArrow, ArrowNeighbors{ OwningCharacter->LeftArrow, OwningCharacter->RightArrow });
+	ArrowNeighborMap.Add(OwningCharacter->BackArrow, ArrowNeighbors{ OwningCharacter->RightArrow, OwningCharacter->LeftArrow });
+	ArrowNeighborMap.Add(OwningCharacter->LeftArrow, ArrowNeighbors{ OwningCharacter->BackLeftArrow, OwningCharacter->FrontLeftArrow });
+	ArrowNeighborMap.Add(OwningCharacter->RightArrow, ArrowNeighbors{ OwningCharacter->FrontRightArrow, OwningCharacter->BackRightArrow });
+	ArrowNeighborMap.Add(OwningCharacter->FrontLeftArrow, ArrowNeighbors{ OwningCharacter->BackArrow, OwningCharacter->FrontArrow });
+	ArrowNeighborMap.Add(OwningCharacter->FrontRightArrow, ArrowNeighbors{ OwningCharacter->FrontArrow, OwningCharacter->BackArrow });
+	ArrowNeighborMap.Add(OwningCharacter->BackLeftArrow, ArrowNeighbors{ OwningCharacter->LeftArrow, OwningCharacter->RightArrow });
+	ArrowNeighborMap.Add(OwningCharacter->BackRightArrow, ArrowNeighbors{ OwningCharacter->RightArrow, OwningCharacter->LeftArrow });
+}
+
+TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetLeftArrowNeighbor(TObjectPtr<UArrowComponent> Arrow)
+{
+	if (ArrowNeighborMap.Contains(Arrow))
+	{
+		TObjectPtr<UArrowComponent> LeftNeighbor = ArrowNeighborMap[Arrow].LeftNeighbor;
+		if (LeftNeighbor)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Left neighbor of %s is %s"), *Arrow->GetName(), *LeftNeighbor->GetName());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Left neighbor of %s is nullptr"), *Arrow->GetName());
+		}
+		return LeftNeighbor;
+	}
+	return nullptr;
+}
+
+TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetRightArrowNeighbor(TObjectPtr<UArrowComponent> Arrow)
+{
+	if (ArrowNeighborMap.Contains(Arrow))
+	{
+		TObjectPtr<UArrowComponent> RightNeighbor = ArrowNeighborMap[Arrow].RightNeighbor;
+		if (RightNeighbor)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Right neighbor of %s is %s"), *Arrow->GetName(), *RightNeighbor->GetName());
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Right neighbor of %s is nullptr"), *Arrow->GetName());
+		}
+		return RightNeighbor;
+	}
+	return nullptr;
+}
+
 void UPositionalWarpingComponent::UpdateWarpTargetPostion(FMotionWarpingTarget MotionWarpingTargetParams)
 {
 	UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
@@ -29,7 +80,6 @@ void UPositionalWarpingComponent::UpdateWarpTargetPostion(FMotionWarpingTarget M
 	{
 		MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
 	}
-
 }
 
 void UPositionalWarpingComponent::ResetWarpTargetPostion(FName TargetName)
@@ -38,7 +88,7 @@ void UPositionalWarpingComponent::ResetWarpTargetPostion(FName TargetName)
 	if (MotionWarpingComponent)
 	{
 		MotionWarpingComponent->RemoveWarpTarget(TargetName);
-		WarpPositionalArrow = NULL;
+		CurrentWarpPositionalArrow = NULL;
 	}
 }
 
@@ -53,7 +103,7 @@ TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetPositionalArrow(EFac
 	case EFacingDirection::EFacingDirection_Right:
 		return OwningCharacter->RightArrow;
 
-	case EFacingDirection::EFacingDirection_Front:
+		UE_LOG(LogTemp, Warning, TEXT("The fart"));
 		return OwningCharacter->FrontArrow;
 
 	case EFacingDirection::EFacingDirection_Back:
@@ -131,4 +181,3 @@ EFacingDirection UPositionalWarpingComponent::GetFacingDirection(FVector FacingL
 	}
 	return EFacingDirection::EFacingDirection_None;
 }
-

@@ -1,4 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 #include "Characters/FTACharacter.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
@@ -14,7 +13,6 @@
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)
 
-// Sets default values
 AFTACharacter::AFTACharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
