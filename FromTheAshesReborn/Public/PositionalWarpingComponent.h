@@ -14,8 +14,8 @@ public:
 
 	struct ArrowNeighbors
 	{
-		TObjectPtr<UArrowComponent> LeftNeighbor;
 		TObjectPtr<UArrowComponent> RightNeighbor;
+		TObjectPtr<UArrowComponent> LeftNeighbor;
 	};
 
 	TMap<TObjectPtr<UArrowComponent>, ArrowNeighbors> ArrowNeighborMap;

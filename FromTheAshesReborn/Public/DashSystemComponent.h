@@ -18,11 +18,15 @@ public:
 
 	TObjectPtr<UArrowComponent> DashWarpTargetArrow;
 
+	bool EnableLateralDash = false;
+
 protected:
 
 public:	
 
 	float GetAngleOfDash();
+
+	bool InRangeOfLateralDash();
 
 	void LockOnDash();
 

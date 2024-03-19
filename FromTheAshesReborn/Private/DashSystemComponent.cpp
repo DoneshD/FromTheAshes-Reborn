@@ -52,9 +52,22 @@ float UDashSystemComponent::GetAngleOfDash()
 	return AngleOfDash;
 }
 
+bool UDashSystemComponent::InRangeOfLateralDash()
+{
+	if (GetOwner()->GetDistanceTo(PC->TargetingSystemComponent->HardTarget) < 300.0f)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 void UDashSystemComponent::LockOnDash()
 {
-	
+	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
+
 	float AngleOfDash = GetAngleOfDash();
 
 	if (AngleOfDash >= -45 && AngleOfDash < 45)
@@ -63,6 +76,19 @@ void UDashSystemComponent::LockOnDash()
 	}
 	else if (AngleOfDash >= 45 && AngleOfDash <= 135)
 	{
+		if (InRangeOfLateralDash())
+		{
+			EnableLateralDash = true;
+
+			if (TargetPositionalWarpingInterface)
+			{
+				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetRightArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
+			}
+		}
+		else
+		{
+			EnableLateralDash = false;
+		}
 		PC->PlayAnimMontage(PC->RightDashAnim);
 	}
 	else if (AngleOfDash >= 135 || AngleOfDash <= -135)
@@ -71,6 +97,19 @@ void UDashSystemComponent::LockOnDash()
 	}
 	else if (AngleOfDash >= -135 && AngleOfDash <= -45)
 	{
+		if (InRangeOfLateralDash())
+		{
+			EnableLateralDash = true;
+
+			if (TargetPositionalWarpingInterface)
+			{
+				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetLeftArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
+			}
+		}
+		else
+		{
+			EnableLateralDash = false;
+		}
 		PC->PlayAnimMontage(PC->LeftDashAnim);
 		
 	}
@@ -91,10 +130,22 @@ void UDashSystemComponent::DashWarpToTarget()
 	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 	{
 		UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
-		FVector DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
+		FVector DashTargetLocation;
+		FRotator DashTargetRotation;
+		if (EnableLateralDash)
+		{
+			if (DashWarpTargetArrow)
+			{
+				DashTargetLocation = DashWarpTargetArrow->GetComponentLocation();
+				EnableLateralDash = false;
+			}
+		}
+		else
+		{
+			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
+		}
 		DrawDebugSphere(GetWorld(), DashTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 
-		FRotator DashTargetRotation;
 
 		if (PC->TargetingSystemComponent->HardTarget)
 		{
@@ -128,6 +179,7 @@ void UDashSystemComponent::ResetDashWarpToTarget()
 	if (PositionalWarpingInterface)
 	{
 		PositionalWarpingInterface->ResetWarpTargetPostion(FName("DashTarget"));
+		DashWarpTargetArrow = NULL;
 	}
 }
 

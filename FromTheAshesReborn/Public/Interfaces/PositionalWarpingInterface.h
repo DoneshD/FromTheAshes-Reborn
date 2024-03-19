@@ -24,6 +24,10 @@ public:
 
 	virtual TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection) = 0;
 
+	virtual TObjectPtr<UArrowComponent> GetLeftArrowNeighbor(TObjectPtr<UArrowComponent> Arrow) = 0;
+
+	virtual TObjectPtr<UArrowComponent> GetRightArrowNeighbor(TObjectPtr<UArrowComponent> Arrow) = 0;
+
 	UFUNCTION()
 	virtual EFacingDirection GetFacingDirection(FVector HitLocation) = 0;
 };

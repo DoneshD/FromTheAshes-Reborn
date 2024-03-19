@@ -29,12 +29,12 @@ void UPositionalWarpingComponent::InitializeArrowNeighbors()
 
 	ArrowNeighborMap.Add(OwningCharacter->FrontArrow, ArrowNeighbors{ OwningCharacter->LeftArrow, OwningCharacter->RightArrow });
 	ArrowNeighborMap.Add(OwningCharacter->BackArrow, ArrowNeighbors{ OwningCharacter->RightArrow, OwningCharacter->LeftArrow });
-	ArrowNeighborMap.Add(OwningCharacter->LeftArrow, ArrowNeighbors{ OwningCharacter->BackLeftArrow, OwningCharacter->FrontLeftArrow });
-	ArrowNeighborMap.Add(OwningCharacter->RightArrow, ArrowNeighbors{ OwningCharacter->FrontRightArrow, OwningCharacter->BackRightArrow });
-	ArrowNeighborMap.Add(OwningCharacter->FrontLeftArrow, ArrowNeighbors{ OwningCharacter->BackArrow, OwningCharacter->FrontArrow });
-	ArrowNeighborMap.Add(OwningCharacter->FrontRightArrow, ArrowNeighbors{ OwningCharacter->FrontArrow, OwningCharacter->BackArrow });
-	ArrowNeighborMap.Add(OwningCharacter->BackLeftArrow, ArrowNeighbors{ OwningCharacter->LeftArrow, OwningCharacter->RightArrow });
-	ArrowNeighborMap.Add(OwningCharacter->BackRightArrow, ArrowNeighbors{ OwningCharacter->RightArrow, OwningCharacter->LeftArrow });
+	ArrowNeighborMap.Add(OwningCharacter->LeftArrow, ArrowNeighbors{ OwningCharacter->BackArrow, OwningCharacter->FrontArrow });
+	ArrowNeighborMap.Add(OwningCharacter->RightArrow, ArrowNeighbors{ OwningCharacter->FrontArrow, OwningCharacter->BackArrow });
+	ArrowNeighborMap.Add(OwningCharacter->FrontLeftArrow, ArrowNeighbors{ OwningCharacter->BackLeftArrow, OwningCharacter->FrontRightArrow });
+	ArrowNeighborMap.Add(OwningCharacter->FrontRightArrow, ArrowNeighbors{ OwningCharacter->FrontLeftArrow, OwningCharacter->BackRightArrow });
+	ArrowNeighborMap.Add(OwningCharacter->BackLeftArrow, ArrowNeighbors{ OwningCharacter->BackRightArrow, OwningCharacter->FrontLeftArrow });
+	ArrowNeighborMap.Add(OwningCharacter->BackRightArrow, ArrowNeighbors{ OwningCharacter->FrontRightArrow, OwningCharacter->BackLeftArrow });
 }
 
 TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetLeftArrowNeighbor(TObjectPtr<UArrowComponent> Arrow)
@@ -103,7 +103,6 @@ TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetPositionalArrow(EFac
 	case EFacingDirection::EFacingDirection_Right:
 		return OwningCharacter->RightArrow;
 
-		UE_LOG(LogTemp, Warning, TEXT("The fart"));
 		return OwningCharacter->FrontArrow;
 
 	case EFacingDirection::EFacingDirection_Back:

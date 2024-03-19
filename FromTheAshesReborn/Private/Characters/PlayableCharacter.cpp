@@ -265,14 +265,21 @@ void APlayableCharacter::EnableRootRotation()
 
 bool APlayableCharacter::CanDash()
 {
-	TArray<EStates> MakeArray = { EStates::EState_Dodge, EStates::EState_Execution };
+	TArray<EStates> MakeArray = { EStates::EState_Dodge, EStates::EState_Execution, EStates::EState_Attack };
 	return !GetCharacterMovement()->IsFalling() && !IsStateEqualToAny(MakeArray);
+}
+
+bool APlayableCharacter::CanJump()
+{
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
+	return !IsStateEqualToAny(MakeArray);
 }
 
 void APlayableCharacter::InputDash()
 {
 	if (CanDash())
 	{
+		SetState(EStates::EState_Dodge);
 		if (TargetingSystemComponent->HardTarget)
 		{
 			DashSystemComponent->LockOnDash();

@@ -77,8 +77,6 @@ public:
 
 	bool IsStateEqualToAny(TArray<EStates> StatesToCheck);
 
-	bool CanJump();
-
 	// IPositionalWarpingInterface
 
 	UFUNCTION()
@@ -87,9 +85,12 @@ public:
 	UFUNCTION()
 	virtual void ResetWarpTargetPostion(FName TargetName) override;
 
-	virtual TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection) override;
-
 	UFUNCTION()
 	virtual EFacingDirection GetFacingDirection(FVector HitLocation) override;
 
+	virtual TObjectPtr<UArrowComponent> GetPositionalArrow(EFacingDirection HitDirection) override;
+
+	virtual TObjectPtr<UArrowComponent> GetLeftArrowNeighbor(TObjectPtr<UArrowComponent> Arrow) override;
+
+	virtual TObjectPtr<UArrowComponent> GetRightArrowNeighbor(TObjectPtr<UArrowComponent> Arrow) override;
 };

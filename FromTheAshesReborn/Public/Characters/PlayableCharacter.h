@@ -222,6 +222,7 @@ public:
 
 	void InputDash();
 	bool CanDash();
+	bool CanJump();
 
 	//-----------------------------------------FSM Attack Check-------------------------------------
 

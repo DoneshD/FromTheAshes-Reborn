@@ -100,12 +100,6 @@ bool AFTACharacter::IsStateEqualToAny(TArray<EStates> StatesToCheck)
 	return StatesToCheck.Contains(CurrentState);
 }
 
-bool AFTACharacter::CanJump()
-{
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
-	return !IsStateEqualToAny(MakeArray);
-}
-
 void AFTACharacter::UpdateWarpTargetPostion(FMotionWarpingTarget MotionWarpingTargetParams)
 {
 	PositionalWarpingComponent->UpdateWarpTargetPostion(MotionWarpingTargetParams);
@@ -119,6 +113,16 @@ void AFTACharacter::ResetWarpTargetPostion(FName TargetName)
 TObjectPtr<UArrowComponent> AFTACharacter::GetPositionalArrow(EFacingDirection FacingDirection)
 {
 	return PositionalWarpingComponent->GetPositionalArrow(FacingDirection);
+}
+
+TObjectPtr<UArrowComponent> AFTACharacter::GetLeftArrowNeighbor(TObjectPtr<UArrowComponent> Arrow)
+{
+	return PositionalWarpingComponent->GetLeftArrowNeighbor(Arrow);
+}
+
+TObjectPtr<UArrowComponent> AFTACharacter::GetRightArrowNeighbor(TObjectPtr<UArrowComponent> Arrow)
+{
+	return PositionalWarpingComponent->GetRightArrowNeighbor(Arrow);
 }
 
 EFacingDirection AFTACharacter::GetFacingDirection(FVector FacingLocation)
