@@ -124,6 +124,15 @@ void UDashSystemComponent::FreeLockDash()
 	PC->PlayAnimMontage(PC->ForwardDashAnim);
 }
 
+void UDashSystemComponent::SaveDash()
+{
+	if (IsDashSaved)
+	{
+		IsDashSaved = false;
+		PC->PlayAnimMontage(PC->ForwardBlinkAnim);
+	}
+}
+
 void UDashSystemComponent::DashWarpToTarget()
 {
 	
@@ -144,8 +153,6 @@ void UDashSystemComponent::DashWarpToTarget()
 		{
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
 		}
-		DrawDebugSphere(GetWorld(), DashTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
-
 
 		if (PC->TargetingSystemComponent->HardTarget)
 		{
@@ -161,6 +168,7 @@ void UDashSystemComponent::DashWarpToTarget()
 		{
 			FMotionWarpingTarget MotionWarpingTargetParams;
 
+			DrawDebugSphere(GetWorld(), DashTargetLocation, 10.0f, 12, FColor::Red, true, 5.0f);
 			MotionWarpingTargetParams.Name = FName("DashTarget");
 			MotionWarpingTargetParams.Location = DashTargetLocation;
 			MotionWarpingTargetParams.Rotation.Roll = DashTargetRotation.Roll;

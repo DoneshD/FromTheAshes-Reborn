@@ -20,6 +20,9 @@ public:
 
 	bool EnableLateralDash = false;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool IsDashSaved = false;
+
 protected:
 
 public:	
@@ -31,6 +34,9 @@ public:
 	void LockOnDash();
 
 	void FreeLockDash();
+
+	UFUNCTION(BlueprintCallable)
+	void SaveDash();
 
 	void DashWarpToTarget();
 
