@@ -190,7 +190,7 @@ public:
 	TObjectPtr<UAnimMontage> ForwardBlinkAnim;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> BackwardBlinkhAnim;
+	TObjectPtr<UAnimMontage> BackwardBlinkAnim;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> RightBlinkhAnim;

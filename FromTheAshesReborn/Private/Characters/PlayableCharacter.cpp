@@ -265,7 +265,7 @@ void APlayableCharacter::EnableRootRotation()
 
 bool APlayableCharacter::CanDash()
 {
-	TArray<EStates> MakeArray = { EStates::EState_Dash, EStates::EState_Execution };
+	TArray<EStates> MakeArray = { EStates::EState_Dash, EStates::EState_Execution, EStates::EState_Blink };
 	return !GetCharacterMovement()->IsFalling() && !IsStateEqualToAny(MakeArray);
 }
 

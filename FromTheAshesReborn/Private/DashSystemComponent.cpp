@@ -128,8 +128,66 @@ void UDashSystemComponent::SaveDash()
 {
 	if (IsDashSaved)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Blinking"));
+		PC->SetState(EStates::EState_Blink);
 		IsDashSaved = false;
-		PC->PlayAnimMontage(PC->ForwardBlinkAnim);
+		IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
+
+		float AngleOfDash = GetAngleOfDash();
+
+		if (AngleOfDash >= -45 && AngleOfDash < 45)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Here1"));
+			PC->PlayAnimMontage(PC->ForwardBlinkAnim);
+		}
+		else if (AngleOfDash >= 45 && AngleOfDash <= 135)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Here2"));
+			if (InRangeOfLateralDash())
+			{
+				EnableLateralDash = true;
+
+				if (TargetPositionalWarpingInterface)
+				{
+					DashWarpTargetArrow = TargetPositionalWarpingInterface->GetRightArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
+				}
+			}
+			else
+			{
+				EnableLateralDash = false;
+			}
+			
+			PC->PlayAnimMontage(PC->RightBlinkhAnim);
+		}
+		else if (AngleOfDash >= 135 || AngleOfDash <= -135)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Here3"));
+			PC->PlayAnimMontage(PC->BackwardBlinkAnim);
+		}
+		else if (AngleOfDash >= -135 && AngleOfDash <= -45)
+		{
+			if (InRangeOfLateralDash())
+			{
+				EnableLateralDash = true;
+
+				if (TargetPositionalWarpingInterface)
+				{
+					DashWarpTargetArrow = TargetPositionalWarpingInterface->GetLeftArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
+				}
+			}
+			else
+			{
+				EnableLateralDash = false;
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Here4"));
+
+			PC->PlayAnimMontage(PC->LeftBlinkAnim);
+
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Error"));
+		}
 	}
 }
 
@@ -152,6 +210,12 @@ void UDashSystemComponent::DashWarpToTarget()
 		else
 		{
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
+		}
+		TArray<EStates> MakeArray = { EStates::EState_Blink };
+
+		if(PC->IsStateEqualToAny(MakeArray))
+		{
+			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 800.0f;
 		}
 
 		if (PC->TargetingSystemComponent->HardTarget)
