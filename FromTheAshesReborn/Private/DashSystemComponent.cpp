@@ -72,7 +72,7 @@ void UDashSystemComponent::LockOnDash()
 
 	if (AngleOfDash >= -45 && AngleOfDash < 45)
 	{
-		PC->PlayAnimMontage(PC->LeftDashAnim);
+		PC->PlayAnimMontage(PC->ForwardDashAnim);
 	}
 	else if (AngleOfDash >= 45 && AngleOfDash <= 135)
 	{
@@ -183,7 +183,7 @@ void UDashSystemComponent::DashWarpToTarget()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Blink"));
 
-			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 2000.0f;
+			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 3000.0f;
 			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 		}
 	}
