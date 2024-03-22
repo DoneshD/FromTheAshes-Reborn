@@ -168,7 +168,7 @@ void UComboSystemComponent::PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontag
 void UComboSystemComponent::PerformComboExtender(int ExtenderIndex)
 {
 	UAnimMontage* CurrentAttackMontage = PC->ComboExtender[ExtenderIndex];
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	if (!PC->IsStateEqualToAny(MakeArray))
 	{
 		if (CurrentAttackMontage)
@@ -192,7 +192,7 @@ void UComboSystemComponent::PerformComboExtender(int ExtenderIndex)
 
 void UComboSystemComponent::PerformComboFinisher(TObjectPtr<UAnimMontage> FinisherMontage)
 {
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	if (!PC->IsStateEqualToAny(MakeArray))
 	{
 		if (FinisherMontage)
@@ -215,7 +215,7 @@ void UComboSystemComponent::PerformComboFinisher(TObjectPtr<UAnimMontage> Finish
 
 void UComboSystemComponent::PerformComboSurge()
 {
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dodge };
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 
 	if (!PC->IsStateEqualToAny(MakeArray))
 	{

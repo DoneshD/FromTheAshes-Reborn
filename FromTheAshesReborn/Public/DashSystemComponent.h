@@ -6,6 +6,7 @@
 
 
 class UArrowComponent;
+class UCharacterMovementComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UDashSystemComponent : public UActorComponent
@@ -18,7 +19,13 @@ public:
 
 	TObjectPtr<UArrowComponent> DashWarpTargetArrow;
 
+	TObjectPtr<UCharacterMovementComponent> CharacterMovement;
+
 	bool EnableLateralDash = false;
+
+	bool IsDashSaved = false;
+
+	bool AlreadyDashed = false;
 
 protected:
 

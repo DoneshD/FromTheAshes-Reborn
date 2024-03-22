@@ -72,7 +72,7 @@ void UDashSystemComponent::LockOnDash()
 
 	if (AngleOfDash >= -45 && AngleOfDash < 45)
 	{
-		PC->PlayAnimMontage(PC->ForwardDashAnim);
+		PC->PlayAnimMontage(PC->LeftDashAnim);
 	}
 	else if (AngleOfDash >= 45 && AngleOfDash <= 135)
 	{
@@ -126,55 +126,73 @@ void UDashSystemComponent::FreeLockDash()
 
 void UDashSystemComponent::DashWarpToTarget()
 {
-	
+	FMotionWarpingTarget MotionWarpingTargetParams;
+	FVector DashTargetLocation;
+	FRotator DashTargetRotation;
 	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 	{
-		UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
-		FVector DashTargetLocation;
-		FRotator DashTargetRotation;
-		if (EnableLateralDash)
+		CharacterMovement = CharacterOwner->GetCharacterMovement();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Error getting CharacterMovementComponent"));
+	}
+
+	if (EnableLateralDash)
+	{
+		if (DashWarpTargetArrow)
 		{
-			if (DashWarpTargetArrow)
-			{
-				DashTargetLocation = DashWarpTargetArrow->GetComponentLocation();
-				EnableLateralDash = false;
-			}
+			DashTargetLocation = DashWarpTargetArrow->GetComponentLocation();
+			EnableLateralDash = false;
 		}
-		else
+	}
+	else
+	{
+		DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
+	}
+
+	DrawDebugSphere(GetWorld(), DashTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
+
+	if (PC->TargetingSystemComponent->HardTarget)
+	{
+		DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), PC->TargetingSystemComponent->HardTarget->GetActorLocation());
+	}
+	else
+	{
+		DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), DashTargetLocation);
+	}
+
+	IPositionalWarpingInterface* OwnerPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
+
+	if (OwnerPositionalWarpingInterface)
+	{
+		MotionWarpingTargetParams.Name = FName("DashTarget");
+		MotionWarpingTargetParams.Location = DashTargetLocation;
+		MotionWarpingTargetParams.Rotation.Roll = DashTargetRotation.Roll;
+		MotionWarpingTargetParams.Rotation.Yaw = DashTargetRotation.Yaw;
+		MotionWarpingTargetParams.BoneName = FName("root");
+
+		if (!AlreadyDashed)
 		{
-			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
+			UE_LOG(LogTemp, Warning, TEXT("Dash"));
+			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 700.0f;
+			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 		}
-		DrawDebugSphere(GetWorld(), DashTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 
-
-		if (PC->TargetingSystemComponent->HardTarget)
+		if (IsDashSaved)
 		{
-			DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), PC->TargetingSystemComponent->HardTarget->GetActorLocation());
-		}
-		else
-		{
-			DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), DashTargetLocation);
-		}
-		IPositionalWarpingInterface* OwnerPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
+			UE_LOG(LogTemp, Warning, TEXT("Blink"));
 
-		if (OwnerPositionalWarpingInterface)
-		{
-			FMotionWarpingTarget MotionWarpingTargetParams;
-
-			MotionWarpingTargetParams.Name = FName("DashTarget");
-			MotionWarpingTargetParams.Location = DashTargetLocation;
-			MotionWarpingTargetParams.Rotation.Roll = DashTargetRotation.Roll;
-			MotionWarpingTargetParams.Rotation.Yaw = DashTargetRotation.Yaw;
-			MotionWarpingTargetParams.BoneName = FName("root");
-
+			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 2000.0f;
 			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 		}
 	}
-	
 }
+
 
 void UDashSystemComponent::ResetDashWarpToTarget()
 {
+	AlreadyDashed = true;
 	IPositionalWarpingInterface* PositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
 	if (PositionalWarpingInterface)
 	{
