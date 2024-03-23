@@ -187,9 +187,8 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 	{
 		if (PC->TargetingSystemComponent->HardTarget)
 		{
-			FVector TargetDirection = (PC->TargetingSystemComponent->HardTarget->GetActorLocation() - OwnerActor->GetActorLocation());
+			FVector TargetDirection = (PC->TargetingSystemComponent->HardTarget->GetActorLocation() - OwnerActor->GetActorLocation()).GetSafeNormal();
 			EndLocation = OwnerActor->GetActorLocation() + TargetDirection * WarpRange;
-			
 		}
 		else
 		{

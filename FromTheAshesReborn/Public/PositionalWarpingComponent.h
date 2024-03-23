@@ -48,6 +48,4 @@ public:
 	UFUNCTION()
 	EFacingDirection GetFacingDirection(FVector FacingLocation);
 
-	void PrintArrowNeighbors();
-
 };

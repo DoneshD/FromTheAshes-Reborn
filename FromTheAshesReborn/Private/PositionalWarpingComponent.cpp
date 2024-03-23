@@ -44,13 +44,8 @@ TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetLeftArrowNeighbor(TO
 		TObjectPtr<UArrowComponent> LeftNeighbor = ArrowNeighborMap[Arrow].LeftNeighbor;
 		if (LeftNeighbor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Left neighbor of %s is %s"), *Arrow->GetName(), *LeftNeighbor->GetName());
+			return LeftNeighbor;
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Left neighbor of %s is nullptr"), *Arrow->GetName());
-		}
-		return LeftNeighbor;
 	}
 	return nullptr;
 }
@@ -62,13 +57,8 @@ TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetRightArrowNeighbor(T
 		TObjectPtr<UArrowComponent> RightNeighbor = ArrowNeighborMap[Arrow].RightNeighbor;
 		if (RightNeighbor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Right neighbor of %s is %s"), *Arrow->GetName(), *RightNeighbor->GetName());
+			return RightNeighbor;
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Right neighbor of %s is nullptr"), *Arrow->GetName());
-		}
-		return RightNeighbor;
 	}
 	return nullptr;
 }
@@ -102,7 +92,8 @@ TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetPositionalArrow(EFac
 
 	case EFacingDirection::EFacingDirection_Right:
 		return OwningCharacter->RightArrow;
-
+	
+	case EFacingDirection::EFacingDirection_Front:
 		return OwningCharacter->FrontArrow;
 
 	case EFacingDirection::EFacingDirection_Back:
