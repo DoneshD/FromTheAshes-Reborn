@@ -155,21 +155,21 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 	
 	UAnimMontage* HitReactionMontage = FrontHitReaction;
 
-	switch (DamageInfo.HitReactionDirection)
+	switch (DamageInfo.FacingDirection)
 	{
-	case EHitReactionDirection::EHitReactionDirection_Left:
+	case EFacingDirection::EFacingDirection_Left:
 		HitReactionMontage = LeftHitReaction;
 		break;
 
-	case EHitReactionDirection::EHitReactionDirection_Right:
+	case EFacingDirection::EFacingDirection_Right:
 		HitReactionMontage = RightHitReaction;
 		break;
 
-	case EHitReactionDirection::EHitReactionDirection_Front:
+	case EFacingDirection::EFacingDirection_Front:
 		HitReactionMontage = FrontHitReaction;
 		break;
 
-	case EHitReactionDirection::EHitReactionDirection_Back:
+	case EFacingDirection::EFacingDirection_Back:
 		HitReactionMontage = BackHitReaction;
 		break;
 

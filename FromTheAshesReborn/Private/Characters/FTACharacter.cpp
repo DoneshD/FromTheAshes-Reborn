@@ -7,8 +7,8 @@
 #include "MotionWarpingComponent.h"
 #include "CombatComponents/AttacksComponent.h"
 #include "Components/ArrowComponent.h"
-#include "PositionalWarpingComponent.h"
-#include "EFacingDirection.h"
+#include "MovementComponents/PositionalWarpingComponent.h"
+#include "Enums/EFacingDirection.h"
 #include "Interfaces/PositionalWarpingInterface.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)

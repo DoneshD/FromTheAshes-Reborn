@@ -11,6 +11,7 @@
 #include "Components/ArrowComponent.h"
 #include "Enums/EMeleeAttackRange.h"
 #include "Interfaces/PositionalWarpingInterface.h"
+#include "Interfaces/PositionalWarpingInterface.h"
 #include "Characters/PlayableCharacter.h"
 
 #include "Kismet/KismetMathLibrary.h"
@@ -127,17 +128,26 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 				if (!AlreadyHitActors_L.Contains(HitActor))
 				{
 					AlreadyHitActors_L.AddUnique(HitActor);
-					FDamageInfo DamageInfo{
-						20.0f,                               // DamageAmount
-						EDamageType::EDamageType_Melee,      // DamageType
-						EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
-						false,                                // ShouldDamageInvincible
-						false,                                // CanBeBlocked
-						false,                                // CanBeParried
-						false,                                // ShouldForceInterrupt
-						HitReactionDirection        // HitReactionDirection
-					};
-					DamagableInterface->TakeDamage(DamageInfo);
+					IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(HitActor);
+					if (TargetPositionalWarpingInterface)
+					{
+						EFacingDirection HitReactionDirection = TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation());
+
+						FDamageInfo DamageInfo{
+							20.0f,                               // DamageAmount
+							EDamageType::EDamageType_Melee,      // DamageType
+							EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
+							false,                                // ShouldDamageInvincible
+							false,                                // CanBeBlocked
+							false,                                // CanBeParried
+							false,                                // ShouldForceInterrupt
+							HitReactionDirection        // HitReactionDirection
+						};
+						UE_LOG(LogTemp, Warning, TEXT("DamagableInterfac!!!e->TakeDamage(DamageInfo)"));
+
+						DamagableInterface->TakeDamage(DamageInfo);
+
+					}
 				}
 			}
 		}
@@ -160,18 +170,25 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 
 				if (!AlreadyHitActors_R.Contains(HitActor))
 				{
-					AlreadyHitActors_R.AddUnique(HitActor);
-					FDamageInfo DamageInfo{
-							20.0f,                            // DamageAmount
-							EDamageType::EDamageType_Melee,   // DamageType
+					IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(HitActor);
+					if (TargetPositionalWarpingInterface)
+					{
+						EFacingDirection HitReactionDirection = TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation());
+
+						FDamageInfo DamageInfo{
+							20.0f,                               // DamageAmount
+							EDamageType::EDamageType_Melee,      // DamageType
 							EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
-							false,                            // ShouldDamageInvincible
-							false,                            // CanBeBlocked
-							false,                            // CanBeParried
-							false,                             // ShouldForceInterrupt
-							HitReactionDirection
-					};
-					DamagableInterface->TakeDamage(DamageInfo);
+							false,                                // ShouldDamageInvincible
+							false,                                // CanBeBlocked
+							false,                                // CanBeParried
+							false,                                // ShouldForceInterrupt
+							HitReactionDirection        // HitReactionDirection
+						};
+						UE_LOG(LogTemp, Warning, TEXT("DamagableInterface->TakeDamage(DamageInfo)"));
+						DamagableInterface->TakeDamage(DamageInfo);
+
+					}
 				}
 			}
 		}

@@ -11,7 +11,7 @@
 #include "Interfaces/MeleeCombatantInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-#include "DashingCombatantInterface.h"
+#include "Interfaces/DashingCombatantInterface.h"
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
@@ -322,10 +322,10 @@ public:
 	UFUNCTION()
 	virtual void EmptyHitActorsArray() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void StartMeleeAttackCollisions() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void EndMeleeAttackCollisions() override;
 
 	UFUNCTION()

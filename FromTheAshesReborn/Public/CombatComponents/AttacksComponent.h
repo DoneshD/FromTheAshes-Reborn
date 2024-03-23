@@ -38,7 +38,6 @@ private:
 
 public:	
 
-
 	void EmptyHitActorsArray();
 
 	UFUNCTION(BlueprintCallable, Category = "Attack Collision")

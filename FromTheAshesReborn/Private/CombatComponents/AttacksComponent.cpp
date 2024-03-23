@@ -75,6 +75,8 @@ void UAttacksComponent::EmptyHitActorsArray()
 
 void UAttacksComponent::MeleeTraceCollisions()
 {
+	UE_LOG(LogTemp, Warning, TEXT("MeleeTraceCollisions(): SHOULD NOT BE HERE"));
+	/*
 	TArray<FHitResult> Hits;
 	FVector StartLocation;
 	FVector EndLocation;
@@ -149,6 +151,7 @@ void UAttacksComponent::MeleeTraceCollisions()
 			}
 		}
 	}
+	*/
 }
 
 void UAttacksComponent::LightMeleeAttack(TObjectPtr<UAnimMontage> LightMeleeAttack)

@@ -1,4 +1,4 @@
-#include "TargetingSystemComponent.h"
+#include "TargetingComponents/TargetingSystemComponent.h"
 #include "Characters/PlayableCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/GameplayStatics.h"

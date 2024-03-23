@@ -1,6 +1,6 @@
-#include "PositionalWarpingComponent.h"
+#include "MovementComponents/PositionalWarpingComponent.h"
 #include "Components/ArrowComponent.h"
-#include "EFacingDirection.h"
+#include "Enums/EFacingDirection.h"
 #include "MotionWarpingComponent.h"
 #include "Characters/FTACharacter.h"
 

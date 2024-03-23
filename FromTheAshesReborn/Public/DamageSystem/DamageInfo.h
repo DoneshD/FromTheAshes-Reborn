@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Enums/EDamageResponse.h"
 #include "Enums/EDamageType.h"
-#include "Enums/EHitReactionDirection.h"
+#include "Enums/EFacingDirection.h"
 #include "DamageInfo.generated.h"
 
 USTRUCT(BlueprintType)
@@ -34,5 +34,5 @@ public:
 	bool ShouldForceInterrupt;
 
     UPROPERTY(BlueprintReadWrite, EditAnywhere)
-    EHitReactionDirection HitReactionDirection;
+    EFacingDirection FacingDirection;
 };

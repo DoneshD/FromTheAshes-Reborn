@@ -26,10 +26,6 @@ public:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
 
 	FOnAttackEnd OnAttackEnd;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EHitReactionDirection HitReactionDirection;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EMeleeAttackRange MeleeAttackRange;
 
