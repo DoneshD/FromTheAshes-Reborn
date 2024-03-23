@@ -343,9 +343,6 @@ public:
 	//Dashing Combatant Interface
 
 	UFUNCTION(BlueprintCallable)
-	virtual void StartDash() override;
-
-	UFUNCTION(BlueprintCallable)
 	virtual void DashWarpToTarget() override;
 
 	UFUNCTION(BlueprintCallable)
