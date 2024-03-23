@@ -18,7 +18,7 @@ class FROMTHEASHESREBORN_API UMeleeAttackLogicComponent : public UActorComponent
 
 public:
 
-	UMeleeAttackLogicComponent();
+	TObjectPtr<APlayableCharacter> PC;
 
 	UDamageSystem* DamageSystemComponent;
 
@@ -54,6 +54,8 @@ public:
 	void MeleeAttackWarpToTarget(EMeleeAttackRange WarpRange, bool HasInput);
 
 	void ResetMeleeAttackWarpToTarget();
+
+	UMeleeAttackLogicComponent();
 
 	virtual void BeginPlay() override;
 

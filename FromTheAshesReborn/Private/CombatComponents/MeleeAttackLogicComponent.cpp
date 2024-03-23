@@ -11,6 +11,7 @@
 #include "Components/ArrowComponent.h"
 #include "Enums/EMeleeAttackRange.h"
 #include "Interfaces/PositionalWarpingInterface.h"
+#include "Characters/PlayableCharacter.h"
 
 #include "Kismet/KismetMathLibrary.h"
 
@@ -23,6 +24,7 @@ UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
 void UMeleeAttackLogicComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	PC = Cast<APlayableCharacter>(GetOwner());
 	
 }
 
@@ -183,17 +185,26 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 	FVector EndLocation;
 	if (AActor* OwnerActor = GetOwner())
 	{
-		if (HasInput)
+		if (PC->TargetingSystemComponent->HardTarget)
 		{
-			if (ACharacter* CharacterOwner = Cast<ACharacter>(OwnerActor))
-			{
-				UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
-				EndLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * WarpRange;
-			}
+			FVector TargetDirection = (PC->TargetingSystemComponent->HardTarget->GetActorLocation() - OwnerActor->GetActorLocation());
+			EndLocation = OwnerActor->GetActorLocation() + TargetDirection * WarpRange;
+			
 		}
 		else
 		{
-			EndLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * WarpRange;
+			if (HasInput)
+			{
+				if (ACharacter* CharacterOwner = Cast<ACharacter>(OwnerActor))
+				{
+					UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
+					EndLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * WarpRange;
+				}
+			}
+			else
+			{
+				EndLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * WarpRange;
+			}
 		}
 	}
 

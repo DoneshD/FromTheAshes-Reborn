@@ -660,11 +660,6 @@ void APlayableCharacter::ResetMeleeAttackWarpToTarget()
 	MeleeAttackLogicComponent->ResetMeleeAttackWarpToTarget();
 }
 
-void APlayableCharacter::StartDash()
-{
-
-}
-
 void APlayableCharacter::DashWarpToTarget()
 {
 	DashSystemComponent->DashWarpToTarget();

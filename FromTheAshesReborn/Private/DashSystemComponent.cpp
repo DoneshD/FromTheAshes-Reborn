@@ -129,6 +129,7 @@ void UDashSystemComponent::DashWarpToTarget()
 	FMotionWarpingTarget MotionWarpingTargetParams;
 	FVector DashTargetLocation;
 	FRotator DashTargetRotation;
+
 	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 	{
 		CharacterMovement = CharacterOwner->GetCharacterMovement();
