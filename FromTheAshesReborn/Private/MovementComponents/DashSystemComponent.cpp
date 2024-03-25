@@ -173,17 +173,16 @@ void UDashSystemComponent::DashWarpToTarget()
 		MotionWarpingTargetParams.Rotation.Yaw = DashTargetRotation.Yaw;
 		MotionWarpingTargetParams.BoneName = FName("root");
 
+
+
 		if (!AlreadyDashed)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Dash"));
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 700.0f;
 			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 		}
 
 		if (IsDashSaved)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Blink"));
-
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 3000.0f;
 			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 		}

@@ -5,7 +5,6 @@
 #include "Components/CapsuleComponent.h"
 #include "DamageSystem/DamageSystem.h"
 #include "MotionWarpingComponent.h"
-#include "CombatComponents/AttacksComponent.h"
 #include "Components/ArrowComponent.h"
 #include "MovementComponents/PositionalWarpingComponent.h"
 #include "Enums/EFacingDirection.h"
@@ -59,9 +58,6 @@ AFTACharacter::AFTACharacter()
 
 	DamageSystemComponent = CreateDefaultSubobject<UDamageSystem>(TEXT("DamageSystemComponent"));
 	this->AddOwnedComponent(DamageSystemComponent);
-
-	AttacksComponent = CreateDefaultSubobject<UAttacksComponent>(TEXT("AttacksComponent"));
-	this->AddOwnedComponent(AttacksComponent);
 
 	PositionalWarpingComponent = CreateDefaultSubobject<UPositionalWarpingComponent>(TEXT("PositionalWarpingComponent"));
 	this->AddOwnedComponent(PositionalWarpingComponent);

@@ -276,26 +276,6 @@ void APlayableCharacter::EnableRootRotation()
 	}
 }
 
-void APlayableCharacter::InputDash()
-{
-	if (CanDash())
-	{
-		SetState(EStates::EState_Dash);
-		if (TargetingSystemComponent->HardTarget)
-		{
-			DashSystemComponent->LockOnDash();
-		}
-		else
-		{
-			DashSystemComponent->FreeLockDash();
-		}
-	}
-	else
-	{
-		DashSystemComponent->IsDashSaved = true;
-	}
-}
-
 void APlayableCharacter::DoubleJump()
 {
 	if (CanJump())
@@ -414,6 +394,29 @@ void APlayableCharacter::InputLockOn()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Error: No TargetingSystemComponent"));
+	}
+}
+
+//----------------------------------------------------------- Dash Actions -----------------------------------------------------------------//
+
+void APlayableCharacter::InputDash()
+{
+	if (CanDash())
+	{
+		SetState(EStates::EState_Dash);
+
+		if (TargetingSystemComponent->HardTarget)
+		{
+			DashSystemComponent->LockOnDash();
+		}
+		else
+		{
+			DashSystemComponent->FreeLockDash();
+		}
+	}
+	else
+	{
+		DashSystemComponent->IsDashSaved = true;
 	}
 }
 

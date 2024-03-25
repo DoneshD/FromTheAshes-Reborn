@@ -11,7 +11,6 @@
 
 class UArrowComponent;
 class UDamageSystem;
-class UAttacksComponent;
 class UPositionalWarpingComponent;
 
 UCLASS()
@@ -22,9 +21,6 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IPosition
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "DamageSystemComponent", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UDamageSystem> DamageSystemComponent;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "AttacksComponent", meta = (AllowPrivateAccess = "true"))
-	TObjectPtr<UAttacksComponent> AttacksComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PositionalWarpingComponent", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPositionalWarpingComponent> PositionalWarpingComponent;

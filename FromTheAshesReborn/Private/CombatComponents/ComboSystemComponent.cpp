@@ -30,14 +30,12 @@ void UComboSystemComponent::SaveLightAttack()
 		PC->IsLightAttackSaved = false;
 		if (PC->IsStateEqualToAny(DashArray))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Dash Attack"));
 			PC->MeleeAttackLogicComponent->ExtendAttackRange = true;
+			PC->DashSystemComponent->AlreadyDashed = false;
 		}
 
 		if (PC->IsStateEqualToAny(MakeArray))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("PC->SetState(EStates::EState_Nothing);"));
-
 			PC->SetState(EStates::EState_Nothing);
 		}
 
