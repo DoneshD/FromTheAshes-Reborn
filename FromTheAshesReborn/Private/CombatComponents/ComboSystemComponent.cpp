@@ -23,19 +23,28 @@ void UComboSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 void UComboSystemComponent::SaveLightAttack()
 {
 	TArray<EStates> MakeArray = { EStates::EState_Attack };
+	TArray<EStates> DashArray = { EStates::EState_Dash };
 	if (PC->IsLightAttackSaved)
 	{
+
 		PC->IsLightAttackSaved = false;
+		if (PC->IsStateEqualToAny(DashArray))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Dash Attack"));
+			PC->MeleeAttackLogicComponent->ExtendAttackRange = true;
+		}
+
 		if (PC->IsStateEqualToAny(MakeArray))
 		{
+			UE_LOG(LogTemp, Warning, TEXT("PC->SetState(EStates::EState_Nothing);"));
+
 			PC->SetState(EStates::EState_Nothing);
 		}
+
 		if (PC->IsSurgeAttackPaused)
 		{
 			PerformComboSurge();
 		}
-
-
 		else if (PC->HeavyAttackIndex > 1)
 		{
 			PerformComboFinisher(PC->ComboExtenderFinishers[3]);

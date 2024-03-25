@@ -72,25 +72,25 @@ public:
 
 	//Damagable Interface functions
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual float GetCurrentHealth() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual float GetMaxHealth() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual bool IsDead() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual float Heal(float NewHeatlh) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual bool TakeDamage(FDamageInfo DamageInfo) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual bool ReserveAttackToken(int Amount) override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void ReturnAttackToken(int Amount) override;
 
 	//Enemy Interface functions

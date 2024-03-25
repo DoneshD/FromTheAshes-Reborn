@@ -44,13 +44,33 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 	switch (MeleeAttackRange)
 	{
 	case EMeleeAttackRange::EMeleeAttackRange_Close:
-		return 250.0f;
-
+		if (ExtendAttackRange)
+		{
+			return 400.0f;
+		}
+		else
+		{
+			return 250.0f;
+		}
 	case EMeleeAttackRange::EMeleeAttackRange_Mid:
-		return 400.0f;
+		if (ExtendAttackRange)
+		{
+			return 750.0f;
+		}
+		else
+		{
+			return 400.0f;
+		}
 
 	case EMeleeAttackRange::EMeleeAttackRange_Far:
-		return 750.0f;
+		if (ExtendAttackRange)
+		{
+			return 1000.0f;
+		}
+		else
+		{
+			return 750.0f;
+		}
 
 	default:
 		return 250.0f;
@@ -143,8 +163,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 							false,                                // ShouldForceInterrupt
 							HitReactionDirection        // HitReactionDirection
 						};
-						UE_LOG(LogTemp, Warning, TEXT("DamagableInterfac!!!e->TakeDamage(DamageInfo)"));
-
+						UE_LOG(LogTemp, Warning, TEXT("MeleeTraceCollisions1: DamagableInterface->TakeDamage(DamageInfo)"));
 						DamagableInterface->TakeDamage(DamageInfo);
 
 					}
@@ -167,9 +186,10 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 
 			if (DamagableInterface)
 			{
-
 				if (!AlreadyHitActors_R.Contains(HitActor))
 				{
+					AlreadyHitActors_R.AddUnique(HitActor);
+
 					IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(HitActor);
 					if (TargetPositionalWarpingInterface)
 					{
@@ -185,7 +205,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 							false,                                // ShouldForceInterrupt
 							HitReactionDirection        // HitReactionDirection
 						};
-						UE_LOG(LogTemp, Warning, TEXT("DamagableInterface->TakeDamage(DamageInfo)"));
+						UE_LOG(LogTemp, Warning, TEXT("MeleeTraceCollisions2: DamagableInterface->TakeDamage(DamageInfo)"));
 						DamagableInterface->TakeDamage(DamageInfo);
 
 					}
@@ -281,6 +301,8 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 
 void UMeleeAttackLogicComponent::ResetMeleeAttackWarpToTarget()
 {
+	ExtendAttackRange = false;
+
 	IPositionalWarpingInterface* PositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
 	if (PositionalWarpingInterface)
 	{

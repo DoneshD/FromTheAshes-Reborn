@@ -26,8 +26,11 @@ public:
 	TArray<TObjectPtr<AActor>> AlreadyHitActors_R;
 
 	FOnAttackEnd OnAttackEnd;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EMeleeAttackRange MeleeAttackRange;
+
+	bool ExtendAttackRange = false;
 
 	bool IsActiveCollision = false;
 

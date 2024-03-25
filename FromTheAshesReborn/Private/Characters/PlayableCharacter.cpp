@@ -145,6 +145,18 @@ bool APlayableCharacter::CanAttack()
 	return !GetCharacterMovement()->IsFalling() && !GetCharacterMovement()->IsFlying() && !IsStateEqualToAny(MakeArray);
 }
 
+bool APlayableCharacter::CanDash()
+{
+	TArray<EStates> MakeArray = { EStates::EState_Dash, EStates::EState_Execution };
+	return !GetCharacterMovement()->IsFalling() && !IsStateEqualToAny(MakeArray);
+}
+
+bool APlayableCharacter::CanJump()
+{
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
+	return !IsStateEqualToAny(MakeArray);
+}
+
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
 
 void APlayableCharacter::Tick(float DeltaTime)
@@ -262,18 +274,6 @@ void APlayableCharacter::EnableRootRotation()
 	{
 		GetCharacterMovement()->bAllowPhysicsRotationDuringAnimRootMotion = true;
 	}
-}
-
-bool APlayableCharacter::CanDash()
-{
-	TArray<EStates> MakeArray = { EStates::EState_Dash, EStates::EState_Execution, EStates::EState_Attack };
-	return !GetCharacterMovement()->IsFalling() && !IsStateEqualToAny(MakeArray);
-}
-
-bool APlayableCharacter::CanJump()
-{
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
-	return !IsStateEqualToAny(MakeArray);
 }
 
 void APlayableCharacter::InputDash()
@@ -405,10 +405,6 @@ void APlayableCharacter::SoftLockOn(float Distance)
 	
 }
 
-void APlayableCharacter::HardLockOn()
-{
-}
-
 void APlayableCharacter::InputLockOn()
 {
 	if (TargetingSystemComponent)
@@ -418,6 +414,102 @@ void APlayableCharacter::InputLockOn()
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Error: No TargetingSystemComponent"));
+	}
+}
+
+//------------------------------------------------------ Light Attack Actions -----------------------------------------------------------------//
+
+void APlayableCharacter::PerformLightAttack(int AttackIndex)
+{
+	ComboSystemComponent->PerformLightAttack(AttackIndex);
+}
+
+void APlayableCharacter::LightAttack()
+{
+	if (CanAttack())
+	{
+		ResetHeavyAttack();
+		PerformLightAttack(LightAttackIndex);
+	}
+	else
+	{
+		return;
+	}
+}
+
+void APlayableCharacter::InputLightAttack()
+{
+	IsHeavyAttackSaved = false;
+	StartIdleCombatTimer();
+
+	ClearHeavyAttackPausedTimer();
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
+	if (IsStateEqualToAny(MakeArray))
+	{
+		IsLightAttackSaved = true;
+	}
+	else
+	{
+		LightAttack();
+	}
+}
+
+//--------------------------------------------------------- Heavy Attack Actions -----------------------------------------------------------------//
+
+void APlayableCharacter::PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo)
+{
+	ComboSystemComponent->PerformHeavyPauseCombo(PausedHeavyAttackCombo);
+}
+
+void APlayableCharacter::SelectHeavyPauseCombo()
+{
+	if (HeavyAttackIndex == 1)
+	{
+		PerformHeavyPauseCombo(PausedHeavyAttackCombo1);
+	}
+}
+void APlayableCharacter::NewHeavyCombo()
+{
+	TArray<EStates> MakeArray = { EStates::EState_Attack };
+	if (!IsStateEqualToAny(MakeArray))
+	{
+		SelectHeavyPauseCombo();
+	}
+}
+
+void APlayableCharacter::PerformHeavyAttack(int AttackIndex)
+{
+	ComboSystemComponent->PerformHeavyAttack(AttackIndex);
+}
+
+void APlayableCharacter::HeavyAttack()
+{
+	if (CanAttack())
+	{
+		ClearHeavyAttackPausedTimer();
+		ClearSurgeAttackPausedTimer();
+		IsHeavyAttackPaused = false;
+		ResetLightAttack();
+		PerformHeavyAttack(HeavyAttackIndex);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Error"));
+	}
+}
+
+void APlayableCharacter::InputHeavyAttack()
+{
+	IsLightAttackSaved = false;
+	StartIdleCombatTimer();
+	TArray<EStates> MakeArray = { EStates::EState_Attack };
+	if (IsStateEqualToAny(MakeArray))
+	{
+		IsHeavyAttackSaved = true;
+	}
+	else
+	{
+		HeavyAttack();
 	}
 }
 
@@ -475,101 +567,7 @@ void APlayableCharacter::SurgeAttackPaused()
 	IsSurgeAttackPaused = true;
 }
 
-//------------------------------------------------------ Light Attack Actions -----------------------------------------------------------------//
 
-void APlayableCharacter::PerformLightAttack(int AttackIndex)
-{
-	ComboSystemComponent->PerformLightAttack(AttackIndex);
-}
-
-void APlayableCharacter::LightAttack()
-{
-	if (CanAttack())
-	{
-		ResetHeavyAttack();
-		PerformLightAttack(LightAttackIndex);
-	}
-	else
-	{
-		return;
-	}
-}
-
-void APlayableCharacter::InputLightAttack()
-{
-	IsHeavyAttackSaved = false;
-	StartIdleCombatTimer();
-
-	ClearHeavyAttackPausedTimer();
-	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if (IsStateEqualToAny(MakeArray))
-	{
-		IsLightAttackSaved = true;
-	}
-	else
-	{
-		LightAttack();
-	}
-}
-
-//--------------------------------------------------------- Heavy Attack Actions -----------------------------------------------------------------//
-
-void APlayableCharacter::PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo)
-{
-	ComboSystemComponent->PerformHeavyPauseCombo(PausedHeavyAttackCombo);
-}
-
-void APlayableCharacter::SelectHeavyPauseCombo()
-{
-	if (HeavyAttackIndex == 1)
-	{
-		PerformHeavyPauseCombo(PausedHeavyAttackCombo1);
-	}
-}
-void APlayableCharacter::NewHeavyCombo()
-{
-	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if(!IsStateEqualToAny(MakeArray))
-	{
-		SelectHeavyPauseCombo();
-	}
-}
-
-void APlayableCharacter::PerformHeavyAttack(int AttackIndex)
-{
-	ComboSystemComponent->PerformHeavyAttack(AttackIndex);
-}
-
-void APlayableCharacter::HeavyAttack()
-{
-	if (CanAttack())
-	{
-		ClearHeavyAttackPausedTimer();
-		ClearSurgeAttackPausedTimer();
-		IsHeavyAttackPaused = false;
-		ResetLightAttack();
-		PerformHeavyAttack(HeavyAttackIndex);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Error"));
-	}
-}
-
-void APlayableCharacter::InputHeavyAttack()
-{
-	IsLightAttackSaved = false;
-	StartIdleCombatTimer();
-	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if (IsStateEqualToAny(MakeArray))
-	{
-		IsHeavyAttackSaved = true;
-	}
-	else
-	{
-		HeavyAttack();
-	}
-}
 
 //--------------------------------------------------------- Combo Strings -----------------------------------------------------------------//
 
