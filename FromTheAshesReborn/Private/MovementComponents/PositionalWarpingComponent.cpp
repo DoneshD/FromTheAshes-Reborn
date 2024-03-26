@@ -68,6 +68,7 @@ void UPositionalWarpingComponent::UpdateWarpTargetPostion(FMotionWarpingTarget M
 	UMotionWarpingComponent* MotionWarpingComponent = GetOwner()->FindComponentByClass<UMotionWarpingComponent>();
 	if (MotionWarpingComponent)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Warping Target: %s"), *MotionWarpingTargetParams.BoneName.ToString());
 		MotionWarpingComponent->AddOrUpdateWarpTarget(MotionWarpingTargetParams);
 	}
 }
