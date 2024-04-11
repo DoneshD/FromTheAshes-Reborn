@@ -1,5 +1,6 @@
 #include "CombatComponents/ComboSystemComponent.h"
 #include "Enums/EStates.h"
+#include "Animation/AnimInstance.h"
 #include "Characters/PlayableCharacter.h"
 
 UComboSystemComponent::UComboSystemComponent()

@@ -285,7 +285,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 				MotionWarpingTargetParams.Location = WarpTargetLocation;
 				MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
 				MotionWarpingTargetParams.Rotation.Yaw = TargetRotation.Yaw;
-				MotionWarpingTargetParams.BoneName = FName("spine");
+				MotionWarpingTargetParams.BoneName = FName("root");
 
 				IPositionalWarpingInterface* OwnerPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
 

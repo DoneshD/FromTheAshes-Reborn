@@ -59,6 +59,9 @@ APlayableCharacter::APlayableCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
+	//GetCharacterMovement()->GroundFriction = 0.0f; 
+	//GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
+
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	RotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeline"));
@@ -191,6 +194,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 	if (InputComp)
 	{
 		InputComp->BindAction(Input_Move, ETriggerEvent::Triggered, this, &APlayableCharacter::Move);
+		InputComp->BindAction(Input_Move, ETriggerEvent::Started, this, &APlayableCharacter::StartMove);
 		InputComp->BindAction(Input_Move, ETriggerEvent::Completed, this, &APlayableCharacter::MoveCanceled);
 		InputComp->BindAction(Input_Jump, ETriggerEvent::Started, this, &APlayableCharacter::DoubleJump);
 		InputComp->BindAction(Input_Jump, ETriggerEvent::Completed, this, &APlayableCharacter::StopJump);
@@ -228,11 +232,22 @@ void APlayableCharacter::Move(const FInputActionInstance& Instance)
 	const FVector RightVector = RotationMatrix.GetScaledAxis(EAxis::Y);
 	HasMovementInput = true;
 	AddMovementInput(RightVector, InputDirection.X);
+
+}
+
+
+void APlayableCharacter::StartMove()
+{
+	GetWorldTimerManager().SetTimer(IsSprintingTimerHandle, this, &APlayableCharacter::StartSprintTimer, 1, true);
 }
 
 void APlayableCharacter::MoveCanceled()
 {
 	HasMovementInput = false;
+	IsSprinting = false;
+	GetWorldTimerManager().ClearTimer(IsSprintingTimerHandle);
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+
 }
 
 void APlayableCharacter::LookMouse(const FInputActionValue& InputValue)
@@ -540,6 +555,19 @@ void APlayableCharacter::ClearHeavyAttackPausedTimer()
 	GetWorldTimerManager().ClearTimer(HeavyAttackPauseHandle);
 }
 
+void APlayableCharacter::StartSprintTimer()
+{
+	IsSprinting = true;
+	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+}
+
+void APlayableCharacter::ClearSprintTimer()
+{
+	
+	IsSprinting = false;
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+}
+
 void APlayableCharacter::StartIdleCombatTimer()
 {
 	GetWorldTimerManager().SetTimer(IdleCombatHandle, this, &APlayableCharacter::ClearIdleCombatTimer, 5, true);
@@ -569,8 +597,6 @@ void APlayableCharacter::SurgeAttackPaused()
 {
 	IsSurgeAttackPaused = true;
 }
-
-
 
 //--------------------------------------------------------- Combo Strings -----------------------------------------------------------------//
 

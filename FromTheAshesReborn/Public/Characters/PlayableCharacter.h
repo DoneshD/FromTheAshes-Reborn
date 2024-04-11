@@ -88,7 +88,13 @@ public:
 	bool HasMovementInput;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsSprinting = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsIdleCombat = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool DisableRootMotion = false;
 
 	int LightAttackIndex = 0;
 
@@ -127,6 +133,7 @@ public:
 	FTimerHandle SurgeAttackPauseHandle;
 
 	FTimerHandle IdleCombatHandle;
+	FTimerHandle IsSprintingTimerHandle;
 
 	//-----------------------------------------Timelines-------------------------------------------
 
@@ -211,6 +218,7 @@ public:
 	//-----------------------------------------Movement---------------------------------------------
 
 	void Move(const FInputActionInstance& Instance);
+	void StartMove();
 	void MoveCanceled();
 	void LookMouse(const FInputActionValue& InputValue);
 	void LookStick(const FInputActionValue& InputValue);
@@ -257,6 +265,9 @@ public:
 
 	void StartHeavyAttackPausedTimer();
 	void ClearHeavyAttackPausedTimer();
+
+	void StartSprintTimer();
+	void ClearSprintTimer();
 
 	void StartIdleCombatTimer();
 	void ClearIdleCombatTimer();

@@ -15,6 +15,7 @@ public:
 
 	TObjectPtr<APlayableCharacter> PC;
 
+	float PlayRate = 0.5f;
 protected:
 
 public:	

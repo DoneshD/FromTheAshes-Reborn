@@ -177,7 +177,7 @@ void UDashSystemComponent::DashWarpToTarget()
 
 		if (!AlreadyDashed)
 		{
-			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 700.0f;
+			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 2000.0f;
 			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 		}
 
