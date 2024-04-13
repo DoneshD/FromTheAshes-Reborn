@@ -114,7 +114,7 @@ bool UMeleeAttackLogicComponent::MeleeWeaponSphereTrace(FVector StartLocation, F
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		Hits,
 		true);
 
@@ -164,7 +164,6 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 							false,                                // ShouldForceInterrupt
 							HitReactionDirection        // HitReactionDirection
 						};
-						UE_LOG(LogTemp, Warning, TEXT("MeleeTraceCollisions1: DamagableInterface->TakeDamage(DamageInfo)"));
 						DamagableInterface->TakeDamage(DamageInfo);
 
 					}
@@ -211,9 +210,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 							false,                                // ShouldForceInterrupt
 							HitReactionDirection        // HitReactionDirection
 						};
-						UE_LOG(LogTemp, Warning, TEXT("MeleeTraceCollisions2: DamagableInterface->TakeDamage(DamageInfo)"));
 						DamagableInterface->TakeDamage(DamageInfo);
-
 					}
 				}
 			}

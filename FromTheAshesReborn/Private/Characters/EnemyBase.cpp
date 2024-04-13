@@ -150,6 +150,7 @@ void AEnemyBase::FinishLightMeleeAttack()
 
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 {
+	
 	GetCharacterMovement()->StopMovementImmediately();
 	AICEnemyBase->SetStateAsFrozen();
 	
@@ -190,7 +191,6 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 		BlendOutDelegate.BindUObject(this, &AEnemyBase::OnMontageInterrupted);
 		GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, HitReactionMontage);
 	}
-	
 }
 
 void AEnemyBase::OnMontageCompleted(UAnimMontage* Montage, bool bInterrupted)
