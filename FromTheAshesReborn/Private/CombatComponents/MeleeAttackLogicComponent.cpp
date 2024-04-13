@@ -46,7 +46,7 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 	case EMeleeAttackRange::EMeleeAttackRange_Close:
 		if (ExtendAttackRange)
 		{
-			return 400.0f;
+			return 800.0f;
 		}
 		else
 		{
@@ -55,7 +55,7 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 	case EMeleeAttackRange::EMeleeAttackRange_Mid:
 		if (ExtendAttackRange)
 		{
-			return 750.0f;
+			return 1000.0f;
 		}
 		else
 		{
@@ -65,7 +65,7 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 	case EMeleeAttackRange::EMeleeAttackRange_Far:
 		if (ExtendAttackRange)
 		{
-			return 1000.0f;
+			return 1200.0f;
 		}
 		else
 		{
@@ -114,7 +114,7 @@ bool UMeleeAttackLogicComponent::MeleeWeaponSphereTrace(FVector StartLocation, F
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		Hits,
 		true);
 
@@ -127,11 +127,12 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 	FVector StartLocation;
 	FVector EndLocation;
 
-	USkeletalMeshComponent* MeshComponent = GetOwner()->FindComponentByClass<USkeletalMeshComponent>();
-	if (MeshComponent)
+	UStaticMeshComponent* MeshComponentL = PC->MeleeWeapon_L->FindComponentByClass<UStaticMeshComponent>();
+
+	if (MeshComponentL)
 	{
-		StartLocation = MeshComponent->GetSocketLocation("Start_L");
-		EndLocation = MeshComponent->GetSocketLocation("End_L");
+		StartLocation = MeshComponentL->GetSocketLocation("Start");
+		EndLocation = MeshComponentL->GetSocketLocation("End");
 	}
 
 	bool bLeftSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
@@ -172,8 +173,13 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 		}
 	}
 
-	StartLocation = MeshComponent->GetSocketLocation("Start_R");
-	EndLocation = MeshComponent->GetSocketLocation("End_R");
+	UStaticMeshComponent* MeshComponentR = PC->MeleeWeapon_R->FindComponentByClass<UStaticMeshComponent>();
+
+	if (MeshComponentR)
+	{
+		StartLocation = MeshComponentR->GetSocketLocation("Start");
+		EndLocation = MeshComponentR->GetSocketLocation("End");
+	}
 
 	bool bRightSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 

@@ -11,10 +11,10 @@
 #include "Interfaces/MeleeCombatantInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
+#include "../MeleeWeapon.h"
 #include "Interfaces/DashingCombatantInterface.h"
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
-
 
 class UInputMappingContext;
 class UCameraComponent;
@@ -49,6 +49,16 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	AMeleeWeapon* MeleeWeapon_R;
+
+	UPROPERTY(VisibleAnywhere)
+	AMeleeWeapon* MeleeWeapon_L;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AMeleeWeapon> MeleeWeaponClass;
+
 
 	//-----------------------------------------Inputs-----------------------------------------------
 
@@ -193,6 +203,18 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> LeftDashAnim;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> ForwardBlinkAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> BackwardBlinkAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> RightBlinkAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> LeftBlinkAnim;
+
 
 	bool IsSlowTime = false;
 
@@ -232,6 +254,9 @@ public:
 	void InputDash();
 	bool CanDash();
 	bool CanJump();
+
+	UFUNCTION(BlueprintCallable, Category = "Movement")
+	void SaveDash();
 
 	//-----------------------------------------FSM Attack Check-------------------------------------
 

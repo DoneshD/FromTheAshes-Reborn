@@ -41,10 +41,10 @@ void AEnemyBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//not good!!!!!!!
-	if (AICEnemyBase->AttackTarget)
-	{
-		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
-	}
+	//if (AICEnemyBase->AttackTarget)
+	//{
+	//	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
+	//}
 
 }
 

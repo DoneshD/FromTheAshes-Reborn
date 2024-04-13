@@ -34,6 +34,9 @@ public:
 
 	bool InRangeOfLateralDash();
 
+	UFUNCTION(BlueprintCallable)
+	void SaveDash();
+
 	void LockOnDash();
 
 	void FreeLockDash();

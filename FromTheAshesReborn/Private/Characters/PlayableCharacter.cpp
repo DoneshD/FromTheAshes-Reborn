@@ -14,8 +14,9 @@
 #include "TargetingComponents/TargetingSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
-#include "MotionWarpingComponent.h"
+#include "MeleeWeapon.h"
 
+#include "MotionWarpingComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
@@ -59,9 +60,6 @@ APlayableCharacter::APlayableCharacter()
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
-	//GetCharacterMovement()->GroundFriction = 0.0f; 
-	//GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
-
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	RotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeline"));
@@ -77,6 +75,18 @@ void APlayableCharacter::BeginPlay()
 	{
 		RotationTimeline = TimelineHelper::CreateTimeline(RotationTimeline, this, RotationCurve, TEXT("RotationTimeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"));
 	}
+	
+	if (MeleeWeapon_L = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_l_weapon_socket"))))
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
+		MeleeWeapon_L->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_l_weapon_socket"));
+	}
+	if (MeleeWeapon_R = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_weapon_socket"))))
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
+		MeleeWeapon_R->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_weapon_socket"));
+	}
+	
 }
 
 void APlayableCharacter::InputSlowTime()
@@ -158,6 +168,11 @@ bool APlayableCharacter::CanJump()
 {
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	return !IsStateEqualToAny(MakeArray);
+}
+
+void APlayableCharacter::SaveDash()
+{
+	DashSystemComponent->SaveDash();
 }
 
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
