@@ -31,6 +31,7 @@ void AEnemyBase::BeginPlay()
 	}
 
 	//Bind Death Event
+	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeathReaction);
 	//Bind Hit Response Event
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
 
@@ -41,10 +42,10 @@ void AEnemyBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	//not good!!!!!!!
-	//if (AICEnemyBase->AttackTarget)
-	//{
-	//	SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
-	//}
+	if (AICEnemyBase->AttackTarget)
+	{
+		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
+	}
 
 }
 
@@ -148,22 +149,32 @@ void AEnemyBase::FinishLightMeleeAttack()
 	OnAttackEnd.Execute();
 }
 
+void AEnemyBase::HandleDeathReaction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("DDDDDDDDEEEEEEEEAAAAAAATTTTTTHHHH"));
+	PlayAnimMontage(DeathReaction);
+}
+
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 {
-	
 	GetCharacterMovement()->StopMovementImmediately();
 	AICEnemyBase->SetStateAsFrozen();
-	
-	UAnimMontage* HitReactionMontage = FrontHitReaction;
+
+	UAnimMontage* HitReactionMontage = nullptr;
+
+	if (DamageSystemComponent->CurrentHealth < 0)
+	{
+
+	}
 
 	switch (DamageInfo.FacingDirection)
 	{
 	case EFacingDirection::EFacingDirection_Left:
-		HitReactionMontage = LeftHitReaction;
+		HitReactionMontage = RightHitReaction;
 		break;
 
 	case EFacingDirection::EFacingDirection_Right:
-		HitReactionMontage = RightHitReaction;
+		HitReactionMontage = LeftHitReaction;
 		break;
 
 	case EFacingDirection::EFacingDirection_Front:
@@ -174,22 +185,29 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 		HitReactionMontage = BackHitReaction;
 		break;
 
+	case EFacingDirection::EFacingDirection_FrontLeft:
+		HitReactionMontage = FrontHitReaction;
+		break;
 
-	//case EHitReactionDirection::EHitReactionDirection_None:
-		//HitReactionMontage = KnockBackHitReaction;
-		//break;
+	case EFacingDirection::EFacingDirection_FrontRight:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_BackLeft:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_BackRight:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	default:
+		break;
 	}
+
 	if (HitReactionMontage)
 	{
 		PlayAnimMontage(HitReactionMontage);
-
-		FOnMontageEnded CompleteDelegate;
-		CompleteDelegate.BindUObject(this, &AEnemyBase::OnMontageCompleted);
-		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, HitReactionMontage);
-
-		FOnMontageEnded BlendOutDelegate;
-		BlendOutDelegate.BindUObject(this, &AEnemyBase::OnMontageInterrupted);
-		GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, HitReactionMontage);
 	}
 }
 

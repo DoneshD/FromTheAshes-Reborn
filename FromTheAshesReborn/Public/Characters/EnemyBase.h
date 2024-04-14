@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
 	TObjectPtr<UAnimMontage> KnockbackHitReaction;
 
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> DeathReaction;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -63,6 +66,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
+
+	void HandleDeathReaction();
 
 	void HandleHitReaction(FDamageInfo DamageInfo);
 

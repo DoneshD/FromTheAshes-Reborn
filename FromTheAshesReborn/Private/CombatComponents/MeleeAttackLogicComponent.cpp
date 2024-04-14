@@ -155,7 +155,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 						EFacingDirection HitReactionDirection = TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation());
 
 						FDamageInfo DamageInfo{
-							20.0f,                               // DamageAmount
+							10.0f,                               // DamageAmount
 							EDamageType::EDamageType_Melee,      // DamageType
 							EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
 							false,                                // ShouldDamageInvincible
@@ -201,7 +201,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 						EFacingDirection HitReactionDirection = TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation());
 
 						FDamageInfo DamageInfo{
-							20.0f,                               // DamageAmount
+							10.0f,                               // DamageAmount
 							EDamageType::EDamageType_Melee,      // DamageType
 							EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
 							false,                                // ShouldDamageInvincible
@@ -263,7 +263,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		OutHit,
 		true
 	);

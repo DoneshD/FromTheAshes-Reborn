@@ -8,6 +8,7 @@
 #include "DamageSystem.generated.h"
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDamageResponse, FDamageInfo)
+DECLARE_DELEGATE(FOnDeathResponse)
 
 UENUM(BlueprintType)
 enum class ECanBeDamaged : uint8
@@ -26,10 +27,10 @@ public:
 	UDamageSystem();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentHealth = 10000;
+	float CurrentHealth = 200;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHealth = 10000;
+	float MaxHealth = 200;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsInvincible = false;
@@ -49,6 +50,7 @@ public:
 	ECanBeDamaged DamageOutput;
 
 	FOnDamageResponse OnDamageResponse;
+	FOnDeathResponse OnDeathResponse;
 
 
 protected:
