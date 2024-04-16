@@ -1,10 +1,12 @@
 #include "Characters/EnemyMelee.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "CombatComponents/MeleeAttackLogicComponent.h"
 
 
 AEnemyMelee::AEnemyMelee()
 {
-	
+	MeleeAttackLogicComponent = CreateDefaultSubobject<UMeleeAttackLogicComponent>(TEXT("MeleeAttackLogicComponent"));
+	this->AddOwnedComponent(MeleeAttackLogicComponent);
 }
 
 void AEnemyMelee::BeginPlay()
@@ -27,7 +29,7 @@ float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 		return GetCharacterMovement()->MaxWalkSpeed = 0.0f;
 
 	case EMovementSpeed::EMovementSpeed_Walking:
-		return GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+		return GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 
 	case EMovementSpeed::EMovementSpeed_Jogging:
 		return GetCharacterMovement()->MaxWalkSpeed = 400.0f;

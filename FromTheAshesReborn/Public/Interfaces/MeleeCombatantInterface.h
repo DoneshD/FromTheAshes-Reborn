@@ -17,6 +17,12 @@ class FROMTHEASHESREBORN_API IMeleeCombatantInterface
 public:
 
 	UFUNCTION()
+	virtual AMeleeWeapon GetLeftWeapon() = 0;
+
+	UFUNCTION()
+	virtual AMeleeWeapon GetRightWeapon() = 0;
+
+	UFUNCTION()
 	virtual void EmptyHitActorsArray() = 0;
 
 	UFUNCTION()

@@ -51,10 +51,10 @@ public:
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	AMeleeWeapon* MeleeWeapon_R;
+	AMeleeWeapon* MeleeWeapon_L;
 
 	UPROPERTY(VisibleAnywhere)
-	AMeleeWeapon* MeleeWeapon_L;
+	AMeleeWeapon* MeleeWeapon_R;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AMeleeWeapon> MeleeWeaponClass;
