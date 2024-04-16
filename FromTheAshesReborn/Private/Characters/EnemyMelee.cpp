@@ -12,6 +12,18 @@ AEnemyMelee::AEnemyMelee()
 void AEnemyMelee::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (MeleeWeapon_L = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_l_enemy_weapon_socket"))))
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
+		MeleeWeapon_L->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_l_enemy_weapon_socket"));
+	}
+
+	if (MeleeWeapon_R = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_enemy_weapon_socket"))))
+	{
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
+		MeleeWeapon_R->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_enemy_weapon_socket"));
+	}
 	
 }
 
@@ -46,7 +58,7 @@ float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 void AEnemyMelee::LightAttack()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Should not be here"));
-	//this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
+	PlayAnimMontage(LightAttackAnim);
 }
 
 AMeleeWeapon* AEnemyMelee::GetLeftWeapon()
@@ -60,36 +72,36 @@ AMeleeWeapon* AEnemyMelee::GetRightWeapon()
 }
 void AEnemyMelee::EmptyHitActorsArray()
 {
-
+	MeleeAttackLogicComponent->EmptyHitActorsArray();
 }
 
 void AEnemyMelee::StartMeleeAttackCollisions()
 {
-
+	MeleeAttackLogicComponent->StartMeleeAttackCollisions();
 }
 
 void AEnemyMelee::EndMeleeAttackCollisions()
 {
-
+	MeleeAttackLogicComponent->EndMeleeAttackCollisions();
 }
 
 bool AEnemyMelee::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
 {
-	return false;
+	return MeleeAttackLogicComponent->MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 }
 
 void AEnemyMelee::MeleeTraceCollisions()
 {
-	return;
+	MeleeAttackLogicComponent->MeleeTraceCollisions();
 }
 
 void AEnemyMelee::MeleeAttackWarpToTarget()
 {
-	return;
+	MeleeAttackLogicComponent->MeleeAttackWarpToTarget(MeleeAttackLogicComponent->MeleeAttackRange, false);
 }
 
 void AEnemyMelee::ResetMeleeAttackWarpToTarget()
 {
-	return;
+	MeleeAttackLogicComponent->ResetMeleeAttackWarpToTarget();
 }
 

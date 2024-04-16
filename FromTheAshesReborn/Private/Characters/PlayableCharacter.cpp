@@ -76,16 +76,16 @@ void APlayableCharacter::BeginPlay()
 		RotationTimeline = TimelineHelper::CreateTimeline(RotationTimeline, this, RotationCurve, TEXT("RotationTimeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"));
 	}
 
-	if (MeleeWeapon_L = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_l_weapon_socket"))))
+	if (MeleeWeapon_L = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_l_player_weapon_socket"))))
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
-		MeleeWeapon_L->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_l_weapon_socket"));
+		MeleeWeapon_L->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_l_player_weapon_socket"));
 	}
 
-	if (MeleeWeapon_R = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_weapon_socket"))))
+	if (MeleeWeapon_R = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_player_weapon_socket"))))
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
-		MeleeWeapon_R->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_weapon_socket"));
+		MeleeWeapon_R->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
 	}
 }
 
