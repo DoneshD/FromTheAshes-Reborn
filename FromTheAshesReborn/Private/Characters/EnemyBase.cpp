@@ -25,14 +25,13 @@ void AEnemyBase::BeginPlay()
 			AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(AIEnemyController);
 			if (AIControllerEnemyBase)
 			{
+
 				AICEnemyBase = AIControllerEnemyBase;
 			}
 		}
 	}
 
-	//Bind Death Event
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeathReaction);
-	//Bind Hit Response Event
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
 
 }
@@ -44,7 +43,7 @@ void AEnemyBase::Tick(float DeltaTime)
 	//not good!!!!!!!
 	if (AICEnemyBase->AttackTarget)
 	{
-		SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
+		//SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
 	}
 
 }
@@ -151,7 +150,6 @@ void AEnemyBase::FinishLightMeleeAttack()
 
 void AEnemyBase::HandleDeathReaction()
 {
-	UE_LOG(LogTemp, Warning, TEXT("DDDDDDDDEEEEEEEEAAAAAAATTTTTTHHHH"));
 	PlayAnimMontage(DeathReaction);
 }
 
@@ -228,17 +226,6 @@ void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 		Amount += ReservedAttackTokensMap[AttackTarget];
 	}
 	ReservedAttackTokensMap.Add(AttackTarget, Amount);
-}
-
-void AEnemyBase::OnTargeted()
-{
-	GetMesh()->SetOverlayMaterial(TargetedMaterial);
-}
-
-void AEnemyBase::EndTargeted()
-{
-	UMaterialInterface* DefaultMaterial = GetMesh()->GetMaterial(1);
-	GetMesh()->SetOverlayMaterial(DefaultMaterial);
 }
 
 EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)

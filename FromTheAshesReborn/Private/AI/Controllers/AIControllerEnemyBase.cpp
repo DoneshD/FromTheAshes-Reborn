@@ -29,7 +29,7 @@ AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectI
 	AISenseConfigHearing = CreateDefaultSubobject<UAISenseConfig_Hearing>("SenseHearing");
 	AISenseConfigHearing->HearingRange = 700.0f;
 	AISenseConfigHearing->DetectionByAffiliation.bDetectEnemies = true;
-	AISenseConfigHearing->DetectionByAffiliation.bDetectFriendlies = true;
+	AISenseConfigHearing->DetectionByAffiliation.bDetectFriendlies = true; 
 	AISenseConfigHearing->DetectionByAffiliation.bDetectNeutrals = true;
 	AISenseConfigHearing->SetMaxAge(3.0f);
 
@@ -70,28 +70,27 @@ void AAIControllerEnemyBase::BeginPlay()
 
 void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-	/*
+
 	for (AActor* Actor : UpdatedActors)
 	{
 		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
-		if(OutSightStimuliInfo.WasSuccessfullySensed())
+		if (OutSightStimuliInfo.WasSuccessfullySensed())
 		{
 			HandleSensedSight(Actor);
 		}
-			
+
 		OutHearStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Hearing);
 		if (OutHearStimuliInfo.WasSuccessfullySensed())
 		{
 			HandleSensedSound(OutHearStimuliInfo.StimulusLocation);
 		}
-		
+
 		OutDamageStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Damage);
 		if (OutDamageStimuliInfo.WasSuccessfullySensed())
 		{
 			HandleSensedDamage(Actor);
 		}
 	}
-	*/
 }
 
 void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -144,7 +143,7 @@ void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)
 
 void AAIControllerEnemyBase::SetStateAsFrozen()
 {
-	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
+	//GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
 }
 
 void AAIControllerEnemyBase::SetStateAsDead()
@@ -160,8 +159,10 @@ const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses
 	for (const FAIStimulus& CurrentStimulus : Info.LastSensedStimuli)
 	{
 		FAISenseID SightID = AISenseConfigSight->GetSenseID();
-		FAISenseID HearID = AISenseConfigHearing->GetSenseID();
-		FAISenseID DamageId = AISenseConfigDamage->GetSenseID();
+		//FAISenseID HearID = AISenseConfigHearing->GetSenseID();
+		//FAISenseID DamageId = AISenseConfigDamage->GetSenseID();
+		UE_LOG(LogTemp, Warning, TEXT("Here111"));
+	/*
 		
 		if (Sense == EAISenses::EAISenses_Sight)
 		{
@@ -190,6 +191,7 @@ const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses
 			UE_LOG(LogTemp, Warning, TEXT("Sense not found"));
 			return CurrentStimulus;
 		}
+	*/
 	}
 	const FAIStimulus DummyStimuli;
 	return DummyStimuli;

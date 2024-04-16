@@ -121,13 +121,6 @@ public:
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
 
-	UFUNCTION()
-	virtual void OnTargeted() override;
-
-	UFUNCTION()
-	virtual void EndTargeted() override;
-
-
 	//Motion Warping Interface
 
 	UFUNCTION(BlueprintCallable)
