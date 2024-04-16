@@ -159,10 +159,10 @@ const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses
 	for (const FAIStimulus& CurrentStimulus : Info.LastSensedStimuli)
 	{
 		FAISenseID SightID = AISenseConfigSight->GetSenseID();
-		//FAISenseID HearID = AISenseConfigHearing->GetSenseID();
-		//FAISenseID DamageId = AISenseConfigDamage->GetSenseID();
+		FAISenseID HearID = AISenseConfigHearing->GetSenseID();
+		FAISenseID DamageId = AISenseConfigDamage->GetSenseID();
 		UE_LOG(LogTemp, Warning, TEXT("Here111"));
-	/*
+	
 		
 		if (Sense == EAISenses::EAISenses_Sight)
 		{
@@ -191,7 +191,7 @@ const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses
 			UE_LOG(LogTemp, Warning, TEXT("Sense not found"));
 			return CurrentStimulus;
 		}
-	*/
+	
 	}
 	const FAIStimulus DummyStimuli;
 	return DummyStimuli;
