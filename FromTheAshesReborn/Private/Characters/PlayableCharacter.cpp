@@ -667,6 +667,16 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
 
+AMeleeWeapon* APlayableCharacter::GetLeftWeapon()
+{
+	return MeleeWeapon_L;
+}
+
+AMeleeWeapon* APlayableCharacter::GetRightWeapon()
+{
+	return MeleeWeapon_R;
+}
+
 void APlayableCharacter::EmptyHitActorsArray()
 {
 	MeleeAttackLogicComponent->EmptyHitActorsArray();

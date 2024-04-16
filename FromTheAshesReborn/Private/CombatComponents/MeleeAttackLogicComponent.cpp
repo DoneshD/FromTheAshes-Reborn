@@ -126,14 +126,22 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 	TArray<FHitResult> Hits;
 	FVector StartLocation;
 	FVector EndLocation;
+	UStaticMeshComponent* MeshComponentL;
+	UStaticMeshComponent* MeshComponentR;
 
-	UStaticMeshComponent* MeshComponentL = PC->MeleeWeapon_L->FindComponentByClass<UStaticMeshComponent>();
+	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetOwner());
 
-	if (MeshComponentL)
+	if (MeleeCombatantInterface)
 	{
-		StartLocation = MeshComponentL->GetSocketLocation("Start");
-		EndLocation = MeshComponentL->GetSocketLocation("End");
+
+		MeshComponentL = MeleeCombatantInterface->GetLeftWeapon()->FindComponentByClass<UStaticMeshComponent>();
+		if (MeshComponentL)
+		{
+			StartLocation = MeshComponentL->GetSocketLocation("Start");
+			EndLocation = MeshComponentL->GetSocketLocation("End");
+		}
 	}
+
 
 	bool bLeftSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 
@@ -172,13 +180,16 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 		}
 	}
 
-	UStaticMeshComponent* MeshComponentR = PC->MeleeWeapon_R->FindComponentByClass<UStaticMeshComponent>();
-
-	if (MeshComponentR)
+	if (MeleeCombatantInterface)
 	{
-		StartLocation = MeshComponentR->GetSocketLocation("Start");
-		EndLocation = MeshComponentR->GetSocketLocation("End");
+		MeshComponentR = MeleeCombatantInterface->GetRightWeapon()->FindComponentByClass<UStaticMeshComponent>();
+		if (MeshComponentR)
+		{
+			StartLocation = MeshComponentR->GetSocketLocation("Start");
+			EndLocation = MeshComponentR->GetSocketLocation("End");
+		}
 	}
+
 
 	bool bRightSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 

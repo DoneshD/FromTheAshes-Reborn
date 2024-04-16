@@ -1,7 +1,7 @@
 #include "Characters/EnemyMelee.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
-
+#include "MeleeWeapon.h"
 
 AEnemyMelee::AEnemyMelee()
 {
@@ -45,5 +45,51 @@ float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 
 void AEnemyMelee::LightAttack()
 {
-	this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
+	UE_LOG(LogTemp, Warning, TEXT("Should not be here"));
+	//this->FindComponentByClass<UAttacksComponent>()->LightMeleeAttack(LightAttackAnim);
 }
+
+AMeleeWeapon* AEnemyMelee::GetLeftWeapon()
+{
+	return MeleeWeapon_L;
+}
+
+AMeleeWeapon* AEnemyMelee::GetRightWeapon()
+{
+	return MeleeWeapon_R;
+}
+void AEnemyMelee::EmptyHitActorsArray()
+{
+
+}
+
+void AEnemyMelee::StartMeleeAttackCollisions()
+{
+
+}
+
+void AEnemyMelee::EndMeleeAttackCollisions()
+{
+
+}
+
+bool AEnemyMelee::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits)
+{
+	return false;
+}
+
+void AEnemyMelee::MeleeTraceCollisions()
+{
+	return;
+}
+
+void AEnemyMelee::MeleeAttackWarpToTarget()
+{
+	return;
+}
+
+void AEnemyMelee::ResetMeleeAttackWarpToTarget()
+{
+	return;
+}
+

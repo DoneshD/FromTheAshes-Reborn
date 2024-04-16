@@ -355,6 +355,12 @@ public:
 	//Melee Combatant Interface
 
 	UFUNCTION()
+	virtual AMeleeWeapon* GetLeftWeapon() override;
+
+	UFUNCTION()
+	virtual AMeleeWeapon* GetRightWeapon() override;
+
+	UFUNCTION()
 	virtual void EmptyHitActorsArray() override;
 
 	UFUNCTION(BlueprintCallable)

@@ -2,19 +2,18 @@
 
 #include "CoreMinimal.h"
 #include "Characters/EnemyBase.h"
-#include "EnemyMelee.generated.h"
 #include "Interfaces/MeleeCombatantInterface.h"
+#include "EnemyMelee.generated.h"
 
 class UMeleeAttackLogicComponent;
 class AMeleeWeapon;
-
 
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyMelee : public AEnemyBase, public IMeleeCombatantInterface
 {
 	GENERATED_BODY()
 	
-protected:
+public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMeleeAttackLogicComponent> MeleeAttackLogicComponent;
@@ -22,7 +21,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack")
 	TObjectPtr<UAnimMontage> LightAttackAnim;
 
-private:
+	UPROPERTY(VisibleAnywhere)
+	AMeleeWeapon* MeleeWeapon_L;
+
+	UPROPERTY(VisibleAnywhere)
+	AMeleeWeapon* MeleeWeapon_R;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AMeleeWeapon> MeleeWeaponClass;
+
 
 public:
 	AEnemyMelee();
@@ -38,12 +45,12 @@ public:
 	virtual void LightAttack() override;
 
 	//Melee Combatant Interface functions
+	
+	UFUNCTION()
+	virtual AMeleeWeapon* GetLeftWeapon() override;
 
 	UFUNCTION()
-	virtual AMeleeWeapon GetLeftWeapon() override;
-
-	UFUNCTION()
-	virtual AMeleeWeapon GetRightWeapon() override;
+	virtual AMeleeWeapon* GetRightWeapon() override;
 
 	UFUNCTION()
 	virtual void EmptyHitActorsArray() override;
@@ -58,13 +65,14 @@ public:
 	virtual bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits) override;
 
 	UFUNCTION()
-	virtual void MeleeTraceCollisions() = 0;
+	virtual void MeleeTraceCollisions() override;
 
 	UFUNCTION()
-	virtual void MeleeAttackWarpToTarget() = 0;
+	virtual void MeleeAttackWarpToTarget() override;
 
 	UFUNCTION()
-	virtual void ResetMeleeAttackWarpToTarget() = 0;
+	virtual void ResetMeleeAttackWarpToTarget() override;
 
+	
 
 };
