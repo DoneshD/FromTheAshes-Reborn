@@ -10,6 +10,21 @@
 UBTDecorator_IsWithinIdealRange::UBTDecorator_IsWithinIdealRange()
 {
 	NodeName = TEXT("BTD_IsWithinIdealRange");
+	bNotifyTick = true;
+}
+
+void UBTDecorator_IsWithinIdealRange::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+
+	UE_LOG(LogTemp, Warning, TEXT("Didsfe"));
+
+	bool bWithinIdealRange = CalculateRawConditionValue(OwnerComp, NodeMemory);
+	if (!bWithinIdealRange)
+	{
+		OwnerComp.RequestExecution(this);
+	}
+	
 }
 
 bool UBTDecorator_IsWithinIdealRange::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
@@ -21,8 +36,8 @@ bool UBTDecorator_IsWithinIdealRange::CalculateRawConditionValue(UBehaviorTreeCo
 
 	float Distance = Enemy->GetDistanceTo(AttackTarget) - ErrorMargin;
 	float IdealRange = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
-	//UE_LOG(LogTemp, Warning, TEXT("Distance: %f, Ideal Range: %f"), Distance, IdealRange);)
+	UE_LOG(LogTemp, Warning, TEXT("Distance: %f, Ideal Range: %f"), Distance, IdealRange);
 
-	return Distance <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
+	return Distance <= IdealRange;
 	
 }

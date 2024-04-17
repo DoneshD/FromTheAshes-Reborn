@@ -161,8 +161,6 @@ const FAIStimulus AAIControllerEnemyBase::CanSenseActor(AActor* Actor, EAISenses
 		FAISenseID SightID = AISenseConfigSight->GetSenseID();
 		FAISenseID HearID = AISenseConfigHearing->GetSenseID();
 		FAISenseID DamageId = AISenseConfigDamage->GetSenseID();
-		UE_LOG(LogTemp, Warning, TEXT("Here111"));
-	
 		
 		if (Sense == EAISenses::EAISenses_Sight)
 		{
