@@ -1,7 +1,7 @@
 #include "AI/Tasks/BTT_MeleeAttack.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AIController.h"
-#include "Characters/EnemyBase.h"
+#include "Characters/EnemyMelee.h"
 
 
 UBTT_MeleeAttack::UBTT_MeleeAttack()
@@ -16,75 +16,46 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	EnemyOwnerComp = &OwnerComp;
 
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-	AEnemyBase* Enemy = Cast<AEnemyBase>(Pawn);
+	AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
 
-	Enemy->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
+	EnemyMelee->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
 
-	if (!Enemy)
+	if (!EnemyMelee)
 	{
 		return EBTNodeResult::Failed;
 	}
 
 	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-	AAIController* EnemyController = Enemy->GetController<AAIController>();
+	AAIController* EnemyController = EnemyMelee->GetController<AAIController>();
+	AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
 
-	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Enemy);
+	AIControllerEnemyBase->OnMoveCompletedDelegate.BindUObject(this, &UBTT_MeleeAttack::ReachedLocation);
 
-	//Start Attack interface function
-	if (AIEnemyInterface->AttackStart(AttackTarget, TokensNeeded))
+		
+	EnemyMelee->SetMovementSpeed(MovementSpeed);
+	EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
+	EnemyController->SetFocus(AttackTarget);
+	
+	FAIMoveRequest MoveRequest;
+	MoveRequest.SetGoalActor(AttackTarget);
+	MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
+
+	FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
+	if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attack Start Succeeded"));
-		//Set the movement speed
-		Enemy->SetMovementSpeed(MovementSpeed);
-
-		//Clear focus
-		EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
-	
-
-		FAIMoveRequest MoveRequest;
-		MoveRequest.SetGoalActor(AttackTarget);
-		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName));
-	
-		float IdealRangeValue = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName);
-		float AttackRadiusValue = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName);
-
-		float AttackRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName);
-
-		UE_LOG(LogTemp, Warning, TEXT("Ideal Range Value: %f"), IdealRangeValue);
-		UE_LOG(LogTemp, Warning, TEXT("Attack Radius Value: %f"), AttackRadiusValue);
-
-
-		FPathFollowingResult MoveToResult = EnemyController->MoveTo(MoveRequest);
-		UE_LOG(LogTemp, Warning, TEXT("MoveTo: %s"), *MoveToResult.ToString());
-		if (MoveToResult.Code == EPathFollowingResult::Success)
-		{
-			//Set focus
-			EnemyController->SetFocus(AttackTarget);
-
-			//Attack
-			Enemy->LightAttack();
-
-			return EBTNodeResult::Succeeded;
-		}
-		else if (MoveToResult.Code == EPathFollowingResult::Blocked)
-		{
-			AIEnemyInterface->AttackEnd(AttackTarget);
-			return EBTNodeResult::Failed;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("None"));
-		}
-	
+		UE_LOG(LogTemp, Warning, TEXT("InProgress"));
+		return EBTNodeResult::InProgress;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("How tf am i here"));
-
-	return EBTNodeResult::Failed;
+	return EBTNodeResult::InProgress;
 }
 
-void UBTT_MeleeAttack::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
+void UBTT_MeleeAttack::ReachedLocation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnMoveCompleted"));
+	if (EnemyOwnerComp)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Heaven"));
+		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
+	}
 }
 
 void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
@@ -92,29 +63,19 @@ void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* 
 	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
 
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-	AEnemyBase* EnemyBase = Cast<AEnemyBase>(Pawn);
+	AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
 
-	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(TargetActor);
+	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 
-	if (DamagableInterface)
-	{
-		DamagableInterface->ReturnAttackToken(1);
-	}
-
-	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyBase);
-	if (AIEnemyInterface)
-	{
-		AIEnemyInterface->AttackEnd(TargetActor);
-	}
-
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	EnemyMelee->LightAttack();
+	UE_LOG(LogTemp, Warning, TEXT("YUUUUUUUUUUR"));
+	FinishLatentTask(*EnemyOwnerComp, EBTNodeResult::Succeeded);
 }
 
 void UBTT_MeleeAttack::FinishedAttacking()
 {	
-	if (EnemyOwnerComp)
-	{
-		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
-	}
+	//if (EnemyOwnerComp)
+	//{
+	//	OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
+	//}
 }

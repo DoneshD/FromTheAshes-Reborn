@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -38,14 +36,10 @@ public:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	//virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
-
 	void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
+
+	void ReachedLocation();
 	
-
-	//UFUNCTION()
-	// //virtual void OnMoveCompleted(FAIRequestID RequestID, FPathFollowingResult Result) override;
-
 	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
 
 	void FinishedAttacking();
