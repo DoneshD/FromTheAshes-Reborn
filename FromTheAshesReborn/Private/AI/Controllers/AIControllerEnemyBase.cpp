@@ -104,10 +104,10 @@ void AAIControllerEnemyBase::OnMoveCompleted(FAIRequestID RequestID, const FPath
 
 	switch (Result.Code)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("yoooooo"));
-
 	case EPathFollowingResult::Success:
 		UE_LOG(LogTemp, Warning, TEXT("AAIControllerEnemyBase::Success"));
+		OnMoveCompletedDelegate.Execute();
+
 		// Handle success
 		break;
 	case EPathFollowingResult::Blocked:

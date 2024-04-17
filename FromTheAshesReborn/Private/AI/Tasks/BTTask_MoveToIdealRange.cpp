@@ -20,18 +20,19 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
 
     APawn* EnemyPawn = OwnerComp.GetAIOwner()->GetPawn();
     AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+    AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
+    
+    AIControllerEnemyBase->OnMoveCompletedDelegate.BindUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
 
     FAIMoveRequest MoveRequest;
     MoveRequest.SetGoalActor(TargetActor);
     MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
 
-    FPathFollowingRequestResult RequestReult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
 
     FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
     if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
     {
         UE_LOG(LogTemp, Warning, TEXT("InProgress"));
-
         return EBTNodeResult::InProgress;
     }
     else
@@ -39,8 +40,14 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
         UE_LOG(LogTemp, Warning, TEXT("Failed"));
         return EBTNodeResult::Failed;
     }
+    
+}
 
-    UE_LOG(LogTemp, Warning, TEXT("Succeeded"));
-    EBTNodeResult::Succeeded;
+void UBTTask_MoveToIdealRange::ReachedLocation()
+{
+    if (EnemyOwnerComp)
+    {
+        FinishLatentTask(*EnemyOwnerComp, EBTNodeResult::Succeeded);
+    }
 }
 

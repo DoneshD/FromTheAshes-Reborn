@@ -6,9 +6,10 @@
 #include "Enums/EAIStates.h"
 #include "Enums/EAISenses.h"
 #include "Perception/AIPerceptionComponent.h"
-
 #include "AIController.h"
 #include "AIControllerEnemyBase.generated.h"
+
+DECLARE_DELEGATE(FOnMoveCompleted);
 
 class UBehaviorTree;
 class UBlackboardComponent;
@@ -35,6 +36,8 @@ public:
 
 	float AttackRadius = 0.0f;
 	float DefendRadius = 0.0f;
+
+	FOnMoveCompleted OnMoveCompletedDelegate;
 
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 
