@@ -65,6 +65,8 @@ private:
 
 public:
 
+	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
+
 	FAIStimulus OutSightStimuliInfo;
 	FAIStimulus OutHearStimuliInfo;
 	FAIStimulus OutDamageStimuliInfo;

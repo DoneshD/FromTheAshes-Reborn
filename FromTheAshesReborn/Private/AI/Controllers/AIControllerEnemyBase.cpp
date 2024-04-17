@@ -98,6 +98,31 @@ void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAISti
 
 }
 
+void AAIControllerEnemyBase::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
+{
+	Super::OnMoveCompleted(RequestID, Result);
+
+	switch (Result.Code)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("yoooooo"));
+
+	case EPathFollowingResult::Success:
+		UE_LOG(LogTemp, Warning, TEXT("AAIControllerEnemyBase::Success"));
+		// Handle success
+		break;
+	case EPathFollowingResult::Blocked:
+
+		// Handle blockage
+		break;
+		// Add more cases for other possible results as needed
+	default:
+		// Handle other cases
+		break;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("sdghdfhjfgjdfjfgjgfgjsfdasfaf"));
+
+}
+
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
 	EAIStates CurrentState = static_cast<EAIStates>(GetBlackboardComponent()->GetValueAsEnum(StateKeyName));

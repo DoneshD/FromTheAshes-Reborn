@@ -57,7 +57,6 @@ float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 
 void AEnemyMelee::LightAttack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Should not be here"));
 	PlayAnimMontage(LightAttackAnim);
 }
 

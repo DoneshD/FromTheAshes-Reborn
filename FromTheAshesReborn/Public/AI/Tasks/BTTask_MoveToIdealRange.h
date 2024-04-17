@@ -19,6 +19,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	FBlackboardKeySelector IdealRangeKey;
 
+	UBehaviorTreeComponent* EnemyOwnerComp;
+
 public:
 
 	UBTTask_MoveToIdealRange();
