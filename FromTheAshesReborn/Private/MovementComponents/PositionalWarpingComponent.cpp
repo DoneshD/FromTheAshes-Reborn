@@ -120,10 +120,8 @@ EFacingDirection UPositionalWarpingComponent::GetFacingDirection(FVector FacingL
 {
 	AFTACharacter* OwningCharacter = Cast<AFTACharacter>(GetOwner());
 
-	// Define a map to store distances and directions
 	TMap<float, EFacingDirection> DistanceDirectionMap;
 
-	// Populate the map with distances and corresponding directions
 	DistanceDirectionMap.Add(FVector::Dist(FacingLocation, OwningCharacter->LeftArrow->GetComponentLocation()), EFacingDirection::EFacingDirection_Left);
 	DistanceDirectionMap.Add(FVector::Dist(FacingLocation, OwningCharacter->RightArrow->GetComponentLocation()), EFacingDirection::EFacingDirection_Right);
 	DistanceDirectionMap.Add(FVector::Dist(FacingLocation, OwningCharacter->FrontArrow->GetComponentLocation()), EFacingDirection::EFacingDirection_Front);
@@ -133,7 +131,6 @@ EFacingDirection UPositionalWarpingComponent::GetFacingDirection(FVector FacingL
 	DistanceDirectionMap.Add(FVector::Dist(FacingLocation, OwningCharacter->BackLeftArrow->GetComponentLocation()), EFacingDirection::EFacingDirection_BackLeft);
 	DistanceDirectionMap.Add(FVector::Dist(FacingLocation, OwningCharacter->BackRightArrow->GetComponentLocation()), EFacingDirection::EFacingDirection_BackRight);
 
-	// Find the minimum distance
 	float ClosestArrowDistance = FLT_MAX;
 	EFacingDirection ClosestDirection = EFacingDirection::EFacingDirection_None;
 	for (const auto& Pair : DistanceDirectionMap)
@@ -145,42 +142,35 @@ EFacingDirection UPositionalWarpingComponent::GetFacingDirection(FVector FacingL
 		}
 	}
 
-	// Print the facing direction
 	FString DirectionString;
 	switch (ClosestDirection)
 	{
 	case EFacingDirection::EFacingDirection_Left:
-		DirectionString = TEXT("Left");
 		break;
+
 	case EFacingDirection::EFacingDirection_Right:
-		DirectionString = TEXT("Right");
 		break;
+
 	case EFacingDirection::EFacingDirection_Front:
-		DirectionString = TEXT("Front");
 		break;
+
 	case EFacingDirection::EFacingDirection_Back:
-		DirectionString = TEXT("Back");
 		break;
+
 	case EFacingDirection::EFacingDirection_FrontLeft:
-		DirectionString = TEXT("FrontLeft");
 		break;
+
 	case EFacingDirection::EFacingDirection_FrontRight:
-		DirectionString = TEXT("FrontRight");
 		break;
+
 	case EFacingDirection::EFacingDirection_BackLeft:
-		DirectionString = TEXT("BackLeft");
 		break;
+
 	case EFacingDirection::EFacingDirection_BackRight:
-		DirectionString = TEXT("BackRight");
 		break;
+
 	default:
-		DirectionString = TEXT("None");
 		break;
 	}
-
-	// Print the facing direction
-	UE_LOG(LogTemp, Warning, TEXT("Facing Direction: %s"), *DirectionString);
-
-	// Return the closest direction
 	return ClosestDirection;
 }

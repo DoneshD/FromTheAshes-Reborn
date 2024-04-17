@@ -35,12 +35,8 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
         UE_LOG(LogTemp, Warning, TEXT("InProgress"));
         return EBTNodeResult::InProgress;
     }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Failed"));
-        return EBTNodeResult::Failed;
-    }
-    
+    return EBTNodeResult::InProgress;
+
 }
 
 void UBTTask_MoveToIdealRange::ReachedLocation()

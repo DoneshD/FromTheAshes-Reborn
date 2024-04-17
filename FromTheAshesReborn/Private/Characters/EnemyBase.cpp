@@ -251,7 +251,6 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 			ClosestArrowIndex = DistanceArray.Find(EachArrowDistance);
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("ClosestArrowIndex: %d"), ClosestArrowIndex);
 	switch (ClosestArrowIndex)
 	{
 	case 0:
@@ -286,11 +285,12 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 
 void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase::UpdateWarpTarget"));
+
 }
 
 void AEnemyBase::ResetWarpTarget()
 {
+
 }
 
 TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitDirection HitDirection)
@@ -304,7 +304,6 @@ TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitDirection HitDirect
 		return RightArrow;
 
 	case EHitDirection::EHitDirection_Front:
-		UE_LOG(LogTemp, Warning, TEXT("FrontArrow"));
 		return FrontArrow;
 
 	case EHitDirection::EHitDirection_Back:
