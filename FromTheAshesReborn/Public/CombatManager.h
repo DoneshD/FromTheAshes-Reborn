@@ -14,11 +14,15 @@ public:
 	TArray<TObjectPtr<AActor>> Attackers;
 	TArray<TObjectPtr<AActor>> WaitingAttackers;
 
+	int MaxAttackersCount = 0;
+
 public:	
 	ACombatManager();
 
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	void HandleAttackRequest(TObjectPtr<AActor> Attacker);
 
 };

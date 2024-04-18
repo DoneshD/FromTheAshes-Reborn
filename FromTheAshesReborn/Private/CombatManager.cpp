@@ -1,27 +1,59 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "CombatManager.h"
+#include "AttackerInterface.h"
+#include "AttackTargetInterface.h"
 
-// Sets default values
 ACombatManager::ACombatManager()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
 
-// Called when the game starts or when spawned
 void ACombatManager::BeginPlay()
 {
 	Super::BeginPlay();
+	IAttackTargetInterface* AttackTargetInterface = Cast<IAttackTargetInterface>(AttackTarget);
+	if (AttackTargetInterface)
+	{
+		MaxAttackersCount = AttackTargetInterface->GetMaxAttackersCount();
+	}
 	
 }
 
-// Called every frame
 void ACombatManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
+{
+	if (Attacker != AttackTarget)
+	{
+		if (Attackers.Num() < MaxAttackersCount)
+		{
+			Attackers.AddUnique(Attacker);
+			IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(Attacker);
+			if (AttackerInterface)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("AttackerInterface->Attack(AttackTarget);"));
+				AttackerInterface->Attack(AttackTarget);
+			}
+		}
+		else
+		{
+			WaitingAttackers.AddUnique(Attacker);
+			IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(Attacker);
+			if (AttackerInterface)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("AttackerInterface->Wait(AttackTarget)"));
+				AttackerInterface->Wait(AttackTarget);
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CAN NOT Attacker == AttackTarget"));
+	}
 }
 

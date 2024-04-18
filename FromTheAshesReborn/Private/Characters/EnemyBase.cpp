@@ -283,6 +283,24 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 	return EHitDirection::EHitDirection_None;
 }
 
+void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Attack"));
+	//AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
+}
+
+void AEnemyBase::Wait(TObjectPtr<AActor> AttackTarget)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Wait"));
+	//AICEnemyBase->SetStateAsPassive();
+}
+
+void AEnemyBase::Retreat()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Retreat"));
+	//AICEnemyBase->SetStateAsPassive();
+}
+
 void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
 {
 

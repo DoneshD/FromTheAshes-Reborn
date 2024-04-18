@@ -7,6 +7,7 @@
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MotionWarpingInterface.h"
+#include "../AttackerInterface.h"
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
@@ -15,7 +16,8 @@ class AIControllerEnemyBase;
 class UArrowComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface, public IMotionWarpingInterface
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface, 
+	public IMotionWarpingInterface, public IAttackerInterface
 {
 	GENERATED_BODY()
 
@@ -133,5 +135,14 @@ public:
 
 	UFUNCTION()
 	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) override;
+
+	//Attacker interface functions
+
+	virtual void Attack(TObjectPtr<AActor> AttackTarget) override;
+
+	virtual void Wait(TObjectPtr<AActor> AttackTarget) override;
+
+	UFUNCTION()
+	virtual void Retreat() override;
 
 };
