@@ -43,7 +43,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
 	if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InProgress"));
 		return EBTNodeResult::InProgress;
 	}
 	return EBTNodeResult::InProgress;
@@ -53,7 +52,6 @@ void UBTT_MeleeAttack::ReachedLocation()
 {
 	if (EnemyOwnerComp)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Heaven"));
 		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
 	}
 }
@@ -66,16 +64,17 @@ void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* 
 	AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
 
 	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-
+	
 	EnemyMelee->LightAttack();
-	UE_LOG(LogTemp, Warning, TEXT("YUUUUUUUUUUR"));
+	
+
 	FinishLatentTask(*EnemyOwnerComp, EBTNodeResult::Succeeded);
 }
 
 void UBTT_MeleeAttack::FinishedAttacking()
 {	
-	//if (EnemyOwnerComp)
-	//{
-	//	OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
-	//}
+	if (EnemyOwnerComp)
+	{
+		OnTaskFinished(*EnemyOwnerComp, nullptr, EBTNodeResult::Succeeded);
+	}
 }

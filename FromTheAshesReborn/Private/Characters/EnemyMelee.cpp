@@ -60,7 +60,6 @@ void AEnemyMelee::LightAttack()
 	PlayAnimMontage(LightAttackAnim);
 }
 
-
 AMeleeWeapon* AEnemyMelee::GetLeftWeapon()
 {
 	return MeleeWeapon_L;
