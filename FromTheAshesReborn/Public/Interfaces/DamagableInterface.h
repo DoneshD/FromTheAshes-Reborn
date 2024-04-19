@@ -11,9 +11,7 @@ class UDamagableInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
+
 class FROMTHEASHESREBORN_API IDamagableInterface
 {
 	GENERATED_BODY()

@@ -26,6 +26,8 @@ EBTNodeResult::Type UBTTask_LightMeleeAttack::ExecuteTask(UBehaviorTreeComponent
 
 	AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	
+	UE_LOG(LogTemp, Warning, TEXT("WTFFFFFFFFFFFFFFFFFFFF"));
+
 	EnemyBase->LightAttack();
 	
 	return EBTNodeResult::Succeeded;

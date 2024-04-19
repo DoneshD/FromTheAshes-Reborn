@@ -119,7 +119,6 @@ bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
 	{
 		if (DamagableInterface->ReserveAttackToken(TokensNeeded))
 		{
-
 			StoreAttackTokens(AttackTarget, TokensNeeded);
 			TokensUsedInCurrentAttack = TokensNeeded;
 			return true;
@@ -138,7 +137,10 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
 	{
+		UE_LOG(LogTemp, Warning, TEXT(" AEnemyBase::AttackEnd"));
+
 		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
+		UE_LOG(LogTemp, Warning, TEXT(" AEnemyBase::AttackEnd %d"), TokensUsedInCurrentAttack);
 		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
 	}
 }
@@ -221,10 +223,15 @@ void AEnemyBase::OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
 
 void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 {
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase--StoreAttackTokens OURSIDE::Amount: %d"), Amount);
+
 	if (ReservedAttackTokensMap.Find(AttackTarget))
 	{
 		Amount += ReservedAttackTokensMap[AttackTarget];
+		UE_LOG(LogTemp, Warning, TEXT("AEnemyBase--StoreAttackTokens INSIDE::Amount: %d"), Amount);
+
 	}
+
 	ReservedAttackTokensMap.Add(AttackTarget, Amount);
 }
 
@@ -281,6 +288,24 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 		break;
 	}
 	return EHitDirection::EHitDirection_None;
+}
+
+void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Attack"));
+	//AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
+}
+
+void AEnemyBase::Wait(TObjectPtr<AActor> AttackTarget)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Wait"));
+	//AICEnemyBase->SetStateAsPassive();
+}
+
+void AEnemyBase::Retreat()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Retreat"));
+	//AICEnemyBase->SetStateAsPassive();
 }
 
 void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)

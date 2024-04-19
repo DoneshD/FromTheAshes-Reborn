@@ -95,6 +95,8 @@ bool UDamageSystem::ReserveAttackTokens(int Amount)
 	if (AttackTokensCount >= Amount)
 	{
 		AttackTokensCount -= Amount;
+		UE_LOG(LogTemp, Warning, TEXT("Player ---ReserveAttackTokens::AttackTokensCount: %d"), AttackTokensCount);
+
 		return true;
 	}
 	else
@@ -106,4 +108,6 @@ bool UDamageSystem::ReserveAttackTokens(int Amount)
 void UDamageSystem::ReturnAttackTokens(int Amount)
 {
 	AttackTokensCount += Amount;
+	UE_LOG(LogTemp, Warning, TEXT("Player---ReturnAttackTokens::AttackTokensCount: %d"), AttackTokensCount);
+
 }

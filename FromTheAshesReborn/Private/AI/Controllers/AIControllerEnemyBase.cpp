@@ -115,6 +115,7 @@ void AAIControllerEnemyBase::OnMoveCompleted(FAIRequestID RequestID, const FPath
 		break;
 	}
 	*/
+	UE_LOG(LogTemp, Warning, TEXT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
 	OnMoveCompletedDelegate.Execute();
 
 }
