@@ -147,7 +147,8 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	if (NewAttackTarget)
 	{
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
-		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
+		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Hostile));
+		UE_LOG(LogTemp, Warning, TEXT("Interesting"));
 		AttackTarget = NewAttackTarget;
 	}
 	else
