@@ -52,6 +52,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Token missing"));
+		AIEnemyInterface->AttackEnd(AttackTarget);
 	}
 	
 	return EBTNodeResult::InProgress;
@@ -79,7 +80,6 @@ void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* 
 
 void UBTT_MeleeAttack::FinishedAttacking()
 {
-
 	if (EnemyOwnerComp)
 	{
 		UBehaviorTreeComponent& OwnerComp = *EnemyOwnerComp;

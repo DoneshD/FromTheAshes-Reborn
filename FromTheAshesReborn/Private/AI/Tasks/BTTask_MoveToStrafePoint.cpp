@@ -30,15 +30,20 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
     FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
     if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UBTTask_MoveToStrafePoint::InProgress"));
+        UE_LOG(LogTemp, Warning, TEXT("RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful"));
+        UE_LOG(LogTemp, Warning, TEXT("EBTNodeResult::InProgress"));
         return EBTNodeResult::InProgress;
     }
+
+    UE_LOG(LogTemp, Warning, TEXT("NOOOOOOOOOO RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful"));
+    UE_LOG(LogTemp, Warning, TEXT("EBTNodeResult::InProgress"));
+
     return EBTNodeResult::InProgress;
 }
 
 void UBTTask_MoveToStrafePoint::ReachedLocation()
 {
-    UE_LOG(LogTemp, Warning, TEXT("ReachedLocation"));
+    UE_LOG(LogTemp, Warning, TEXT("UBTTask_MoveToStrafePoint::ReachedLocation"));
 
     if (EnemyOwnerComp)
     {

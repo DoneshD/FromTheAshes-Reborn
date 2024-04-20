@@ -101,30 +101,36 @@ void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAISti
 void AAIControllerEnemyBase::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
 	Super::OnMoveCompleted(RequestID, Result);
-	/*
+	
 	switch (Result.Code)
 	{
 	case EPathFollowingResult::Success:
-		OnMoveCompletedDelegate.Execute();
+		if (GetCurrentState() == EAIStates::EAIStates_Hostile)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GetCurrentState() == EAIStates::EAIStates_Hostile"));
+
+			OnMoveCompletedDelegate.Execute();
+
+		}
+		if (GetCurrentState() == EAIStates::EAIStates_Attacking)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("GetCurrentState() == EAIStates::EAIStates_Attacking"));
+
+			OnMoveStrafeCompleteDelegate.Execute();
+		}
 		break;
 
 	case EPathFollowingResult::Blocked:
+		UE_LOG(LogTemp, Warning, TEXT("EPathFollowingResult::Blocked"));
+		OnMoveStrafeCompleteDelegate.Execute();
+		OnMoveCompletedDelegate.Execute();
 		break;
 
 	default:
 		break;
 	}
-	*/
-	UE_LOG(LogTemp, Warning, TEXT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-	if (GetCurrentState() == EAIStates::EAIStates_Hostile)
-	{
-		OnMoveCompletedDelegate.Execute();
-
-	}
-	if (GetCurrentState() == EAIStates::EAIStates_Attacking)
-	{
-		OnMoveStrafeCompleteDelegate.Execute();
-	}
+	
+	
 
 }
 
@@ -156,7 +162,6 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	{
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
 		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
-		UE_LOG(LogTemp, Warning, TEXT("Interesting"));
 		AttackTarget = NewAttackTarget;
 	}
 	else
