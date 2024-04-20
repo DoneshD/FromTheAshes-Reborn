@@ -34,6 +34,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
 	if (AIEnemyInterface->AttackStart(AttackTarget, 1))
 	{
+		AIControllerEnemyBase->SetStateAsHostile();
 		EnemyMelee->SetMovementSpeed(MovementSpeed);
 		EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
 		EnemyController->SetFocus(AttackTarget);
@@ -87,9 +88,13 @@ void UBTT_MeleeAttack::FinishedAttacking()
 		AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
 		AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 
+		AAIController* EnemyController = EnemyMelee->GetController<AAIController>();
+		AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
+
 		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
 		if (AIEnemyInterface)
 		{
+			AIControllerEnemyBase->SetStateAsAttacking(AttackTarget, true);
 			AIEnemyInterface->AttackEnd(AttackTarget);
 		}
 

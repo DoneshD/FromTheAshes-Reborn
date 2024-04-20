@@ -20,7 +20,7 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
     APawn* EnemyPawn = OwnerComp.GetAIOwner()->GetPawn();
     AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
 
-    AIControllerEnemyBase->OnMoveCompletedDelegate.BindUObject(this, &UBTTask_MoveToStrafePoint::ReachedLocation);
+    AIControllerEnemyBase->OnMoveStrafeCompleteDelegate.BindUObject(this, &UBTTask_MoveToStrafePoint::ReachedLocation);
 
     FAIMoveRequest MoveRequest;
     FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(PointOfInterestKey.SelectedKeyName);

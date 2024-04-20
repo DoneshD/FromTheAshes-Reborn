@@ -10,6 +10,7 @@
 #include "AIControllerEnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnMoveCompleted);
+DECLARE_DELEGATE(FOnMoveStrafeCompleted);
 
 class UBehaviorTree;
 class UBlackboardComponent;
@@ -38,6 +39,7 @@ public:
 	float DefendRadius = 0.0f;
 
 	FOnMoveCompleted OnMoveCompletedDelegate;
+	FOnMoveStrafeCompleted OnMoveStrafeCompleteDelegate;
 
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 
@@ -79,6 +81,8 @@ public:
 	void SetStateAsPassive();
 
 	void SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget);
+
+	void SetStateAsHostile();
 
 	void SetStateAsInvestigating(FVector Location);
 

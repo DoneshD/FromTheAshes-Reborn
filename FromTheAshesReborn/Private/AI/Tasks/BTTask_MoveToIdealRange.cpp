@@ -22,7 +22,7 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
     AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
     AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
     
-    AIControllerEnemyBase->OnMoveCompletedDelegate.BindUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
+    AIControllerEnemyBase->OnMoveStrafeCompleteDelegate.BindUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
 
     FAIMoveRequest MoveRequest;
     MoveRequest.SetGoalActor(TargetActor);

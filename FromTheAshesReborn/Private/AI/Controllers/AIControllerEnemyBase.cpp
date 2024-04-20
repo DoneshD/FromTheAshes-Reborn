@@ -116,7 +116,15 @@ void AAIControllerEnemyBase::OnMoveCompleted(FAIRequestID RequestID, const FPath
 	}
 	*/
 	UE_LOG(LogTemp, Warning, TEXT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-	OnMoveCompletedDelegate.Execute();
+	if (GetCurrentState() == EAIStates::EAIStates_Hostile)
+	{
+		OnMoveCompletedDelegate.Execute();
+
+	}
+	if (GetCurrentState() == EAIStates::EAIStates_Attacking)
+	{
+		OnMoveStrafeCompleteDelegate.Execute();
+	}
 
 }
 
@@ -147,7 +155,7 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	if (NewAttackTarget)
 	{
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, NewAttackTarget);
-		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Hostile));
+		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Attacking));
 		UE_LOG(LogTemp, Warning, TEXT("Interesting"));
 		AttackTarget = NewAttackTarget;
 	}
@@ -156,6 +164,13 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		SetStateAsPassive();
 	}
 
+}
+
+
+
+void AAIControllerEnemyBase::SetStateAsHostile()
+{
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Hostile));
 }
 
 void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)
