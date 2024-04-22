@@ -39,8 +39,10 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
 
 }
 
-void UBTTask_MoveToIdealRange::ReachedLocation()
+void UBTTask_MoveToIdealRange::ReachedLocation(int32 t)
 {
+    UE_LOG(LogTemp, Warning, TEXT("ReachedLocation: %d"), t);
+
     if (EnemyOwnerComp)
     {
         FinishLatentTask(*EnemyOwnerComp, EBTNodeResult::Succeeded);

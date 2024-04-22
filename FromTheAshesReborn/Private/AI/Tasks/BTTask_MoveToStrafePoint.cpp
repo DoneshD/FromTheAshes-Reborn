@@ -36,9 +36,9 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
     return EBTNodeResult::InProgress;
 }
 
-void UBTTask_MoveToStrafePoint::ReachedLocation()
+void UBTTask_MoveToStrafePoint::ReachedLocation(int32 t)
 {
-    UE_LOG(LogTemp, Warning, TEXT("ReachedLocation"));
+    UE_LOG(LogTemp, Warning, TEXT("ReachedLocation: %d"), t);
 
     if (EnemyOwnerComp)
     {

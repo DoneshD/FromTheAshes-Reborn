@@ -56,8 +56,10 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	return EBTNodeResult::InProgress;
 }
 
-void UBTT_MeleeAttack::ReachedLocation()
+void UBTT_MeleeAttack::ReachedLocation(int32 t)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ReachedLocation: %d"), t);
+
 	if (EnemyOwnerComp)
 	{
 		UBehaviorTreeComponent& OwnerComp = *EnemyOwnerComp;

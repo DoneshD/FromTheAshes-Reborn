@@ -27,6 +27,6 @@ public:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	void ReachedLocation();
+	void ReachedLocation(int32 t);
 };
 

@@ -9,7 +9,7 @@
 #include "AIController.h"
 #include "AIControllerEnemyBase.generated.h"
 
-DECLARE_DELEGATE(FOnMoveCompleted);
+DECLARE_DELEGATE_OneParam(FOnMoveCompleted, int32);
 
 class UBehaviorTree;
 class UBlackboardComponent;

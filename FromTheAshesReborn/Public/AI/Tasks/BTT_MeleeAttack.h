@@ -36,9 +36,9 @@ public:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
+	//void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
 
-	void ReachedLocation();
+	void ReachedLocation(int32 t);
 	
 	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
 
