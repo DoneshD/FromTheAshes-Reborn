@@ -100,7 +100,6 @@ void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAISti
 
 }
 
-
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
 	EAIStates CurrentState = static_cast<EAIStates>(GetBlackboardComponent()->GetValueAsEnum(StateKeyName));
@@ -136,6 +135,13 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		SetStateAsPassive();
 	}
 
+}
+
+
+
+void AAIControllerEnemyBase::SetStateAsHostile()
+{
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Hostile));
 }
 
 void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)

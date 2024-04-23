@@ -9,10 +9,6 @@
 #include "AIController.h"
 #include "AIControllerEnemyBase.generated.h"
 
-//DECLARE_DELEGATE_OneParam(FOnMoveAttackCompleted, AAIControllerEnemyBase*);
-//DECLARE_DELEGATE(FOnMoveStrafeCompleted);
-
-
 class UBehaviorTree;
 class UBlackboardComponent;
 class UAIPerceptionComponent;
@@ -37,9 +33,6 @@ public:
 
 	float AttackRadius = 0.0f;
 	float DefendRadius = 0.0f;
-
-	//FOnMoveAttackCompleted OnMoveAttackCompleted;
-	//FOnMoveStrafeCompleted OnMoveStrafeCompleted;
 
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 
@@ -81,6 +74,8 @@ public:
 
 	void SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget);
 
+	void SetStateAsHostile();
+
 	void SetStateAsInvestigating(FVector Location);
 
 	void SetStateAsFrozen();
@@ -94,10 +89,5 @@ public:
 	void HandleSensedSound(FVector Location);
 
 	void HandleSensedDamage(AActor* Actor);
-
-	void BindDelegates();
-
-	// Function to unbind delegates
-	void UnbindDelegates();
 
 };

@@ -20,8 +20,8 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
     APawn* EnemyPawn = OwnerComp.GetAIOwner()->GetPawn();
     AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
     AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
-    
-    
+
+
     FAIMoveRequest MoveRequest;
     MoveRequest.SetGoalActor(TargetActor);
     MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
@@ -47,5 +47,4 @@ void UBTTask_MoveToIdealRange::ReachedLocation(FAIRequestID RequestID, const FPa
         FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
     }
 }
-
 

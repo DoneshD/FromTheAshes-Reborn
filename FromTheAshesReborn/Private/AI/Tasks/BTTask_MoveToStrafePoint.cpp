@@ -9,7 +9,7 @@
 
 UBTTask_MoveToStrafePoint::UBTTask_MoveToStrafePoint()
 {
-	NodeName = TEXT("BTTask_MoveToStrafePoint");
+    NodeName = TEXT("BTTask_MoveToStrafePoint");
     bCreateNodeInstance = true;
 
 }
@@ -24,7 +24,7 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
         return EBTNodeResult::Failed;
     }
 
-    
+
 
     FAIMoveRequest MoveRequest;
     FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(PointOfInterestKey.SelectedKeyName);
@@ -63,4 +63,3 @@ void UBTTask_MoveToStrafePoint::ReachedLocation(FAIRequestID RequestID, const FP
         FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
     }
 }
-

@@ -134,7 +134,7 @@ void UBTT_MeleeAttack::FinishedAttacking()
 					UE_LOG(LogTemp, Warning, TEXT("NOT AIEnemyInterface"));
 
 				}
-				
+
 			}
 			else
 			{
