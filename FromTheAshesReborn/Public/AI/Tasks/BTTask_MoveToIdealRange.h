@@ -19,13 +19,11 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	FBlackboardKeySelector IdealRangeKey;
 
-	UBehaviorTreeComponent* EnemyOwnerComp;
-
 public:
 
 	UBTTask_MoveToIdealRange();
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	void ReachedLocation(int32 t);
+	void ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result);
 };

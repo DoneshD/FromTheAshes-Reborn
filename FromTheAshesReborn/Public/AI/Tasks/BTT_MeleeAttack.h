@@ -27,8 +27,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tokens")
 	int TokensNeeded;
 
-private:
-	UBehaviorTreeComponent* EnemyOwnerComp;
 
 public:
 
@@ -36,12 +34,8 @@ public:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	//void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
-
-	void ReachedLocation(int32 t);
+	void ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result);
 	
-	virtual void OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult) override;
-
 	void FinishedAttacking();
 
 };

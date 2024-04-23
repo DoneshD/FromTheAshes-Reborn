@@ -223,12 +223,10 @@ void AEnemyBase::OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
 
 void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyBase--StoreAttackTokens OURSIDE::Amount: %d"), Amount);
 
 	if (ReservedAttackTokensMap.Find(AttackTarget))
 	{
 		Amount += ReservedAttackTokensMap[AttackTarget];
-		UE_LOG(LogTemp, Warning, TEXT("AEnemyBase--StoreAttackTokens INSIDE::Amount: %d"), Amount);
 
 	}
 

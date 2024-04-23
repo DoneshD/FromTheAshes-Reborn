@@ -43,6 +43,8 @@ AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectI
 
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated);
+
+	
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
@@ -98,27 +100,6 @@ void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAISti
 
 }
 
-void AAIControllerEnemyBase::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
-{
-	Super::OnMoveCompleted(RequestID, Result);
-	/*
-	switch (Result.Code)
-	{
-	case EPathFollowingResult::Success:
-		OnMoveCompletedDelegate.Execute();
-		break;
-
-	case EPathFollowingResult::Blocked:
-		break;
-
-	default:
-		break;
-	}
-	*/
-	UE_LOG(LogTemp, Warning, TEXT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
-	OnMoveCompletedDelegate.Execute(5);
-
-}
 
 EAIStates AAIControllerEnemyBase::GetCurrentState()
 {
@@ -289,3 +270,4 @@ void AAIControllerEnemyBase::HandleSensedDamage(AActor* Actor)
 		break;
 	}
 }
+

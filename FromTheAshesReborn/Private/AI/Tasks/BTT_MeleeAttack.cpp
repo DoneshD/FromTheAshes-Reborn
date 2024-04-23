@@ -7,22 +7,22 @@
 UBTT_MeleeAttack::UBTT_MeleeAttack()
 {
 	NodeName = TEXT("BTT_MeleeAttack");
+	bCreateNodeInstance = true;
+
 }
 
 EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	EnemyOwnerComp = &OwnerComp;
-
-
-
 	APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
 	AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
 
 	AAIController* EnemyController = EnemyMelee->GetController<AAIController>();
 	AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
-	AIControllerEnemyBase->OnMoveCompletedDelegate.BindUObject(this, &UBTT_MeleeAttack::ReachedLocation);
+
+	AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTT_MeleeAttack::ReachedLocation);
+
 	EnemyMelee->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
 
 	if (!EnemyMelee)
@@ -32,7 +32,18 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
-	if (AIEnemyInterface->AttackStart(AttackTarget, 1))
+
+	if (AIEnemyInterface)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("COVIDDDDDDDDDDD"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("fsdfgsdagadfghsdfhO"));
+
+	}
+
+	if (AIEnemyInterface->AttackStart(AttackTarget, 0))
 	{
 		EnemyMelee->SetMovementSpeed(MovementSpeed);
 		EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
@@ -45,6 +56,8 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
 		if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
 		{
+			//FinishLatentTask(*OwnerComp, EBTNodeResult::InProgress);
+
 			return EBTNodeResult::InProgress;
 		}
 	}
@@ -52,50 +65,86 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Token missing"));
 	}
-	
-	return EBTNodeResult::InProgress;
+	return EBTNodeResult::Failed;
 }
 
-void UBTT_MeleeAttack::ReachedLocation(int32 t)
+void UBTT_MeleeAttack::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ReachedLocation: %d"), t);
+	UE_LOG(LogTemp, Warning, TEXT("UBTT_MeleeAttack::ReachedLocation!!!!!!!!!!!!!!!!!!!"));
 
-	if (EnemyOwnerComp)
+	UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
+
+	if (OwnerComp)
 	{
-		UBehaviorTreeComponent& OwnerComp = *EnemyOwnerComp;
-
-		APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-		AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
-		
-		EnemyMelee->LightAttack();
+		APawn* Pawn = OwnerComp->GetAIOwner()->GetPawn();
+		if (Pawn)
+		{
+			AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
+			if (EnemyMelee)
+			{
+				EnemyMelee->LightAttack();
+				FinishLatentTask(*OwnerComp, EBTNodeResult::InProgress);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("EnemyMelee NULL"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Pawn NULL"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OwnerComp NULL"));
 	}
 }
 
-void UBTT_MeleeAttack::OnTaskFinished(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, EBTNodeResult::Type TaskResult)
-{
-	Super::OnTaskFinished(OwnerComp, NodeMemory, TaskResult);
-
-	
-}
 
 void UBTT_MeleeAttack::FinishedAttacking()
 {
+	UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
 
-	if (EnemyOwnerComp)
+	if (OwnerComp)
 	{
-		UBehaviorTreeComponent& OwnerComp = *EnemyOwnerComp;
-
-		APawn* Pawn = OwnerComp.GetAIOwner()->GetPawn();
-		AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
-		AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-
-		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
-		if (AIEnemyInterface)
+		APawn* Pawn = OwnerComp->GetAIOwner()->GetPawn();
+		if (Pawn)
 		{
-			AIEnemyInterface->AttackEnd(AttackTarget);
-		}
+			AEnemyMelee* EnemyMelee = Cast<AEnemyMelee>(Pawn);
+			if (EnemyMelee)
+			{
+				AActor* AttackTarget = Cast<AActor>(OwnerComp->GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 
+				IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
+				if (AIEnemyInterface)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("FinishedAttackingYESSSSSSSSSSSSSSSSSSSSSSSSS"));
+					AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp->GetAIOwner());
+					AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
+					AIEnemyInterface->AttackEnd(AttackTarget);
+					FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("FinishedAttackingNOOO"));
+
+				}
+				
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("EnemyMelee NULL"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Pawn NULL"));
+		}
 	}
-	
-	FinishLatentTask(*EnemyOwnerComp, EBTNodeResult::Succeeded);
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OwnerComp NULL"));
+	}
+
 }

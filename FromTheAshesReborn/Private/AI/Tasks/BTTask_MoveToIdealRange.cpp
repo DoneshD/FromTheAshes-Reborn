@@ -10,19 +10,18 @@
 UBTTask_MoveToIdealRange::UBTTask_MoveToIdealRange()
 {
     NodeName = TEXT("BTTask_MoveToIdealRange");
+    bCreateNodeInstance = true;
 }
 
 EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     Super::ExecuteTask(OwnerComp, NodeMemory);
 
-    EnemyOwnerComp = &OwnerComp;
-
     APawn* EnemyPawn = OwnerComp.GetAIOwner()->GetPawn();
     AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
     AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
     
-    AIControllerEnemyBase->OnMoveCompletedDelegate.BindUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
+    AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
 
     FAIMoveRequest MoveRequest;
     MoveRequest.SetGoalActor(TargetActor);
@@ -32,20 +31,21 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
     FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
     if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
     {
-        UE_LOG(LogTemp, Warning, TEXT("InProgress"));
+        FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
         return EBTNodeResult::InProgress;
     }
-    return EBTNodeResult::InProgress;
-
+    return EBTNodeResult::Failed;
 }
 
-void UBTTask_MoveToIdealRange::ReachedLocation(int32 t)
+void UBTTask_MoveToIdealRange::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-    UE_LOG(LogTemp, Warning, TEXT("ReachedLocation: %d"), t);
-
-    if (EnemyOwnerComp)
+    UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
+    if (OwnerComp)
     {
-        FinishLatentTask(*EnemyOwnerComp, EBTNodeResult::Succeeded);
+        AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp->GetAIOwner());
+        AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
+        FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
     }
 }
+
 

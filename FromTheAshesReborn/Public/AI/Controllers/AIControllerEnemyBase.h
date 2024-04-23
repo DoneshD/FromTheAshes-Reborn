@@ -9,7 +9,9 @@
 #include "AIController.h"
 #include "AIControllerEnemyBase.generated.h"
 
-DECLARE_DELEGATE_OneParam(FOnMoveCompleted, int32);
+//DECLARE_DELEGATE_OneParam(FOnMoveAttackCompleted, AAIControllerEnemyBase*);
+//DECLARE_DELEGATE(FOnMoveStrafeCompleted);
+
 
 class UBehaviorTree;
 class UBlackboardComponent;
@@ -17,7 +19,6 @@ class UAIPerceptionComponent;
 class UAISenseConfig_Sight;
 class UAISenseConfig_Hearing;
 class UAISenseConfig_Damage;
-
 
 UCLASS()
 class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
@@ -37,7 +38,8 @@ public:
 	float AttackRadius = 0.0f;
 	float DefendRadius = 0.0f;
 
-	FOnMoveCompleted OnMoveCompletedDelegate;
+	//FOnMoveAttackCompleted OnMoveAttackCompleted;
+	//FOnMoveStrafeCompleted OnMoveStrafeCompleted;
 
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 
@@ -68,7 +70,6 @@ private:
 
 public:
 
-	virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result) override;
 
 	FAIStimulus OutSightStimuliInfo;
 	FAIStimulus OutHearStimuliInfo;
@@ -93,5 +94,10 @@ public:
 	void HandleSensedSound(FVector Location);
 
 	void HandleSensedDamage(AActor* Actor);
+
+	void BindDelegates();
+
+	// Function to unbind delegates
+	void UnbindDelegates();
 
 };
