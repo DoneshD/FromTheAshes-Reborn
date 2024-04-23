@@ -56,7 +56,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
 		if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
 		{
-			//FinishLatentTask(*OwnerComp, EBTNodeResult::InProgress);
+			//FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
 
 			return EBTNodeResult::InProgress;
 		}
@@ -70,8 +70,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 void UBTT_MeleeAttack::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-	UE_LOG(LogTemp, Warning, TEXT("UBTT_MeleeAttack::ReachedLocation!!!!!!!!!!!!!!!!!!!"));
-
 	UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
 
 	if (OwnerComp)
@@ -119,7 +117,6 @@ void UBTT_MeleeAttack::FinishedAttacking()
 				IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
 				if (AIEnemyInterface)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("FinishedAttackingYESSSSSSSSSSSSSSSSSSSSSSSSS"));
 					AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp->GetAIOwner());
 					AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
 					AIEnemyInterface->AttackEnd(AttackTarget);
@@ -127,7 +124,7 @@ void UBTT_MeleeAttack::FinishedAttacking()
 				}
 				else
 				{
-					UE_LOG(LogTemp, Warning, TEXT("FinishedAttackingNOOO"));
+					UE_LOG(LogTemp, Warning, TEXT("NOT AIEnemyInterface"));
 
 				}
 				
