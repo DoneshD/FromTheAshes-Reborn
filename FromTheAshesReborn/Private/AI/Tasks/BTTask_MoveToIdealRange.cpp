@@ -21,8 +21,7 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
     AActor* TargetActor = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
     AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
     
-    AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
-
+    
     FAIMoveRequest MoveRequest;
     MoveRequest.SetGoalActor(TargetActor);
     MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
@@ -31,6 +30,7 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
     FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
     if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
     {
+        AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
         FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
         return EBTNodeResult::InProgress;
     }

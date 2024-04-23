@@ -21,7 +21,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	AAIController* EnemyController = EnemyMelee->GetController<AAIController>();
 	AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
 
-	AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTT_MeleeAttack::ReachedLocation);
 
 	EnemyMelee->OnAttackEnd.BindUObject(this, &UBTT_MeleeAttack::FinishedAttacking);
 
@@ -33,18 +32,11 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
 
-	if (AIEnemyInterface)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("COVIDDDDDDDDDDD"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("fsdfgsdagadfghsdfhO"));
 
-	}
-
-	if (AIEnemyInterface->AttackStart(AttackTarget, 0))
+	if (AIEnemyInterface->AttackStart(AttackTarget, 1))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("I Have a token"));
+
 		EnemyMelee->SetMovementSpeed(MovementSpeed);
 		EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
 		EnemyController->SetFocus(AttackTarget);
@@ -53,6 +45,8 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		MoveRequest.SetGoalActor(AttackTarget);
 		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
 
+		AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTT_MeleeAttack::ReachedLocation);
+
 		FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
 		if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
 		{
@@ -60,16 +54,29 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 			return EBTNodeResult::InProgress;
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("RequestResult failed"));
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+			return EBTNodeResult::Failed;
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Token missing"));
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		return EBTNodeResult::Failed;
 	}
+
+	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	return EBTNodeResult::Failed;
 }
 
 void UBTT_MeleeAttack::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ReachedLocation and attacking"));
+
 	UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
 
 	if (OwnerComp)

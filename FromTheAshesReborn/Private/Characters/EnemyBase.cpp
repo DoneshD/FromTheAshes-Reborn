@@ -137,10 +137,8 @@ void AEnemyBase::AttackEnd(AActor* AttackTarget)
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
 	{
-		UE_LOG(LogTemp, Warning, TEXT(" AEnemyBase::AttackEnd"));
 
 		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
-		UE_LOG(LogTemp, Warning, TEXT(" AEnemyBase::AttackEnd %d"), TokensUsedInCurrentAttack);
 		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
 	}
 }

@@ -24,24 +24,37 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
         return EBTNodeResult::Failed;
     }
 
-    AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToStrafePoint::ReachedLocation);
+    
 
     FAIMoveRequest MoveRequest;
     FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(PointOfInterestKey.SelectedKeyName);
     MoveRequest.SetGoalLocation(Destination);
 
     FPathFollowingRequestResult RequestResult = AIControllerEnemyBase->MoveTo(MoveRequest);
+
     if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
     {
+        AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToStrafePoint::ReachedLocation);
+
         FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
         return EBTNodeResult::InProgress;
     }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("RequestResult failed"));
+        //AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
 
+        return EBTNodeResult::Failed;
+
+    }
+    //AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
     return EBTNodeResult::Failed;
 }
 
 void UBTTask_MoveToStrafePoint::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
+    UE_LOG(LogTemp, Warning, TEXT("ReachedLocation from strafing"));
+
     UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
     if (OwnerComp)
     {
