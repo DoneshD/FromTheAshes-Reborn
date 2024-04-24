@@ -1,2 +1,0 @@
-#include "AttackerInterface.h"
-

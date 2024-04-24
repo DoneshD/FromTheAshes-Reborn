@@ -1,7 +1,7 @@
 #include "Characters/EnemyMelee.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
-#include "MeleeWeapon.h"
+#include "Weapons/MeleeWeapon.h"
 
 AEnemyMelee::AEnemyMelee()
 {

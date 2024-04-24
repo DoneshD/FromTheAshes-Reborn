@@ -1,4 +1,4 @@
-#include "MeleeWeapon.h"
+#include "Weapons/MeleeWeapon.h"
 
 AMeleeWeapon::AMeleeWeapon()
 {

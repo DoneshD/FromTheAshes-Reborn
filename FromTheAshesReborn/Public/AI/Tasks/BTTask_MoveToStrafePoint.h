@@ -12,7 +12,13 @@ class FROMTHEASHESREBORN_API UBTTask_MoveToStrafePoint : public UBTTask_Blackboa
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
+	FBlackboardKeySelector AttackTargetKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	FBlackboardKeySelector PointOfInterestKey;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	EMovementSpeed MovementSpeed;
 
 public:
 

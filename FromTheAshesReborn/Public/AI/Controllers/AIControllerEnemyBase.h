@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -72,6 +70,8 @@ public:
 
 	void SetStateAsPassive();
 
+
+	UFUNCTION(BlueprintCallable)
 	void SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget);
 
 	void SetStateAsHostile();

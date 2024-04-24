@@ -14,7 +14,7 @@
 #include "TargetingComponents/TargetingSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
-#include "MeleeWeapon.h"
+#include "Weapons/MeleeWeapon.h"
 
 #include "MotionWarpingComponent.h"
 #include "EnhancedInputComponent.h"
@@ -722,8 +722,4 @@ void APlayableCharacter::ResetDashWarpToTarget()
 	DashSystemComponent->ResetDashWarpToTarget();
 }
 
-int APlayableCharacter::GetMaxAttackersCount()
-{
-	return 3;
-}
 

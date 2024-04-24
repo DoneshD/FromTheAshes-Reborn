@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Characters/EnemyBase.h"
 #include "AI/Controllers/AIControllerEnemyBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -284,24 +282,6 @@ EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
 		break;
 	}
 	return EHitDirection::EHitDirection_None;
-}
-
-void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Attack"));
-	//AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
-}
-
-void AEnemyBase::Wait(TObjectPtr<AActor> AttackTarget)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Wait"));
-	//AICEnemyBase->SetStateAsPassive();
-}
-
-void AEnemyBase::Retreat()
-{
-	UE_LOG(LogTemp, Warning, TEXT("Retreat"));
-	//AICEnemyBase->SetStateAsPassive();
 }
 
 void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)

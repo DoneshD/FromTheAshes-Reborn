@@ -1,11 +1,6 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "AI/Tasks/BTTask_MoveToStrafePoint.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
 #include "Characters/EnemyBase.h"
-
 
 UBTTask_MoveToStrafePoint::UBTTask_MoveToStrafePoint()
 {
@@ -18,48 +13,73 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
 {
     Super::ExecuteTask(OwnerComp, NodeMemory);
 
-    AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
-    if (!AIControllerEnemyBase)
+    AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(OwnerComp.GetAIOwner());
+    if (!EnemyController)
+    {
+        return EBTNodeResult::Failed;
+    }
+    APawn* EnemyPawn = OwnerComp.GetAIOwner()->GetPawn();
+    if (!EnemyPawn)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("EnemyPawn is NULL"));
+        return EBTNodeResult::Failed;
+    }
+
+    AEnemyBase* EnemyBase = Cast<AEnemyBase>(EnemyPawn);
+
+    if (!EnemyBase)
     {
         return EBTNodeResult::Failed;
     }
 
+    AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+    if (!AttackTarget)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("AttackTarget is NULL"));
+        return EBTNodeResult::Failed;
+    }
 
+    EnemyController->SetFocus(AttackTarget);
+    EnemyBase->SetMovementSpeed(MovementSpeed);
 
     FAIMoveRequest MoveRequest;
     FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(PointOfInterestKey.SelectedKeyName);
     MoveRequest.SetGoalLocation(Destination);
 
-    FPathFollowingRequestResult RequestResult = AIControllerEnemyBase->MoveTo(MoveRequest);
+    FPathFollowingRequestResult RequestResult = EnemyController->MoveTo(MoveRequest);
 
     if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
     {
-        AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToStrafePoint::ReachedLocation);
+        EnemyController->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToStrafePoint::ReachedLocation);
 
         FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
         return EBTNodeResult::InProgress;
     }
     else
     {
-        UE_LOG(LogTemp, Warning, TEXT("RequestResult failed"));
-        //AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
-
+        FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
         return EBTNodeResult::Failed;
 
     }
-    //AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
+    FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
     return EBTNodeResult::Failed;
 }
 
 void UBTTask_MoveToStrafePoint::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-    UE_LOG(LogTemp, Warning, TEXT("ReachedLocation from strafing"));
-
     UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
     if (OwnerComp)
     {
-        AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp->GetAIOwner());
-        AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
-        FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
+        AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(OwnerComp->GetAIOwner());
+        if (EnemyController)
+        {
+            EnemyController->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
+            FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("FinishLatentTask(*OwnerComp, EBTNodeResult::Failed"));
+            FinishLatentTask(*OwnerComp, EBTNodeResult::Failed);
+        }
     }
 }

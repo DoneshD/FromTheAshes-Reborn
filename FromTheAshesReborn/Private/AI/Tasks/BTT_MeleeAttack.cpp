@@ -3,7 +3,6 @@
 #include "AIController.h"
 #include "Characters/EnemyMelee.h"
 
-
 UBTT_MeleeAttack::UBTT_MeleeAttack()
 {
 	NodeName = TEXT("BTT_MeleeAttack");
@@ -33,9 +32,8 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
 
 
-	if (AIEnemyInterface->AttackStart(AttackTarget, 1))
+	if (AIEnemyInterface->AttackStart(AttackTarget, TokensNeeded))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("I Have a token"));
 
 		EnemyMelee->SetMovementSpeed(MovementSpeed);
 		EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
@@ -43,28 +41,25 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 		FAIMoveRequest MoveRequest;
 		MoveRequest.SetGoalActor(AttackTarget);
-		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
+		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName));
 
 		AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTT_MeleeAttack::ReachedLocation);
 
 		FPathFollowingRequestResult RequestResult = OwnerComp.GetAIOwner()->MoveTo(MoveRequest);
 		if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
 		{
-			//FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
-
+			FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
 			return EBTNodeResult::InProgress;
 		}
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("RequestResult failed"));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-
 			return EBTNodeResult::Failed;
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Token missing"));
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return EBTNodeResult::Failed;
 	}
@@ -75,8 +70,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 void UBTT_MeleeAttack::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ReachedLocation and attacking"));
-
 	UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
 
 	if (OwnerComp)
@@ -126,8 +119,11 @@ void UBTT_MeleeAttack::FinishedAttacking()
 				{
 					AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp->GetAIOwner());
 					AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
-					AIEnemyInterface->AttackEnd(AttackTarget);
-					FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
+					if (AttackTarget)
+					{
+						AIEnemyInterface->AttackEnd(AttackTarget);
+						FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
+					}
 				}
 				else
 				{

@@ -9,10 +9,9 @@
 #include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
-#include "../AttackTargetInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-#include "../MeleeWeapon.h"
+#include "Weapons/MeleeWeapon.h"
 #include "Interfaces/DashingCombatantInterface.h"
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
@@ -29,7 +28,7 @@ class UTargetingSystemComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, 
-	public IDashingCombatantInterface, public IAttackTargetInterface
+	public IDashingCombatantInterface
 {
 	GENERATED_BODY()
 
@@ -390,9 +389,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetDashWarpToTarget() override;
-
-	//Attack Target Interface
-
-	virtual int GetMaxAttackersCount() override;
 
 };

@@ -18,9 +18,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
 	FBlackboardKeySelector AttackRadiusKey;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "BlackboardKey")
-	FBlackboardKeySelector IdealRangeKey;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	EMovementSpeed MovementSpeed;
 

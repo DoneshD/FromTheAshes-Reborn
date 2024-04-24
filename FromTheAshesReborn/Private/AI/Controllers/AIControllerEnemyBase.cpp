@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Ai/Controllers/AIControllerEnemyBase.h"
 #include "Enums/EAIStates.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -9,7 +7,10 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Damage.h"
 #include "Navigation/CrowdFollowingComponent.h"
-
+//cheeky for now
+#include "Interfaces/DashingCombatantInterface.h"
+//Not good
+#include "Characters/PlayableCharacter.h"
 #include "Characters/EnemyBase.h"
 
 AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
@@ -78,7 +79,11 @@ void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& Upda
 		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
 		if (OutSightStimuliInfo.WasSuccessfullySensed())
 		{
-			HandleSensedSight(Actor);
+			IDashingCombatantInterface* PlayableCharacter = Cast<IDashingCombatantInterface>(Actor);
+			if (PlayableCharacter)
+			{
+				HandleSensedSight(Actor);
+			}
 		}
 
 		OutHearStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Hearing);
@@ -134,10 +139,7 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	{
 		SetStateAsPassive();
 	}
-
 }
-
-
 
 void AAIControllerEnemyBase::SetStateAsHostile()
 {
@@ -152,7 +154,8 @@ void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)
 
 void AAIControllerEnemyBase::SetStateAsFrozen()
 {
-	//GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
+	UE_LOG(LogTemp, Warning, TEXT("SetStateAsFrozen"));
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
 }
 
 void AAIControllerEnemyBase::SetStateAsDead()
