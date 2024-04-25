@@ -43,9 +43,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Melee Attack")
 	void EndMeleeAttackCollisions();
-
+	
 	bool MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocation, TArray<FHitResult>& Hits);
 
+	UFUNCTION(BlueprintCallable, Category = "Melee Attack")
 	void MeleeTraceCollisions();
 
 	void MeleeAttackWarpToTarget(EMeleeAttackRange WarpRange, bool HasInput);

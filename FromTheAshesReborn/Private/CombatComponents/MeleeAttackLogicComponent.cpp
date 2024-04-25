@@ -35,8 +35,10 @@ void UMeleeAttackLogicComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 	if (IsActiveCollision)
 	{
+
 		MeleeTraceCollisions();
 	}
+	
 }
 
 float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRange)
@@ -86,6 +88,8 @@ void UMeleeAttackLogicComponent::EmptyHitActorsArray()
 
 void UMeleeAttackLogicComponent::StartMeleeAttackCollisions()
 {
+	UE_LOG(LogTemp, Warning, TEXT("UMeleeAttackLogicComponent::StartMeleeAttackCollisions()"));
+
 	EmptyHitActorsArray();
 	IsActiveCollision = true;
 }
@@ -114,7 +118,7 @@ bool UMeleeAttackLogicComponent::MeleeWeaponSphereTrace(FVector StartLocation, F
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		Hits,
 		true);
 
@@ -141,7 +145,6 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 			EndLocation = MeshComponentL->GetSocketLocation("End");
 		}
 	}
-
 
 	bool bLeftSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 
@@ -172,6 +175,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 							false,                                // ShouldForceInterrupt
 							HitReactionDirection        // HitReactionDirection
 						};
+
 						DamagableInterface->TakeDamage(DamageInfo);
 
 					}

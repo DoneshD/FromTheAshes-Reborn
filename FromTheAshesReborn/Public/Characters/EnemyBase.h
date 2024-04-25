@@ -27,11 +27,7 @@ public:
 	TMap<AActor*, int> ReservedAttackTokensMap;
 
 	int TokensUsedInCurrentAttack;
-
 	FOnAttackEnd OnAttackEnd;
-
-	UPROPERTY(EditAnywhere, Category = "Targeting")
-	TObjectPtr<UMaterialInterface> TargetedMaterial;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
 	TObjectPtr<UAnimMontage> LeftHitReaction;
@@ -66,14 +62,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
 
-	//HERE!
+	//Damagable Interface functions
+
 	UFUNCTION()
 	virtual void HandleDeath() override;
 
 	UFUNCTION()
 	virtual void HandleHitReaction(FDamageInfo DamageInfo) override;
 
-	//Damagable Interface functions
 
 	UFUNCTION(BlueprintCallable)
 	virtual float GetCurrentHealth() override;
@@ -118,6 +114,5 @@ public:
 
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
-
 
 };

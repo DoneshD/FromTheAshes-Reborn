@@ -54,7 +54,7 @@ float UDamageSystem::Heal(float HealAmount)
 
 bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 {
-	
+
 	DamageOutput = CanBeDamaged(DamageInfo.ShouldDamageInvincible, DamageInfo.CanBeBlocked);
 	if (DamageOutput == ECanBeDamaged::ECanBeDamaged_BlockedDamage)
 	{

@@ -55,10 +55,10 @@ public:
 	UFUNCTION()
 	virtual void EmptyHitActorsArray() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void StartMeleeAttackCollisions() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void EndMeleeAttackCollisions() override;
 
 	UFUNCTION()

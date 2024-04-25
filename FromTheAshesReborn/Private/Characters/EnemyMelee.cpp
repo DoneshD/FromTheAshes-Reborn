@@ -76,11 +76,14 @@ void AEnemyMelee::EmptyHitActorsArray()
 
 void AEnemyMelee::StartMeleeAttackCollisions()
 {
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyMelee::StartMeleeAttackCollisions()"));
+
 	MeleeAttackLogicComponent->StartMeleeAttackCollisions();
 }
 
 void AEnemyMelee::EndMeleeAttackCollisions()
 {
+
 	MeleeAttackLogicComponent->EndMeleeAttackCollisions();
 }
 
@@ -91,6 +94,7 @@ bool AEnemyMelee::MeleeWeaponSphereTrace(FVector StartLocation, FVector EndLocat
 
 void AEnemyMelee::MeleeTraceCollisions()
 {
+
 	MeleeAttackLogicComponent->MeleeTraceCollisions();
 }
 
