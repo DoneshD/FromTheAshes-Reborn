@@ -118,6 +118,7 @@ TObjectPtr<UArrowComponent> UPositionalWarpingComponent::GetPositionalArrow(EFac
 
 EFacingDirection UPositionalWarpingComponent::GetFacingDirection(FVector FacingLocation)
 {
+
 	AFTACharacter* OwningCharacter = Cast<AFTACharacter>(GetOwner());
 
 	TMap<float, EFacingDirection> DistanceDirectionMap;

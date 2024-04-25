@@ -34,6 +34,12 @@ public:
 	virtual bool TakeDamage(FDamageInfo DamageInfo) = 0;
 
 	UFUNCTION()
+	virtual void HandleDeath() = 0;
+
+	UFUNCTION()
+	virtual void HandleHitReaction(FDamageInfo DamageInfo) = 0;
+
+	UFUNCTION()
 	virtual bool ReserveAttackToken(int Amount) = 0;
 
 	UFUNCTION()

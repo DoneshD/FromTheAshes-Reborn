@@ -78,7 +78,6 @@ void UBTTask_MoveToStrafePoint::ReachedLocation(FAIRequestID RequestID, const FP
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("FinishLatentTask(*OwnerComp, EBTNodeResult::Failed"));
             FinishLatentTask(*OwnerComp, EBTNodeResult::Failed);
         }
     }

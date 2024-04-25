@@ -353,6 +353,12 @@ public:
 	UFUNCTION()
 	virtual void ReturnAttackToken(int Amount) override;
 
+	UFUNCTION()
+	virtual void HandleDeath() override;
+
+	UFUNCTION()
+	virtual void HandleHitReaction(FDamageInfo DamageInfo) override;
+
 	//Melee Combatant Interface
 
 	UFUNCTION()

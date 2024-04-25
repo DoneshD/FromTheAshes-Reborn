@@ -74,8 +74,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget);
 
-	void SetStateAsHostile();
-
 	void SetStateAsInvestigating(FVector Location);
 
 	void SetStateAsFrozen();

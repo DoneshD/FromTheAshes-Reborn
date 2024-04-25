@@ -5,6 +5,8 @@
 #include "DamageSystem/DamageSystem.h"
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "BrainComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "AIController.h"
 
 AEnemyBase::AEnemyBase()
@@ -29,7 +31,7 @@ void AEnemyBase::BeginPlay()
 		}
 	}
 
-	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeathReaction);
+	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
 
 }
@@ -37,12 +39,6 @@ void AEnemyBase::BeginPlay()
 void AEnemyBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//not good!!!!!!!
-	if (AICEnemyBase->AttackTarget)
-	{
-		//SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), AICEnemyBase->AttackTarget->GetActorLocation()));
-	}
 
 }
 
@@ -131,11 +127,9 @@ bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
 
 void AEnemyBase::AttackEnd(AActor* AttackTarget)
 {
-
 	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
 	if (DamagableInterface)
 	{
-
 		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
 		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
 	}
@@ -146,9 +140,13 @@ void AEnemyBase::FinishLightMeleeAttack()
 	OnAttackEnd.Execute();
 }
 
-void AEnemyBase::HandleDeathReaction()
+void AEnemyBase::HandleDeath()
 {
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	AICEnemyBase->GetBrainComponent()->StopLogic(TEXT(""));
 	PlayAnimMontage(DeathReaction);
+	AICEnemyBase->SetStateAsDead();
 }
 
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
@@ -157,11 +155,6 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 	AICEnemyBase->SetStateAsFrozen();
 
 	UAnimMontage* HitReactionMontage = nullptr;
-
-	if (DamageSystemComponent->CurrentHealth < 0)
-	{
-
-	}
 
 	switch (DamageInfo.FacingDirection)
 	{
@@ -207,19 +200,8 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 	}
 }
 
-void AEnemyBase::OnMontageCompleted(UAnimMontage* Montage, bool bInterrupted)
-{
-	AICEnemyBase->SetStateAsAttacking(AICEnemyBase->AttackTarget, true);
-}
-
-void AEnemyBase::OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
-{
-
-}
-
 void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 {
-
 	if (ReservedAttackTokensMap.Find(AttackTarget))
 	{
 		Amount += ReservedAttackTokensMap[AttackTarget];
@@ -228,102 +210,3 @@ void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 
 	ReservedAttackTokensMap.Add(AttackTarget, Amount);
 }
-
-EHitDirection AEnemyBase::GetHitEnemyDirection(FVector HitLocation)
-{
-	TArray<float> DistanceArray;
-	float ClosestArrowDistance = 1000.0f;
-	int ClosestArrowIndex = 0;
-
-	DistanceArray.Add(FVector::Dist(HitLocation, LeftArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, RightArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, FrontArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, BackArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, FrontLeftArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, FrontRightArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, BackLeftArrow->GetComponentLocation()));
-	DistanceArray.Add(FVector::Dist(HitLocation, BackRightArrow->GetComponentLocation()));
-
-	for (const float& EachArrowDistance : DistanceArray)
-	{
-		if (EachArrowDistance < ClosestArrowDistance)
-		{
-			ClosestArrowDistance = EachArrowDistance;
-			ClosestArrowIndex = DistanceArray.Find(EachArrowDistance);
-		}
-	}
-	switch (ClosestArrowIndex)
-	{
-	case 0:
-		return EHitDirection::EHitDirection_Left;
-
-	case 1:
-		return EHitDirection::EHitDirection_Right;
-
-	case 2:
-		return EHitDirection::EHitDirection_Front;
-
-	case 3:
-		return EHitDirection::EHitDirection_Back;
-
-	case 4:
-		return EHitDirection::EHitDirection_FrontLeft;
-
-	case 5:
-		return EHitDirection::EHitDirection_FrontRight;
-
-	case 6:
-		return EHitDirection::EHitDirection_BackLeft;
-
-	case 7:
-		return EHitDirection::EHitDirection_BackRight;
-
-	default:
-		break;
-	}
-	return EHitDirection::EHitDirection_None;
-}
-
-void AEnemyBase::UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams)
-{
-
-}
-
-void AEnemyBase::ResetWarpTarget()
-{
-
-}
-
-TObjectPtr<UArrowComponent> AEnemyBase::GetPositionArrow(EHitDirection HitDirection)
-{
-	switch (HitDirection)
-	{
-	case EHitDirection::EHitDirection_Left:
-		return LeftArrow;
-
-	case EHitDirection::EHitDirection_Right:
-		return RightArrow;
-
-	case EHitDirection::EHitDirection_Front:
-		return FrontArrow;
-
-	case EHitDirection::EHitDirection_Back:
-		return BackArrow;
-
-	case EHitDirection::EHitDirection_FrontLeft:
-		return FrontLeftArrow;
-
-	case EHitDirection::EHitDirection_FrontRight:
-		return FrontRightArrow;
-
-	case EHitDirection::EHitDirection_BackLeft:
-		return BackLeftArrow;
-
-	case EHitDirection::EHitDirection_BackRight:
-		return BackRightArrow;
-
-	default:
-		return FrontArrow;
-	}
-}
-

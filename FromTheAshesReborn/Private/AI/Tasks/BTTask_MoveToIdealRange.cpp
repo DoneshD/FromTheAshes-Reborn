@@ -57,7 +57,6 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
         FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
         return EBTNodeResult::InProgress;
     }
-    UE_LOG(LogTemp, Warning, TEXT("EBTNodeResult::Failed"));
 
     return EBTNodeResult::Failed;
 }

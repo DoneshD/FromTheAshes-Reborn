@@ -667,6 +667,16 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 	DamageSystemComponent->ReturnAttackTokens(Amount);
 }
 
+void APlayableCharacter::HandleDeath()
+{
+
+}
+
+void APlayableCharacter::HandleHitReaction(FDamageInfo DamageInfo)
+{
+
+}
+
 AMeleeWeapon* APlayableCharacter::GetLeftWeapon()
 {
 	return MeleeWeapon_L;

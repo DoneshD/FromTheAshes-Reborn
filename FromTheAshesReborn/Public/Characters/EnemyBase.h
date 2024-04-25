@@ -6,7 +6,6 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
-#include "Interfaces/MotionWarpingInterface.h"
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
@@ -15,8 +14,7 @@ class AIControllerEnemyBase;
 class UArrowComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface, 
-	public IMotionWarpingInterface
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
 {
 	GENERATED_BODY()
 
@@ -68,13 +66,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
 
-	void HandleDeathReaction();
+	//HERE!
+	UFUNCTION()
+	virtual void HandleDeath() override;
 
-	void HandleHitReaction(FDamageInfo DamageInfo);
-
-	void OnMontageCompleted(UAnimMontage* Montage, bool bInterrupted);
-
-	void OnMontageInterrupted(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+	virtual void HandleHitReaction(FDamageInfo DamageInfo) override;
 
 	//Damagable Interface functions
 
@@ -122,17 +119,5 @@ public:
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
 
-	//Motion Warping Interface
-
-	UFUNCTION(BlueprintCallable)
-	virtual void UpdateWarpTarget(FMotionWarpingTarget& MotionWarpingTargetParams) override;
-
-	UFUNCTION()
-	virtual void ResetWarpTarget() override;
-
-	virtual TObjectPtr<UArrowComponent> GetPositionArrow(EHitDirection HitDirection) override;
-
-	UFUNCTION()
-	virtual EHitDirection GetHitEnemyDirection(FVector HitLocation) override;
 
 };

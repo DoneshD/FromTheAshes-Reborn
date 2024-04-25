@@ -9,8 +9,6 @@
 #include "Navigation/CrowdFollowingComponent.h"
 //cheeky for now
 #include "Interfaces/DashingCombatantInterface.h"
-//Not good
-#include "Characters/PlayableCharacter.h"
 #include "Characters/EnemyBase.h"
 
 AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
@@ -45,7 +43,6 @@ AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectI
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated);
 
-	
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
@@ -79,6 +76,7 @@ void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& Upda
 		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
 		if (OutSightStimuliInfo.WasSuccessfullySensed())
 		{
+			//temporary
 			IDashingCombatantInterface* PlayableCharacter = Cast<IDashingCombatantInterface>(Actor);
 			if (PlayableCharacter)
 			{
@@ -141,11 +139,6 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	}
 }
 
-void AAIControllerEnemyBase::SetStateAsHostile()
-{
-	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Hostile));
-}
-
 void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)
 {
 	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Investigating));
@@ -154,7 +147,6 @@ void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)
 
 void AAIControllerEnemyBase::SetStateAsFrozen()
 {
-	UE_LOG(LogTemp, Warning, TEXT("SetStateAsFrozen"));
 	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Frozen));
 }
 

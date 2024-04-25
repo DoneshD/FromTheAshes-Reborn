@@ -190,7 +190,6 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 		}
 	}
 
-
 	bool bRightSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
 
 	for (auto& CurrentHit : Hits)

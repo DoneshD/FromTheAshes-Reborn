@@ -53,7 +53,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("RequestResult failed"));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 			return EBTNodeResult::Failed;
 		}

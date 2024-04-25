@@ -19,7 +19,9 @@ void UDamageSystem::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 
 ECanBeDamaged UDamageSystem::CanBeDamaged(bool ShouldDamageInvincible, bool CanBeBlocked)
 {
-	if (!IsDead && ShouldDamageInvincible || !IsInvincible)
+	//implement later
+	//if (!IsDead && ShouldDamageInvincible || !IsInvincible)
+	if (!IsDead)
 	{
 		if (IsBlocking && CanBeBlocked)
 		{
@@ -62,11 +64,9 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 	else if (DamageOutput == ECanBeDamaged::ECanBeDamaged_DoDamage)
 	{
 		CurrentHealth -= DamageInfo.DamageAmount;
-		UE_LOG(LogTemp, Warning, TEXT("CurrentHealth: %f"), CurrentHealth);
 		if (CurrentHealth <= 0)
 		{
 			IsDead = true;
-			//CallOnDeath
 			OnDeathResponse.Execute();
 			return true;
 		}
