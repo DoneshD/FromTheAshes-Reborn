@@ -64,6 +64,8 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 	else if (DamageOutput == ECanBeDamaged::ECanBeDamaged_DoDamage)
 	{
 		CurrentHealth -= DamageInfo.DamageAmount;
+		UE_LOG(LogTemp, Warning, TEXT("Current Health: %f"), CurrentHealth);
+
 		if (CurrentHealth <= 0)
 		{
 			IsDead = true;

@@ -695,7 +695,6 @@ void APlayableCharacter::EmptyHitActorsArray()
 
 void APlayableCharacter::StartMeleeAttackCollisions()
 {
-	UE_LOG(LogTemp, Warning, TEXT("APlayableCharacter::StartMeleeAttackCollisions()"));
 
 	MeleeAttackLogicComponent->StartMeleeAttackCollisions();
 }
@@ -707,7 +706,6 @@ void APlayableCharacter::EndMeleeAttackCollisions()
 
 void APlayableCharacter::MeleeTraceCollisions()
 {
-	UE_LOG(LogTemp, Warning, TEXT("APlayableCharacter::MeleeTraceCollisions"));
 
 	MeleeAttackLogicComponent->MeleeTraceCollisions();
 }

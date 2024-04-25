@@ -76,7 +76,6 @@ void AEnemyMelee::EmptyHitActorsArray()
 
 void AEnemyMelee::StartMeleeAttackCollisions()
 {
-	UE_LOG(LogTemp, Warning, TEXT("AEnemyMelee::StartMeleeAttackCollisions()"));
 
 	MeleeAttackLogicComponent->StartMeleeAttackCollisions();
 }

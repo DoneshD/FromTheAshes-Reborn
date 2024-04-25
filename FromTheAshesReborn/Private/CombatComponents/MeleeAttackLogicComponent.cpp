@@ -88,8 +88,6 @@ void UMeleeAttackLogicComponent::EmptyHitActorsArray()
 
 void UMeleeAttackLogicComponent::StartMeleeAttackCollisions()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UMeleeAttackLogicComponent::StartMeleeAttackCollisions()"));
-
 	EmptyHitActorsArray();
 	IsActiveCollision = true;
 }
