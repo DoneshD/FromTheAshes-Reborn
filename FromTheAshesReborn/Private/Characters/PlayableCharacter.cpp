@@ -12,6 +12,7 @@
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "MovementComponents/DashSystemComponent.h"
 #include "TargetingComponents/TargetingSystemComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "Weapons/MeleeWeapon.h"
@@ -87,6 +88,9 @@ void APlayableCharacter::BeginPlay()
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
 		MeleeWeapon_R->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
 	}
+
+	DamageSystemComponent->OnDeathResponse.BindUObject(this, &APlayableCharacter::HandleDeath);
+	DamageSystemComponent->OnDamageResponse.AddUObject(this, &APlayableCharacter::HandleHitReaction);
 }
 
 void APlayableCharacter::InputSlowTime()
@@ -670,12 +674,62 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 
 void APlayableCharacter::HandleDeath()
 {
-
+	InputComponent->ClearActionBindings();
+	InputComponent->AxisBindings.Empty();
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//Remove controls
+	PlayAnimMontage(DeathMontage);
 }
 
 void APlayableCharacter::HandleHitReaction(FDamageInfo DamageInfo)
 {
+	GetCharacterMovement()->StopMovementImmediately();
 
+	UAnimMontage* HitReactionMontage = nullptr;
+
+	switch (DamageInfo.FacingDirection)
+	{
+	case EFacingDirection::EFacingDirection_Left:
+		HitReactionMontage = RightHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_Right:
+		HitReactionMontage = LeftHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_Front:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_Back:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_FrontLeft:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_FrontRight:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_BackLeft:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_BackRight:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	default:
+		break;
+	}
+
+	if (HitReactionMontage)
+	{
+		PlayAnimMontage(HitReactionMontage);
+	}
 }
 
 AMeleeWeapon* APlayableCharacter::GetLeftWeapon()
@@ -695,7 +749,6 @@ void APlayableCharacter::EmptyHitActorsArray()
 
 void APlayableCharacter::StartMeleeAttackCollisions()
 {
-
 	MeleeAttackLogicComponent->StartMeleeAttackCollisions();
 }
 

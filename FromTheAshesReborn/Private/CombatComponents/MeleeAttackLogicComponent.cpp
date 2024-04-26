@@ -3,14 +3,12 @@
 #include "DamageSystem/DamageSystem.h"
 #include "MotionWarpingComponent.h"
 #include "Interfaces/DamagableInterface.h"
-#include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatComponents/ComboSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Enums/EMeleeAttackRange.h"
-#include "Interfaces/PositionalWarpingInterface.h"
 #include "Interfaces/PositionalWarpingInterface.h"
 #include "Characters/PlayableCharacter.h"
 
@@ -35,7 +33,6 @@ void UMeleeAttackLogicComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 	if (IsActiveCollision)
 	{
-
 		MeleeTraceCollisions();
 	}
 	
@@ -116,7 +113,7 @@ bool UMeleeAttackLogicComponent::MeleeWeaponSphereTrace(FVector StartLocation, F
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		Hits,
 		true);
 

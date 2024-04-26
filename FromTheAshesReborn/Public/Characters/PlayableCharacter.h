@@ -1,12 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
-#include "Interfaces/MotionWarpingInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
 #include "DamageSystem/DamageSystem.h"
@@ -216,6 +213,23 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> LeftBlinkAnim;
 
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> LeftHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> RightHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> FrontHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> BackHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> KnockbackHitReaction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Reaction Anim")
+	TObjectPtr<UAnimMontage> DeathMontage;
 
 	bool IsSlowTime = false;
 

@@ -27,6 +27,7 @@ public:
 	TMap<AActor*, int> ReservedAttackTokensMap;
 
 	int TokensUsedInCurrentAttack;
+
 	FOnAttackEnd OnAttackEnd;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
@@ -45,7 +46,7 @@ public:
 	TObjectPtr<UAnimMontage> KnockbackHitReaction;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> DeathReaction;
+	TObjectPtr<UAnimMontage> DeathMontage;
 
 protected:
 	virtual void BeginPlay() override;

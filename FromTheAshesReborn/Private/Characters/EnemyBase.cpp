@@ -145,7 +145,7 @@ void AEnemyBase::HandleDeath()
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AICEnemyBase->GetBrainComponent()->StopLogic(TEXT(""));
-	PlayAnimMontage(DeathReaction);
+	PlayAnimMontage(DeathMontage);
 	AICEnemyBase->SetStateAsDead();
 }
 
