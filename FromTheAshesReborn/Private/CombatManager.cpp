@@ -14,15 +14,12 @@ void ACombatManager::BeginPlay()
 	Super::BeginPlay();
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-
 	APlayableCharacter* PlayerCharacter = Cast<APlayableCharacter>(PlayerController->GetPawn());
 
 	AttackTarget = PlayerCharacter;
 
 	IAttackTargetInterface* AttackTargetInterface = Cast<IAttackTargetInterface>(PlayerCharacter);
 	MaxAttackersCount = AttackTargetInterface->GetMaxAttackersCount();
-
-	
 }
 
 void ACombatManager::Tick(float DeltaTime)
@@ -33,18 +30,9 @@ void ACombatManager::Tick(float DeltaTime)
 
 void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 {
-	UE_LOG(LogTemp, Warning, TEXT("IN HandleAttackRequest"));
-	// Check if the Attacker is valid
-	if (Attacker)
+	if (!Attacker)
 	{
-		// Get the name of the attacker and print it
-		FString AttackerName = Attacker->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Attacker's Name: %s"), *AttackerName);
-	}
-	else
-	{
-		// Attacker is not valid
-		UE_LOG(LogTemp, Error, TEXT("Invalid Attacker!"));
+		return;
 	}
 	
 	if (Attacker != AttackTarget)
@@ -68,7 +56,34 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("ERROR: Attacker == AttackTarget"));
 	}
-	
+}
 
+void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HandleDeath!!!"));
+
+	
+	if (!ActorRef)
+	{
+		return;
+	}
+
+	if (ActorRef == AttackTarget)
+	{
+		CurrentAttackers.Append(WaitingAttackers);
+		for (TObjectPtr<AActor>  Attacker : CurrentAttackers)
+		{
+			IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(Attacker);
+			AttackerInterface->Retreat();
+		}
+		CurrentAttackers.Empty();
+		WaitingAttackers.Empty();
+
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ERROR: Attacker == AttackTarget"));
+	}
+	
 }
 

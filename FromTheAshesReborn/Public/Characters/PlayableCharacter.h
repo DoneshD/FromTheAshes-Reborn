@@ -58,6 +58,10 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AMeleeWeapon> MeleeWeaponClass;
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACombatManager> CombatManagerClass;
+
+	ACombatManager* CombatManager;
 
 	//-----------------------------------------Inputs-----------------------------------------------
 
