@@ -27,6 +27,8 @@ public:
 
 	void HandleAttackRequest(TObjectPtr<AActor> Attacker);
 
+	void EngageWaitingAttacker();
+
 	void HandleDeath(TObjectPtr<AActor> ActorRef);
 
 };

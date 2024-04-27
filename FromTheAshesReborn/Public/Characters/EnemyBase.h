@@ -26,6 +26,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACombatManager> CombatManagerClass;
 
+	ACombatManager* CombatManager;
+
 	AAIControllerEnemyBase* AICEnemyBase;
 
 	UPROPERTY(EditAnywhere)

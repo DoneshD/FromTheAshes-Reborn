@@ -32,9 +32,9 @@ void AEnemyBase::BeginPlay()
 		}
 	}
 
-	AActor* MyCombatManager = UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass);
-	ACombatManager* TheCombatManager = Cast<ACombatManager>(MyCombatManager);
-	TheCombatManager->HandleAttackRequest(this);
+	AActor* CombatManagerInstance = UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass);
+	CombatManager = Cast<ACombatManager>(CombatManagerInstance);
+	CombatManager->HandleAttackRequest(this);
 
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
@@ -152,6 +152,8 @@ void AEnemyBase::HandleDeath()
 	AICEnemyBase->GetBrainComponent()->StopLogic(TEXT(""));
 	PlayAnimMontage(DeathMontage);
 	AICEnemyBase->SetStateAsDead();
+	CombatManager->HandleDeath(this);
+
 }
 
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)

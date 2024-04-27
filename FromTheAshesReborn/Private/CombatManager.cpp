@@ -58,11 +58,20 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 	}
 }
 
+void ACombatManager::EngageWaitingAttacker()
+{
+	AActor* WaitingAttacker = WaitingAttackers[0];
+	if (WaitingAttacker)
+	{
+		WaitingAttackers.Remove(WaitingAttacker);
+		CurrentAttackers.AddUnique(WaitingAttacker);
+		IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(WaitingAttacker);
+		AttackerInterface->Attack(AttackTarget);
+	}
+}
+
 void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HandleDeath!!!"));
-
-	
 	if (!ActorRef)
 	{
 		return;
@@ -80,10 +89,23 @@ void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 		WaitingAttackers.Empty();
 
 	}
+	
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ERROR: Attacker == AttackTarget"));
+		UE_LOG(LogTemp, Warning, TEXT("Attacker != AttackTarget"));
+		if (CurrentAttackers.Contains(ActorRef))
+		{
+			CurrentAttackers.Remove(ActorRef);
+			EngageWaitingAttacker();
+		}
+		else
+		{
+			if (WaitingAttackers.Contains(ActorRef))
+			{
+				WaitingAttackers.Remove(ActorRef);
+				EngageWaitingAttacker();
+			}
+		}
 	}
-	
 }
 
