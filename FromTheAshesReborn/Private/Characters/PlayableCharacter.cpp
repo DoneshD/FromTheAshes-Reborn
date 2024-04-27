@@ -788,4 +788,9 @@ void APlayableCharacter::ResetDashWarpToTarget()
 	DashSystemComponent->ResetDashWarpToTarget();
 }
 
+int APlayableCharacter::GetMaxAttackersCount()
+{
+	return 2;
+}
+
 

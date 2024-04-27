@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "CombatManager.h"
 #include "AIController.h"
 
 AEnemyBase::AEnemyBase()
@@ -30,6 +31,10 @@ void AEnemyBase::BeginPlay()
 			}
 		}
 	}
+
+	AActor* MyCombatManager = UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass);
+	ACombatManager* TheCombatManager = Cast<ACombatManager>(MyCombatManager);
+	TheCombatManager->HandleAttackRequest(this);
 
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
@@ -209,4 +214,19 @@ void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
 	}
 
 	ReservedAttackTokensMap.Add(AttackTarget, Amount);
+}
+
+void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
+{
+	AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
+}
+
+void AEnemyBase::Wait(TObjectPtr<AActor> AttackTarget)
+{
+	AICEnemyBase->SetStateAsWaiting(AttackTarget);
+}
+
+void AEnemyBase::Retreat()
+{
+	AICEnemyBase->SetStateAsPassive();
 }

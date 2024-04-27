@@ -70,7 +70,7 @@ void AAIControllerEnemyBase::BeginPlay()
 
 void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-
+	/*
 	for (AActor* Actor : UpdatedActors)
 	{
 		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
@@ -96,6 +96,7 @@ void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& Upda
 			HandleSensedDamage(Actor);
 		}
 	}
+	*/
 }
 
 void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
@@ -137,6 +138,12 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	{
 		SetStateAsPassive();
 	}
+}
+//Temporary
+void AAIControllerEnemyBase::SetStateAsWaiting(AActor* IncomingAttackTarget)
+{
+	UE_LOG(LogTemp, Warning, TEXT("SetStateAsWaiting"));
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Waiting));
 }
 
 void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)

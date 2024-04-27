@@ -6,6 +6,8 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
+#include "../AttackerInterface.h"
+#include "CombatManager.h"
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
@@ -14,11 +16,16 @@ class AIControllerEnemyBase;
 class UArrowComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface,
+	public IAttackerInterface
 {
 	GENERATED_BODY()
 
 public:
+	// HMmmmmmm
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACombatManager> CombatManagerClass;
+
 	AAIControllerEnemyBase* AICEnemyBase;
 
 	UPROPERTY(EditAnywhere)
@@ -115,5 +122,13 @@ public:
 
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
+
+	//Attacker Interface 
+
+	virtual void Attack(TObjectPtr<AActor> AttackTarget) override;
+
+	virtual void Wait(TObjectPtr<AActor> AttackTarget) override;
+
+	virtual void Retreat() override;
 
 };
