@@ -6,8 +6,8 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
-#include "../AttackerInterface.h"
 #include "CombatManager.h"
+#include "GameModes/FTAGameStateBase.h"
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
@@ -16,13 +16,14 @@ class AIControllerEnemyBase;
 class UArrowComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface,
-	public IAttackerInterface
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
 {
 	GENERATED_BODY()
 
 public:
-	// HMmmmmmm
+
+	AFTAGameStateBase* FTAGameStateBase;
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACombatManager> CombatManagerClass;
 

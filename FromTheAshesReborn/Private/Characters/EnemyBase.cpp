@@ -7,6 +7,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameModes/FTAGameStateBase.h"
+
 #include "CombatManager.h"
 #include "AIController.h"
 
@@ -32,9 +34,10 @@ void AEnemyBase::BeginPlay()
 		}
 	}
 
-	AActor* CombatManagerInstance = UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass);
-	CombatManager = Cast<ACombatManager>(CombatManagerInstance);
+	CombatManager = Cast<ACombatManager>(UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass));
 	CombatManager->HandleAttackRequest(this);
+
+	FTAGameStateBase = Cast<AFTAGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
 
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
@@ -152,8 +155,7 @@ void AEnemyBase::HandleDeath()
 	AICEnemyBase->GetBrainComponent()->StopLogic(TEXT(""));
 	PlayAnimMontage(DeathMontage);
 	AICEnemyBase->SetStateAsDead();
-	CombatManager->HandleDeath(this);
-
+	//CombatManager->HandleDeath(this);
 }
 
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
