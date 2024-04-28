@@ -155,7 +155,7 @@ void AEnemyBase::HandleDeath()
 	AICEnemyBase->GetBrainComponent()->StopLogic(TEXT(""));
 	PlayAnimMontage(DeathMontage);
 	AICEnemyBase->SetStateAsDead();
-	//CombatManager->HandleDeath(this);
+	CombatManager->HandleDeath(this);
 }
 
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)

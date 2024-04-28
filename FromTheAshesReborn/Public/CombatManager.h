@@ -14,8 +14,8 @@ public:
 	int MaxAttackersCount = 0;
 
 	TObjectPtr<AActor> AttackTarget;
-	TArray<TObjectPtr<AActor>> CurrentAttackers;
-	TArray<TObjectPtr<AActor>> WaitingAttackers;
+	TArray<TObjectPtr<AActor>> Attackers;
+	TArray<TObjectPtr<AActor>> Oribters;
 
 public:	
 
@@ -27,7 +27,9 @@ public:
 
 	void HandleAttackRequest(TObjectPtr<AActor> Attacker);
 
-	void EngageWaitingAttacker();
+	void EngageAttacker();
+
+	void EngageOrbiter();
 
 	void HandleDeath(TObjectPtr<AActor> ActorRef);
 

@@ -139,11 +139,21 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 		SetStateAsPassive();
 	}
 }
-//Temporary
+
 void AAIControllerEnemyBase::SetStateAsWaiting(AActor* IncomingAttackTarget)
 {
-	UE_LOG(LogTemp, Warning, TEXT("SetStateAsWaiting"));
 	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Waiting));
+
+	if (IncomingAttackTarget)
+	{
+		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, IncomingAttackTarget);
+		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Waiting));
+		AttackTarget = IncomingAttackTarget;
+	}
+	else
+	{
+		SetStateAsPassive();
+	}
 }
 
 void AAIControllerEnemyBase::SetStateAsInvestigating(FVector Location)

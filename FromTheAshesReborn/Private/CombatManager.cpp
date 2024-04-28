@@ -1,7 +1,7 @@
 #include "CombatManager.h"
 #include "AttackTargetInterface.h"
 #include "Characters/PlayableCharacter.h"
-#include "AttackerInterface.h"
+#include "Interfaces/AIEnemyInterface.h"
 
 ACombatManager::ACombatManager()
 {
@@ -37,19 +37,19 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 	
 	if (Attacker != AttackTarget)
 	{
-		if (CurrentAttackers.Num() < MaxAttackersCount)
+		if (Attackers.Num() < MaxAttackersCount)
 		{
-			CurrentAttackers.AddUnique(Attacker);
-			IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(Attacker);
-			AttackerInterface->Attack(AttackTarget);
+			Attackers.AddUnique(Attacker);
+			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
+			AIEnemyInterface->Attack(AttackTarget);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CurrentAttackers.Num() > MaxAttackersCount, Adding to WaitingArray"));
+			UE_LOG(LogTemp, Warning, TEXT("CurrentAttackers.Num() > MaxAttackersCount, Adding to Orbiters"));
 
-			WaitingAttackers.AddUnique(Attacker);
-			IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(Attacker);
-			AttackerInterface->Wait(AttackTarget);
+			Oribters.AddUnique(Attacker);
+			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
+			AIEnemyInterface->Wait(AttackTarget);
 		}
 	}
 	else
@@ -58,17 +58,28 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 	}
 }
 
-void ACombatManager::EngageWaitingAttacker()
+void ACombatManager::EngageOrbiter()
 {
-	AActor* WaitingAttacker = WaitingAttackers[0];
-	if (WaitingAttacker)
+
+	
+	AActor* Oribter = Oribters[0];
+	if (Oribter)
 	{
-		WaitingAttackers.Remove(WaitingAttacker);
-		CurrentAttackers.AddUnique(WaitingAttacker);
-		IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(WaitingAttacker);
-		AttackerInterface->Attack(AttackTarget);
+		UE_LOG(LogTemp, Warning, TEXT("Keean Dimitri Smith"));
+
+		Oribters.Remove(Oribter);
+		Attackers.AddUnique(Oribter);
+		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Oribter);
+		AIEnemyInterface->Attack(AttackTarget);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("else Sth"));
+
+	}
+	
 }
+
 
 void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 {
@@ -79,31 +90,30 @@ void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 
 	if (ActorRef == AttackTarget)
 	{
-		CurrentAttackers.Append(WaitingAttackers);
-		for (TObjectPtr<AActor>  Attacker : CurrentAttackers)
+		Attackers.Append(Oribters);
+		for (TObjectPtr<AActor>  Attacker : Attackers)
 		{
-			IAttackerInterface* AttackerInterface = Cast<IAttackerInterface>(Attacker);
-			AttackerInterface->Retreat();
+			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
+			AIEnemyInterface->Retreat();
 		}
-		CurrentAttackers.Empty();
-		WaitingAttackers.Empty();
-
+		Attackers.Empty();
+		Oribters.Empty();
 	}
 	
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Attacker != AttackTarget"));
-		if (CurrentAttackers.Contains(ActorRef))
+		if (Attackers.Contains(ActorRef))
 		{
-			CurrentAttackers.Remove(ActorRef);
-			EngageWaitingAttacker();
+			Attackers.Remove(ActorRef);
+			EngageOrbiter();
 		}
 		else
 		{
-			if (WaitingAttackers.Contains(ActorRef))
+			if (Oribters.Contains(ActorRef))
 			{
-				WaitingAttackers.Remove(ActorRef);
-				EngageWaitingAttacker();
+				Oribters.Remove(ActorRef);
+				EngageOrbiter();
 			}
 		}
 	}
