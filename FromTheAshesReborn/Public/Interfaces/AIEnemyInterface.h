@@ -43,5 +43,5 @@ public:
 
 	virtual void Attack(TObjectPtr<AActor> AttackTarget) = 0;
 
-	virtual void Wait(TObjectPtr<AActor> AttackTarget) = 0;
+	virtual void Orbit(TObjectPtr<AActor> AttackTarget) = 0;
 };

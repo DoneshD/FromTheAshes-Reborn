@@ -30,9 +30,9 @@ void AEnemyMelee::BeginPlay()
 void AEnemyMelee::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, float& OutOrbitRadius)
 {
 	Super::GetIdealRange(OutAttackRadius, OutDefendRadius, OutOrbitRadius);
+
 	OutAttackRadius = 50.0f;
 	OutDefendRadius = 600.0f;
-	//OutOrbitRadius = 1500.0f;
 }
 
 float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)

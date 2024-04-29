@@ -141,14 +141,14 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	}
 }
 
-void AAIControllerEnemyBase::SetStateAsWaiting(AActor* IncomingAttackTarget)
+void AAIControllerEnemyBase::SetStateAsOrbiting(AActor* IncomingAttackTarget)
 {
-	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Waiting));
+	GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Orbiting));
 
 	if (IncomingAttackTarget)
 	{
 		GetBlackboardComponent()->SetValueAsObject(AttackTargetKeyName, IncomingAttackTarget);
-		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Waiting));
+		GetBlackboardComponent()->SetValueAsEnum(StateKeyName, static_cast<uint8>(EAIStates::EAIStates_Orbiting));
 		AttackTarget = IncomingAttackTarget;
 	}
 	else

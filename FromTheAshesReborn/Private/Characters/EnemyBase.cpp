@@ -99,7 +99,6 @@ float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
 void AEnemyBase::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, float& OutOrbitRadius)
 {
 	OutOrbitRadius = 1500.0f;
-
 }
 
 void AEnemyBase::JumpToDestination(FVector Destination)
@@ -226,9 +225,9 @@ void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
 	AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
 }
 
-void AEnemyBase::Wait(TObjectPtr<AActor> AttackTarget)
+void AEnemyBase::Orbit(TObjectPtr<AActor> AttackTarget)
 {
-	AICEnemyBase->SetStateAsWaiting(AttackTarget);
+	AICEnemyBase->SetStateAsOrbiting(AttackTarget);
 }
 
 void AEnemyBase::Retreat()

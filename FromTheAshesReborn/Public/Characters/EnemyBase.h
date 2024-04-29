@@ -130,7 +130,7 @@ public:
 
 	virtual void Attack(TObjectPtr<AActor> AttackTarget) override;
 
-	virtual void Wait(TObjectPtr<AActor> AttackTarget) override;
+	virtual void Orbit(TObjectPtr<AActor> AttackTarget) override;
 
 	virtual void Retreat() override;
 

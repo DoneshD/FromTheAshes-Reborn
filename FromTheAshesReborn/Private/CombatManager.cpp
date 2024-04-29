@@ -49,7 +49,7 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 
 			Oribters.AddUnique(Attacker);
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			AIEnemyInterface->Wait(AttackTarget);
+			AIEnemyInterface->Orbit(AttackTarget);
 		}
 	}
 	else
