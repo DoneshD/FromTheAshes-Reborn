@@ -21,7 +21,7 @@ public:
 	virtual float SetMovementSpeed(EMovementSpeed SpeedState) = 0;
 
 	UFUNCTION()
-	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) = 0;
+	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, float& OutOrbitRadius) = 0;
 
 	UFUNCTION()
 	virtual void JumpToDestination(FVector Destination) = 0;

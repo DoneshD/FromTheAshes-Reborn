@@ -109,7 +109,7 @@ public:
 	virtual float SetMovementSpeed(EMovementSpeed SpeedState) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, float& OutOrbitRadius) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void JumpToDestination(FVector Destination) override;

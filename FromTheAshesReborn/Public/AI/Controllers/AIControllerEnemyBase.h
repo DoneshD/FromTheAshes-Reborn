@@ -25,12 +25,14 @@ public:
 	FName PointOfInterestKeyName = TEXT("PointOfInterest");
 	FName AttackRadiusKeyName = TEXT("AttackRadius");
 	FName DefendRadiusKeyName = TEXT("DefendRadius");
+	FName OrbitRadiusKeyName = TEXT("OrbitRadius");
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<AActor> AttackTarget;
 
 	float AttackRadius = 0.0f;
 	float DefendRadius = 0.0f;
+	float OrbitRadius = 0.0f;
 
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 

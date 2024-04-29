@@ -93,10 +93,7 @@ void ACombatManager::EngageOrbiter()
 			UE_LOG(LogTemp, Warning, TEXT("Invalid index"));
 		}
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Oribiters left"));
-	}
+
 }
 
 

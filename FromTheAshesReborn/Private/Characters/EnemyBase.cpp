@@ -96,9 +96,10 @@ float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
 	return 0.0f;
 }
 
-void AEnemyBase::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius)
+void AEnemyBase::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, float& OutOrbitRadius)
 {
-	
+	OutOrbitRadius = 1500.0f;
+
 }
 
 void AEnemyBase::JumpToDestination(FVector Destination)

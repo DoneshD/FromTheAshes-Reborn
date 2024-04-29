@@ -55,9 +55,10 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 		{
 			RunBehaviorTree(Enemy->BehaviorTree);
 			SetStateAsPassive();
-			Enemy->GetIdealRange(AttackRadius, DefendRadius);
+			Enemy->GetIdealRange(AttackRadius, DefendRadius, OrbitRadius);
 			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
 			GetBlackboardComponent()->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
+			GetBlackboardComponent()->SetValueAsFloat(OrbitRadiusKeyName, OrbitRadius);
 		}
 	}
 }

@@ -38,7 +38,7 @@ public:
 
 	//Enemy Interface functions
 
-	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius) override;
+	virtual void GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, float& OutOrbitRadius) override;
 
 	virtual float SetMovementSpeed(EMovementSpeed SpeedState) override;
 
