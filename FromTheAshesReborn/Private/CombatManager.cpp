@@ -60,24 +60,43 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 
 void ACombatManager::EngageOrbiter()
 {
-
-	
-	AActor* Oribter = Oribters[0];
-	if (Oribter)
+	if (Oribters.Num() > 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Keean Dimitri Smith"));
+		int RemoveIndex = FMath::RandRange(0, Oribters.Num() - 1);
 
-		Oribters.Remove(Oribter);
-		Attackers.AddUnique(Oribter);
-		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Oribter);
-		AIEnemyInterface->Attack(AttackTarget);
+		if (Oribters.IsValidIndex(RemoveIndex))
+		{
+			AActor* Oribiter = Oribters[RemoveIndex];
+
+			Oribters.RemoveAt(RemoveIndex);
+
+			if (Oribiter)
+			{
+				Attackers.AddUnique(Oribiter);
+				IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Oribiter);
+				if (AIEnemyInterface)
+				{
+					AIEnemyInterface->Attack(AttackTarget);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Oribiter does not implement IAIEnemyInterface"));
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Oribiter is null"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid index"));
+		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("else Sth"));
-
+		UE_LOG(LogTemp, Warning, TEXT("No Oribiters left"));
 	}
-	
 }
 
 
@@ -102,7 +121,6 @@ void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 	
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attacker != AttackTarget"));
 		if (Attackers.Contains(ActorRef))
 		{
 			Attackers.Remove(ActorRef);
