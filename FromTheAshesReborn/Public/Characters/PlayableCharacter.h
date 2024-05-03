@@ -31,6 +31,10 @@ class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public I
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UStaticMeshComponent> LockOnSphere;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
 

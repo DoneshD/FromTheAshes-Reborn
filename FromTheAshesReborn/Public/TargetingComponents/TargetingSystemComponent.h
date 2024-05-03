@@ -22,8 +22,9 @@ public:
 	TObjectPtr<AActor> HardTarget;
 	TObjectPtr<AActor> SoftTarget;
 
+	FVector MidPoint;
 
-protected:
+	float Radius;
 
 public:	
 
@@ -34,5 +35,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void HardLockOn();
+
+	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
+
+	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
 		
 };

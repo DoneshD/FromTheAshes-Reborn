@@ -16,7 +16,7 @@
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "Weapons/MeleeWeapon.h"
-
+#include "LockOnSphere.h"
 #include "MotionWarpingComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -25,8 +25,13 @@
 
 APlayableCharacter::APlayableCharacter()
 {
+
+	LockOnSphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LockOnSphere"));
+	LockOnSphere->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
-	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->SetupAttachment(LockOnSphere);
+
 	SpringArmComp->TargetArmLength = 400.0f;
 	SpringArmComp->bUsePawnControlRotation = true;
 
