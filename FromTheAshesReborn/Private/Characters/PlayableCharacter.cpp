@@ -16,7 +16,6 @@
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "Weapons/MeleeWeapon.h"
-#include "LockOnSphere.h"
 #include "MotionWarpingComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -76,6 +75,11 @@ APlayableCharacter::APlayableCharacter()
 void APlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (LockOnSphere)
+	{
+		InitialSphereLocation = LockOnSphere->GetRelativeLocation();
+	}
 
 	if (RotationCurve)
 	{

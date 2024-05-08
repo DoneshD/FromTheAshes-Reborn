@@ -36,6 +36,8 @@ public:
 
 	void HardLockOn();
 
+	void DisableLockOn();
+
 	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
 
 	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);

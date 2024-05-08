@@ -144,6 +144,8 @@ public:
 	TObjectPtr<AActor> HardTarget;
 	TObjectPtr<AActor> SoftTarget;
 
+	FVector InitialSphereLocation;
+
 	//-----------------------------------------Timers----------------------------------------------
 
 	FTimerHandle HeavyAttackPauseHandle;

@@ -23,7 +23,7 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	
 	if (IsTargeting && HardTarget)
 	{
-		if (PlayableCharacter->GetDistanceTo(HardTarget) < 2000.f)
+		if (PlayableCharacter->GetDistanceTo(HardTarget) < 1000.0f)
 		{
 
 			if (PlayableCharacter->GetCharacterMovement()->IsFalling() || PlayableCharacter->GetCharacterMovement()->IsFlying())
@@ -34,22 +34,19 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			Radius = (CalculateDistance(GetOwner()->GetActorLocation(), HardTarget->GetActorLocation())) / 2;
 
 			PlayableCharacter->LockOnSphere->SetWorldLocation(MidPoint);
-			PlayableCharacter->SpringArmComp->TargetArmLength = Radius + 300;
-
+			PlayableCharacter->SpringArmComp->TargetArmLength = Radius + 300.0f;
 
 			FVector ResultVector(0, 0, 0);
 			FVector TargetLocation = HardTarget->GetActorLocation() - ResultVector;
 			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TargetLocation);
-			FRotator InterpRot = FMath::RInterpTo(PlayableCharacter->GetControlRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
+			FRotator InterpRot = FMath::RInterpTo(PlayableCharacter->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
 
 			//PlayableCharacter->GetController()->SetControlRotation(InterpRot);
-			PlayableCharacter->SetActorRotation(TargetRotation);
+			PlayableCharacter->SetActorRotation(InterpRot);
 		}
 		else
 		{
-			IsTargeting = false;
-			HardTarget = NULL;
-			PlayableCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
+			DisableLockOn();
 		}
 	}
 	
@@ -63,7 +60,7 @@ void UTargetingSystemComponent::HardLockOn()
 		if (UCameraComponent* FollowCamera = PlayableCharacter->CameraComp)
 		{
 			FVector CameraVector = FollowCamera->GetForwardVector();
-			FVector EndLocation = (CameraVector * 2000.f) + PlayableCharacter->GetActorLocation();
+			FVector EndLocation = (CameraVector * 1000.0f) + PlayableCharacter->GetActorLocation();
 			FHitResult OutHit;
 
 			TArray<AActor*> ActorArray;
@@ -96,10 +93,17 @@ void UTargetingSystemComponent::HardLockOn()
 	}
 	else
 	{
-		IsTargeting = false;
-		HardTarget = NULL;
-		PlayableCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
+		DisableLockOn();
 	}
+}
+
+void UTargetingSystemComponent::DisableLockOn()
+{
+	IsTargeting = false;
+	HardTarget = NULL;
+	PlayableCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
+	PlayableCharacter->LockOnSphere->SetRelativeLocation(PlayableCharacter->InitialSphereLocation);
+	PlayableCharacter->SpringArmComp->TargetArmLength = 400.0f;
 }
 
 FVector UTargetingSystemComponent::CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation)
