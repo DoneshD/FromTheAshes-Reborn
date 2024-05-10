@@ -8,7 +8,7 @@
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameModes/FTAGameStateBase.h"
-
+#include "Interfaces/EventManagerInterface.h"
 #include "EventManagers/CombatManager.h"
 #include "AIController.h"
 
@@ -37,7 +37,11 @@ void AEnemyBase::BeginPlay()
 	CombatManager = Cast<ACombatManager>(UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass));
 	CombatManager->HandleAttackRequest(this);
 
-	FTAGameStateBase = Cast<AFTAGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
+	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameState(GetWorld()));
+	EventManagerInterface->PublishEnemySpawned();
+
+	//FTAGameStateBase = Cast<AFTAGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
+	//FTAGameStateBase->OnEnemySpawned.Execute();
 
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
@@ -158,7 +162,11 @@ void AEnemyBase::HandleDeath()
 
 	PlayAnimMontage(DeathMontage);
 
-	FTAGameStateBase->OnEnemyDeath.Execute();
+	//FTAGameStateBase->OnEnemyDeath.Execute();
+
+	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameState(GetWorld()));
+	EventManagerInterface->PublishEnemyDeath();
+
 	CombatManager->HandleDeath(this);
 }
 
