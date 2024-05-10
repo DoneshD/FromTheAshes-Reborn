@@ -9,7 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameModes/FTAGameStateBase.h"
 
-#include "CombatManager.h"
+#include "EventManagers/CombatManager.h"
 #include "AIController.h"
 
 AEnemyBase::AEnemyBase()
@@ -152,9 +152,13 @@ void AEnemyBase::HandleDeath()
 {
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	AICEnemyBase->GetBrainComponent()->StopLogic(TEXT(""));
-	PlayAnimMontage(DeathMontage);
 	AICEnemyBase->SetStateAsDead();
+
+	PlayAnimMontage(DeathMontage);
+
+	FTAGameStateBase->OnEnemyDeath.Execute();
 	CombatManager->HandleDeath(this);
 }
 

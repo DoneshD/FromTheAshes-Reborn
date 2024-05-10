@@ -4,7 +4,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "FTAGameStateBase.generated.h"
 
-DECLARE_DELEGATE(FOnEnemyDeath);
+DECLARE_DELEGATE(FOnEnemyDeath)
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTAGameStateBase : public AGameStateBase
@@ -16,6 +16,5 @@ public:
 	FOnEnemyDeath OnEnemyDeath;
 
 public:
-
 
 };

@@ -10,7 +10,7 @@
 #include "DamageSystem/DamageInfo.h"
 #include "Weapons/MeleeWeapon.h"
 #include "Interfaces/DashingCombatantInterface.h"
-#include "../AttackTargetInterface.h"
+#include "Interfaces/AttackTargetInterface.h"
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 

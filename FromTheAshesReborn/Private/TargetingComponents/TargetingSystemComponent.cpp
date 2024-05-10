@@ -25,24 +25,18 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	{
 		if (PlayableCharacter->GetDistanceTo(HardTarget) < 1000.0f)
 		{
-
-			if (PlayableCharacter->GetCharacterMovement()->IsFalling() || PlayableCharacter->GetCharacterMovement()->IsFlying())
-			{
-				FVector ResultVectorAVector(0, 0, 80.f);
-			}
 			MidPoint = CalculateMidpoint(GetOwner()->GetActorLocation(), HardTarget->GetActorLocation());
 			Radius = (CalculateDistance(GetOwner()->GetActorLocation(), HardTarget->GetActorLocation())) / 2;
 
 			PlayableCharacter->LockOnSphere->SetWorldLocation(MidPoint);
 			PlayableCharacter->SpringArmComp->TargetArmLength = Radius + 300.0f;
 
-			FVector ResultVector(0, 0, 0);
-			FVector TargetLocation = HardTarget->GetActorLocation() - ResultVector;
+			FVector TargetLocation = HardTarget->GetActorLocation();
 			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TargetLocation);
 			FRotator InterpRot = FMath::RInterpTo(PlayableCharacter->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
 
 			//PlayableCharacter->GetController()->SetControlRotation(InterpRot);
-			PlayableCharacter->SetActorRotation(InterpRot);
+			PlayableCharacter->SetActorRotation(TargetRotation);
 		}
 		else
 		{

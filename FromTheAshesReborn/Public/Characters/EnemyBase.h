@@ -6,7 +6,7 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
-#include "CombatManager.h"
+#include "EventManagers/CombatManager.h"
 #include "GameModes/FTAGameStateBase.h"
 #include "EnemyBase.generated.h"
 
@@ -58,13 +58,12 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
 	TObjectPtr<UAnimMontage> DeathMontage;
 
-protected:
-	virtual void BeginPlay() override;
-
-private:
 
 public:
+
 	AEnemyBase();
+
+	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
 

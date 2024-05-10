@@ -1,5 +1,5 @@
-#include "CombatManager.h"
-#include "AttackTargetInterface.h"
+#include "EventManagers/CombatManager.h"
+#include "Interfaces/AttackTargetInterface.h"
 #include "Characters/PlayableCharacter.h"
 #include "Interfaces/AIEnemyInterface.h"
 
