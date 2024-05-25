@@ -40,9 +40,6 @@ void AEnemyBase::BeginPlay()
 	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameState(GetWorld()));
 	EventManagerInterface->PublishEnemySpawned();
 
-	//FTAGameStateBase = Cast<AFTAGameStateBase>(UGameplayStatics::GetGameState(GetWorld()));
-	//FTAGameStateBase->OnEnemySpawned.Execute();
-
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
 
@@ -161,8 +158,6 @@ void AEnemyBase::HandleDeath()
 	AICEnemyBase->SetStateAsDead();
 
 	PlayAnimMontage(DeathMontage);
-
-	//FTAGameStateBase->OnEnemyDeath.Execute();
 
 	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameState(GetWorld()));
 	EventManagerInterface->PublishEnemyDeath();

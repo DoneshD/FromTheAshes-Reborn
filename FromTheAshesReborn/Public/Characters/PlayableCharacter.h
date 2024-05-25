@@ -298,6 +298,12 @@ public:
 
 	//-----------------------------------------Heavy Attacks----------------------------------------
 
+	UFUNCTION(BlueprintCallable, Category = "Heavy Attack")
+	void SpawnLeftWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = "Heavy Attack")
+	void DestroyLeftWeapon();
+
 	void InputHeavyAttack();
 	void HeavyAttack();
 	void PerformHeavyAttack(int HeavyAttackIndex);

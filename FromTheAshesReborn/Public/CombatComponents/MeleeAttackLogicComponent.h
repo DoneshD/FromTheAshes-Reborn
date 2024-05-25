@@ -32,6 +32,8 @@ public:
 
 	bool IsActiveCollision = false;
 
+	bool HasLeftWeapon = false;
+
 public:
 
 	float GetMeleeAttackRange(EMeleeAttackRange AttackRange);

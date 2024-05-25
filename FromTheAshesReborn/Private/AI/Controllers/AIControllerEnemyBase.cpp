@@ -118,7 +118,6 @@ void AAIControllerEnemyBase::SetStateAsPassive()
 
 void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget)
 {
-
 	AActor* NewAttackTarget;
 	if (AttackTarget && UseLastKnownAttackTarget)
 	{

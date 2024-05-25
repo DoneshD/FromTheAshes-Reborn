@@ -18,8 +18,6 @@ void AFTALevelScriptActor::BeginPlay()
 
 void AFTALevelScriptActor::CheckEnemyCount()
 {
-	UE_LOG(LogTemp, Warning, TEXT("OMEGA"));
-
 	EnemiesCount -= 1;
 
 	if (EnemiesCount <= 0)

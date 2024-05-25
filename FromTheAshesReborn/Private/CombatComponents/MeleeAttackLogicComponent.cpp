@@ -132,55 +132,6 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 
 	if (MeleeCombatantInterface)
 	{
-
-		MeshComponentL = MeleeCombatantInterface->GetLeftWeapon()->FindComponentByClass<UStaticMeshComponent>();
-		if (MeshComponentL)
-		{
-			StartLocation = MeshComponentL->GetSocketLocation("Start");
-			EndLocation = MeshComponentL->GetSocketLocation("End");
-		}
-	}
-
-	bool bLeftSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
-
-	for (auto& CurrentHit : Hits)
-	{
-		AActor* HitActor = CurrentHit.GetActor();
-		if (HitActor)
-		{
-			IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
-
-			if (DamagableInterface)
-			{
-				if (!AlreadyHitActors_L.Contains(HitActor))
-				{
-					AlreadyHitActors_L.AddUnique(HitActor);
-					IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(HitActor);
-					if (TargetPositionalWarpingInterface)
-					{
-						EFacingDirection HitReactionDirection = TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation());
-
-						FDamageInfo DamageInfo{
-							10.0f,                               // DamageAmount
-							EDamageType::EDamageType_Melee,      // DamageType
-							EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
-							false,                                // ShouldDamageInvincible
-							false,                                // CanBeBlocked
-							false,                                // CanBeParried
-							false,                                // ShouldForceInterrupt
-							HitReactionDirection        // HitReactionDirection
-						};
-
-						DamagableInterface->TakeDamage(DamageInfo);
-
-					}
-				}
-			}
-		}
-	}
-
-	if (MeleeCombatantInterface)
-	{
 		MeshComponentR = MeleeCombatantInterface->GetRightWeapon()->FindComponentByClass<UStaticMeshComponent>();
 		if (MeshComponentR)
 		{
@@ -225,6 +176,60 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 			}
 		}
 	}
+
+	
+
+	if (HasLeftWeapon)
+	{
+		if (MeleeCombatantInterface)
+		{
+			MeshComponentL = MeleeCombatantInterface->GetLeftWeapon()->FindComponentByClass<UStaticMeshComponent>();
+			if (MeshComponentL)
+			{
+				StartLocation = MeshComponentL->GetSocketLocation("Start");
+				EndLocation = MeshComponentL->GetSocketLocation("End");
+			}
+		}
+		bool bLeftSuccess = MeleeWeaponSphereTrace(StartLocation, EndLocation, Hits);
+
+		for (auto& CurrentHit : Hits)
+		{
+			AActor* HitActor = CurrentHit.GetActor();
+			if (HitActor)
+			{
+				IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
+
+				if (DamagableInterface)
+				{
+					if (!AlreadyHitActors_L.Contains(HitActor))
+					{
+						AlreadyHitActors_L.AddUnique(HitActor);
+						IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(HitActor);
+						if (TargetPositionalWarpingInterface)
+						{
+							EFacingDirection HitReactionDirection = TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation());
+
+							FDamageInfo DamageInfo{
+								10.0f,                               // DamageAmount
+								EDamageType::EDamageType_Melee,      // DamageType
+								EDamageResponse::EDamageResponse_HitReaction,  // DamageResponse
+								false,                                // ShouldDamageInvincible
+								false,                                // CanBeBlocked
+								false,                                // CanBeParried
+								false,                                // ShouldForceInterrupt
+								HitReactionDirection        // HitReactionDirection
+							};
+
+							DamagableInterface->TakeDamage(DamageInfo);
+
+						}
+					}
+				}
+			}
+		}
+	}
+
+
 }
 
 void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange AttackRange, bool HasInput)
