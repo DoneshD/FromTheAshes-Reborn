@@ -23,6 +23,7 @@ class UComboSystemComponent;
 class UMeleeAttackLogicComponent;
 class UDashSystemComponent;
 class UTargetingSystemComponent;
+class UGroundedComboStringComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, 
@@ -45,6 +46,9 @@ public:
 	TObjectPtr<UComboSystemComponent> ComboSystemComponent;
 
 	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UGroundedComboStringComponent> GroundedComboStringComponent;
+
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UMeleeAttackLogicComponent> MeleeAttackLogicComponent;
 
 	UPROPERTY(VisibleAnywhere)
@@ -60,7 +64,10 @@ public:
 	AMeleeWeapon* MeleeWeapon_R;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AMeleeWeapon> MeleeWeaponClass;
+	TSubclassOf<class AMeleeWeapon> LightMeleeWeaponClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AMeleeWeapon> HeavyMeleeWeaponClass;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACombatManager> CombatManagerClass;
@@ -181,6 +188,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> HeavyAttackCombo;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TArray<TObjectPtr<UAnimMontage>> ComboSeq3;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TArray<TObjectPtr<UAnimMontage>> ComboSeq4;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> ComboExtender;

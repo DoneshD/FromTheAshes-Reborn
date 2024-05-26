@@ -9,6 +9,7 @@
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
 #include "CombatComponents/ComboSystemComponent.h"
+#include "CombatComponents/GroundedComboStringComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "MovementComponents/DashSystemComponent.h"
 #include "TargetingComponents/TargetingSystemComponent.h"
@@ -43,6 +44,9 @@ APlayableCharacter::APlayableCharacter()
 
 	ComboSystemComponent = CreateDefaultSubobject<UComboSystemComponent>(TEXT("ComboSystemComponent"));
 	this->AddOwnedComponent(ComboSystemComponent);
+
+	GroundedComboStringComponent = CreateDefaultSubobject<UGroundedComboStringComponent>(TEXT("GroundedComboStringComponent"));
+	this->AddOwnedComponent(GroundedComboStringComponent);
 
 	MeleeAttackLogicComponent = CreateDefaultSubobject<UMeleeAttackLogicComponent>(TEXT("MeleeAttackLogicComponent"));
 	this->AddOwnedComponent(MeleeAttackLogicComponent);
@@ -86,9 +90,7 @@ void APlayableCharacter::BeginPlay()
 		RotationTimeline = TimelineHelper::CreateTimeline(RotationTimeline, this, RotationCurve, TEXT("RotationTimeline"), FName("TimelineFloatReturn"), FName("OnTimelineFinished"));
 	}
 
-	
-
-	if (MeleeWeapon_R = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_player_weapon_socket"))))
+	if (MeleeWeapon_R = GetWorld()->SpawnActor<AMeleeWeapon>(LightMeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_player_weapon_socket"))))
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
 		MeleeWeapon_R->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
@@ -157,11 +159,14 @@ void APlayableCharacter::ResetState()
 	DashSystemComponent->AlreadyDashed = false;
 	SetState(EStates::EState_Nothing);
 	SoftTarget = NULL;
+	DestroyLeftWeapon();
 	StopRotation();
 	ResetLightAttack();
 	ResetHeavyAttack();
 	ResetCombos();
 	ResetSurgeCombo();
+	GroundedComboStringComponent->CurrentAttackIndex = 0;
+	GroundedComboStringComponent->CurrentComboString = TEXT("");
 }
 
 bool APlayableCharacter::CanAttack()
@@ -484,18 +489,21 @@ void APlayableCharacter::LightAttack()
 
 void APlayableCharacter::InputLightAttack()
 {
-	IsHeavyAttackSaved = false;
-	StartIdleCombatTimer();
+	GroundedComboStringComponent->IsHeavyAttackSaved = false;
 
+	StartIdleCombatTimer();
 	ClearHeavyAttackPausedTimer();
+
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	if (IsStateEqualToAny(MakeArray))
 	{
-		IsLightAttackSaved = true;
+		//IsLightAttackSaved = true;
+		GroundedComboStringComponent->IsLightAttackSaved = true;
 	}
 	else
 	{
-		LightAttack();
+		//LightAttack();
+		GroundedComboStringComponent->LightAttack();
 	}
 }
 
@@ -550,11 +558,13 @@ void APlayableCharacter::InputHeavyAttack()
 	TArray<EStates> MakeArray = { EStates::EState_Attack };
 	if (IsStateEqualToAny(MakeArray))
 	{
-		IsHeavyAttackSaved = true;
+		//IsHeavyAttackSaved = true;
+		GroundedComboStringComponent->IsHeavyAttackSaved = true;
 	}
 	else
 	{
-		HeavyAttack();
+		//HeavyAttack();
+		GroundedComboStringComponent->HeavyAttack();
 	}
 }
 
@@ -748,7 +758,7 @@ void APlayableCharacter::SpawnLeftWeapon()
 		MeleeWeapon_L->Destroy();
 	}
 
-	if (MeleeWeapon_L = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_l_player_weapon_socket"))))
+	if (MeleeWeapon_L = GetWorld()->SpawnActor<AMeleeWeapon>(HeavyMeleeWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_l_player_weapon_socket"))))
 	{
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
 		MeleeWeapon_L->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_l_player_weapon_socket"));
