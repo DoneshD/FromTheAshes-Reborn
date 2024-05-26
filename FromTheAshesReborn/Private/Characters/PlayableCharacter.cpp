@@ -503,7 +503,7 @@ void APlayableCharacter::InputLightAttack()
 	else
 	{
 		//LightAttack();
-		GroundedComboStringComponent->LightAttack();
+		GroundedComboStringComponent->AppendLightAttack();
 	}
 }
 
@@ -564,7 +564,7 @@ void APlayableCharacter::InputHeavyAttack()
 	else
 	{
 		//HeavyAttack();
-		GroundedComboStringComponent->HeavyAttack();
+		GroundedComboStringComponent->AppendHeavyAttack();
 	}
 }
 

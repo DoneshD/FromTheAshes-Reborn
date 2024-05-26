@@ -17,9 +17,7 @@ public:
 
 	FString CurrentComboString = TEXT("");
 
-	TArray<FString> ComboSequences;
-
-	TArray<TObjectPtr<UAnimMontage>> CurrentComboSequence;
+	TArray<TObjectPtr<UAnimMontage>> CurrentComboSeqAnim;
 
 	TMap<FString, TArray<TObjectPtr<UAnimMontage>>> ComboStringMap;
 
@@ -27,15 +25,17 @@ public:
 	FString Combo2 = TEXT("HHHHH");
 	FString Combo3 = TEXT("LLHLH");
 	FString Combo4 = TEXT("HHLLH");
+	FString Combo5 = TEXT("LHLHL");
+	FString Combo6 = TEXT("HLHLH");
+	//FString Combo7 = TEXT("LLPLLLL");
+	//FString Combo8 = TEXT("HPHHH");
+	//FString Combo9 = TEXT("LLLPHH");
+	//FString Combo10 = TEXT("HHPLHL");
 
 	bool IsLightAttackSaved = false;
 	bool IsHeavyAttackSaved = false;
 
 	int CurrentAttackIndex = 0;
-
-	int CurrentLightAttackIndex = 0;
-	int CurrentHeavyAttackIndex = 0;
-
 
 protected:
 
@@ -55,16 +55,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void SaveHeavyAttack();
 
-	void LightAttack();
+	void AppendLightAttack();
 
-	void HeavyAttack();
+	void AppendHeavyAttack();
 
-	
-
-	void PerformCurrentAttack(float WarpingDistance, TObjectPtr<UAnimMontage> CurrentAttackMontage);
-
-	void PerformLightAttack(int LightAttackIndex);
+	void PerformCurrentAttack(int LightAttackIndex);
 		
-	void PrintCurrentComboString();
 
 };

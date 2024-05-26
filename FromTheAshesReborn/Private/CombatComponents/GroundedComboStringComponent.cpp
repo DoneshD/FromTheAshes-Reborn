@@ -15,11 +15,6 @@ void UGroundedComboStringComponent::BeginPlay()
 
 	CurrentComboString = TEXT("");
 
-	ComboSequences.Add(Combo1);
-	ComboSequences.Add(Combo2);
-	ComboSequences.Add(Combo3);
-
-
 	ComboStringMap.Add(Combo1, PC->LightAttackCombo);
 	ComboStringMap.Add(Combo2, PC->HeavyAttackCombo);
 	ComboStringMap.Add(Combo3, PC->ComboSeq3);
@@ -33,36 +28,28 @@ void UGroundedComboStringComponent::TickComponent(float DeltaTime, ELevelTick Ti
 
 }
 
-
 void UGroundedComboStringComponent::SelectComboString()
 {
 	UE_LOG(LogTemp, Log, TEXT("CurrentComboString: %s"), *CurrentComboString);
-
-	if (CurrentAttackIndex < 1 && CurrentComboString == TEXT("L"))
-	{
-		CurrentComboSequence = PC->LightAttackCombo;
-		PerformLightAttack(CurrentAttackIndex);
-		return;
-	}
-	if (CurrentAttackIndex < 1 && CurrentComboString == TEXT("H"))
-	{
-		CurrentComboSequence = PC->HeavyAttackCombo;
-		PerformLightAttack(CurrentAttackIndex);
-		return;
-	}
 	
 	for (const auto& Pair : ComboStringMap)
 	{
 		const FString& Key = Pair.Key;
 		const TArray<TObjectPtr<UAnimMontage>>& AnimMontages = Pair.Value;
 
-		if (Key.Contains(CurrentComboString))
+		if (CurrentComboString.Contains(Key.Mid(0, CurrentAttackIndex + 1)))
 		{
-			CurrentComboSequence = Pair.Value;
-			PerformLightAttack(CurrentAttackIndex);
+			UE_LOG(LogTemp, Warning, TEXT("Anim String: %s"), *Key);
+			CurrentComboSeqAnim = Pair.Value;
+			
+			PerformCurrentAttack(CurrentAttackIndex);
 			return;
 		}
-			
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("None!!!!"));
+
+		}
 	}
 }
 
@@ -100,12 +87,30 @@ void UGroundedComboStringComponent::SaveHeavyAttack()
 	}
 }
 
+void UGroundedComboStringComponent::PerformCurrentAttack(int AttackIndex)
+{
+	UAnimMontage* CurrentAttackMontage = CurrentComboSeqAnim[AttackIndex];
+	if (CurrentAttackMontage)
+	{
+		PC->SetState(EStates::EState_Attack);
+		PC->SoftLockOn(250.0f);
+		PC->PlayAnimMontage(CurrentAttackMontage);
 
-void UGroundedComboStringComponent::LightAttack()
+		CurrentAttackIndex++;
+
+		if (CurrentAttackIndex >= CurrentComboSeqAnim.Num())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("RESET"));
+			CurrentComboString = TEXT("");
+			CurrentAttackIndex = 0;
+		}
+	}
+}
+
+void UGroundedComboStringComponent::AppendLightAttack()
 {
 	if (PC->CanAttack())
 	{
-		PC->ResetHeavyAttack();
 		CurrentComboString.Append(TEXT("L"));
 		SelectComboString();
 	}
@@ -115,40 +120,11 @@ void UGroundedComboStringComponent::LightAttack()
 	}
 }
 
-
-void UGroundedComboStringComponent::PerformCurrentAttack(float WarpingDistance, TObjectPtr<UAnimMontage> AttackMontage)
-{
-		PC->SetState(EStates::EState_Attack);
-		PC->SoftLockOn(WarpingDistance);
-		PC->PlayAnimMontage(AttackMontage);
-	
-}
-
-void UGroundedComboStringComponent::PerformLightAttack(int AttackIndex)
-{
-	UAnimMontage* CurrentAttackMontage = CurrentComboSequence[AttackIndex];
-	if (CurrentAttackMontage)
-	{
-		PerformCurrentAttack(250.0f, CurrentAttackMontage);
-		CurrentAttackIndex++;
-		if (CurrentAttackIndex >= CurrentComboSequence.Num())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("RESET"));
-			CurrentComboString = TEXT("");
-			CurrentAttackIndex = 0;
-		}
-	}
-}
-
-
-void UGroundedComboStringComponent::HeavyAttack()
+void UGroundedComboStringComponent::AppendHeavyAttack()
 {
 	
-
 	if (PC->CanAttack())
 	{
-		PC->ResetLightAttack();
-
 		CurrentComboString.Append(TEXT("H"));
 		SelectComboString();
 	}
@@ -159,7 +135,3 @@ void UGroundedComboStringComponent::HeavyAttack()
 
 }
 
-void UGroundedComboStringComponent::PrintCurrentComboString()
-{
-	UE_LOG(LogTemp, Log, TEXT("CurrentComboString: %s"), *CurrentComboString);
-}
