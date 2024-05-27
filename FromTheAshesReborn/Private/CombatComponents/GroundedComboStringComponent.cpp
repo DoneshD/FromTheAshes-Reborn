@@ -1,6 +1,6 @@
 #include "CombatComponents/GroundedComboStringComponent.h"
 #include "Characters/PlayableCharacter.h"
-
+#include "TimerManager.h"
 UGroundedComboStringComponent::UGroundedComboStringComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -21,7 +21,10 @@ void UGroundedComboStringComponent::BeginPlay()
 	ComboStringMap.Add(Combo4, PC->ComboSeq4);
 	ComboStringMap.Add(Combo5, PC->ComboSeq5);
 	ComboStringMap.Add(Combo6, PC->ComboSeq6);
-
+	ComboStringMap.Add(Combo7, PC->ComboSeq7);
+	ComboStringMap.Add(Combo8, PC->ComboSeq8);
+	ComboStringMap.Add(Combo9, PC->ComboSeq9);
+	ComboStringMap.Add(Combo10, PC->ComboSeq10);
 }
 
 void UGroundedComboStringComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -41,15 +44,12 @@ void UGroundedComboStringComponent::SelectComboString()
 
 		if (CurrentComboString.Contains(Key.Mid(0, CurrentAttackIndex + 1)))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Anim String: %s"), *Key);
 			CurrentComboSeqAnim = Pair.Value;
-			
 			PerformCurrentAttack(CurrentAttackIndex);
 			return;
 		}
 		else
 		{
-			//UE_LOG(LogTemp, Warning, TEXT("None!!!!"));
 
 		}
 	}
@@ -89,24 +89,21 @@ void UGroundedComboStringComponent::SaveHeavyAttack()
 	}
 }
 
-void UGroundedComboStringComponent::PerformCurrentAttack(int AttackIndex)
+void UGroundedComboStringComponent::StartAttackPauseTimer()
 {
-	UAnimMontage* CurrentAttackMontage = CurrentComboSeqAnim[AttackIndex];
-	if (CurrentAttackMontage)
-	{
-		PC->SetState(EStates::EState_Attack);
-		PC->SoftLockOn(250.0f);
-		PC->PlayAnimMontage(CurrentAttackMontage);
+	GetWorld()->GetTimerManager().SetTimer(FAttackPauseHandle, this, &UGroundedComboStringComponent::AppendAttackPause, .9, true);
+}
 
-		CurrentAttackIndex++;
+void UGroundedComboStringComponent::ClearAttackPauseTimer()
+{
+	GetWorld()->GetTimerManager().ClearTimer(FAttackPauseHandle);
+	CurrentComboString.RemoveFromEnd(CurrentComboString);
 
-		if (CurrentAttackIndex >= CurrentComboSeqAnim.Num())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("RESET"));
-			CurrentComboString = TEXT("");
-			CurrentAttackIndex = 0;
-		}
-	}
+}
+
+void UGroundedComboStringComponent::AppendAttackPause()
+{
+	CurrentComboString.Append(TEXT("P"));
 }
 
 void UGroundedComboStringComponent::AppendLightAttack()
@@ -134,6 +131,25 @@ void UGroundedComboStringComponent::AppendHeavyAttack()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Error"));
 	}
-
 }
 
+void UGroundedComboStringComponent::PerformCurrentAttack(int AttackIndex)
+{
+	UAnimMontage* CurrentAttackMontage = CurrentComboSeqAnim[AttackIndex];
+	if (CurrentAttackMontage)
+	{
+		PC->SetState(EStates::EState_Attack);
+		PC->SoftLockOn(250.0f);
+		PC->PlayAnimMontage(CurrentAttackMontage);
+		StartAttackPauseTimer();
+
+		CurrentAttackIndex++;
+
+		if (CurrentAttackIndex >= CurrentComboSeqAnim.Num())
+		{
+			ClearAttackPauseTimer();
+			CurrentComboString = TEXT("");
+			CurrentAttackIndex = 0;
+		}
+	}
+}

@@ -167,6 +167,8 @@ void APlayableCharacter::ResetState()
 	ResetSurgeCombo();
 	GroundedComboStringComponent->CurrentAttackIndex = 0;
 	GroundedComboStringComponent->CurrentComboString = TEXT("");
+	GroundedComboStringComponent->ClearAttackPauseTimer();
+
 }
 
 bool APlayableCharacter::CanAttack()

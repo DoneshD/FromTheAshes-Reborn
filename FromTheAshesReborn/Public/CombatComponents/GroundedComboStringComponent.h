@@ -27,15 +27,18 @@ public:
 	FString Combo4 = TEXT("HHLLH");
 	FString Combo5 = TEXT("LHLHHL");
 	FString Combo6 = TEXT("HHHL");
-	//FString Combo7 = TEXT("LLPLLLL");
-	//FString Combo8 = TEXT("HPHHH");
-	//FString Combo9 = TEXT("LLLPHH");
-	//FString Combo10 = TEXT("HHPLHL");
+	FString Combo7 = TEXT("LLPLLLL");
+	FString Combo8 = TEXT("HPHHH");
+	FString Combo9 = TEXT("LLLPHH");
+	FString Combo10 = TEXT("HHPLHL");
 
 	bool IsLightAttackSaved = false;
 	bool IsHeavyAttackSaved = false;
+	bool IsAttackPaused = false;
 
 	int CurrentAttackIndex = 0;
+
+	FTimerHandle FAttackPauseHandle;
 
 protected:
 
@@ -54,6 +57,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void SaveHeavyAttack();
+
+	void StartAttackPauseTimer();
+
+	void ClearAttackPauseTimer();
+
+	void AppendAttackPause();
 
 	void AppendLightAttack();
 
