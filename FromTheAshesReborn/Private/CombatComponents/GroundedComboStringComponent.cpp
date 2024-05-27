@@ -19,6 +19,8 @@ void UGroundedComboStringComponent::BeginPlay()
 	ComboStringMap.Add(Combo2, PC->HeavyAttackCombo);
 	ComboStringMap.Add(Combo3, PC->ComboSeq3);
 	ComboStringMap.Add(Combo4, PC->ComboSeq4);
+	ComboStringMap.Add(Combo5, PC->ComboSeq5);
+	ComboStringMap.Add(Combo6, PC->ComboSeq6);
 
 }
 
@@ -47,7 +49,7 @@ void UGroundedComboStringComponent::SelectComboString()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("None!!!!"));
+			//UE_LOG(LogTemp, Warning, TEXT("None!!!!"));
 
 		}
 	}

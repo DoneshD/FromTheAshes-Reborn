@@ -196,6 +196,16 @@ public:
 	TArray<TObjectPtr<UAnimMontage>> ComboSeq4;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TArray<TObjectPtr<UAnimMontage>> ComboSeq5;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TArray<TObjectPtr<UAnimMontage>> ComboSeq6;
+
+
+	//-----------------------------------------------------------------------------
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> ComboExtender;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")

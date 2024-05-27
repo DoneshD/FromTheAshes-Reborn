@@ -25,8 +25,8 @@ public:
 	FString Combo2 = TEXT("HHHHH");
 	FString Combo3 = TEXT("LLHLH");
 	FString Combo4 = TEXT("HHLLH");
-	FString Combo5 = TEXT("LHLHL");
-	FString Combo6 = TEXT("HLHLH");
+	FString Combo5 = TEXT("LHLHHL");
+	FString Combo6 = TEXT("HHHL");
 	//FString Combo7 = TEXT("LLPLLLL");
 	//FString Combo8 = TEXT("HPHHH");
 	//FString Combo9 = TEXT("LLLPHH");
