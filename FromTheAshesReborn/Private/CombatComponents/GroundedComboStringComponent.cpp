@@ -33,27 +33,49 @@ void UGroundedComboStringComponent::TickComponent(float DeltaTime, ELevelTick Ti
 
 }
 
+void UGroundedComboStringComponent::ResetComboString()
+{
+	CurrentAttackIndex = 0;
+
+	if (CurrentComboString.EndsWith("L"))
+	{
+		CurrentComboString = TEXT("L");
+		CurrentComboSeqAnim = PC->LightAttackCombo;
+	}
+	else if (CurrentComboString.EndsWith("H"))
+	{
+		CurrentComboString = TEXT("H");
+		CurrentComboSeqAnim = PC->HeavyAttackCombo;
+	}
+	PerformCurrentAttack(CurrentAttackIndex);
+}
+
 void UGroundedComboStringComponent::SelectComboString()
 {
 	UE_LOG(LogTemp, Log, TEXT("CurrentComboString: %s"), *CurrentComboString);
-	
+
 	for (const auto& Pair : ComboStringMap)
 	{
 		const FString& Key = Pair.Key;
 		const TArray<TObjectPtr<UAnimMontage>>& AnimMontages = Pair.Value;
 
-		if (CurrentComboString.Contains(Key.Mid(0, CurrentAttackIndex + 1)))
+		if (CurrentComboString.Len() <= Key.Len())
 		{
-			CurrentComboSeqAnim = Pair.Value;
-			PerformCurrentAttack(CurrentAttackIndex);
-			return;
-		}
-		else
-		{
+			FString SubString = Key.Mid(0, CurrentComboString.Len());
 
+			if (CurrentComboString.Equals(SubString))
+			{
+				CurrentComboSeqAnim = AnimMontages;
+				PerformCurrentAttack(CurrentAttackIndex);
+				return;
+			}
 		}
 	}
+
+	ResetComboString();
+	
 }
+
 
 void UGroundedComboStringComponent::SaveLightAttack()
 {
@@ -97,13 +119,14 @@ void UGroundedComboStringComponent::StartAttackPauseTimer()
 void UGroundedComboStringComponent::ClearAttackPauseTimer()
 {
 	GetWorld()->GetTimerManager().ClearTimer(FAttackPauseHandle);
-	CurrentComboString.RemoveFromEnd(CurrentComboString);
 
 }
 
 void UGroundedComboStringComponent::AppendAttackPause()
 {
+	ClearAttackPauseTimer();
 	CurrentComboString.Append(TEXT("P"));
+	IsAttackPaused = true;
 }
 
 void UGroundedComboStringComponent::AppendLightAttack()
@@ -135,13 +158,14 @@ void UGroundedComboStringComponent::AppendHeavyAttack()
 
 void UGroundedComboStringComponent::PerformCurrentAttack(int AttackIndex)
 {
+	ClearAttackPauseTimer();
+
 	UAnimMontage* CurrentAttackMontage = CurrentComboSeqAnim[AttackIndex];
 	if (CurrentAttackMontage)
 	{
 		PC->SetState(EStates::EState_Attack);
 		PC->SoftLockOn(250.0f);
 		PC->PlayAnimMontage(CurrentAttackMontage);
-		StartAttackPauseTimer();
 
 		CurrentAttackIndex++;
 

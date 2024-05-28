@@ -27,7 +27,7 @@ public:
 	FString Combo4 = TEXT("HHLLH");
 	FString Combo5 = TEXT("LHLHHL");
 	FString Combo6 = TEXT("HHHL");
-	FString Combo7 = TEXT("LLPLLLL");
+	FString Combo7 = TEXT("LLPLLLLL");
 	FString Combo8 = TEXT("HPHHH");
 	FString Combo9 = TEXT("LLLPHH");
 	FString Combo10 = TEXT("HHPLHL");
@@ -50,6 +50,8 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void ResetComboString();
+
 	void SelectComboString();
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
@@ -58,6 +60,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void SaveHeavyAttack();
 
+	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void StartAttackPauseTimer();
 
 	void ClearAttackPauseTimer();

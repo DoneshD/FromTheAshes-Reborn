@@ -132,6 +132,7 @@ void APlayableCharacter::ResetState()
 
 	GroundedComboStringComponent->CurrentAttackIndex = 0;
 	GroundedComboStringComponent->CurrentComboString = TEXT("");
+	GroundedComboStringComponent->IsAttackPaused = false;
 	GroundedComboStringComponent->ClearAttackPauseTimer();
 
 }
