@@ -8,7 +8,6 @@
 #include "Interfaces/DamagableInterface.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
-#include "CombatComponents/ComboSystemComponent.h"
 #include "CombatComponents/GroundedComboStringComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "MovementComponents/DashSystemComponent.h"
@@ -42,8 +41,6 @@ APlayableCharacter::APlayableCharacter()
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false;
 
-	ComboSystemComponent = CreateDefaultSubobject<UComboSystemComponent>(TEXT("ComboSystemComponent"));
-	this->AddOwnedComponent(ComboSystemComponent);
 
 	GroundedComboStringComponent = CreateDefaultSubobject<UGroundedComboStringComponent>(TEXT("GroundedComboStringComponent"));
 	this->AddOwnedComponent(GroundedComboStringComponent);
@@ -119,35 +116,6 @@ void APlayableCharacter::InputSlowTime()
 
 //------------------------------------------------------------- FSM Resets -----------------------------------------------------------------//
 
-void APlayableCharacter::ResetLightAttack()
-{
-	LightAttackIndex = 0;
-	IsLightAttackSaved = false;
-}
-
-void APlayableCharacter::ResetHeavyAttack()
-{
-	HeavyAttackIndex = 0;
-	NewHeavyAttackIndex = 0;
-	IsHeavyAttackSaved = false;
-	IsHeavyAttackPaused = false;
-	ClearHeavyAttackPausedTimer();
-}
-
-void APlayableCharacter::ResetCombos()
-{
-	ComboExtenderIndex = 0;
-	BranchFinisher = false;
-}
-
-void APlayableCharacter::ResetSurgeCombo()
-{
-	ComboSurgeCount = 0;
-	ComboSurgeSpeed = 1.0;
-	IsSurging = false;
-	IsSurgeAttackPaused = false;
-	ClearSurgeAttackPausedTimer();
-}
 
 void APlayableCharacter::ResetState()
 {
@@ -161,10 +129,7 @@ void APlayableCharacter::ResetState()
 	SoftTarget = NULL;
 	DestroyLeftWeapon();
 	StopRotation();
-	ResetLightAttack();
-	ResetHeavyAttack();
-	ResetCombos();
-	ResetSurgeCombo();
+
 	GroundedComboStringComponent->CurrentAttackIndex = 0;
 	GroundedComboStringComponent->CurrentComboString = TEXT("");
 	GroundedComboStringComponent->ClearAttackPauseTimer();
@@ -242,7 +207,6 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 
 		//Debug purposes
 		InputComp->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &APlayableCharacter::InputSlowTime);
-
 	}
 }
 
@@ -471,128 +435,40 @@ void APlayableCharacter::InputDash()
 
 //------------------------------------------------------ Light Attack Actions -----------------------------------------------------------------//
 
-void APlayableCharacter::PerformLightAttack(int AttackIndex)
-{
-	ComboSystemComponent->PerformLightAttack(AttackIndex);
-}
-
-void APlayableCharacter::LightAttack()
-{
-	if (CanAttack())
-	{
-		ResetHeavyAttack();
-		PerformLightAttack(LightAttackIndex);
-	}
-	else
-	{
-		return;
-	}
-}
 
 void APlayableCharacter::InputLightAttack()
 {
 	GroundedComboStringComponent->IsHeavyAttackSaved = false;
 
-	StartIdleCombatTimer();
-	ClearHeavyAttackPausedTimer();
-
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	if (IsStateEqualToAny(MakeArray))
 	{
-		//IsLightAttackSaved = true;
 		GroundedComboStringComponent->IsLightAttackSaved = true;
 	}
 	else
 	{
-		//LightAttack();
 		GroundedComboStringComponent->AppendLightAttack();
 	}
 }
 
 //--------------------------------------------------------- Heavy Attack Actions -----------------------------------------------------------------//
 
-void APlayableCharacter::PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo)
-{
-	ComboSystemComponent->PerformHeavyPauseCombo(PausedHeavyAttackCombo);
-}
-
-void APlayableCharacter::SelectHeavyPauseCombo()
-{
-	if (HeavyAttackIndex == 1)
-	{
-		PerformHeavyPauseCombo(PausedHeavyAttackCombo1);
-	}
-}
-void APlayableCharacter::NewHeavyCombo()
-{
-	TArray<EStates> MakeArray = { EStates::EState_Attack };
-	if (!IsStateEqualToAny(MakeArray))
-	{
-		SelectHeavyPauseCombo();
-	}
-}
-
-void APlayableCharacter::PerformHeavyAttack(int AttackIndex)
-{
-	ComboSystemComponent->PerformHeavyAttack(AttackIndex);
-}
-
-void APlayableCharacter::HeavyAttack()
-{
-	if (CanAttack())
-	{
-		ClearHeavyAttackPausedTimer();
-		ClearSurgeAttackPausedTimer();
-		IsHeavyAttackPaused = false;
-		ResetLightAttack();
-		PerformHeavyAttack(HeavyAttackIndex);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Error"));
-	}
-}
 
 void APlayableCharacter::InputHeavyAttack()
 {
-	IsLightAttackSaved = false;
-	StartIdleCombatTimer();
+	GroundedComboStringComponent->IsLightAttackSaved = false;
 	TArray<EStates> MakeArray = { EStates::EState_Attack };
 	if (IsStateEqualToAny(MakeArray))
 	{
-		//IsHeavyAttackSaved = true;
 		GroundedComboStringComponent->IsHeavyAttackSaved = true;
 	}
 	else
 	{
-		//HeavyAttack();
 		GroundedComboStringComponent->AppendHeavyAttack();
 	}
 }
 
-//---------------------------------------------------------- Attack Saves -----------------------------------------------------------------//
-
-void APlayableCharacter::SaveLightAttack()
-{
-	ComboSystemComponent->SaveLightAttack();
-}
-
-void APlayableCharacter::SaveHeavyAttack()
-{
-	ComboSystemComponent->SaveHeavyAttack();
-}
-
 //------------------------------------------------------ Pause Attacks -----------------------------------------------------------------//
-
-void APlayableCharacter::StartHeavyAttackPausedTimer()
-{
-	GetWorldTimerManager().SetTimer(HeavyAttackPauseHandle, this, &APlayableCharacter::HeavyAttackPaused, .8, true);
-}
-
-void APlayableCharacter::ClearHeavyAttackPausedTimer()
-{
-	GetWorldTimerManager().ClearTimer(HeavyAttackPauseHandle);
-}
 
 void APlayableCharacter::StartSprintTimer()
 {
@@ -605,53 +481,6 @@ void APlayableCharacter::ClearSprintTimer()
 	
 	IsSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
-}
-
-void APlayableCharacter::StartIdleCombatTimer()
-{
-	GetWorldTimerManager().SetTimer(IdleCombatHandle, this, &APlayableCharacter::ClearIdleCombatTimer, 5, true);
-	IsIdleCombat = true;
-}
-
-void APlayableCharacter::ClearIdleCombatTimer()
-{
-	IsIdleCombat = false;
-}
-
-void APlayableCharacter::StartSurgeAttackPausedTimer()
-{
-	GetWorldTimerManager().SetTimer(SurgeAttackPauseHandle, this, &APlayableCharacter::SurgeAttackPaused, .8, true);
-}
-
-void APlayableCharacter::ClearSurgeAttackPausedTimer()
-{
-	GetWorldTimerManager().ClearTimer(SurgeAttackPauseHandle);
-}
-void APlayableCharacter::HeavyAttackPaused()
-{
-	IsHeavyAttackPaused = true;
-}
-
-void APlayableCharacter::SurgeAttackPaused()
-{
-	IsSurgeAttackPaused = true;
-}
-
-//--------------------------------------------------------- Combo Strings -----------------------------------------------------------------//
-
-void APlayableCharacter::PerformComboExtender(int ExtenderIndex)
-{
-	ComboSystemComponent->PerformComboExtender(ExtenderIndex);
-}
-
-void APlayableCharacter::PerformComboFinisher(UAnimMontage* FinisherMontage)
-{
-	ComboSystemComponent->PerformComboFinisher(FinisherMontage);
-}
-
-void APlayableCharacter::PerformComboSurge()
-{
-	ComboSystemComponent->PerformComboSurge();
 }
 
 //--------------------------------Damage System-------------------------------------
@@ -678,7 +507,6 @@ float APlayableCharacter::Heal(float HealAmount)
 
 bool APlayableCharacter::TakeDamage(FDamageInfo DamageInfo)
 {
-
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 

@@ -13,9 +13,6 @@ class FROMTHEASHESREBORN_API UComboSystemComponent : public UActorComponent
 
 public:	
 
-	TObjectPtr<APlayableCharacter> PC;
-
-	float PlayRate = 0.5f;
 protected:
 
 public:	
@@ -26,22 +23,5 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void SaveLightAttack();
-
-	void SaveHeavyAttack();
-	
-	void PerformCurrentAttack(float WarpingDistance, TObjectPtr<UAnimMontage> CurrentAttackMontage);
-
-	void PerformLightAttack(int LightAttackIndex);
-
-	void PerformHeavyAttack(int HeavyAttackIndex);
-
-	void PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo);
-
-	void PerformComboExtender(int ExtenderIndex);
-
-	void PerformComboFinisher(TObjectPtr<UAnimMontage> FinisherMontage);
-
-	void PerformComboSurge();
 
 };

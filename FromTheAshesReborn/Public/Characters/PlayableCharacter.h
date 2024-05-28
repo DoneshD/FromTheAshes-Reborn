@@ -42,8 +42,6 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UComboSystemComponent> ComboSystemComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGroundedComboStringComponent> GroundedComboStringComponent;
@@ -119,30 +117,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool DisableRootMotion = false;
-
-	int LightAttackIndex = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsLightAttackSaved;
-
-	//-----------------------------------------Heavy Attack-----------------------------------------
-
-	int HeavyAttackIndex = 0;
-	int NewHeavyAttackIndex = 0;
-	bool IsHeavyAttackSaved;
-	bool IsHeavyAttackPaused = false;
-	bool IsSurgeAttackPaused = false;
-
-	//-----------------------------------------Combo Strings---------------------------------------
-	int ComboExtenderIndex = 0;
-
-	int ComboSurgeCount = 0;
-	float ComboSurgeSpeed = 1.0;
-	bool IsSurging = false;
-
-	bool BranchFinisher = false;
-
-
 	//-----------------------------------------Lock Ons--------------------------------------------
 
 	bool IsTargeting = false;
@@ -213,27 +187,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> ComboSeq10;
 
-
 	//-----------------------------------------------------------------------------
-
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TArray<TObjectPtr<UAnimMontage>> ComboExtender;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TArray<TObjectPtr<UAnimMontage>> ComboExtenderFinishers;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo1;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TObjectPtr<UAnimMontage> ComboSurge_L;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TObjectPtr<UAnimMontage> ComboSurge_R;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TObjectPtr<UAnimMontage> ComboBybass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> ForwardDashAnim;
@@ -293,11 +247,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FSM")
 	void ResetState();
 
-	void ResetLightAttack();
-	void ResetHeavyAttack();
-	void ResetCombos();
-	void ResetSurgeCombo();
-
 	//-----------------------------------------Movement---------------------------------------------
 
 	void Move(const FInputActionInstance& Instance);
@@ -322,14 +271,9 @@ public:
 	//-----------------------------------------FSM Attack Check-------------------------------------
 
 	bool CanAttack();
-	//-----------------------------------------Light Attacks----------------------------------------
 
 	void InputLightAttack();
-	void LightAttack();
-	void PerformLightAttack(int LightAttackIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Light Attack")
-	void SaveLightAttack();
+	void InputHeavyAttack();
 
 	//-----------------------------------------Heavy Attacks----------------------------------------
 
@@ -339,40 +283,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Heavy Attack")
 	void DestroyLeftWeapon();
 
-	void InputHeavyAttack();
-	void HeavyAttack();
-	void PerformHeavyAttack(int HeavyAttackIndex);
-
-	UFUNCTION(BlueprintCallable, Category = "Heavy Attack")
-	void SaveHeavyAttack();
-
 	//-----------------------------------------Pause Combos-----------------------------------------
-
-	void HeavyAttackPaused();
-	void SelectHeavyPauseCombo();
-	void NewHeavyCombo();
-	void PerformHeavyPauseCombo(TArray<TObjectPtr<UAnimMontage>> PausedHeavyAttackCombo);
-
-	void SurgeAttackPaused();
-
-	void StartHeavyAttackPausedTimer();
-	void ClearHeavyAttackPausedTimer();
 
 	void StartSprintTimer();
 	void ClearSprintTimer();
-
-	void StartIdleCombatTimer();
-	void ClearIdleCombatTimer();
-
-	void StartSurgeAttackPausedTimer();
-	void ClearSurgeAttackPausedTimer();
-
-	//-----------------------------------------Attack Strings---------------------------------------
-
-	void PerformComboExtender(int ComboExtenderIndex);
-	void PerformComboFinisher(UAnimMontage* FinisherMontage);
-	void PerformComboSurge();
-
 
 	//-----------------------------------------LockOn----------------------------------------------
 
