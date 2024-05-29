@@ -23,7 +23,7 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	
 	if (IsTargeting && HardTarget)
 	{
-		if (PlayableCharacter->GetDistanceTo(HardTarget) < 1000.0f)
+		if (PlayableCharacter->GetDistanceTo(HardTarget) < 3000.0f)
 		{
 			MidPoint = CalculateMidpoint(GetOwner()->GetActorLocation(), HardTarget->GetActorLocation());
 			Radius = (CalculateDistance(GetOwner()->GetActorLocation(), HardTarget->GetActorLocation())) / 2;

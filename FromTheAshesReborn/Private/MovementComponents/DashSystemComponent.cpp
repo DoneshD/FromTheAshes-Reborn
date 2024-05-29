@@ -63,81 +63,42 @@ bool UDashSystemComponent::InRangeOfLateralDash()
 	}
 }
 
-void UDashSystemComponent::SaveDash()
+void UDashSystemComponent::SelectBlink()
 {
 	if (IsDashSaved)
 	{
-		IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
-
-		if (TargetPositionalWarpingInterface)
-		{
-			float AngleOfDash = GetAngleOfDash();
-
-			if (AngleOfDash >= -45 && AngleOfDash < 45)
-			{
-				PC->PlayAnimMontage(PC->ForwardBlinkAnim);
-			}
-			else if (AngleOfDash >= 45 && AngleOfDash <= 135)
-			{
-				if (InRangeOfLateralDash())
-				{
-					EnableLateralDash = true;
-
-					if (TargetPositionalWarpingInterface)
-					{
-						DashWarpTargetArrow = TargetPositionalWarpingInterface->GetRightArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
-					}
-				}
-				else
-				{
-					EnableLateralDash = false;
-				}
-				PC->PlayAnimMontage(PC->RightBlinkAnim);
-			}
-			else if (AngleOfDash >= 135 || AngleOfDash <= -135)
-			{
-				PC->PlayAnimMontage(PC->BackwardBlinkAnim);
-			}
-			else if (AngleOfDash >= -135 && AngleOfDash <= -45)
-			{
-				if (InRangeOfLateralDash())
-				{
-					EnableLateralDash = true;
-
-					if (TargetPositionalWarpingInterface)
-					{
-						DashWarpTargetArrow = TargetPositionalWarpingInterface->GetLeftArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
-					}
-				}
-				else
-				{
-					EnableLateralDash = false;
-				}
-				PC->PlayAnimMontage(PC->LeftBlinkAnim);
-
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Error"));
-			}
-		}
-		else
-		{
-			PC->PlayAnimMontage(PC->ForwardBlinkAnim);
-		}
-
+		PerformDash();
+		CanDashAttack = true;
 	}
 }
 
-void UDashSystemComponent::LockOnDash()
+void UDashSystemComponent::PerformDash()
 {
-	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
+	if (!PC->TargetingSystemComponent->HardTarget)
+	{
+		if (IsDashSaved)
+		{
+			CurrentDashAnim = PC->ForwardBlinkAnim;
+		}
+		else
+		{
+			CurrentDashAnim = PC->ForwardDashAnim;
+		}
 
+		if (CurrentDashAnim)
+		{
+			PC->PlayAnimMontage(CurrentDashAnim);
+		}
+		return;
+	}
+
+	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
+	
 	float AngleOfDash = GetAngleOfDash();
 
 	if (AngleOfDash >= -45 && AngleOfDash < 45)
 	{
-		PC->PlayAnimMontage(PC->ForwardDashAnim);
+		CurrentDashAnim = IsDashSaved ? PC->ForwardBlinkAnim : PC->ForwardDashAnim;
 	}
 	else if (AngleOfDash >= 45 && AngleOfDash <= 135)
 	{
@@ -147,18 +108,22 @@ void UDashSystemComponent::LockOnDash()
 
 			if (TargetPositionalWarpingInterface)
 			{
-				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetRightArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
+				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetRightArrowNeighbor(
+					TargetPositionalWarpingInterface->GetPositionalArrow(
+						TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())
+					)
+				);
 			}
 		}
 		else
 		{
 			EnableLateralDash = false;
 		}
-		PC->PlayAnimMontage(PC->RightDashAnim);
+		CurrentDashAnim = IsDashSaved ? PC->RightBlinkAnim : PC->RightDashAnim;
 	}
 	else if (AngleOfDash >= 135 || AngleOfDash <= -135)
 	{
-		PC->PlayAnimMontage(PC->BackwardDashAnim);
+		CurrentDashAnim = IsDashSaved ? PC->BackwardBlinkAnim : PC->BackwardDashAnim;
 	}
 	else if (AngleOfDash >= -135 && AngleOfDash <= -45)
 	{
@@ -168,25 +133,34 @@ void UDashSystemComponent::LockOnDash()
 
 			if (TargetPositionalWarpingInterface)
 			{
-				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetLeftArrowNeighbor(TargetPositionalWarpingInterface->GetPositionalArrow(TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
+				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetLeftArrowNeighbor(
+					TargetPositionalWarpingInterface->GetPositionalArrow(
+						TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())
+					)
+				);
 			}
 		}
 		else
 		{
 			EnableLateralDash = false;
 		}
-		PC->PlayAnimMontage(PC->LeftDashAnim);
-		
+		CurrentDashAnim = IsDashSaved ? PC->LeftBlinkAnim : PC->LeftDashAnim;
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Error"));
+		return;
+	}
+
+	if (CurrentDashAnim)
+	{
+		PC->PlayAnimMontage(CurrentDashAnim);
 	}
 }
 
-void UDashSystemComponent::FreeLockDash()
+void UDashSystemComponent::PerformDashAttack()
 {
-	PC->PlayAnimMontage(PC->ForwardDashAnim);
+
 }
 
 void UDashSystemComponent::DashWarpToTarget()
@@ -216,12 +190,14 @@ void UDashSystemComponent::DashWarpToTarget()
 	{
 		if (IsDashSaved)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("IsDashSaved true"));
 			IsDashSaved = false;
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 800.0f;
 
 		}
 		else
 		{
+			UE_LOG(LogTemp, Warning, TEXT("IsDashSaved false"));
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
 		}
 	}
@@ -248,10 +224,8 @@ void UDashSystemComponent::DashWarpToTarget()
 		MotionWarpingTargetParams.BoneName = FName("root");
 		
 		OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
-		
 	}
 }
-
 
 void UDashSystemComponent::ResetDashWarpToTarget()
 {

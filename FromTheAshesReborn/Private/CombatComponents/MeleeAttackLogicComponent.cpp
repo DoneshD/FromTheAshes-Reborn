@@ -49,7 +49,7 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 		}
 		else
 		{
-			return 250.0f;
+			return 600.0f;
 		}
 	case EMeleeAttackRange::EMeleeAttackRange_Mid:
 		if (ExtendAttackRange)
@@ -58,7 +58,7 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 		}
 		else
 		{
-			return 400.0f;
+			return 800.0f;
 		}
 
 	case EMeleeAttackRange::EMeleeAttackRange_Far:
@@ -68,7 +68,7 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 		}
 		else
 		{
-			return 750.0f;
+			return 1000.0f;
 		}
 
 	default:
@@ -236,13 +236,16 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 {
 	
 	float WarpRange = GetMeleeAttackRange(AttackRange);
+	FVector StartLocation;
 	FVector EndLocation;
 	if (AActor* OwnerActor = GetOwner())
 	{
 		if (PC->TargetingSystemComponent->HardTarget)
 		{
-			FVector TargetDirection = (PC->TargetingSystemComponent->HardTarget->GetActorLocation() - OwnerActor->GetActorLocation()).GetSafeNormal();
-			EndLocation = OwnerActor->GetActorLocation() + TargetDirection * WarpRange;
+			//FVector TargetDirection = (PC->TargetingSystemComponent->HardTarget->GetActorLocation() - OwnerActor->GetActorLocation()).GetSafeNormal();
+			//EndLocation = OwnerActor->GetActorLocation() + TargetDirection * WarpRange;
+			StartLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 200;
+			EndLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * WarpRange;
 		}
 		else
 		{
@@ -250,16 +253,20 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 			{
 				if (ACharacter* CharacterOwner = Cast<ACharacter>(OwnerActor))
 				{
+					UE_LOG(LogTemp, Warning, TEXT("Baron"));
 					UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
+					StartLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 100;
 					EndLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * WarpRange;
 				}
 			}
 			else
 			{
+				StartLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 200;
 				EndLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * WarpRange;
 			}
 		}
 	}
+
 
 	FHitResult OutHit;
 
@@ -271,15 +278,18 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 
 	bool TargetHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
 		GetWorld(),
-		GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector(),
+		StartLocation,
 		EndLocation,
 		75.f,
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHit,
-		true
+		true,
+		FLinearColor::Red,
+		FLinearColor::Green,
+		1.0f
 	);
 
 	if (TargetHit)

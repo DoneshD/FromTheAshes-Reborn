@@ -180,12 +180,14 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> ComboSeq8;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> ComboSeq9;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> ComboSeq10;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TObjectPtr<UAnimMontage> ForwardDashAttack;
 
 	//-----------------------------------------------------------------------------
 

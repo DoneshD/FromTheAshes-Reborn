@@ -20,11 +20,16 @@ public:
 
 	TObjectPtr<UCharacterMovementComponent> CharacterMovement;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> CurrentDashAnim;
+
 	bool EnableLateralDash = false;
 
 	bool IsDashSaved = false;
 
 	bool AlreadyDashed = false;
+
+	bool CanDashAttack = false;
 
 protected:
 
@@ -34,12 +39,13 @@ public:
 
 	bool InRangeOfLateralDash();
 
+	void SelectBlink();
+
 	UFUNCTION(BlueprintCallable)
-	void SaveDash();
+	void PerformDash();
 
-	void LockOnDash();
-
-	void FreeLockDash();
+	UFUNCTION(BlueprintCallable)
+	void PerformDashAttack();
 
 	void DashWarpToTarget();
 

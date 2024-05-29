@@ -157,7 +157,7 @@ bool APlayableCharacter::CanJump()
 
 void APlayableCharacter::SaveDash()
 {
-	DashSystemComponent->SaveDash();
+	DashSystemComponent->SelectBlink();
 }
 
 //------------------------------------------------------------- Tick -----------------------------------------------------------------//
@@ -418,15 +418,7 @@ void APlayableCharacter::InputDash()
 	if (CanDash())
 	{
 		SetState(EStates::EState_Dash);
-
-		if (TargetingSystemComponent->HardTarget)
-		{
-			DashSystemComponent->LockOnDash();
-		}
-		else
-		{
-			DashSystemComponent->FreeLockDash();
-		}
+		DashSystemComponent->PerformDash();
 	}
 	else
 	{
@@ -440,6 +432,13 @@ void APlayableCharacter::InputDash()
 void APlayableCharacter::InputLightAttack()
 {
 	GroundedComboStringComponent->IsHeavyAttackSaved = false;
+
+	if (DashSystemComponent->CanDashAttack == true)
+	{
+		DashSystemComponent->CanDashAttack = false;
+		
+		PlayAnimMontage(ForwardDashAttack);
+	}
 
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	if (IsStateEqualToAny(MakeArray))
@@ -633,7 +632,6 @@ void APlayableCharacter::EndMeleeAttackCollisions()
 
 void APlayableCharacter::MeleeTraceCollisions()
 {
-
 	MeleeAttackLogicComponent->MeleeTraceCollisions();
 }
 
