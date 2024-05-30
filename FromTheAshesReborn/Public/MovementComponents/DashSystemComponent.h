@@ -27,8 +27,6 @@ public:
 
 	bool IsDashSaved = false;
 
-	bool AlreadyDashed = false;
-
 	bool CanDashAttack = false;
 
 protected:

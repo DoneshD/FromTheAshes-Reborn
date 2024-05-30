@@ -68,7 +68,7 @@ float UMeleeAttackLogicComponent::GetMeleeAttackRange(EMeleeAttackRange AttackRa
 		}
 		else
 		{
-			return 1000.0f;
+			return 1400.0f;
 		}
 
 	default:
@@ -253,7 +253,6 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 			{
 				if (ACharacter* CharacterOwner = Cast<ACharacter>(OwnerActor))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Baron"));
 					UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
 					StartLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 100;
 					EndLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * WarpRange;

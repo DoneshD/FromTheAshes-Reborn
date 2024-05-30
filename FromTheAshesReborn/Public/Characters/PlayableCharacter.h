@@ -187,7 +187,10 @@ public:
 	TArray<TObjectPtr<UAnimMontage>> ComboSeq10;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
-	TObjectPtr<UAnimMontage> ForwardDashAttack;
+	TObjectPtr<UAnimMontage> ForwardLightDashAttack;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TObjectPtr<UAnimMontage> ForwardHeavyDashAttack;
 
 	//-----------------------------------------------------------------------------
 
@@ -248,6 +251,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FSM")
 	void ResetState();
+
+	void ResetComboString();
 
 	//-----------------------------------------Movement---------------------------------------------
 

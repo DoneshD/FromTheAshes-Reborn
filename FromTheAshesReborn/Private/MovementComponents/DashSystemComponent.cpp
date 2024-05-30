@@ -190,14 +190,12 @@ void UDashSystemComponent::DashWarpToTarget()
 	{
 		if (IsDashSaved)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("IsDashSaved true"));
 			IsDashSaved = false;
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 800.0f;
 
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("IsDashSaved false"));
 			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 400.0f;
 		}
 	}
@@ -229,7 +227,6 @@ void UDashSystemComponent::DashWarpToTarget()
 
 void UDashSystemComponent::ResetDashWarpToTarget()
 {
-	AlreadyDashed = true;
 	IPositionalWarpingInterface* PositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
 	if (PositionalWarpingInterface)
 	{

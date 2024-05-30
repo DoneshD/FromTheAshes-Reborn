@@ -124,17 +124,21 @@ void APlayableCharacter::ResetState()
 		GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 	}
 	DashSystemComponent->IsDashSaved = false;
-	DashSystemComponent->AlreadyDashed = false;
 	SetState(EStates::EState_Nothing);
 	SoftTarget = NULL;
 	DestroyLeftWeapon();
 	StopRotation();
 
+	ResetComboString();
+
+}
+
+void APlayableCharacter::ResetComboString()
+{
 	GroundedComboStringComponent->CurrentAttackIndex = 0;
 	GroundedComboStringComponent->CurrentComboString = TEXT("");
 	GroundedComboStringComponent->IsAttackPaused = false;
 	GroundedComboStringComponent->ClearAttackPauseTimer();
-
 }
 
 bool APlayableCharacter::CanAttack()
@@ -436,8 +440,7 @@ void APlayableCharacter::InputLightAttack()
 	if (DashSystemComponent->CanDashAttack == true)
 	{
 		DashSystemComponent->CanDashAttack = false;
-		
-		PlayAnimMontage(ForwardDashAttack);
+		PlayAnimMontage(ForwardLightDashAttack);
 	}
 
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
@@ -457,7 +460,16 @@ void APlayableCharacter::InputLightAttack()
 void APlayableCharacter::InputHeavyAttack()
 {
 	GroundedComboStringComponent->IsLightAttackSaved = false;
-	TArray<EStates> MakeArray = { EStates::EState_Attack };
+
+	if (DashSystemComponent->CanDashAttack == true)
+	{
+		ResetComboString();
+		DashSystemComponent->CanDashAttack = false;
+		PlayAnimMontage(ForwardHeavyDashAttack);
+	}
+	
+
+	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	if (IsStateEqualToAny(MakeArray))
 	{
 		GroundedComboStringComponent->IsHeavyAttackSaved = true;
@@ -479,6 +491,7 @@ void APlayableCharacter::StartSprintTimer()
 void APlayableCharacter::ClearSprintTimer()
 {
 	
+	IsSprinting = false;
 	IsSprinting = false;
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }
