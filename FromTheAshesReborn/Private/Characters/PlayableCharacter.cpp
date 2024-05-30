@@ -123,12 +123,14 @@ void APlayableCharacter::ResetState()
 	{
 		GetCharacterMovement()->SetMovementMode(MOVE_Falling);
 	}
-	DashSystemComponent->IsDashSaved = false;
+
 	SetState(EStates::EState_Nothing);
 	SoftTarget = NULL;
-	DestroyLeftWeapon();
 	StopRotation();
+	DestroyLeftWeapon();
 
+	DashSystemComponent->IsDashSaved = false;
+	DashSystemComponent->CanDashAttack = false;
 	ResetComboString();
 
 }
@@ -137,6 +139,7 @@ void APlayableCharacter::ResetComboString()
 {
 	GroundedComboStringComponent->CurrentAttackIndex = 0;
 	GroundedComboStringComponent->CurrentComboString = TEXT("");
+
 	GroundedComboStringComponent->IsAttackPaused = false;
 	GroundedComboStringComponent->ClearAttackPauseTimer();
 }
@@ -432,15 +435,16 @@ void APlayableCharacter::InputDash()
 
 //------------------------------------------------------ Light Attack Actions -----------------------------------------------------------------//
 
-
 void APlayableCharacter::InputLightAttack()
 {
 	GroundedComboStringComponent->IsHeavyAttackSaved = false;
 
 	if (DashSystemComponent->CanDashAttack == true)
 	{
+		ResetComboString();
 		DashSystemComponent->CanDashAttack = false;
 		PlayAnimMontage(ForwardLightDashAttack);
+		return;
 	}
 
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
@@ -466,8 +470,8 @@ void APlayableCharacter::InputHeavyAttack()
 		ResetComboString();
 		DashSystemComponent->CanDashAttack = false;
 		PlayAnimMontage(ForwardHeavyDashAttack);
+		return;
 	}
-	
 
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
 	if (IsStateEqualToAny(MakeArray))
@@ -539,7 +543,7 @@ void APlayableCharacter::HandleDeath()
 	InputComponent->AxisBindings.Empty();
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	//Remove controls
+
 	PlayAnimMontage(DeathMontage);
 	CombatManager->HandleDeath(this);
 

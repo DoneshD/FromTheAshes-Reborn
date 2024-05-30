@@ -176,9 +176,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 			}
 		}
 	}
-
 	
-
 	if (HasLeftWeapon)
 	{
 		if (MeleeCombatantInterface)
@@ -242,8 +240,6 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 	{
 		if (PC->TargetingSystemComponent->HardTarget)
 		{
-			//FVector TargetDirection = (PC->TargetingSystemComponent->HardTarget->GetActorLocation() - OwnerActor->GetActorLocation()).GetSafeNormal();
-			//EndLocation = OwnerActor->GetActorLocation() + TargetDirection * WarpRange;
 			StartLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 200;
 			EndLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * WarpRange;
 		}

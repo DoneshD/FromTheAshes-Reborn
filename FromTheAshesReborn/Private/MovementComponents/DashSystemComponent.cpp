@@ -158,11 +158,6 @@ void UDashSystemComponent::PerformDash()
 	}
 }
 
-void UDashSystemComponent::PerformDashAttack()
-{
-
-}
-
 void UDashSystemComponent::DashWarpToTarget()
 {
 	FMotionWarpingTarget MotionWarpingTargetParams;

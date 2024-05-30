@@ -2,6 +2,7 @@
 #include "Characters/PlayableCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -54,7 +55,7 @@ void UTargetingSystemComponent::HardLockOn()
 		if (UCameraComponent* FollowCamera = PlayableCharacter->CameraComp)
 		{
 			FVector CameraVector = FollowCamera->GetForwardVector();
-			FVector EndLocation = (CameraVector * 1000.0f) + PlayableCharacter->GetActorLocation();
+			FVector EndLocation = (CameraVector * 3000.0f) + PlayableCharacter->GetActorLocation();
 			FHitResult OutHit;
 
 			TArray<AActor*> ActorArray;

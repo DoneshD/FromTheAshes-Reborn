@@ -42,9 +42,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PerformDash();
 
-	UFUNCTION(BlueprintCallable)
-	void PerformDashAttack();
-
 	void DashWarpToTarget();
 
 	void ResetDashWarpToTarget();
