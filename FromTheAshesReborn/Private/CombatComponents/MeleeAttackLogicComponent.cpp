@@ -5,6 +5,7 @@
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/EnemySpawnerInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatComponents/ComboSystemComponent.h"
 #include "Components/ArrowComponent.h"
@@ -105,6 +106,7 @@ bool UMeleeAttackLogicComponent::MeleeWeaponSphereTrace(FVector StartLocation, F
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 
+
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
 
@@ -151,12 +153,15 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 		if (HitActor)
 		{
 			IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
+			IEnemySpawnerInterface* EnemySpawnerInterface = Cast<IEnemySpawnerInterface>(HitActor);
 
-			if (DamagableInterface)
+			if (DamagableInterface || EnemySpawnerInterface)
 			{
 				if (!AlreadyHitActors_R.Contains(HitActor))
 				{
 					AlreadyHitActors_R.AddUnique(HitActor);
+
+					EnemySpawnerInterface->OnHit();
 
 					IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(HitActor);
 					if (TargetPositionalWarpingInterface)
@@ -177,6 +182,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 					}
 				}
 			}
+			
 		}
 	}
 	

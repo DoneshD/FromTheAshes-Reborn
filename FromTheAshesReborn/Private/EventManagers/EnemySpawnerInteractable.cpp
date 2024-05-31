@@ -1,9 +1,11 @@
 #include "EventManagers/EnemySpawnerInteractable.h"
+#include "Characters/EnemyBase.h"
 
 AEnemySpawnerInteractable::AEnemySpawnerInteractable()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+    StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshMesh"));
 }
 
 void AEnemySpawnerInteractable::BeginPlay()
@@ -22,20 +24,18 @@ void AEnemySpawnerInteractable::OnHit()
 {
     switch (SpawnerInteractable)
     {
+    
     case ESpawnerInteractable::ESpawnerInteractable_AddEnemy:
-        UE_LOG(LogTemp, Warning, TEXT("AddEnemy selected"));
+
         break;
 
     case ESpawnerInteractable::ESpawnerInteractable_ToggleAttacking:
-        UE_LOG(LogTemp, Warning, TEXT("ToggleAggro selected"));
         break;
 
     case ESpawnerInteractable::ESpawnerInteractable_PlayerInvincible:
-        UE_LOG(LogTemp, Warning, TEXT("PlayerInvincible selected"));
         break;
 
     case ESpawnerInteractable::ESpawnerInteractable_PlayerEnemyInvincible:
-        UE_LOG(LogTemp, Warning, TEXT("PlayerEnemyInvincible selected"));
         break;
 
     default:

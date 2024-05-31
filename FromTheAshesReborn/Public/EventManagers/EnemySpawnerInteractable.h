@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "../Interfaces/EnemySpawnerInterface.h"
 #include "EnemySpawnerInteractable.generated.h"
 
 UENUM(BlueprintType)
@@ -14,7 +15,7 @@ enum class ESpawnerInteractable : uint8
 };
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemySpawnerInteractable : public AActor
+class FROMTHEASHESREBORN_API AEnemySpawnerInteractable : public AActor, public IEnemySpawnerInterface
 {
 	GENERATED_BODY()
 	
@@ -22,6 +23,14 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	ESpawnerInteractable SpawnerInteractable;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
+
+	TObjectPtr<AEnemyBase> EnemyBase;
+	TSubclassOf<class AEnemyBase> EnemyBaseClass;
+
+	FActorSpawnParameters SpawnParams;
 
 	bool isActive = false;
 
@@ -32,7 +41,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void OnHit();
+	virtual void OnHit() override;
 
 	//void SetSpawnerInteractble();
 
