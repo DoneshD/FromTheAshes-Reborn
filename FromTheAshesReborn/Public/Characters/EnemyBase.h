@@ -7,7 +7,6 @@
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "EventManagers/CombatManager.h"
-#include "GameModes/FTAGameStateBase.h"
 #include "EnemyBase.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
@@ -22,7 +21,6 @@ class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagabl
 
 public:
 
-	AFTAGameStateBase* FTAGameStateBase;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACombatManager> CombatManagerClass;

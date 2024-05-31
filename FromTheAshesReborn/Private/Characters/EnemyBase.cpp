@@ -7,7 +7,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BrainComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameModes/FTAGameStateBase.h"
 #include "Interfaces/EventManagerInterface.h"
 #include "EventManagers/CombatManager.h"
 #include "AIController.h"
@@ -28,7 +27,6 @@ void AEnemyBase::BeginPlay()
 			AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(AIEnemyController);
 			if (AIControllerEnemyBase)
 			{
-
 				AICEnemyBase = AIControllerEnemyBase;
 			}
 		}
@@ -37,7 +35,7 @@ void AEnemyBase::BeginPlay()
 	CombatManager = Cast<ACombatManager>(UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass));
 	CombatManager->HandleAttackRequest(this);
 
-	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameState(GetWorld()));
+	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
 	EventManagerInterface->PublishEnemySpawned();
 
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
@@ -159,7 +157,7 @@ void AEnemyBase::HandleDeath()
 
 	PlayAnimMontage(DeathMontage);
 
-	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameState(GetWorld()));
+	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
 	EventManagerInterface->PublishEnemyDeath();
 
 	CombatManager->HandleDeath(this);

@@ -6,6 +6,8 @@
 
 class UArrowComponent;
 class UCharacterMovementComponent;
+class AFromTheAshesRebornGameMode;
+
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UDashSystemComponent : public UActorComponent
@@ -13,6 +15,8 @@ class FROMTHEASHESREBORN_API UDashSystemComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
+
+	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
 
 	TObjectPtr<APlayableCharacter> PC;
 

@@ -3,6 +3,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -82,6 +83,12 @@ void UTargetingSystemComponent::HardLockOn()
 
 				PlayableCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 				IsTargeting = true;
+
+				AFromTheAshesRebornGameMode* FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+				if (FTAGameMode)
+				{
+					FTAGameMode->HardTarget = HitActor;
+				}
 				HardTarget = HitActor;
 			}
 		}

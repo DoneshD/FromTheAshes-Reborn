@@ -5,6 +5,7 @@
 #include "GameFramework/Character.h"
 #include "MotionWarpingComponent.h"
 #include "Components/ArrowComponent.h"
+#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Characters/EnemyBase.h"
 #include "Characters/PlayableCharacter.h"
 
@@ -19,6 +20,12 @@ void UDashSystemComponent::BeginPlay()
 	Super::BeginPlay();
 	PC = Cast<APlayableCharacter>(GetOwner());
 
+	FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameMode Cast FAILED"));
+	}
+
 }
 
 void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -29,7 +36,8 @@ void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 float UDashSystemComponent::GetAngleOfDash()
 {
-	FVector AttackTargetLocation = PC->TargetingSystemComponent->HardTarget->GetActorLocation();
+
+	FVector AttackTargetLocation = FTAGameMode->HardTarget->GetActorLocation();
 	FVector OwnerLocation = PC->GetActorLocation();
 	FVector MovementVectorAnchored = PC->GetCharacterMovement()->GetLastInputVector() + PC->GetActorLocation();
 
@@ -53,7 +61,7 @@ float UDashSystemComponent::GetAngleOfDash()
 
 bool UDashSystemComponent::InRangeOfLateralDash()
 {
-	if (GetOwner()->GetDistanceTo(PC->TargetingSystemComponent->HardTarget) < 300.0f)
+	if (GetOwner()->GetDistanceTo(FTAGameMode->HardTarget) < 300.0f)
 	{
 		return true;
 	}
@@ -74,7 +82,7 @@ void UDashSystemComponent::SelectBlink()
 
 void UDashSystemComponent::PerformDash()
 {
-	if (!PC->TargetingSystemComponent->HardTarget)
+	if (!FTAGameMode->HardTarget)
 	{
 		if (IsDashSaved)
 		{
@@ -92,7 +100,7 @@ void UDashSystemComponent::PerformDash()
 		return;
 	}
 
-	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(PC->TargetingSystemComponent->HardTarget);
+	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(FTAGameMode->HardTarget);
 	
 	float AngleOfDash = GetAngleOfDash();
 
@@ -197,9 +205,9 @@ void UDashSystemComponent::DashWarpToTarget()
 
 	DrawDebugSphere(GetWorld(), DashTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 
-	if (PC->TargetingSystemComponent->HardTarget)
+	if (FTAGameMode->HardTarget)
 	{
-		DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), PC->TargetingSystemComponent->HardTarget->GetActorLocation());
+		DashTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), FTAGameMode->HardTarget->GetActorLocation());
 	}
 	else
 	{
