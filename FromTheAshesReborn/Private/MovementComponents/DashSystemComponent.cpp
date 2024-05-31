@@ -25,7 +25,6 @@ void UDashSystemComponent::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GameMode Cast FAILED"));
 	}
-
 }
 
 void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
