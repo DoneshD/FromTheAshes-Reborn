@@ -2,10 +2,10 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "GameFramework/Character.h"
 #include "MotionWarpingComponent.h"
 #include "Components/ArrowComponent.h"
-#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Characters/EnemyBase.h"
 #include "Characters/PlayableCharacter.h"
 

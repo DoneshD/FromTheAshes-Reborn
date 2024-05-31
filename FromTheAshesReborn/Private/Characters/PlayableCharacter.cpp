@@ -41,7 +41,6 @@ APlayableCharacter::APlayableCharacter()
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false;
 
-
 	GroundedComboStringComponent = CreateDefaultSubobject<UGroundedComboStringComponent>(TEXT("GroundedComboStringComponent"));
 	this->AddOwnedComponent(GroundedComboStringComponent);
 
@@ -76,6 +75,12 @@ APlayableCharacter::APlayableCharacter()
 void APlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameMode Cast FAILED"));
+	}
 
 	if (LockOnSphere)
 	{
@@ -291,7 +296,7 @@ void APlayableCharacter::LookStick(const FInputActionValue& InputValue)
 }
 void APlayableCharacter::EnableRootRotation()
 {
-	if (!SoftTarget && !HardTarget)
+	if (!SoftTarget && !FTAGameMode->HardTarget)
 	{
 		GetCharacterMovement()->bAllowPhysicsRotationDuringAnimRootMotion = true;
 	}
@@ -327,9 +332,9 @@ void APlayableCharacter::StopJump()
 
 void APlayableCharacter::TimelineFloatReturn(float value)
 {
-	if (HardTarget)
+	if (FTAGameMode->HardTarget)
 	{
-		TargetRotateLocation = HardTarget->GetActorLocation();
+		TargetRotateLocation = FTAGameMode->HardTarget->GetActorLocation();
 	}
 	else if (SoftTarget)
 	{
@@ -366,7 +371,7 @@ void APlayableCharacter::RotationToTarget()
 
 void APlayableCharacter::SoftLockOn(float Distance)
 {
-	if (!IsTargeting && !HardTarget)
+	if (!IsTargeting && !FTAGameMode->HardTarget)
 	{
 		FVector StartLocation = (GetActorLocation() + GetCharacterMovement()->GetLastInputVector() * 100.f);
 		FVector EndLocation = (GetCharacterMovement()->GetLastInputVector() * Distance) + StartLocation;

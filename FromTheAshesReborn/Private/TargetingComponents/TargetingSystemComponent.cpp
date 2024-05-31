@@ -15,7 +15,13 @@ UTargetingSystemComponent::UTargetingSystemComponent()
 void UTargetingSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
 	PlayableCharacter = Cast<APlayableCharacter>(GetOwner());
+	FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameMode Cast FAILED"));
+	}
 
 }
 
@@ -23,17 +29,17 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if (IsTargeting && HardTarget)
+	if (IsTargeting && FTAGameMode->HardTarget)
 	{
-		if (PlayableCharacter->GetDistanceTo(HardTarget) < 3000.0f)
+		if (PlayableCharacter->GetDistanceTo(FTAGameMode->HardTarget) < 3000.0f)
 		{
-			MidPoint = CalculateMidpoint(GetOwner()->GetActorLocation(), HardTarget->GetActorLocation());
-			Radius = (CalculateDistance(GetOwner()->GetActorLocation(), HardTarget->GetActorLocation())) / 2;
+			MidPoint = CalculateMidpoint(GetOwner()->GetActorLocation(), FTAGameMode->HardTarget->GetActorLocation());
+			Radius = (CalculateDistance(GetOwner()->GetActorLocation(), FTAGameMode->HardTarget->GetActorLocation())) / 2;
 
 			PlayableCharacter->LockOnSphere->SetWorldLocation(MidPoint);
 			PlayableCharacter->SpringArmComp->TargetArmLength = Radius + 300.0f;
 
-			FVector TargetLocation = HardTarget->GetActorLocation();
+			FVector TargetLocation = FTAGameMode->HardTarget->GetActorLocation();
 			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TargetLocation);
 			FRotator InterpRot = FMath::RInterpTo(PlayableCharacter->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
 
@@ -50,7 +56,7 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 void UTargetingSystemComponent::HardLockOn()
 {
-	if (!IsTargeting && !HardTarget)
+	if (!IsTargeting && !FTAGameMode->HardTarget)
 	{
 
 		if (UCameraComponent* FollowCamera = PlayableCharacter->CameraComp)
@@ -83,13 +89,9 @@ void UTargetingSystemComponent::HardLockOn()
 
 				PlayableCharacter->GetCharacterMovement()->bOrientRotationToMovement = false;
 				IsTargeting = true;
-
-				AFromTheAshesRebornGameMode* FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-				if (FTAGameMode)
-				{
-					FTAGameMode->HardTarget = HitActor;
-				}
-				HardTarget = HitActor;
+				
+				FTAGameMode->HardTarget = HitActor;
+				
 			}
 		}
 	}
@@ -102,7 +104,7 @@ void UTargetingSystemComponent::HardLockOn()
 void UTargetingSystemComponent::DisableLockOn()
 {
 	IsTargeting = false;
-	HardTarget = NULL;
+	FTAGameMode->HardTarget = NULL;
 	PlayableCharacter->GetCharacterMovement()->bOrientRotationToMovement = true;
 	PlayableCharacter->LockOnSphere->SetRelativeLocation(PlayableCharacter->InitialSphereLocation);
 	PlayableCharacter->SpringArmComp->TargetArmLength = 400.0f;

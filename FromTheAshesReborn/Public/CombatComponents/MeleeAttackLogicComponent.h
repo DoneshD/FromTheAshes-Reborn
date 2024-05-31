@@ -4,10 +4,12 @@
 #include "Components/ActorComponent.h"
 #include "DamageSystem/DamageSystem.h"
 #include "Enums/EMeleeAttackRange.h"
-
 #include "MeleeAttackLogicComponent.generated.h"
 
 DECLARE_DELEGATE(FOnAttackEnd);
+
+class AFromTheAshesRebornGameMode;
+class APlayableCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UMeleeAttackLogicComponent : public UActorComponent
@@ -16,7 +18,7 @@ class FROMTHEASHESREBORN_API UMeleeAttackLogicComponent : public UActorComponent
 
 public:
 
-	TObjectPtr<APlayableCharacter> PC;
+	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
 
 	UDamageSystem* DamageSystemComponent;
 

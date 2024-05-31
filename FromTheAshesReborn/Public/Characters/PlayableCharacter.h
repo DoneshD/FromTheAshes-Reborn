@@ -33,6 +33,8 @@ class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public I
 
 public:
 
+	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> LockOnSphere;
 
@@ -41,7 +43,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
-
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGroundedComboStringComponent> GroundedComboStringComponent;

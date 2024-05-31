@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
+class AFromTheAshesRebornGameMode;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
@@ -12,6 +13,8 @@ class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 
 public:	
 
+	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
+
 	TObjectPtr<APlayableCharacter> PlayableCharacter;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -19,7 +22,6 @@ public:
 
 	FVector TargetRotateLocation;
 
-	TObjectPtr<AActor> HardTarget;
 	TObjectPtr<AActor> SoftTarget;
 
 	FVector MidPoint;

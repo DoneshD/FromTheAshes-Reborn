@@ -10,8 +10,6 @@
 #include "Components/ArrowComponent.h"
 #include "Enums/EMeleeAttackRange.h"
 #include "Interfaces/PositionalWarpingInterface.h"
-#include "Characters/PlayableCharacter.h"
-
 #include "Kismet/KismetMathLibrary.h"
 
 UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
@@ -23,7 +21,12 @@ UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
 void UMeleeAttackLogicComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	PC = Cast<APlayableCharacter>(GetOwner());
+
+	FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameMode Cast FAILED"));
+	}
 	
 }
 
@@ -238,7 +241,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 	FVector EndLocation;
 	if (AActor* OwnerActor = GetOwner())
 	{
-		if (PC->TargetingSystemComponent->HardTarget)
+		if (FTAGameMode->HardTarget)
 		{
 			StartLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * 200;
 			EndLocation = OwnerActor->GetActorLocation() + OwnerActor->GetActorForwardVector() * WarpRange;
