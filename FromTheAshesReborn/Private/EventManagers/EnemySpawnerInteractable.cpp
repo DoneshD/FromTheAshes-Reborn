@@ -36,12 +36,15 @@ void AEnemySpawnerInteractable::OnHit()
         break;
 
     case ESpawnerInteractable::ESpawnerInteractable_ToggleAttacking:
+        EventManagerInterface->ToggleEnemyAggro();
         break;
 
     case ESpawnerInteractable::ESpawnerInteractable_PlayerInvincible:
+        EventManagerInterface->TogglePlayerInvincibility();
         break;
 
     case ESpawnerInteractable::ESpawnerInteractable_PlayerEnemyInvincible:
+        EventManagerInterface->ToggleAllInvincibility();
         break;
 
     default:

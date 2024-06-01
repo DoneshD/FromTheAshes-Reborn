@@ -10,7 +10,8 @@ class FROMTHEASHESREBORN_API AEnemySpawner : public AActor
 	GENERATED_BODY()
 	
 public:	
-
+	UPROPERTY(EditAnywhere, Category = "Spawner")
+	float SpawnRadius;
 
 public:	
 
@@ -19,5 +20,7 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	FVector GetRandomLocationAroundSpawner(float Radius);
 
 };

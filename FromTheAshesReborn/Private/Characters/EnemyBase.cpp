@@ -21,28 +21,21 @@ void AEnemyBase::BeginPlay()
 
 	AController* EnemyController = this->GetController();
 
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay!"));
-
 	if (EnemyController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EnemyController!"));
-
 		AAIController* AIEnemyController = Cast<AAIController>(EnemyController);
 		if (AIEnemyController)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AIEnemyController!"));
-
 			AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(AIEnemyController);
 			if (AIControllerEnemyBase)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("AIControllerEnemyBase"));
 				AICEnemyBase = AIControllerEnemyBase;
 			}
 		}
 	}
 
 	CombatManager = Cast<ACombatManager>(UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass));
-	CombatManager->HandleAttackRequest(this);
+	//CombatManager->HandleAttackRequest(this);
 
 	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
 	EventManagerInterface->PublishEnemySpawned();
@@ -175,19 +168,8 @@ void AEnemyBase::HandleDeath()
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 {
 	GetCharacterMovement()->StopMovementImmediately();
-
-	if (AICEnemyBase)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("YYYYYYEEEEEEEESSSSSSSSSSS"));
-
-		AICEnemyBase->SetStateAsFrozen();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("NOOOOOOOOOOOOOOOOOOOOO"));
-	}
-
-
+	AICEnemyBase->SetStateAsFrozen();
+	
 	UAnimMontage* HitReactionMontage = nullptr;
 
 	switch (DamageInfo.FacingDirection)

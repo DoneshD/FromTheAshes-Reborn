@@ -22,4 +22,10 @@ public:
 
 	virtual void SpawnMeleeEnemy() = 0;
 
+	virtual void ToggleEnemyAggro() = 0;
+
+	virtual void TogglePlayerInvincibility() = 0;
+
+	virtual void ToggleAllInvincibility() = 0;
+
 };

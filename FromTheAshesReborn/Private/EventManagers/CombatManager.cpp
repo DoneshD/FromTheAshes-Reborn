@@ -41,7 +41,7 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 		{
 			Attackers.AddUnique(Attacker);
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			//AIEnemyInterface->Attack(AttackTarget);
+			AIEnemyInterface->Attack(AttackTarget);
 		}
 		else
 		{
@@ -112,6 +112,7 @@ void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
 			AIEnemyInterface->Retreat();
 		}
+
 		Attackers.Empty();
 		Oribters.Empty();
 	}
@@ -132,5 +133,10 @@ void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 			}
 		}
 	}
+}
+
+void ACombatManager::ToggleAggro()
+{
+
 }
 

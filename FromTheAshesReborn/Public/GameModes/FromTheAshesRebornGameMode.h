@@ -39,11 +39,22 @@ public:
 	TSubclassOf<class AAIControllerEnemyBase> AIControllerEnemyBaseClass;
 	TObjectPtr<AAIControllerEnemyBase> AIControllerEnemyBase;
 
+	TArray<AActor*> EnemiesArray;
+
+	TSubclassOf<AEnemyBase> EnemyBaseClass = AEnemyBase::StaticClass();
+
 	FVector SpawnerLocation;
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 	FActorSpawnParameters SpawnParams;
 
 	int EnemiesCount = 0;
+
+	UPROPERTY(BlueprintReadOnly)
+	bool IsAggroActivated = false;
+
+	bool IsPlayerInvincible = false;
+
+	bool IsAllInvicible = false;
 
 
 public:
@@ -57,6 +68,12 @@ public:
 	virtual void PublishEnemyDeath() override;
 
 	virtual void SpawnMeleeEnemy() override;
+
+	virtual void ToggleEnemyAggro() override;
+
+	virtual void TogglePlayerInvincibility() override;
+
+	virtual void ToggleAllInvincibility() override;
 
 	void IncrementEnemyCount();
 

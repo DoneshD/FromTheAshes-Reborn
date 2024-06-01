@@ -61,7 +61,6 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
 			GetBlackboardComponent()->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
 			GetBlackboardComponent()->SetValueAsFloat(OrbitRadiusKeyName, OrbitRadius);
-			UE_LOG(LogTemp, Warning, TEXT("OnPossess"));
 		}
 	}
 }
@@ -75,6 +74,7 @@ void AAIControllerEnemyBase::BeginPlay()
 void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
 
+	/*
 	for (AActor* Actor : UpdatedActors)
 	{
 		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
@@ -100,7 +100,7 @@ void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& Upda
 			HandleSensedDamage(Actor);
 		}
 	}
-	
+	*/
 }
 
 EAIStates AAIControllerEnemyBase::GetCurrentState()
@@ -222,7 +222,6 @@ void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 	switch (GetCurrentState())
 	{
 	case EAIStates::EAIStates_Passive:
-		UE_LOG(LogTemp, Warning, TEXT("HandleSensedSight"));
 		SetStateAsAttacking(Actor, true);
 
 	case EAIStates::EAIStates_Attacking:

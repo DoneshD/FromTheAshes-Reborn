@@ -31,4 +31,6 @@ public:
 
 	void HandleDeath(TObjectPtr<AActor> ActorRef);
 
+	void ToggleAggro();
+
 };

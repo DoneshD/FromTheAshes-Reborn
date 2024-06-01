@@ -61,15 +61,14 @@ private:
 
 public:
 
-
 	FAIStimulus OutSightStimuliInfo;
 	FAIStimulus OutHearStimuliInfo;
 	FAIStimulus OutDamageStimuliInfo;
 
 	EAIStates GetCurrentState();
 
+	UFUNCTION(BlueprintCallable)
 	void SetStateAsPassive();
-
 
 	UFUNCTION(BlueprintCallable)
 	void SetStateAsAttacking(AActor* IncomingAttackTarget, bool UseLastKnownAttackTarget);
