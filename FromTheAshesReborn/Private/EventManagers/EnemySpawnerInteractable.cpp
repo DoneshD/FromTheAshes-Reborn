@@ -1,4 +1,7 @@
 #include "EventManagers/EnemySpawnerInteractable.h"
+#include "Kismet/GameplayStatics.h"
+#include "EventManagers/EnemySpawner.h"
+#include "Interfaces/EventManagerInterface.h"
 #include "Characters/EnemyBase.h"
 
 AEnemySpawnerInteractable::AEnemySpawnerInteractable()
@@ -11,7 +14,8 @@ AEnemySpawnerInteractable::AEnemySpawnerInteractable()
 void AEnemySpawnerInteractable::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+
 }
 
 void AEnemySpawnerInteractable::Tick(float DeltaTime)
@@ -22,11 +26,13 @@ void AEnemySpawnerInteractable::Tick(float DeltaTime)
 
 void AEnemySpawnerInteractable::OnHit()
 {
+    IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
+
     switch (SpawnerInteractable)
     {
     
     case ESpawnerInteractable::ESpawnerInteractable_AddEnemy:
-
+        EventManagerInterface->SpawnMeleeEnemy();
         break;
 
     case ESpawnerInteractable::ESpawnerInteractable_ToggleAttacking:

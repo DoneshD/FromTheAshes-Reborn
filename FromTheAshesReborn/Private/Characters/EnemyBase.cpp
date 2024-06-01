@@ -18,15 +18,24 @@ AEnemyBase::AEnemyBase()
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+
 	AController* EnemyController = this->GetController();
+
+	UE_LOG(LogTemp, Warning, TEXT("BeginPlay!"));
+
 	if (EnemyController)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("EnemyController!"));
+
 		AAIController* AIEnemyController = Cast<AAIController>(EnemyController);
 		if (AIEnemyController)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("AIEnemyController!"));
+
 			AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(AIEnemyController);
 			if (AIControllerEnemyBase)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("AIControllerEnemyBase"));
 				AICEnemyBase = AIControllerEnemyBase;
 			}
 		}
@@ -166,7 +175,18 @@ void AEnemyBase::HandleDeath()
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 {
 	GetCharacterMovement()->StopMovementImmediately();
-	AICEnemyBase->SetStateAsFrozen();
+
+	if (AICEnemyBase)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("YYYYYYEEEEEEEESSSSSSSSSSS"));
+
+		AICEnemyBase->SetStateAsFrozen();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NOOOOOOOOOOOOOOOOOOOOO"));
+	}
+
 
 	UAnimMontage* HitReactionMontage = nullptr;
 

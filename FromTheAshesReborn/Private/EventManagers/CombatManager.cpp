@@ -41,7 +41,7 @@ void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
 		{
 			Attackers.AddUnique(Attacker);
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			AIEnemyInterface->Attack(AttackTarget);
+			//AIEnemyInterface->Attack(AttackTarget);
 		}
 		else
 		{

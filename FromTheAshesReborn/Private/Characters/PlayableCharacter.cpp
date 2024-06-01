@@ -16,6 +16,7 @@
 #include "Components/ArrowComponent.h"
 #include "Helpers/TimelineHelper.h"
 #include "Weapons/MeleeWeapon.h"
+#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "MotionWarpingComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"

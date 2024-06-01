@@ -14,6 +14,7 @@ enum class ESpawnerInteractable : uint8
 	ESpawnerInteractable_PlayerEnemyInvincible	UMETA(DisplayName = "PlayerEnemyInvincible")
 };
 
+
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemySpawnerInteractable : public AActor, public IEnemySpawnerInterface
 {
@@ -27,12 +28,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> StaticMeshComponent;
 
-	TObjectPtr<AEnemyBase> EnemyBase;
-	TSubclassOf<class AEnemyBase> EnemyBaseClass;
-
-	FActorSpawnParameters SpawnParams;
-
-	bool isActive = false;
+	bool IsActive = false;
 
 public:	
 	AEnemySpawnerInteractable();
@@ -42,7 +38,5 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void OnHit() override;
-
-	//void SetSpawnerInteractble();
 
 };

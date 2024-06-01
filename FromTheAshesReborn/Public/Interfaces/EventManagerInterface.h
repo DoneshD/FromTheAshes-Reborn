@@ -20,4 +20,6 @@ public:
 
 	virtual void PublishEnemyDeath() = 0;
 
+	virtual void SpawnMeleeEnemy() = 0;
+
 };

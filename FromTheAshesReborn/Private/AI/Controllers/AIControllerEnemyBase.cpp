@@ -41,13 +41,15 @@ AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectI
 	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Sight::StaticClass());
 
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::TargetActorsPerceptionUpdated);
+
 
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
+
+
 	AEnemyBase* Enemy = Cast<AEnemyBase>(InPawn);
 	if (Enemy)
 	{
@@ -59,6 +61,7 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 			GetBlackboardComponent()->SetValueAsFloat(AttackRadiusKeyName, AttackRadius);
 			GetBlackboardComponent()->SetValueAsFloat(DefendRadiusKeyName, DefendRadius);
 			GetBlackboardComponent()->SetValueAsFloat(OrbitRadiusKeyName, OrbitRadius);
+			UE_LOG(LogTemp, Warning, TEXT("OnPossess"));
 		}
 	}
 }
@@ -71,7 +74,7 @@ void AAIControllerEnemyBase::BeginPlay()
 
 void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
 {
-	/*
+
 	for (AActor* Actor : UpdatedActors)
 	{
 		OutSightStimuliInfo = CanSenseActor(Actor, EAISenses::EAISenses_Sight);
@@ -97,12 +100,7 @@ void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& Upda
 			HandleSensedDamage(Actor);
 		}
 	}
-	*/
-}
-
-void AAIControllerEnemyBase::TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
-{
-
+	
 }
 
 EAIStates AAIControllerEnemyBase::GetCurrentState()
@@ -138,6 +136,8 @@ void AAIControllerEnemyBase::SetStateAsAttacking(AActor* IncomingAttackTarget, b
 	{
 		SetStateAsPassive();
 	}
+	
+	
 }
 
 void AAIControllerEnemyBase::SetStateAsOrbiting(AActor* IncomingAttackTarget)
@@ -222,6 +222,7 @@ void AAIControllerEnemyBase::HandleSensedSight(AActor* Actor)
 	switch (GetCurrentState())
 	{
 	case EAIStates::EAIStates_Passive:
+		UE_LOG(LogTemp, Warning, TEXT("HandleSensedSight"));
 		SetStateAsAttacking(Actor, true);
 
 	case EAIStates::EAIStates_Attacking:

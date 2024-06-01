@@ -155,13 +155,20 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 			IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
 			IEnemySpawnerInterface* EnemySpawnerInterface = Cast<IEnemySpawnerInterface>(HitActor);
 
-			if (DamagableInterface || EnemySpawnerInterface)
+			if (EnemySpawnerInterface)
 			{
 				if (!AlreadyHitActors_R.Contains(HitActor))
 				{
 					AlreadyHitActors_R.AddUnique(HitActor);
 
 					EnemySpawnerInterface->OnHit();
+				}
+			}
+			if (DamagableInterface)
+			{
+				if (!AlreadyHitActors_R.Contains(HitActor))
+				{
+					AlreadyHitActors_R.AddUnique(HitActor);
 
 					IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(HitActor);
 					if (TargetPositionalWarpingInterface)

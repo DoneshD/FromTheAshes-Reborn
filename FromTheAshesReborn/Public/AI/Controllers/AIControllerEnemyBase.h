@@ -44,8 +44,6 @@ protected:
 	UFUNCTION()
 	void ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
 
-	UFUNCTION()
-	void TargetActorsPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	
 private:
 
