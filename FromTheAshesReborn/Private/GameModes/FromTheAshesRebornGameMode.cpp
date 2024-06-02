@@ -115,8 +115,6 @@ void AFromTheAshesRebornGameMode::TogglePlayerInvincibility()
 		PlayerCharacter->DamageSystemComponent->MaxHealth = 200;
 		PlayerCharacter->DamageSystemComponent->CurrentHealth = 200;
 
-		UE_LOG(LogTemp, Warning, TEXT("Current Health: %f"), PlayerCharacter->DamageSystemComponent->CurrentHealth);
-
 		return;
 	}
 	if (!IsPlayerInvincible)
@@ -128,7 +126,6 @@ void AFromTheAshesRebornGameMode::TogglePlayerInvincibility()
 		PlayerCharacter->DamageSystemComponent->MaxHealth = 10000;
 		PlayerCharacter->DamageSystemComponent->CurrentHealth = 10000;
 
-		UE_LOG(LogTemp, Warning, TEXT("Current Health: %f"), PlayerCharacter->DamageSystemComponent->CurrentHealth);
 		return;
 
 	}

@@ -35,7 +35,6 @@ void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 
 float UDashSystemComponent::GetAngleOfDash()
 {
-
 	FVector AttackTargetLocation = FTAGameMode->HardTarget->GetActorLocation();
 	FVector OwnerLocation = PC->GetActorLocation();
 	FVector MovementVectorAnchored = PC->GetCharacterMovement()->GetLastInputVector() + PC->GetActorLocation();
@@ -53,8 +52,15 @@ float UDashSystemComponent::GetAngleOfDash()
 	float TargetDotProduct = FVector::DotProduct(CrossProduct, FVector(0.0f, 0.0f, 1.0f));
 	float DotProduct = FVector::DotProduct(TargetVector, MovementVector);
 
-	AngleOfDash = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
+	float TanVal = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct);
+	UE_LOG(LogTemp, Warning, TEXT("TargetDotProduct: %f"), TargetDotProduct);
+	UE_LOG(LogTemp, Warning, TEXT("DotProduct: %f"), DotProduct);
+	UE_LOG(LogTemp, Warning, TEXT("TanVal: %f "), TanVal);
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------"));
 
+	AngleOfDash = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
+	UE_LOG(LogTemp, Warning, TEXT("AngleOfDash: %f"), AngleOfDash);
+	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------"));
 	return AngleOfDash;
 }
 
@@ -102,12 +108,25 @@ void UDashSystemComponent::PerformDash()
 	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(FTAGameMode->HardTarget);
 	
 	float AngleOfDash = GetAngleOfDash();
+	float ForwardDashClamp;
 
-	if (AngleOfDash >= -45 && AngleOfDash < 45)
+	if (InRangeOfLateralDash())
+	{
+		ForwardDashClamp = 1;
+		//EnableLateralDash = true;
+
+	}
+	else
+	{
+		ForwardDashClamp = 25;
+		//EnableLateralDash = false;
+	}
+
+	if (AngleOfDash >= -ForwardDashClamp && AngleOfDash < ForwardDashClamp)
 	{
 		CurrentDashAnim = IsDashSaved ? PC->ForwardBlinkAnim : PC->ForwardDashAnim;
 	}
-	else if (AngleOfDash >= 45 && AngleOfDash <= 135)
+	else if (AngleOfDash >= ForwardDashClamp && AngleOfDash <= 135)
 	{
 		if (InRangeOfLateralDash())
 		{
@@ -117,9 +136,7 @@ void UDashSystemComponent::PerformDash()
 			{
 				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetRightArrowNeighbor(
 					TargetPositionalWarpingInterface->GetPositionalArrow(
-						TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())
-					)
-				);
+						TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
 			}
 		}
 		else
@@ -132,7 +149,7 @@ void UDashSystemComponent::PerformDash()
 	{
 		CurrentDashAnim = IsDashSaved ? PC->BackwardBlinkAnim : PC->BackwardDashAnim;
 	}
-	else if (AngleOfDash >= -135 && AngleOfDash <= -45)
+	else if (AngleOfDash >= -135 && AngleOfDash <= -ForwardDashClamp)
 	{
 		if (InRangeOfLateralDash())
 		{
@@ -142,9 +159,7 @@ void UDashSystemComponent::PerformDash()
 			{
 				DashWarpTargetArrow = TargetPositionalWarpingInterface->GetLeftArrowNeighbor(
 					TargetPositionalWarpingInterface->GetPositionalArrow(
-						TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())
-					)
-				);
+						TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
 			}
 		}
 		else
