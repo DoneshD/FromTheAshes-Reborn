@@ -11,6 +11,8 @@
 #include "Weapons/MeleeWeapon.h"
 #include "Interfaces/DashingCombatantInterface.h"
 #include "Interfaces/AttackTargetInterface.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "InputAction.h"
 #include "PlayableCharacter.generated.h"
 
@@ -24,6 +26,7 @@ class UMeleeAttackLogicComponent;
 class UDashSystemComponent;
 class UTargetingSystemComponent;
 class UGroundedComboStringComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, 
@@ -41,7 +44,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
 
 	UPROPERTY(VisibleAnywhere)
@@ -72,6 +75,11 @@ public:
 	TSubclassOf<ACombatManager> CombatManagerClass;
 
 	ACombatManager* CombatManager;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Niagara")
+	UNiagaraSystem* DashEffect;
+
+
 
 	//-----------------------------------------Inputs-----------------------------------------------
 

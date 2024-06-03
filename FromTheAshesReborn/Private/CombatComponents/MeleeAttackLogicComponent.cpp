@@ -6,6 +6,7 @@
 #include "Interfaces/AIEnemyInterface.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/EnemySpawnerInterface.h"
+#include "Interfaces/MeleeCombatantInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatComponents/ComboSystemComponent.h"
 #include "Components/ArrowComponent.h"
@@ -265,7 +266,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 			{
 				if (ACharacter* CharacterOwner = Cast<ACharacter>(OwnerActor))
 				{
-					UCharacterMovementComponent* CharacterMovement = CharacterOwner->GetCharacterMovement();
+					CharacterMovement = CharacterOwner->GetCharacterMovement();
 					StartLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 100;
 					EndLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * WarpRange;
 				}
@@ -295,7 +296,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		OutHit,
 		true,
 		FLinearColor::Red,
@@ -319,6 +320,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 
 				FMotionWarpingTarget MotionWarpingTargetParams;
 
+				UE_LOG(LogTemp, Warning, TEXT("INTERESTING"));
 				MotionWarpingTargetParams.Name = FName("CombatTarget");
 				MotionWarpingTargetParams.Location = WarpTargetLocation;
 				MotionWarpingTargetParams.Rotation.Roll = TargetRotation.Roll;
@@ -334,6 +336,36 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 
 			}
 		}
+	}
+	else
+	{
+		FVector WarpTargetLocation1;
+
+		FMotionWarpingTarget MotionWarpingTargetParams;
+
+		if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
+		{
+			CharacterMovement = CharacterOwner->GetCharacterMovement();
+			WarpTargetLocation1 = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * (WarpRange - 500.0f);
+
+		}
+		FRotator TargetRotation1 = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), WarpTargetLocation1);
+
+		DrawDebugSphere(GetWorld(), WarpTargetLocation1, 10.0, 10, FColor::Red, false, 5.0f);
+
+		MotionWarpingTargetParams.Name = FName("CombatTarget");
+		MotionWarpingTargetParams.Location = WarpTargetLocation1;
+		MotionWarpingTargetParams.Rotation.Roll = TargetRotation1.Roll;
+		MotionWarpingTargetParams.Rotation.Yaw = TargetRotation1.Yaw;
+		MotionWarpingTargetParams.BoneName = FName("root");
+
+		IPositionalWarpingInterface* OwnerPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
+
+		if (OwnerPositionalWarpingInterface)
+		{
+			OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
+		}
+
 	}
 }
 

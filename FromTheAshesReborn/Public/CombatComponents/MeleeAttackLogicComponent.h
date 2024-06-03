@@ -10,6 +10,7 @@ DECLARE_DELEGATE(FOnAttackEnd);
 
 class AFromTheAshesRebornGameMode;
 class APlayableCharacter;
+class UCharacterMovementComponent;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UMeleeAttackLogicComponent : public UActorComponent
@@ -19,6 +20,8 @@ class FROMTHEASHESREBORN_API UMeleeAttackLogicComponent : public UActorComponent
 public:
 
 	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
+
+	TObjectPtr<UCharacterMovementComponent> CharacterMovement;
 
 	UDamageSystem* DamageSystemComponent;
 

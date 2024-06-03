@@ -106,7 +106,7 @@ void UDashSystemComponent::PerformDash()
 	}
 
 	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(FTAGameMode->HardTarget);
-	
+
 	float AngleOfDash = GetAngleOfDash();
 	float ForwardDashClamp;
 
@@ -208,7 +208,7 @@ void UDashSystemComponent::DashWarpToTarget()
 		if (IsDashSaved)
 		{
 			IsDashSaved = false;
-			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 800.0f;
+			DashTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * 1000.0f;
 
 		}
 		else
@@ -237,7 +237,7 @@ void UDashSystemComponent::DashWarpToTarget()
 		MotionWarpingTargetParams.Rotation.Roll = DashTargetRotation.Roll;
 		MotionWarpingTargetParams.Rotation.Yaw = DashTargetRotation.Yaw;
 		MotionWarpingTargetParams.BoneName = FName("root");
-		
+
 		OwnerPositionalWarpingInterface->UpdateWarpTargetPostion(MotionWarpingTargetParams);
 	}
 }
@@ -251,4 +251,3 @@ void UDashSystemComponent::ResetDashWarpToTarget()
 		DashWarpTargetArrow = NULL;
 	}
 }
-
