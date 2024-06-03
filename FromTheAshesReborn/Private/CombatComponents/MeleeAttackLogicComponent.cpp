@@ -243,8 +243,6 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 			}
 		}
 	}
-
-
 }
 
 void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange AttackRange, bool HasInput)
@@ -285,7 +283,6 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 			}
 		}
 	}
-
 
 	FHitResult OutHit;
 
@@ -332,15 +329,19 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 	{
 		if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 		{
-			CharacterMovement = CharacterOwner->GetCharacterMovement();
-			WarpTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * (WarpRange - 400.0f);
-
+			if (HasInput)
+			{
+				WarpTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * (WarpRange - 400.0f);
+			}
+			else
+			{
+				WarpTargetLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * (WarpRange - 400.0f);
+			}
 		}
+
 		TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), WarpTargetLocation);
 
 		DrawDebugSphere(GetWorld(), WarpTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
-
-
 	}
 
 	MotionWarpingTargetParams.Name = FName("CombatTarget");

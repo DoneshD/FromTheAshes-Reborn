@@ -17,7 +17,7 @@ class FROMTHEASHESREBORN_API IDashingCombatantInterface
 public:
 
 	UFUNCTION()
-	virtual void DashWarpToTarget() = 0;
+	virtual void DashWarpToTarget(bool HasInput) = 0;
 
 	UFUNCTION()
 	virtual void ResetDashWarpToTarget() = 0;

@@ -44,9 +44,9 @@ public:
 	void SelectBlink();
 
 	UFUNCTION(BlueprintCallable)
-	void PerformDash();
+	void PerformDash(bool HasInput);
 
-	void DashWarpToTarget();
+	void DashWarpToTarget(bool HasInput);
 
 	void ResetDashWarpToTarget();
 

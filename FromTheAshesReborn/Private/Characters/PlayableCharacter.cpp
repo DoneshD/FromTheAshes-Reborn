@@ -431,7 +431,7 @@ void APlayableCharacter::InputDash()
 	if (CanDash())
 	{
 		SetState(EStates::EState_Dash);
-		DashSystemComponent->PerformDash();
+		DashSystemComponent->PerformDash(HasMovementInput);
 	}
 	else
 	{
@@ -673,9 +673,9 @@ void APlayableCharacter::ResetMeleeAttackWarpToTarget()
 	MeleeAttackLogicComponent->ResetMeleeAttackWarpToTarget();
 }
 
-void APlayableCharacter::DashWarpToTarget()
+void APlayableCharacter::DashWarpToTarget(bool HasInput)
 {
-	DashSystemComponent->DashWarpToTarget();
+	DashSystemComponent->DashWarpToTarget(HasMovementInput);
 }
 
 void APlayableCharacter::ResetDashWarpToTarget()

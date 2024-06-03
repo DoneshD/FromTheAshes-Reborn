@@ -387,7 +387,7 @@ public:
 	//Dashing Combatant Interface
 
 	UFUNCTION(BlueprintCallable)
-	virtual void DashWarpToTarget() override;
+	virtual void DashWarpToTarget(bool HasInput) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetDashWarpToTarget() override;
