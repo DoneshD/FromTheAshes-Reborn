@@ -299,7 +299,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHit,
 		true,
 		FLinearColor::Red,
@@ -321,6 +321,12 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 				FVector TargetLocation = HitActor->GetActorLocation() - HitActor->GetActorForwardVector();
 				TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
 
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("NOT PositionalWarpingInterface"));
+				WarpTargetLocation = HitActor->GetActorLocation();
+				TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), WarpTargetLocation);
 			}
 		}
 	}

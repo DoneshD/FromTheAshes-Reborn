@@ -22,6 +22,9 @@ void AFromTheAshesRebornGameMode::BeginPlay()
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyBaseClass, EnemiesArray);
 
+	AActor* CombatManagerInstance = UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass);
+	CombatManager = Cast<ACombatManager>(CombatManagerInstance);
+
 }
 
 void AFromTheAshesRebornGameMode::PublishEnemySpawned()
@@ -93,7 +96,8 @@ void AFromTheAshesRebornGameMode::ToggleEnemyAggro()
 		for (TObjectPtr<AActor> Attacker : EnemiesArray)
 		{
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			AIEnemyInterface->Attack(PlayerCharacter);
+			//AIEnemyInterface->Attack(PlayerCharacter);
+			CombatManager->HandleAttackRequest(Attacker);
 		}
 		return;
 

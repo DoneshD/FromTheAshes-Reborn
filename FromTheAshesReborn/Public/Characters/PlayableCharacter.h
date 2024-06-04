@@ -37,13 +37,10 @@ class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public I
 public:
 
 	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
-
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> LockOnSphere;
-
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
-
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
 

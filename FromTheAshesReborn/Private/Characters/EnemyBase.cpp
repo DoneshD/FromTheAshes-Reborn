@@ -35,7 +35,7 @@ void AEnemyBase::BeginPlay()
 	}
 
 	CombatManager = Cast<ACombatManager>(UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass));
-	//CombatManager->HandleAttackRequest(this);
+	CombatManager->HandleAttackRequest(this);
 
 	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
 	EventManagerInterface->PublishEnemySpawned();

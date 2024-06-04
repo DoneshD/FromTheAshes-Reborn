@@ -43,6 +43,11 @@ public:
 
 	TSubclassOf<AEnemyBase> EnemyBaseClass = AEnemyBase::StaticClass();
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACombatManager> CombatManagerClass;
+
+	ACombatManager* CombatManager;
+
 	FVector SpawnerLocation;
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 	FActorSpawnParameters SpawnParams;

@@ -685,7 +685,7 @@ void APlayableCharacter::ResetDashWarpToTarget()
 
 int APlayableCharacter::GetMaxAttackersCount()
 {
-	return 4;
+	return 2;
 }
 
 
