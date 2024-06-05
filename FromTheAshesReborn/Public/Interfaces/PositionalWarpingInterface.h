@@ -4,6 +4,8 @@
 #include "UObject/Interface.h"
 #include "PositionalWarpingInterface.generated.h"
 
+class UArrowComponent;
+
 UINTERFACE(MinimalAPI)
 class UPositionalWarpingInterface : public UInterface
 {

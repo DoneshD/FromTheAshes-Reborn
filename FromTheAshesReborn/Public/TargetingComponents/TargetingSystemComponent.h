@@ -5,6 +5,7 @@
 #include "TargetingSystemComponent.generated.h"
 
 class AFromTheAshesRebornGameMode;
+class APlayableCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
