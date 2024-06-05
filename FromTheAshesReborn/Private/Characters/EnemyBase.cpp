@@ -6,6 +6,7 @@
 #include "Components/ArrowComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BrainComponent.h"
+#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Components/CapsuleComponent.h"
 #include "Interfaces/EventManagerInterface.h"
 #include "EventManagers/CombatManager.h"
@@ -34,11 +35,10 @@ void AEnemyBase::BeginPlay()
 		}
 	}
 
-	CombatManager = Cast<ACombatManager>(UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass));
-	CombatManager->HandleAttackRequest(this);
-
 	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
 	EventManagerInterface->PublishEnemySpawned();
+
+	EventManagerInterface->HandleAttackRequest(this);
 
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &AEnemyBase::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &AEnemyBase::HandleHitReaction);
@@ -112,7 +112,8 @@ void AEnemyBase::JumpToDestination(FVector Destination)
 
 void AEnemyBase::LightAttack()
 {
-
+	//PlayAnimMontage(BaseAttack);
+	PlayAnAnimationMontage(BaseAttack);
 }
 
 bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
@@ -162,7 +163,7 @@ void AEnemyBase::HandleDeath()
 	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
 	EventManagerInterface->PublishEnemyDeath();
 
-	CombatManager->HandleDeath(this);
+	EventManagerInterface->HandleDeath(this);
 }
 
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
@@ -240,4 +241,44 @@ void AEnemyBase::Orbit(TObjectPtr<AActor> AttackTarget)
 void AEnemyBase::Retreat()
 {
 	AICEnemyBase->SetStateAsPassive();
+}
+
+void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)
+{
+	if (bInterrupted)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION WAS INTERRUPTED!"));
+		OnAttackEnd.Execute();
+		AttackEnd(AICEnemyBase->AttackTarget);
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION IS BLENDING OUT!"));
+		OnAttackEnd.Execute();
+		AttackEnd(AICEnemyBase->AttackTarget);
+
+	}
+}
+
+void AEnemyBase::FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted)
+{
+	UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION HAS COMPLETED!"));
+	OnAttackEnd.Execute();
+	AttackEnd(AICEnemyBase->AttackTarget);
+
+}
+
+void AEnemyBase::PlayAnAnimationMontage(UAnimMontage* montageToPlay)
+{
+	if (montageToPlay)
+	{
+		GetMesh()->GetAnimInstance()->Montage_Play(montageToPlay);
+
+		FOnMontageEnded BlendOutDelegate;
+		BlendOutDelegate.BindUObject(this, &AEnemyBase::FunctionToExecuteOnAnimationBlendOut);
+		GetMesh()->GetAnimInstance()->Montage_SetBlendingOutDelegate(BlendOutDelegate, montageToPlay);
+
+		FOnMontageEnded CompleteDelegate;
+		CompleteDelegate.BindUObject(this, &AEnemyBase::FunctionToExecuteOnAnimationEnd);
+		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, montageToPlay);
+	}
 }

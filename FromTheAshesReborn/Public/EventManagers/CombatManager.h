@@ -25,7 +25,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	void HandleAttackRequest(TObjectPtr<AActor> Attacker);
+	UFUNCTION(BlueprintCallable)
+	void HandleAttackRequest(AActor* Attacker);
 
 	void EngageOrbiter();
 

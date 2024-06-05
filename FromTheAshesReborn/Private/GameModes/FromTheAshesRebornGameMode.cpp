@@ -1,4 +1,3 @@
-
 #include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Kismet/GameplayStatics.h"
 #include "Characters/EnemyMelee.h"
@@ -22,8 +21,7 @@ void AFromTheAshesRebornGameMode::BeginPlay()
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), EnemyBaseClass, EnemiesArray);
 
-	AActor* CombatManagerInstance = UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass);
-	CombatManager = Cast<ACombatManager>(CombatManagerInstance);
+	CombatManager = Cast<ACombatManager>(UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass));
 
 }
 
@@ -172,6 +170,16 @@ void AFromTheAshesRebornGameMode::ToggleAllInvincibility()
 		}
 		return;
 	}
+}
+
+void AFromTheAshesRebornGameMode::HandleAttackRequest(AActor* Attacker)
+{
+	CombatManager->HandleAttackRequest(Attacker);
+}
+
+void AFromTheAshesRebornGameMode::HandleDeath(AActor* Attacker)
+{
+	CombatManager->HandleDeath(Attacker);
 }
 
 void AFromTheAshesRebornGameMode::IncrementEnemyCount()

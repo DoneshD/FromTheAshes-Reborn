@@ -59,7 +59,9 @@ float AEnemyMelee::SetMovementSpeed(EMovementSpeed SpeedState)
 
 void AEnemyMelee::LightAttack()
 {
-	PlayAnimMontage(LightAttackAnim);
+	Super::LightAttack();
+
+	//PlayAnimMontage(LightAttackAnim);
 }
 
 AMeleeWeapon* AEnemyMelee::GetLeftWeapon()

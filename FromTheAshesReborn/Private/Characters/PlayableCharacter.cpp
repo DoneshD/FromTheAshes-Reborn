@@ -99,9 +99,6 @@ void APlayableCharacter::BeginPlay()
 		MeleeWeapon_R->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
 	}
 
-	AActor* CombatManagerInstance = UGameplayStatics::GetActorOfClass(GetWorld(), CombatManagerClass);
-	CombatManager = Cast<ACombatManager>(CombatManagerInstance);
-
 	DamageSystemComponent->OnDeathResponse.BindUObject(this, &APlayableCharacter::HandleDeath);
 	DamageSystemComponent->OnDamageResponse.AddUObject(this, &APlayableCharacter::HandleHitReaction);
 }
@@ -551,7 +548,7 @@ void APlayableCharacter::HandleDeath()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	PlayAnimMontage(DeathMontage);
-	CombatManager->HandleDeath(this);
+	FTAGameMode->CombatManager->HandleDeath(this);
 
 }
 

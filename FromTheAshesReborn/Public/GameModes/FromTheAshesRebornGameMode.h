@@ -21,6 +21,8 @@ class AFromTheAshesRebornGameMode : public AGameModeBase, public IEventManagerIn
 
 public:
 
+	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
+
 	TObjectPtr<AActor> HardTarget;
 
 	FOnEnemySpawned OnEnemySpawned;
@@ -79,6 +81,11 @@ public:
 	virtual void TogglePlayerInvincibility() override;
 
 	virtual void ToggleAllInvincibility() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void HandleAttackRequest(AActor* Attacker) override;
+
+	virtual void HandleDeath(AActor* Attacker) override;
 
 	void IncrementEnemyCount();
 

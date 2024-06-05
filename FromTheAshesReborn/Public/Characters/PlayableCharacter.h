@@ -37,10 +37,13 @@ class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public I
 public:
 
 	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> LockOnSphere;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComp;
+
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	TObjectPtr<UCameraComponent> CameraComp;
 
@@ -67,11 +70,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AMeleeWeapon> HeavyMeleeWeaponClass;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACombatManager> CombatManagerClass;
-
-	ACombatManager* CombatManager;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Niagara")
 	UNiagaraSystem* DashEffect;

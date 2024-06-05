@@ -28,7 +28,7 @@ void ACombatManager::Tick(float DeltaTime)
 
 }
 
-void ACombatManager::HandleAttackRequest(TObjectPtr<AActor> Attacker)
+void ACombatManager::HandleAttackRequest(AActor* Attacker)
 {
 	if (!Attacker)
 	{

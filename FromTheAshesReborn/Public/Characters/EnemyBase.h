@@ -13,6 +13,7 @@ DECLARE_DELEGATE(FOnAttackEnd);
 
 class AIControllerEnemyBase;
 class UArrowComponent;
+class AFromTheAshesRebornGameMode;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
@@ -21,11 +22,7 @@ class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagabl
 
 public:
 
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACombatManager> CombatManagerClass;
-
-	ACombatManager* CombatManager;
+	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
 
 	AAIControllerEnemyBase* AICEnemyBase;
 
@@ -56,6 +53,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
 	TObjectPtr<UAnimMontage> DeathMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> BaseAttack;
 
 public:
 
@@ -69,6 +68,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
+
 
 	//Damagable Interface functions
 
@@ -131,4 +131,10 @@ public:
 
 	virtual void Retreat() override;
 
+
+	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
+
+	void FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted);
+
+	void PlayAnAnimationMontage(UAnimMontage* montageToPlay);
 };

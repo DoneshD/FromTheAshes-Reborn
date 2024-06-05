@@ -28,4 +28,8 @@ public:
 
 	virtual void ToggleAllInvincibility() = 0;
 
+	virtual void HandleAttackRequest(AActor* Attacker) = 0;
+
+	virtual void HandleDeath(AActor* Attacker) = 0;
+
 };
