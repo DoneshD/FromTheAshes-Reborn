@@ -18,7 +18,6 @@ UDashSystemComponent::UDashSystemComponent()
 void UDashSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-	PC = Cast<APlayableCharacter>(GetOwner());
 
 	FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!FTAGameMode)
@@ -36,8 +35,18 @@ void UDashSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 float UDashSystemComponent::GetAngleOfDash()
 {
 	FVector AttackTargetLocation = FTAGameMode->HardTarget->GetActorLocation();
-	FVector OwnerLocation = PC->GetActorLocation();
-	FVector MovementVectorAnchored = PC->GetCharacterMovement()->GetLastInputVector() + PC->GetActorLocation();
+	FVector OwnerLocation = GetOwner()->GetActorLocation();
+
+	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
+	{
+		CharacterMovement = CharacterOwner->GetCharacterMovement();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Error getting CharacterMovementComponent"));
+		return 0.0f;
+	}
+	FVector MovementVectorAnchored = CharacterMovement->GetLastInputVector() + GetOwner()->GetActorLocation();
 
 	float AngleOfDash = 0.0f;
 
@@ -80,21 +89,38 @@ void UDashSystemComponent::SelectBlink()
 {
 	if (IsDashSaved)
 	{
-		PerformDash(PC->HasMovementInput);
+		IPlayerCharacterInterface* PlayerCharacterInterface = Cast<IPlayerCharacterInterface>(GetOwner());
+		PerformDash(PlayerCharacterInterface->GetHasMovementInput());
 		CanDashAttack = true;
 	}
 }
 
 void UDashSystemComponent::PerformDash(bool HasInput)
 {
+	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(GetOwner());
+	if (AIEnemyInterface)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PerformDash component called by AI enemy"));
+		return;
+	}
+
 	if (!FTAGameMode->HardTarget)
 	{
-		CurrentDashAnim = IsDashSaved ? PC->ForwardBlinkAnim : PC->ForwardDashAnim;
-		if (CurrentDashAnim)
+		CurrentDashAnim = IsDashSaved ? ForwardBlinkAnim : ForwardDashAnim;
+		if (!CurrentDashAnim)
 		{
-			PC->PlayAnimMontage(CurrentDashAnim);
+			return;
 		}
-		return;
+
+		if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
+		{
+			CharacterOwner->PlayAnimMontage(CurrentDashAnim);
+		}
+		else
+		{
+			return;
+		}
+		
 	}
 
 	IPositionalWarpingInterface* TargetPositionalWarpingInterface = Cast<IPositionalWarpingInterface>(FTAGameMode->HardTarget);
@@ -103,17 +129,25 @@ void UDashSystemComponent::PerformDash(bool HasInput)
 
 	if (InRangeOfLateralDash() && !HasInput)
 	{
-		CurrentDashAnim = FMath::RandBool() ? PC->LeftDashAnim : PC->RightDashAnim;
-		if (CurrentDashAnim)
+		CurrentDashAnim = FMath::RandBool() ? LeftDashAnim : RightDashAnim;
+		if (!CurrentDashAnim)
 		{
-			PC->PlayAnimMontage(CurrentDashAnim);
+			return;
 		}
-		return;
+
+		if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
+		{
+			CharacterOwner->PlayAnimMontage(CurrentDashAnim);
+		}
+		else
+		{
+			return;
+		}
 	}
 
 	if (AngleOfDash >= -ForwardDashClamp && AngleOfDash < ForwardDashClamp)
 	{
-		CurrentDashAnim = IsDashSaved ? PC->ForwardBlinkAnim : PC->ForwardDashAnim;
+		CurrentDashAnim = IsDashSaved ? ForwardBlinkAnim : ForwardDashAnim;
 	}
 	else if (AngleOfDash >= ForwardDashClamp && AngleOfDash <= 135)
 	{
@@ -124,11 +158,11 @@ void UDashSystemComponent::PerformDash(bool HasInput)
 				TargetPositionalWarpingInterface->GetPositionalArrow(
 					TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
 		}
-		CurrentDashAnim = IsDashSaved ? PC->RightBlinkAnim : PC->RightDashAnim;
+		CurrentDashAnim = IsDashSaved ? RightBlinkAnim : RightDashAnim;
 	}
 	else if (AngleOfDash >= 135 || AngleOfDash <= -135)
 	{
-		CurrentDashAnim = IsDashSaved ? PC->BackwardBlinkAnim : PC->BackwardDashAnim;
+		CurrentDashAnim = IsDashSaved ? BackwardBlinkAnim : BackwardDashAnim;
 	}
 	else if (AngleOfDash >= -135 && AngleOfDash <= -ForwardDashClamp)
 	{
@@ -139,7 +173,7 @@ void UDashSystemComponent::PerformDash(bool HasInput)
 				TargetPositionalWarpingInterface->GetPositionalArrow(
 					TargetPositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation())));
 		}
-		CurrentDashAnim = IsDashSaved ? PC->LeftBlinkAnim : PC->LeftDashAnim;
+		CurrentDashAnim = IsDashSaved ? LeftBlinkAnim : LeftDashAnim;
 	}
 	else
 	{
@@ -147,9 +181,18 @@ void UDashSystemComponent::PerformDash(bool HasInput)
 		return;
 	}
 
-	if (CurrentDashAnim)
+	if (!CurrentDashAnim)
 	{
-		PC->PlayAnimMontage(CurrentDashAnim);
+		return;
+	}
+
+	if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
+	{
+		CharacterOwner->PlayAnimMontage(CurrentDashAnim);
+	}
+	else
+	{
+		return;
 	}
 }
 

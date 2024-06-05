@@ -178,6 +178,11 @@ void APlayableCharacter::Tick(float DeltaTime)
 	
 }
 
+bool APlayableCharacter::GetHasMovementInput()
+{
+	return true;
+}
+
 //--------------------------------------------------------- PlayerInputComponent ---------------------------------------------------------------------//
 
 void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -18,14 +18,36 @@ public:
 
 	TObjectPtr<AFromTheAshesRebornGameMode> FTAGameMode;
 
-	TObjectPtr<APlayableCharacter> PC;
-
 	TObjectPtr<UArrowComponent> DashWarpTargetArrow;
 
 	TObjectPtr<UCharacterMovementComponent> CharacterMovement;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> CurrentDashAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> ForwardDashAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> BackwardDashAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> RightDashAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> LeftDashAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> ForwardBlinkAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> BackwardBlinkAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> RightBlinkAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
+	TObjectPtr<UAnimMontage> LeftBlinkAnim;
 
 	bool EnableLateralDash = false;
 

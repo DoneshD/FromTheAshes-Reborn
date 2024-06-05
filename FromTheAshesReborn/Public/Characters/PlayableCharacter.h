@@ -2,15 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "FTACharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Components/TimelineComponent.h"
+#include "Interfaces/DashingCombatantInterface.h"
+#include "Interfaces/AttackTargetInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
+//#include "Interfaces/PlayerCharacterInterface.h"
+#include "../Interfaces/PlayerCharacterInterface.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/TimelineComponent.h"
 #include "DamageSystem/DamageSystem.h"
 #include "DamageSystem/DamageInfo.h"
 #include "Weapons/MeleeWeapon.h"
-#include "Interfaces/DashingCombatantInterface.h"
-#include "Interfaces/AttackTargetInterface.h"
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include "InputAction.h"
@@ -30,7 +32,7 @@ class UNiagaraSystem;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, 
-	public IDashingCombatantInterface, public IAttackTargetInterface
+	public IDashingCombatantInterface, public IAttackTargetInterface, public IPlayerCharacterInterface
 {
 	GENERATED_BODY()
 
@@ -320,6 +322,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	//Player Character Interfaces Functions
+
+	virtual bool GetHasMovementInput() override;
 
 	//Damagable Interface functions
 
