@@ -44,9 +44,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsBlocking = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int AttackTokensCount = 1;
-
 	ECanBeDamaged DamageOutput;
 
 	FOnDamageResponse OnDamageResponse;
@@ -64,9 +61,5 @@ public:
 	float Heal(float HealAmount);
 
 	bool TakeDamage(FDamageInfo DamageInfo);
-
-	bool ReserveAttackTokens(int Amount);
-
-	void ReturnAttackTokens(int Amount);
 		
 };

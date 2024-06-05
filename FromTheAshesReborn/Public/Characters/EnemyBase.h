@@ -29,10 +29,6 @@ public:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
-	TMap<AActor*, int> ReservedAttackTokensMap;
-
-	int TokensUsedInCurrentAttack;
-
 	FOnAttackEnd OnAttackEnd;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
@@ -94,11 +90,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual bool TakeDamage(FDamageInfo DamageInfo) override;
 
-	UFUNCTION(BlueprintCallable)
-	virtual bool ReserveAttackToken(int Amount) override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void ReturnAttackToken(int Amount) override;
 
 	//Enemy Interface functions
 
@@ -114,14 +105,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void LightAttack() override;
 
-	UFUNCTION()
-	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual void AttackEnd(AActor* AttackTarget) override;
-
-	UFUNCTION()
-	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
 
 	//Attacker Interface 
 
@@ -131,10 +114,11 @@ public:
 
 	virtual void Retreat() override;
 
-
+	/*
 	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
 
 	void FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted);
 
 	void PlayAnAnimationMontage(UAnimMontage* montageToPlay);
+	*/
 };

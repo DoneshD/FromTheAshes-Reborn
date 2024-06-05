@@ -91,7 +91,7 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 		return false;
 	}
 }
-
+/*
 bool UDamageSystem::ReserveAttackTokens(int Amount)
 {
 	if (AttackTokensCount >= Amount)
@@ -110,3 +110,4 @@ void UDamageSystem::ReturnAttackTokens(int Amount)
 	AttackTokensCount += Amount;
 
 }
+*/

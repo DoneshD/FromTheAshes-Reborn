@@ -39,9 +39,4 @@ public:
 	UFUNCTION()
 	virtual void HandleHitReaction(FDamageInfo DamageInfo) = 0;
 
-	UFUNCTION()
-	virtual bool ReserveAttackToken(int Amount) = 0;
-
-	UFUNCTION()
-	virtual void ReturnAttackToken(int Amount) = 0;
 };

@@ -70,7 +70,7 @@ APlayableCharacter::APlayableCharacter()
 
 	RotationTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("RotationTimeline"));
 
-	DamageSystemComponent->AttackTokensCount = 1;
+	//DamageSystemComponent->AttackTokensCount = 1;
 }
 
 void APlayableCharacter::BeginPlay()
@@ -535,15 +535,7 @@ bool APlayableCharacter::TakeDamage(FDamageInfo DamageInfo)
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
-bool APlayableCharacter::ReserveAttackToken(int Amount)
-{
-	return DamageSystemComponent->ReserveAttackTokens(Amount);
-}
 
-void APlayableCharacter::ReturnAttackToken(int Amount)
-{
-	DamageSystemComponent->ReturnAttackTokens(Amount);
-}
 
 void APlayableCharacter::HandleDeath()
 {

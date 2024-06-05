@@ -82,15 +82,6 @@ bool AEnemyBase::TakeDamage(FDamageInfo DamageInfo)
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
-bool AEnemyBase::ReserveAttackToken(int Amount)
-{
-	return DamageSystemComponent->ReserveAttackTokens(Amount);
-}
-
-void AEnemyBase::ReturnAttackToken(int Amount)
-{
-	DamageSystemComponent->ReturnAttackTokens(Amount);
-}
 
 float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
 {
@@ -112,38 +103,11 @@ void AEnemyBase::JumpToDestination(FVector Destination)
 
 void AEnemyBase::LightAttack()
 {
-	//PlayAnimMontage(BaseAttack);
-	PlayAnAnimationMontage(BaseAttack);
+	//PlayAnAnimationMontage(BaseAttack);
 }
 
-bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
-{
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
-	if (DamagableInterface)
-	{
-		if (DamagableInterface->ReserveAttackToken(TokensNeeded))
-		{
-			StoreAttackTokens(AttackTarget, TokensNeeded);
-			TokensUsedInCurrentAttack = TokensNeeded;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	return false;
-}
 
-void AEnemyBase::AttackEnd(AActor* AttackTarget)
-{
-	IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(AttackTarget);
-	if (DamagableInterface)
-	{
-		DamagableInterface->ReturnAttackToken(TokensUsedInCurrentAttack);
-		StoreAttackTokens(AttackTarget, -1 * TokensUsedInCurrentAttack);
-	}
-}
+
 
 void AEnemyBase::FinishLightMeleeAttack()
 {
@@ -217,16 +181,6 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 	}
 }
 
-void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
-{
-	if (ReservedAttackTokensMap.Find(AttackTarget))
-	{
-		Amount += ReservedAttackTokensMap[AttackTarget];
-
-	}
-
-	ReservedAttackTokensMap.Add(AttackTarget, Amount);
-}
 
 void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
 {
@@ -243,6 +197,7 @@ void AEnemyBase::Retreat()
 	AICEnemyBase->SetStateAsPassive();
 }
 
+/*
 void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)
 {
 	if (bInterrupted)
@@ -282,3 +237,4 @@ void AEnemyBase::PlayAnAnimationMontage(UAnimMontage* montageToPlay)
 		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, montageToPlay);
 	}
 }
+*/

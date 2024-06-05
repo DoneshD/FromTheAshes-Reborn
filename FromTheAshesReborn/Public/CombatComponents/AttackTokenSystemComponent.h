@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,16 +11,35 @@ class FROMTHEASHESREBORN_API UAttackTokenSystemComponent : public UActorComponen
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	UAttackTokenSystemComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int AttackTokensCount = 1;
+
+	int TokensUsedInCurrentAttack;
+
+	TMap<AActor*, int> ReservedAttackTokensMap;
+
 
 public:	
-	// Called every frame
+	UAttackTokenSystemComponent();
+
+	virtual void BeginPlay() override;
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION()
+	bool AttackStart(AActor* AttackTarget, int TokensNeeded);
+
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd(AActor* AttackTarget);
+
+	UFUNCTION(BlueprintCallable)
+	bool ReserveAttackToken(int Amount);
+
+	UFUNCTION(BlueprintCallable)
+	void ReturnAttackToken(int Amount);
+
+	UFUNCTION()
+	void StoreAttackTokens(AActor* AttackTarget, int Amount);
 		
 };

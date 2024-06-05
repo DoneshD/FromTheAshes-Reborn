@@ -345,12 +345,6 @@ public:
 	virtual bool TakeDamage(FDamageInfo DamageInfo) override;
 
 	UFUNCTION()
-	virtual bool ReserveAttackToken(int Amount) override;
-
-	UFUNCTION()
-	virtual void ReturnAttackToken(int Amount) override;
-
-	UFUNCTION()
 	virtual void HandleDeath() override;
 
 	UFUNCTION()

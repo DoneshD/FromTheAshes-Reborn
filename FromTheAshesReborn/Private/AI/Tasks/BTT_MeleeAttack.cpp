@@ -31,7 +31,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
 	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
 
-
+	/*
 	if (AIEnemyInterface->AttackStart(AttackTarget, TokensNeeded))
 	{
 
@@ -64,6 +64,7 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	}
 
 	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	*/
 	return EBTNodeResult::Failed;
 }
 
@@ -120,7 +121,7 @@ void UBTT_MeleeAttack::FinishedAttacking()
 					AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
 					if (AttackTarget)
 					{
-						AIEnemyInterface->AttackEnd(AttackTarget);
+						//AIEnemyInterface->AttackEnd(AttackTarget);
 						FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
 					}
 				}
