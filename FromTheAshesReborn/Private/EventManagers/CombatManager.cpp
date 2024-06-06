@@ -61,6 +61,29 @@ void ACombatManager::HandleAttackRequest(AActor* Attacker)
 	}
 }
 
+void ACombatManager::HandleAttackerSwapRequest(AActor* Attacker)
+{
+	if (!Attacker)
+	{
+		return;
+	}
+
+	if (Attacker != AttackTarget)
+	{
+		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
+		if (AIEnemyInterface->GetCurrentState() == EAIStates::EAIStates_Attacking)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NICE!!"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("OK!!"));
+
+		}
+
+	}
+}
+
 void ACombatManager::EngageOrbiter()
 {
 	if (Oribters.Num() > 0)

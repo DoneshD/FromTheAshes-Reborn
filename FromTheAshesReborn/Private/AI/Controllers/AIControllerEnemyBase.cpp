@@ -289,3 +289,32 @@ void AAIControllerEnemyBase::HandleSensedDamage(AActor* Actor)
 	}
 }
 
+void AAIControllerEnemyBase::ResumePriorState(AActor* CurrentAttackTarget)
+{
+	UE_LOG(LogTemp, Warning, TEXT("PriorState: %s"), *UEnum::GetValueAsString(PriorState));
+
+	switch (PriorState)
+	{
+	case EAIStates::EAIStates_Passive:
+		SetStateAsPassive();
+
+	case EAIStates::EAIStates_Attacking:
+		UE_LOG(LogTemp, Warning, TEXT("Resuming Attack"));
+		SetStateAsAttacking(AttackTarget, true);
+		break;
+
+	case EAIStates::EAIStates_Orbiting:
+		UE_LOG(LogTemp, Warning, TEXT("Resuming Orbit"));
+		SetStateAsOrbiting(AttackTarget);
+
+	case EAIStates::EAIStates_Frozen:
+		//Nothing
+
+	case EAIStates::EAIStates_Dead:
+		//Nothing
+
+	default:
+		break;
+	}
+}
+

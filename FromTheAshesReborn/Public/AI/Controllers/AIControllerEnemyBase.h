@@ -34,6 +34,9 @@ public:
 	float DefendRadius = 0.0f;
 	float OrbitRadius = 0.0f;
 
+	UPROPERTY(EditAnywhere)
+	EAIStates PriorState;
+
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 
 protected:
@@ -88,5 +91,8 @@ public:
 	void HandleSensedSound(FVector Location);
 
 	void HandleSensedDamage(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable)
+	void ResumePriorState(AActor* CurrentAttackTarget);
 
 };

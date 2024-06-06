@@ -179,7 +179,7 @@ void AFromTheAshesRebornGameMode::HandleAttackRequest(AActor* Attacker)
 
 void AFromTheAshesRebornGameMode::HandleAttackerSwapRequest(AActor* Attacker)
 {
-
+	CombatManager->HandleAttackerSwapRequest(Attacker);
 }
 
 void AFromTheAshesRebornGameMode::HandleDeath(AActor* Attacker)

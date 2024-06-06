@@ -83,7 +83,6 @@ bool AEnemyBase::TakeDamage(FDamageInfo DamageInfo)
 	return DamageSystemComponent->TakeDamage(DamageInfo);
 }
 
-
 float AEnemyBase::SetMovementSpeed(EMovementSpeed SpeedState)
 {
 	return 0.0f;
@@ -129,7 +128,17 @@ void AEnemyBase::HandleDeath()
 
 void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 {
+	
 	GetCharacterMovement()->StopMovementImmediately();
+
+	IEventManagerInterface* EventManagerInterface = Cast<IEventManagerInterface>(UGameplayStatics::GetGameMode(GetWorld()));
+	EventManagerInterface->HandleAttackerSwapRequest(this);
+
+	if (AICEnemyBase->GetCurrentState() != EAIStates::EAIStates_Frozen)
+	{
+		AICEnemyBase->PriorState = GetCurrentState();
+	}
+
 	AICEnemyBase->SetStateAsFrozen();
 	
 	UAnimMontage* HitReactionMontage = nullptr;
@@ -180,8 +189,6 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 
 void AEnemyBase::SetStateAsAttacking(TObjectPtr<AActor> AttackTarget)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Attack"));
-
 	AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
 }
 
@@ -189,6 +196,12 @@ void AEnemyBase::SetStateAsOrbiting(TObjectPtr<AActor> AttackTarget)
 {
 	AICEnemyBase->SetStateAsOrbiting(AttackTarget);
 }
+
+EAIStates AEnemyBase::GetCurrentState()
+{
+	return AICEnemyBase->GetCurrentState();
+}
+
 
 void AEnemyBase::Retreat()
 {
@@ -226,11 +239,10 @@ void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage,
 {
 	if (bInterrupted)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION WAS INTERRUPTED!"));
 		OnAttackEnd.Execute();
 	}
-	else {
-		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION IS BLENDING OUT!"));
+	else 
+	{
 		OnAttackEnd.Execute();
 
 	}
@@ -238,7 +250,6 @@ void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage,
 
 void AEnemyBase::FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted)
 {
-	UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION HAS COMPLETED!"));
 
 }
 

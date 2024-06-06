@@ -33,7 +33,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	if (AttackTokenSystemInterface->AttackStart(AttackTarget, TokensNeeded))
 	{
-
 		EnemyMelee->SetMovementSpeed(MovementSpeed);
 		EnemyController->ClearFocus(EAIFocusPriority::Gameplay);
 		EnemyController->SetFocus(AttackTarget);
@@ -58,7 +57,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Attack Start failed"));
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return EBTNodeResult::Failed;
 	}

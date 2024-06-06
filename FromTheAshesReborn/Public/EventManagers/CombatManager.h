@@ -27,6 +27,8 @@ public:
 
 	void HandleAttackRequest(AActor* Attacker);
 
+	void HandleAttackerSwapRequest(AActor* Attacker);
+
 	void EngageOrbiter();
 
 	void HandleDeath(TObjectPtr<AActor> ActorRef);

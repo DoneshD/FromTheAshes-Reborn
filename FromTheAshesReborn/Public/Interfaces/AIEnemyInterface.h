@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "Enums/EMovementSpeed.h"
+#include "../Enums/EAIStates.h"
 #include "AIEnemyInterface.generated.h"
 
 UINTERFACE(MinimalAPI)
@@ -32,7 +33,10 @@ public:
 	UFUNCTION()
 	virtual void LightAttack() = 0;
 
+	virtual EAIStates GetCurrentState() = 0;
+
 	virtual void SetStateAsAttacking(TObjectPtr<AActor> AttackTarget) = 0;
 
 	virtual void SetStateAsOrbiting(TObjectPtr<AActor> AttackTarget) = 0;
+
 };

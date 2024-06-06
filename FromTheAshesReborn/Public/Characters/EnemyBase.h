@@ -104,12 +104,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void LightAttack() override;
 
-
-	//Attacker Interface 
-
 	virtual void SetStateAsAttacking(TObjectPtr<AActor> AttackTarget) override;
 
 	virtual void SetStateAsOrbiting(TObjectPtr<AActor> AttackTarget) override;
+
+	virtual EAIStates GetCurrentState() override;
 
 	virtual void Retreat() override;
 
@@ -130,6 +129,7 @@ public:
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
 
+	//--------------------------------------------------------------------------------------
 	
 	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
 
