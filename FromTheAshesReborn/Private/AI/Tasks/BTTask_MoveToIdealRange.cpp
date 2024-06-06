@@ -41,6 +41,7 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
         return EBTNodeResult::Failed;
     }
 
+
     FAIMoveRequest MoveRequest;
     MoveRequest.SetGoalActor(AttackTarget);
     MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(IdealRangeKey.SelectedKeyName));
@@ -55,7 +56,16 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
     {
         EnemyController->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTTask_MoveToIdealRange::ReachedLocation);
         FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
-        return EBTNodeResult::InProgress;
+    }
+    else if (RequestResult.Code == EPathFollowingRequestResult::Failed)
+    {
+        //UE_LOG(LogTemp, Warning, TEXT("Ideal failed"))
+        return EBTNodeResult::Failed;
+    }
+    else
+    {
+        //UE_LOG(LogTemp, Warning, TEXT("else if failed"))
+        return EBTNodeResult::Failed;
     }
 
     return EBTNodeResult::Failed;

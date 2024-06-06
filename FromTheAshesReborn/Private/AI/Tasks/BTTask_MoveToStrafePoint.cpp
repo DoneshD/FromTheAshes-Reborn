@@ -39,11 +39,17 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
         return EBTNodeResult::Failed;
     }
 
+    
+    
+
     EnemyController->SetFocus(AttackTarget);
     EnemyBase->SetMovementSpeed(MovementSpeed);
 
     FAIMoveRequest MoveRequest;
     FVector Destination = OwnerComp.GetBlackboardComponent()->GetValueAsVector(PointOfInterestKey.SelectedKeyName);
+
+    DrawDebugSphere(GetWorld(), Destination, 50.0f, 12, FColor::Red, false, 2.0f);
+
     MoveRequest.SetGoalLocation(Destination);
 
     FPathFollowingRequestResult RequestResult = EnemyController->MoveTo(MoveRequest);
@@ -55,13 +61,17 @@ EBTNodeResult::Type UBTTask_MoveToStrafePoint::ExecuteTask(UBehaviorTreeComponen
         FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
         return EBTNodeResult::InProgress;
     }
+    else if (RequestResult.Code == EPathFollowingRequestResult::Failed)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Strafe failed"))
+            return EBTNodeResult::Failed;
+    }
     else
     {
-        FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-        return EBTNodeResult::Failed;
-
+        UE_LOG(LogTemp, Warning, TEXT("else if failed"))
+            return EBTNodeResult::Failed;
     }
-    FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
     return EBTNodeResult::Failed;
 }
 

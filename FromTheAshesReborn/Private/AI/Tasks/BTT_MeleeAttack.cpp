@@ -39,6 +39,11 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 		FAIMoveRequest MoveRequest;
 		MoveRequest.SetGoalActor(AttackTarget);
+
+		float AttackRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName);
+		UE_LOG(LogTemp, Warning, TEXT("AttackRadius: %f"), AttackRadius);
+
+
 		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName));
 
 		AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &UBTT_MeleeAttack::ReachedLocation);
