@@ -41,8 +41,8 @@ void ACombatManager::HandleAttackRequest(AActor* Attacker)
 		{
 			Attackers.AddUnique(Attacker);
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			AIEnemyInterface->Attack(AttackTarget);
-			UE_LOG(LogTemp, Warning, TEXT("Attack"));
+			UE_LOG(LogTemp, Warning, TEXT("AIEnemyInterface->SetStateAsAttacking"));
+			AIEnemyInterface->SetStateAsAttacking(AttackTarget);
 		}
 		else
 		{
@@ -50,8 +50,8 @@ void ACombatManager::HandleAttackRequest(AActor* Attacker)
 
 			Oribters.AddUnique(Attacker);
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			AIEnemyInterface->Orbit(AttackTarget);
-			UE_LOG(LogTemp, Warning, TEXT("Oribit"));
+			UE_LOG(LogTemp, Warning, TEXT("AIEnemyInterface->SetStateAsOrbiting"));
+			AIEnemyInterface->SetStateAsOrbiting(AttackTarget);
 
 		}
 	}
@@ -79,7 +79,7 @@ void ACombatManager::EngageOrbiter()
 				IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Oribiter);
 				if (AIEnemyInterface)
 				{
-					AIEnemyInterface->Attack(AttackTarget);
+					AIEnemyInterface->SetStateAsAttacking(AttackTarget);
 				}
 				else
 				{

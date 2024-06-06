@@ -66,7 +66,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Attack")
 	void FinishLightMeleeAttack();
 
-
 	//Damagable Interface functions
 
 	UFUNCTION()
@@ -74,7 +73,6 @@ public:
 
 	UFUNCTION()
 	virtual void HandleHitReaction(FDamageInfo DamageInfo) override;
-
 
 	UFUNCTION(BlueprintCallable)
 	virtual float GetCurrentHealth() override;
@@ -109,9 +107,9 @@ public:
 
 	//Attacker Interface 
 
-	virtual void Attack(TObjectPtr<AActor> AttackTarget) override;
+	virtual void SetStateAsAttacking(TObjectPtr<AActor> AttackTarget) override;
 
-	virtual void Orbit(TObjectPtr<AActor> AttackTarget) override;
+	virtual void SetStateAsOrbiting(TObjectPtr<AActor> AttackTarget) override;
 
 	virtual void Retreat() override;
 

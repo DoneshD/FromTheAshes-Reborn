@@ -85,6 +85,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void HandleAttackRequest(AActor* Attacker) override;
 
+	UFUNCTION(BlueprintCallable)
+	virtual void HandleAttackerSwapRequest(AActor* Attacker) override;
+
 	virtual void HandleDeath(AActor* Attacker) override;
 
 	void IncrementEnemyCount();

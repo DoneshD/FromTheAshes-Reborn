@@ -32,7 +32,7 @@ public:
 	UFUNCTION()
 	virtual void LightAttack() = 0;
 
-	virtual void Attack(TObjectPtr<AActor> AttackTarget) = 0;
+	virtual void SetStateAsAttacking(TObjectPtr<AActor> AttackTarget) = 0;
 
-	virtual void Orbit(TObjectPtr<AActor> AttackTarget) = 0;
+	virtual void SetStateAsOrbiting(TObjectPtr<AActor> AttackTarget) = 0;
 };

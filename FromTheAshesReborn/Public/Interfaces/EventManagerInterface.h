@@ -30,6 +30,8 @@ public:
 
 	virtual void HandleAttackRequest(AActor* Attacker) = 0;
 
+	virtual void HandleAttackerSwapRequest(AActor* Attacker) = 0;
+
 	virtual void HandleDeath(AActor* Attacker) = 0;
 
 };

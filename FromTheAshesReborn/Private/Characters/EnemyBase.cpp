@@ -108,7 +108,6 @@ void AEnemyBase::LightAttack()
 
 void AEnemyBase::FinishLightMeleeAttack()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Att!!!!!!!!!!!!!!!!!!!##@#"));
 	OnAttackEnd.Execute();
 }
 
@@ -179,12 +178,14 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 	}
 }
 
-void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
+void AEnemyBase::SetStateAsAttacking(TObjectPtr<AActor> AttackTarget)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Attack"));
+
 	AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
 }
 
-void AEnemyBase::Orbit(TObjectPtr<AActor> AttackTarget)
+void AEnemyBase::SetStateAsOrbiting(TObjectPtr<AActor> AttackTarget)
 {
 	AICEnemyBase->SetStateAsOrbiting(AttackTarget);
 }
@@ -227,12 +228,10 @@ void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage,
 	{
 		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION WAS INTERRUPTED!"));
 		OnAttackEnd.Execute();
-		//AttackEnd(AICEnemyBase->AttackTarget);
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION IS BLENDING OUT!"));
 		OnAttackEnd.Execute();
-		//AttackEnd(AICEnemyBase->AttackTarget);
 
 	}
 }
@@ -240,8 +239,6 @@ void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage,
 void AEnemyBase::FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted)
 {
 	UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION HAS COMPLETED!"));
-	//OnAttackEnd.Execute();
-	//AttackEnd(AICEnemyBase->AttackTarget);
 
 }
 

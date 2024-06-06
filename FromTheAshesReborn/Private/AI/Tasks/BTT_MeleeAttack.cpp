@@ -121,8 +121,6 @@ void UBTT_MeleeAttack::FinishedAttacking()
 					AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
 					if (AttackTarget)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("UBTT_MeleeAttack::FinishedAttacking()"));
-
 						AttackTokenSystemInterface->AttackEnd(AttackTarget);
 						FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
 					}
