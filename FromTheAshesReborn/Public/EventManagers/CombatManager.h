@@ -29,10 +29,11 @@ public:
 
 	void HandleAttackerSwapRequest(AActor* Attacker);
 
-	void EngageOrbiter();
+	void EngageRandomOrbiter();
+
+	void DisengageRandomAttacker();
 
 	void HandleDeath(TObjectPtr<AActor> ActorRef);
 
-	void ToggleAggro();
 
 };

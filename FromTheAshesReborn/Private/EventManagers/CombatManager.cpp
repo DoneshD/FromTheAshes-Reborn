@@ -1,6 +1,5 @@
 #include "EventManagers/CombatManager.h"
 #include "Interfaces/AttackTargetInterface.h"
-#include "Characters/PlayableCharacter.h"
 #include "Interfaces/AIEnemyInterface.h"
 
 ACombatManager::ACombatManager()
@@ -13,12 +12,9 @@ void ACombatManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	APlayableCharacter* PlayerCharacter = Cast<APlayableCharacter>(PlayerController->GetPawn());
+	AttackTarget = GetWorld()->GetFirstPlayerController()->GetPawn();
 
-	AttackTarget = PlayerCharacter;
-
-	IAttackTargetInterface* AttackTargetInterface = Cast<IAttackTargetInterface>(PlayerCharacter);
+	IAttackTargetInterface* AttackTargetInterface = Cast<IAttackTargetInterface>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	MaxAttackersCount = AttackTargetInterface->GetMaxAttackersCount();
 }
 
@@ -37,22 +33,21 @@ void ACombatManager::HandleAttackRequest(AActor* Attacker)
 	
 	if (Attacker != AttackTarget)
 	{
+		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
+		if (!AIEnemyInterface)
+		{
+			return;
+		}
+
 		if (Attackers.Num() < MaxAttackersCount)
 		{
 			Attackers.AddUnique(Attacker);
-			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			UE_LOG(LogTemp, Warning, TEXT("AIEnemyInterface->SetStateAsAttacking"));
 			AIEnemyInterface->SetStateAsAttacking(AttackTarget);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CurrentAttackers.Num() > MaxAttackersCount, Adding to Orbiters"));
-
 			Oribters.AddUnique(Attacker);
-			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			UE_LOG(LogTemp, Warning, TEXT("AIEnemyInterface->SetStateAsOrbiting"));
 			AIEnemyInterface->SetStateAsOrbiting(AttackTarget);
-
 		}
 	}
 	else
@@ -61,65 +56,99 @@ void ACombatManager::HandleAttackRequest(AActor* Attacker)
 	}
 }
 
-void ACombatManager::HandleAttackerSwapRequest(AActor* Attacker)
+void ACombatManager::HandleAttackerSwapRequest(AActor* Enemy)
 {
-	if (!Attacker)
+	if (!Enemy)
 	{
 		return;
 	}
 
-	if (Attacker != AttackTarget)
+	if (Enemy != AttackTarget)
 	{
-		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-		if (AIEnemyInterface->GetCurrentState() == EAIStates::EAIStates_Attacking)
+		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Enemy);
+		if (AIEnemyInterface->GetCurrentState() == EAIStates::EAIStates_Orbiting)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("NICE!!"));
+			Oribters.Remove(Enemy);
+			DisengageRandomAttacker();
+			Attackers.AddUnique(Enemy);
+
+			AIEnemyInterface->SetStateAsAttacking(AttackTarget);
 		}
-		else
+		else if (AIEnemyInterface->GetCurrentState() == EAIStates::EAIStates_Attacking)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("OK!!"));
+			Attackers.Remove(Enemy);
+			EngageRandomOrbiter();
+			Oribters.AddUnique(Enemy);
 
+			AIEnemyInterface->SetStateAsOrbiting(AttackTarget);
 		}
-
 	}
 }
 
-void ACombatManager::EngageOrbiter()
+void ACombatManager::EngageRandomOrbiter()
 {
 	if (Oribters.Num() > 0)
 	{
 		int RemoveIndex = FMath::RandRange(0, Oribters.Num() - 1);
 
-		if (Oribters.IsValidIndex(RemoveIndex))
+		if (!Oribters.IsValidIndex(RemoveIndex))
 		{
-			AActor* Oribiter = Oribters[RemoveIndex];
-
-			Oribters.RemoveAt(RemoveIndex);
-
-			if (Oribiter)
-			{
-				Attackers.AddUnique(Oribiter);
-				IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Oribiter);
-				if (AIEnemyInterface)
-				{
-					AIEnemyInterface->SetStateAsAttacking(AttackTarget);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Oribiter does not implement IAIEnemyInterface"));
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Oribiter is null"));
-			}
+			return;
 		}
-		else
+
+		AActor* Oribiter = Oribters[RemoveIndex];
+
+		if (!Oribiter)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Invalid index"));
+			return;
 		}
+
+		Oribters.RemoveAt(RemoveIndex);
+		Attackers.AddUnique(Oribiter);
+		
+		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Oribiter);
+		if (!AIEnemyInterface)
+		{
+			return;
+		}
+
+		AIEnemyInterface->SetStateAsAttacking(AttackTarget);
 	}
+}
 
+void ACombatManager::DisengageRandomAttacker()
+{
+	if (Attackers.Num() > 0)
+	{
+		int RemoveIndex = FMath::RandRange(0, Attackers.Num() - 1);
+
+		if (!Attackers.IsValidIndex(RemoveIndex))
+		{
+			return;
+		}
+		AActor* Attacker = Attackers[RemoveIndex];
+
+		if (!Attacker)
+		{
+			return;
+		}
+		Attackers.RemoveAt(RemoveIndex);
+
+		if (!Attacker)
+		{
+			return;
+		}
+
+		Oribters.AddUnique(Attacker);
+
+		IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
+		if (!AIEnemyInterface)
+		{
+			return;
+		}
+
+		AIEnemyInterface->SetStateAsOrbiting(AttackTarget);
+	}
 }
 
 
@@ -136,7 +165,10 @@ void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 		for (TObjectPtr<AActor>  Attacker : Attackers)
 		{
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			AIEnemyInterface->Retreat();
+			if (AIEnemyInterface)
+			{
+				AIEnemyInterface->Retreat();
+			}
 		}
 
 		Attackers.Empty();
@@ -148,21 +180,15 @@ void ACombatManager::HandleDeath(TObjectPtr<AActor> ActorRef)
 		if (Attackers.Contains(ActorRef))
 		{
 			Attackers.Remove(ActorRef);
-			EngageOrbiter();
+			EngageRandomOrbiter();
 		}
 		else
 		{
 			if (Oribters.Contains(ActorRef))
 			{
 				Oribters.Remove(ActorRef);
-				EngageOrbiter();
+				EngageRandomOrbiter();
 			}
 		}
 	}
 }
-
-void ACombatManager::ToggleAggro()
-{
-
-}
-
