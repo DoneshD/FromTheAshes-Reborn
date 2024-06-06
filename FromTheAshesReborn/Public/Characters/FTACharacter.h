@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -12,6 +10,8 @@
 class UArrowComponent;
 class UDamageSystem;
 class UPositionalWarpingComponent;
+class UAttackTokenSystemComponent;
+
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IPositionalWarpingInterface
@@ -24,6 +24,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PositionalWarpingComponent", meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UPositionalWarpingComponent> PositionalWarpingComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAttackTokenSystemComponent> AttackTokenSystemComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TObjectPtr<UArrowComponent> FrontArrow;

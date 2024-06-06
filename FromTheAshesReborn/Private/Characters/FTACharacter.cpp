@@ -6,6 +6,7 @@
 #include "DamageSystem/DamageSystem.h"
 #include "MotionWarpingComponent.h"
 #include "Components/ArrowComponent.h"
+#include "CombatComponents/AttackTokenSystemComponent.h"
 #include "MovementComponents/PositionalWarpingComponent.h"
 #include "Enums/EFacingDirection.h"
 #include "Interfaces/PositionalWarpingInterface.h"
@@ -61,6 +62,9 @@ AFTACharacter::AFTACharacter()
 
 	PositionalWarpingComponent = CreateDefaultSubobject<UPositionalWarpingComponent>(TEXT("PositionalWarpingComponent"));
 	this->AddOwnedComponent(PositionalWarpingComponent);
+
+	AttackTokenSystemComponent = CreateDefaultSubobject<UAttackTokenSystemComponent>(TEXT("AttackTokenSystemComponent"));
+	this->AddOwnedComponent(AttackTokenSystemComponent);
 
 }
 

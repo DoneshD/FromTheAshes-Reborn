@@ -115,6 +115,7 @@ void UDashSystemComponent::PerformDash(bool HasInput)
 		if (ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner()))
 		{
 			CharacterOwner->PlayAnimMontage(CurrentDashAnim);
+			return;
 		}
 		else
 		{

@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "Interfaces/AIEnemyInterface.h"
 #include "Interfaces/DamagableInterface.h"
+#include "../Interfaces/AttackTokenSystemInterface.h"
 #include "EventManagers/CombatManager.h"
 #include "EnemyBase.generated.h"
 
@@ -16,7 +17,7 @@ class UArrowComponent;
 class AFromTheAshesRebornGameMode;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface
+class FROMTHEASHESREBORN_API AEnemyBase : public AFTACharacter, public IDamagableInterface, public IAIEnemyInterface, public IAttackTokenSystemInterface
 {
 	GENERATED_BODY()
 
@@ -114,11 +115,28 @@ public:
 
 	virtual void Retreat() override;
 
-	/*
+	//Attack Token System Interface
+
+	UFUNCTION()
+	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) override;
+
+	UFUNCTION()
+	virtual void AttackEnd(AActor* AttackTarget) override;
+
+	UFUNCTION()
+	virtual bool ReserveAttackToken(int Amount) override;
+
+	UFUNCTION()
+	virtual void ReturnAttackToken(int Amount) override;
+
+	UFUNCTION()
+	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
+
+	
 	void FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted);
 
 	void FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted);
 
 	void PlayAnAnimationMontage(UAnimMontage* montageToPlay);
-	*/
+	
 };

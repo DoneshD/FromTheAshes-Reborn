@@ -61,7 +61,8 @@ void AEnemyMelee::LightAttack()
 {
 	Super::LightAttack();
 
-	//PlayAnimMontage(LightAttackAnim);
+	PlayAnAnimationMontage(BaseAttack);
+
 }
 
 AMeleeWeapon* AEnemyMelee::GetLeftWeapon()

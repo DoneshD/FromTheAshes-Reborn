@@ -1,5 +1,7 @@
 #include "Characters/PlayableCharacter.h"
-#include "Characters/EnemyBase.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/ArrowComponent.h"
+#include "Helpers/TimelineHelper.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -10,11 +12,9 @@
 #include "DamageSystem/DamageInfo.h"
 #include "CombatComponents/GroundedComboStringComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
+#include "CombatComponents/AttackTokenSystemComponent.h"
 #include "MovementComponents/DashSystemComponent.h"
 #include "TargetingComponents/TargetingSystemComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Components/ArrowComponent.h"
-#include "Helpers/TimelineHelper.h"
 #include "Weapons/MeleeWeapon.h"
 #include "GameModes/FromTheAshesRebornGameMode.h"
 #include "MotionWarpingComponent.h"
@@ -47,7 +47,7 @@ APlayableCharacter::APlayableCharacter()
 
 	MeleeAttackLogicComponent = CreateDefaultSubobject<UMeleeAttackLogicComponent>(TEXT("MeleeAttackLogicComponent"));
 	this->AddOwnedComponent(MeleeAttackLogicComponent);
-
+	
 	DashSystemComponent = CreateDefaultSubobject<UDashSystemComponent>(TEXT("DashSystemComponent"));
 	this->AddOwnedComponent(DashSystemComponent);
 
@@ -536,7 +536,6 @@ bool APlayableCharacter::TakeDamage(FDamageInfo DamageInfo)
 }
 
 
-
 void APlayableCharacter::HandleDeath()
 {
 	InputComponent->ClearActionBindings();
@@ -679,7 +678,30 @@ void APlayableCharacter::ResetDashWarpToTarget()
 
 int APlayableCharacter::GetMaxAttackersCount()
 {
-	return 2;
+	return MaxAttackersCount;
 }
 
+bool APlayableCharacter::AttackStart(AActor* AttackTarget, int TokensNeeded)
+{
+	return AttackTokenSystemComponent->AttackStart(AttackTarget, TokensNeeded);
+}
 
+void APlayableCharacter::AttackEnd(AActor* AttackTarget)
+{
+	AttackTokenSystemComponent->AttackEnd(AttackTarget);
+}
+
+bool APlayableCharacter::ReserveAttackToken(int Amount)
+{
+	return AttackTokenSystemComponent->ReserveAttackToken(Amount);
+}
+
+void APlayableCharacter::ReturnAttackToken(int Amount)
+{
+	AttackTokenSystemComponent->ReturnAttackToken(Amount);
+}
+
+void APlayableCharacter::StoreAttackTokens(AActor* AttackTarget, int Amount)
+{
+	AttackTokenSystemComponent->StoreAttackTokens(AttackTarget, Amount);
+}

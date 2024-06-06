@@ -4,6 +4,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "DamageSystem/DamageSystem.h"
 #include "Components/ArrowComponent.h"
+#include "CombatComponents/AttackTokenSystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "BrainComponent.h"
 #include "GameModes/FromTheAshesRebornGameMode.h"
@@ -103,14 +104,11 @@ void AEnemyBase::JumpToDestination(FVector Destination)
 
 void AEnemyBase::LightAttack()
 {
-	//PlayAnAnimationMontage(BaseAttack);
 }
-
-
-
 
 void AEnemyBase::FinishLightMeleeAttack()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Att!!!!!!!!!!!!!!!!!!!##@#"));
 	OnAttackEnd.Execute();
 }
 
@@ -181,7 +179,6 @@ void AEnemyBase::HandleHitReaction(FDamageInfo DamageInfo)
 	}
 }
 
-
 void AEnemyBase::Attack(TObjectPtr<AActor> AttackTarget)
 {
 	AICEnemyBase->SetStateAsAttacking(AttackTarget, true);
@@ -197,19 +194,45 @@ void AEnemyBase::Retreat()
 	AICEnemyBase->SetStateAsPassive();
 }
 
-/*
+bool AEnemyBase::AttackStart(AActor* AttackTarget, int TokensNeeded)
+{
+	
+	return AttackTokenSystemComponent->AttackStart(AttackTarget, TokensNeeded);
+}
+
+void AEnemyBase::AttackEnd(AActor* AttackTarget)
+{
+	AttackTokenSystemComponent->AttackEnd(AttackTarget);
+}
+
+bool AEnemyBase::ReserveAttackToken(int Amount)
+{
+	return AttackTokenSystemComponent->ReserveAttackToken(Amount);
+}
+
+void AEnemyBase::ReturnAttackToken(int Amount)
+{
+	AttackTokenSystemComponent->ReturnAttackToken(Amount);
+}
+
+void AEnemyBase::StoreAttackTokens(AActor* AttackTarget, int Amount)
+{
+	AttackTokenSystemComponent->StoreAttackTokens(AttackTarget, Amount);
+}
+
+
 void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage, bool bInterrupted)
 {
 	if (bInterrupted)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION WAS INTERRUPTED!"));
 		OnAttackEnd.Execute();
-		AttackEnd(AICEnemyBase->AttackTarget);
+		//AttackEnd(AICEnemyBase->AttackTarget);
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION IS BLENDING OUT!"));
 		OnAttackEnd.Execute();
-		AttackEnd(AICEnemyBase->AttackTarget);
+		//AttackEnd(AICEnemyBase->AttackTarget);
 
 	}
 }
@@ -217,8 +240,8 @@ void AEnemyBase::FunctionToExecuteOnAnimationBlendOut(UAnimMontage* animMontage,
 void AEnemyBase::FunctionToExecuteOnAnimationEnd(UAnimMontage* animMontage, bool bInterrupted)
 {
 	UE_LOG(LogTemp, Warning, TEXT("MY ANIMATION HAS COMPLETED!"));
-	OnAttackEnd.Execute();
-	AttackEnd(AICEnemyBase->AttackTarget);
+	//OnAttackEnd.Execute();
+	//AttackEnd(AICEnemyBase->AttackTarget);
 
 }
 
@@ -237,4 +260,4 @@ void AEnemyBase::PlayAnAnimationMontage(UAnimMontage* montageToPlay)
 		GetMesh()->GetAnimInstance()->Montage_SetEndDelegate(CompleteDelegate, montageToPlay);
 	}
 }
-*/
+

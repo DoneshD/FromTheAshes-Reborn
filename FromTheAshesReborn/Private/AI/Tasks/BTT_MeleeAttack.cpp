@@ -29,10 +29,9 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	}
 
 	AActor* AttackTarget = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
-	IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
+	IAttackTokenSystemInterface* AttackTokenSystemInterface = Cast<IAttackTokenSystemInterface>(EnemyMelee);
 
-	/*
-	if (AIEnemyInterface->AttackStart(AttackTarget, TokensNeeded))
+	if (AttackTokenSystemInterface->AttackStart(AttackTarget, TokensNeeded))
 	{
 
 		EnemyMelee->SetMovementSpeed(MovementSpeed);
@@ -59,12 +58,13 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Attack Start failed"));
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return EBTNodeResult::Failed;
 	}
 
 	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	*/
+	
 	return EBTNodeResult::Failed;
 }
 
@@ -113,15 +113,17 @@ void UBTT_MeleeAttack::FinishedAttacking()
 			if (EnemyMelee)
 			{
 				AActor* AttackTarget = Cast<AActor>(OwnerComp->GetBlackboardComponent()->GetValueAsObject(AttackTargetKey.SelectedKeyName));
+				IAttackTokenSystemInterface* AttackTokenSystemInterface = Cast<IAttackTokenSystemInterface>(EnemyMelee);
 
-				IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(EnemyMelee);
-				if (AIEnemyInterface)
+				if (AttackTokenSystemInterface)
 				{
 					AAIControllerEnemyBase* AIControllerEnemyBase = Cast<AAIControllerEnemyBase>(OwnerComp->GetAIOwner());
 					AIControllerEnemyBase->GetPathFollowingComponent()->OnRequestFinished.RemoveAll(this);
 					if (AttackTarget)
 					{
-						//AIEnemyInterface->AttackEnd(AttackTarget);
+						UE_LOG(LogTemp, Warning, TEXT("UBTT_MeleeAttack::FinishedAttacking()"));
+
+						AttackTokenSystemInterface->AttackEnd(AttackTarget);
 						FinishLatentTask(*OwnerComp, EBTNodeResult::Succeeded);
 					}
 				}

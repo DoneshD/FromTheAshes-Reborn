@@ -8,6 +8,7 @@
 #include "Interfaces/MeleeCombatantInterface.h"
 //#include "Interfaces/PlayerCharacterInterface.h"
 #include "../Interfaces/PlayerCharacterInterface.h"
+#include "../Interfaces/AttackTokenSystemInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
 #include "DamageSystem/DamageSystem.h"
@@ -32,7 +33,7 @@ class UNiagaraSystem;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, 
-	public IDashingCombatantInterface, public IAttackTargetInterface, public IPlayerCharacterInterface
+	public IDashingCombatantInterface, public IAttackTargetInterface, public IPlayerCharacterInterface, public IAttackTokenSystemInterface
 {
 	GENERATED_BODY()
 
@@ -123,6 +124,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool DisableRootMotion = false;
+
+
 	//-----------------------------------------Lock Ons--------------------------------------------
 
 	bool IsTargeting = false;
@@ -160,6 +163,9 @@ public:
 	FOnTimelineEvent TimelineFinished{};
 
 	float BufferAmount;
+
+	UPROPERTY(EditAnywhere)
+	int MaxAttackersCount = 1;
 
 	//-----------------------------------------Anim Montages---------------------------------------
 
@@ -390,5 +396,22 @@ public:
 	//Attack Target Interface
 
 	virtual int GetMaxAttackersCount() override;
+
+	//Attack Token System Interface
+
+	UFUNCTION()
+	virtual bool AttackStart(AActor* AttackTarget, int TokensNeeded) override;
+
+	UFUNCTION()
+	virtual void AttackEnd(AActor* AttackTarget) override;
+
+	UFUNCTION()
+	virtual bool ReserveAttackToken(int Amount) override;
+
+	UFUNCTION()
+	virtual void ReturnAttackToken(int Amount) override;
+
+	UFUNCTION()
+	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
 
 };
