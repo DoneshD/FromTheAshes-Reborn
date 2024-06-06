@@ -42,7 +42,6 @@ void AFromTheAshesRebornGameMode::SpawnMeleeEnemy()
 
 	SpawnerLocation = EnemySpawner->GetRandomLocationAroundSpawner(1000.0f);
 
-
 	EnemyMelee = GetWorld()->SpawnActorDeferred<AEnemyMelee>(EnemyMeleeClass, FTransform(
 		SpawnRotation, SpawnerLocation), this, nullptr, ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
@@ -94,11 +93,9 @@ void AFromTheAshesRebornGameMode::ToggleEnemyAggro()
 		for (TObjectPtr<AActor> Attacker : EnemiesArray)
 		{
 			IAIEnemyInterface* AIEnemyInterface = Cast<IAIEnemyInterface>(Attacker);
-			//AIEnemyInterface->Attack(PlayerCharacter);
 			CombatManager->HandleAttackRequest(Attacker);
 		}
 		return;
-
 	}
 	
 }
@@ -135,7 +132,6 @@ void AFromTheAshesRebornGameMode::TogglePlayerInvincibility()
 
 void AFromTheAshesRebornGameMode::ToggleAllInvincibility()
 {
-
 	if (IsAllInvicible)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Deactivating All Invincibility"));

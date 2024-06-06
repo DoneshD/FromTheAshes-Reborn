@@ -153,6 +153,15 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 		AActor* HitActor = CurrentHit.GetActor();
 		if (HitActor)
 		{
+			IAIEnemyInterface* OwnerEnemyInterface = Cast<IAIEnemyInterface>(GetOwner());
+			IAIEnemyInterface* HitActorEnemyInterface = Cast<IAIEnemyInterface>(HitActor);
+
+			if (OwnerEnemyInterface && HitActorEnemyInterface)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Enemy Hit"));
+				return;
+			}
+
 			IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
 			IEnemySpawnerInterface* EnemySpawnerInterface = Cast<IEnemySpawnerInterface>(HitActor);
 
