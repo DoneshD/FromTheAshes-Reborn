@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Interfaces/EventManagerInterface.h"
 #include "EventManagers/CombatManager.h"
+#include "MotionWarpingComponent.h"
 #include "AIController.h"
 
 AEnemyBase::AEnemyBase()

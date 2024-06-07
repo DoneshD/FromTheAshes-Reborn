@@ -1,6 +1,7 @@
 #include "Characters/EnemyMelee.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
+#include "MotionWarpingComponent.h"
 #include "Weapons/MeleeWeapon.h"
 
 AEnemyMelee::AEnemyMelee()
@@ -31,7 +32,7 @@ void AEnemyMelee::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, 
 {
 	Super::GetIdealRange(OutAttackRadius, OutDefendRadius, OutOrbitRadius);
 
-	OutAttackRadius = 350.0f;
+	OutAttackRadius = 500.0f;
 	OutDefendRadius = 600.0f;
 }
 

@@ -67,10 +67,10 @@ public:
 	UFUNCTION()
 	virtual void MeleeTraceCollisions() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void MeleeAttackWarpToTarget() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	virtual void ResetMeleeAttackWarpToTarget() override;
 
 	

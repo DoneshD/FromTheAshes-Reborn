@@ -41,7 +41,6 @@ EBTNodeResult::Type UBTT_MeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		MoveRequest.SetGoalActor(AttackTarget);
 
 		float AttackRadius = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName);
-		UE_LOG(LogTemp, Warning, TEXT("AttackRadius: %f"), AttackRadius);
 
 
 		MoveRequest.SetAcceptanceRadius(OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AttackRadiusKey.SelectedKeyName));

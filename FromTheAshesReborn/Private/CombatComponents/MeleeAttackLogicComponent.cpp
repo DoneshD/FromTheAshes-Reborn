@@ -4,6 +4,7 @@
 #include "MotionWarpingComponent.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/AIEnemyInterface.h"
+#include "Interfaces/PlayerCharacterInterface.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/EnemySpawnerInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
@@ -153,14 +154,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 		AActor* HitActor = CurrentHit.GetActor();
 		if (HitActor)
 		{
-			IAIEnemyInterface* OwnerEnemyInterface = Cast<IAIEnemyInterface>(GetOwner());
-			IAIEnemyInterface* HitActorEnemyInterface = Cast<IAIEnemyInterface>(HitActor);
-
-			if (OwnerEnemyInterface && HitActorEnemyInterface)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Enemy Hit"));
-				return;
-			}
+			IPlayerCharacterInterface* PlayerCharacterInterface = Cast<IPlayerCharacterInterface>(HitActor);
 
 			IDamagableInterface* DamagableInterface = Cast<IDamagableInterface>(HitActor);
 			IEnemySpawnerInterface* EnemySpawnerInterface = Cast<IEnemySpawnerInterface>(HitActor);
@@ -174,7 +168,7 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 					EnemySpawnerInterface->OnHit();
 				}
 			}
-			if (DamagableInterface)
+			if (DamagableInterface && PlayerCharacterInterface)
 			{
 				if (!AlreadyHitActors_R.Contains(HitActor))
 				{
@@ -256,6 +250,8 @@ void UMeleeAttackLogicComponent::MeleeTraceCollisions()
 
 void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange AttackRange, bool HasInput)
 {
+	UE_LOG(LogTemp, Warning, TEXT("HERE1"));
+
 	float WarpRange = GetMeleeAttackRange(AttackRange);
 
 	FMotionWarpingTarget MotionWarpingTargetParams;
@@ -327,6 +323,9 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 				EFacingDirection FacingDirection = PositionalWarpingInterface->GetFacingDirection(GetOwner()->GetActorLocation());
 				WarpTargetLocation = PositionalWarpingInterface->GetPositionalArrow(FacingDirection)->GetComponentLocation();
 
+				FName ComponentName = PositionalWarpingInterface->GetPositionalArrow(FacingDirection)->GetFName();
+				UE_LOG(LogTemp, Warning, TEXT("ComponentName: %s"), *ComponentName.ToString());
+
 				FVector TargetLocation = HitActor->GetActorLocation() - HitActor->GetActorForwardVector();
 				TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), TargetLocation);
 
@@ -346,14 +345,16 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 			CharacterMovement = CharacterOwner->GetCharacterMovement();
 			if (HasInput)
 			{
+
 				WarpTargetLocation = GetOwner()->GetActorLocation() + CharacterMovement->GetLastInputVector() * (WarpRange - 400.0f);
 			}
 			else
 			{
+
 				WarpTargetLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * (WarpRange - 400.0f);
 			}
 		}
-
+		
 		DrawDebugSphere(GetWorld(), WarpTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 	}
 

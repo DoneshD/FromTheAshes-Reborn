@@ -56,6 +56,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Melee Attack")
 	void MeleeTraceCollisions();
 
+	UFUNCTION(BlueprintCallable, Category = "Melee Attack")
 	void MeleeAttackWarpToTarget(EMeleeAttackRange WarpRange, bool HasInput);
 
 	void ResetMeleeAttackWarpToTarget();

@@ -62,14 +62,8 @@ float UDashSystemComponent::GetAngleOfDash()
 	float DotProduct = FVector::DotProduct(TargetVector, MovementVector);
 
 	float TanVal = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct);
-	UE_LOG(LogTemp, Warning, TEXT("TargetDotProduct: %f"), TargetDotProduct);
-	UE_LOG(LogTemp, Warning, TEXT("DotProduct: %f"), DotProduct);
-	UE_LOG(LogTemp, Warning, TEXT("TanVal: %f "), TanVal);
-	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------"));
 
 	AngleOfDash = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
-	UE_LOG(LogTemp, Warning, TEXT("AngleOfDash: %f"), AngleOfDash);
-	UE_LOG(LogTemp, Warning, TEXT("---------------------------------------------"));
 	return AngleOfDash;
 }
 
