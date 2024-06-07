@@ -32,7 +32,7 @@ void AEnemyMelee::GetIdealRange(float& OutAttackRadius, float& OutDefendRadius, 
 {
 	Super::GetIdealRange(OutAttackRadius, OutDefendRadius, OutOrbitRadius);
 
-	OutAttackRadius = 500.0f;
+	OutAttackRadius = 350.0f;
 	OutDefendRadius = 600.0f;
 }
 
