@@ -43,7 +43,6 @@ void UTargetingSystemComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayableCharacter->GetActorLocation(), TargetLocation);
 			FRotator InterpRot = FMath::RInterpTo(PlayableCharacter->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
 
-			//PlayableCharacter->GetController()->SetControlRotation(InterpRot);
 			PlayableCharacter->SetActorRotation(TargetRotation);
 		}
 		else

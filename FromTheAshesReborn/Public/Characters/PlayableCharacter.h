@@ -130,6 +130,7 @@ public:
 	//-----------------------------------------Lock Ons--------------------------------------------
 
 	bool IsTargeting = false;
+
 	FVector TargetRotateLocation;
 
 	TObjectPtr<AActor> HardTarget;

@@ -76,7 +76,6 @@ APlayableCharacter::APlayableCharacter()
 void APlayableCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	FTAGameMode = Cast<AFromTheAshesRebornGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 	if (!FTAGameMode)
 	{
@@ -149,6 +148,7 @@ void APlayableCharacter::ResetComboString()
 
 bool APlayableCharacter::CanAttack()
 {
+
 	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Execution };
 	return !GetCharacterMovement()->IsFalling() && !GetCharacterMovement()->IsFlying() && !IsStateEqualToAny(MakeArray);
 }
@@ -229,8 +229,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 //------------------------------------------------------------ Movement -----------------------------------------------------------------//
 void APlayableCharacter::Move(const FInputActionInstance& Instance)
 {
-	
-	FRotator ControlRot = GetControlRotation();
+	FRotator ControlR t = GetControlRotation();
 	ControlRot.Pitch = 0.0f;
 	ControlRot.Roll = 0.0f;
 
@@ -550,6 +549,7 @@ void APlayableCharacter::HandleDeath()
 
 void APlayableCharacter::HandleHitReaction(FDamageInfo DamageInfo)
 {
+	
 	DamageSystemComponent->HandleHitReaction(DamageInfo);
 }
 
