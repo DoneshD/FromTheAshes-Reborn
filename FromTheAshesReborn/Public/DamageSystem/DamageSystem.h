@@ -49,6 +49,21 @@ public:
 	FOnDamageResponse OnDamageResponse;
 	FOnDeathResponse OnDeathResponse;
 
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> LeftHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> RightHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> FrontHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> BackHitReaction;
+
+	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
+	TObjectPtr<UAnimMontage> KnockbackHitReaction;
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -61,5 +76,7 @@ public:
 	float Heal(float HealAmount);
 
 	bool TakeDamage(FDamageInfo DamageInfo);
+
+	void HandleHitReaction(FDamageInfo DamageInfo);
 		
 };

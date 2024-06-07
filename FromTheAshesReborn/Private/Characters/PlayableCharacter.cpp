@@ -550,53 +550,9 @@ void APlayableCharacter::HandleDeath()
 
 void APlayableCharacter::HandleHitReaction(FDamageInfo DamageInfo)
 {
-	GetCharacterMovement()->StopMovementImmediately();
-
-	UAnimMontage* HitReactionMontage = nullptr;
-
-	switch (DamageInfo.FacingDirection)
-	{
-	case EFacingDirection::EFacingDirection_Left:
-		HitReactionMontage = RightHitReaction;
-		break;
-
-	case EFacingDirection::EFacingDirection_Right:
-		HitReactionMontage = LeftHitReaction;
-		break;
-
-	case EFacingDirection::EFacingDirection_Front:
-		HitReactionMontage = FrontHitReaction;
-		break;
-
-	case EFacingDirection::EFacingDirection_Back:
-		HitReactionMontage = BackHitReaction;
-		break;
-
-	case EFacingDirection::EFacingDirection_FrontLeft:
-		HitReactionMontage = FrontHitReaction;
-		break;
-
-	case EFacingDirection::EFacingDirection_FrontRight:
-		HitReactionMontage = FrontHitReaction;
-		break;
-
-	case EFacingDirection::EFacingDirection_BackLeft:
-		HitReactionMontage = BackHitReaction;
-		break;
-
-	case EFacingDirection::EFacingDirection_BackRight:
-		HitReactionMontage = BackHitReaction;
-		break;
-
-	default:
-		break;
-	}
-
-	if (HitReactionMontage)
-	{
-		PlayAnimMontage(HitReactionMontage);
-	}
+	DamageSystemComponent->HandleHitReaction(DamageInfo);
 }
+
 void APlayableCharacter::SpawnLeftWeapon()
 {
 	if (MeleeWeapon_L)

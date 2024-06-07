@@ -1,4 +1,7 @@
 #include "DamageSystem/DamageSystem.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 UDamageSystem::UDamageSystem()
 {
@@ -91,23 +94,56 @@ bool UDamageSystem::TakeDamage(FDamageInfo DamageInfo)
 		return false;
 	}
 }
-/*
-bool UDamageSystem::ReserveAttackTokens(int Amount)
-{
-	if (AttackTokensCount >= Amount)
-	{
-		AttackTokensCount -= Amount;
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
 
-void UDamageSystem::ReturnAttackTokens(int Amount)
+void UDamageSystem::HandleHitReaction(FDamageInfo DamageInfo)
 {
-	AttackTokensCount += Amount;
+	ACharacter* CharacterOwner = Cast<ACharacter>(GetOwner());
+	if (!CharacterOwner)
+	{
+		return;
+	}
+		
+	CharacterOwner->GetCharacterMovement()->StopMovementImmediately();
 
+	UAnimMontage* HitReactionMontage = nullptr;
+
+	switch (DamageInfo.FacingDirection)
+	{
+	case EFacingDirection::EFacingDirection_Left:
+		HitReactionMontage = RightHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_Right:
+		HitReactionMontage = LeftHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_Front:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_Back:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_FrontLeft:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_FrontRight:
+		HitReactionMontage = FrontHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_BackLeft:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	case EFacingDirection::EFacingDirection_BackRight:
+		HitReactionMontage = BackHitReaction;
+		break;
+
+	default:
+		break;
+	}
+
+	CharacterOwner->PlayAnimMontage(HitReactionMontage);
 }
-*/

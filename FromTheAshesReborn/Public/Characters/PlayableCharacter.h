@@ -30,6 +30,7 @@ class UDashSystemComponent;
 class UTargetingSystemComponent;
 class UGroundedComboStringComponent;
 class UNiagaraSystem;
+class AFromTheAshesRebornGameMode;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, 
@@ -138,10 +139,6 @@ public:
 
 	//-----------------------------------------Timers----------------------------------------------
 
-	FTimerHandle HeavyAttackPauseHandle;
-	FTimerHandle SurgeAttackPauseHandle;
-
-	FTimerHandle IdleCombatHandle;
 	FTimerHandle IsSprintingTimerHandle;
 
 	//-----------------------------------------Timelines-------------------------------------------
@@ -229,21 +226,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
 	TObjectPtr<UAnimMontage> LeftBlinkAnim;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> LeftHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> RightHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> FrontHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> BackHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> KnockbackHitReaction;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Reaction Anim")
 	TObjectPtr<UAnimMontage> DeathMontage;

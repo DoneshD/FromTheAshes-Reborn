@@ -33,21 +33,6 @@ public:
 	FOnAttackEnd OnAttackEnd;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> LeftHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> RightHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> FrontHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> BackHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
-	TObjectPtr<UAnimMontage> KnockbackHitReaction;
-
-	UPROPERTY(EditAnywhere, Category = "Hit Reactions")
 	TObjectPtr<UAnimMontage> DeathMontage;
 
 	UPROPERTY(EditAnywhere, Category = "Hit Reactions")

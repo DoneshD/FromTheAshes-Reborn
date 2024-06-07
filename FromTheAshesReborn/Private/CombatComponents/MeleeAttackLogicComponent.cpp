@@ -12,6 +12,7 @@
 #include "Components/ArrowComponent.h"
 #include "Enums/EMeleeAttackRange.h"
 #include "Interfaces/PositionalWarpingInterface.h"
+#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
