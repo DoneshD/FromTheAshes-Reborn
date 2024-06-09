@@ -8,10 +8,10 @@
 #include "Interfaces/EnemySpawnerInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "CombatComponents/ComboSystemComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Enums/EMeleeAttackRange.h"
 #include "Interfaces/PositionalWarpingInterface.h"
+#include "Weapons/MeleeWeapon.h"
 #include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Kismet/KismetMathLibrary.h"
 

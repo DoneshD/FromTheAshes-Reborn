@@ -1,26 +1,28 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "ComboSystemComponent.generated.h"
+#include "AerialSystemComponent.generated.h"
 
-class APlayableCharacter;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class FROMTHEASHESREBORN_API UComboSystemComponent : public UActorComponent
+class FROMTHEASHESREBORN_API UAerialSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
+	// Sets default values for this component's properties
+	UAerialSystemComponent();
 
 protected:
-
-public:	
-
-	UComboSystemComponent();
-
+	// Called when the game starts
 	virtual void BeginPlay() override;
 
+public:	
+	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+		
 };

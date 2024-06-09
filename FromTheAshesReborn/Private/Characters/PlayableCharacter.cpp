@@ -229,7 +229,7 @@ void APlayableCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 //------------------------------------------------------------ Movement -----------------------------------------------------------------//
 void APlayableCharacter::Move(const FInputActionInstance& Instance)
 {
-	FRotator ControlR t = GetControlRotation();
+	FRotator ControlRot = GetControlRotation();
 	ControlRot.Pitch = 0.0f;
 	ControlRot.Roll = 0.0f;
 
