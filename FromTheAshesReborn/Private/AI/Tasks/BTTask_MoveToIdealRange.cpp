@@ -12,7 +12,7 @@ UBTTask_MoveToIdealRange::UBTTask_MoveToIdealRange()
 EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     Super::ExecuteTask(OwnerComp, NodeMemory);
-
+    /*
     APawn* EnemyPawn = OwnerComp.GetAIOwner()->GetPawn();
     if (!EnemyPawn)
     {
@@ -58,11 +58,12 @@ EBTNodeResult::Type UBTTask_MoveToIdealRange::ExecuteTask(UBehaviorTreeComponent
         FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
         return EBTNodeResult::InProgress;
     }
-    
 
+    */
     return EBTNodeResult::Failed;
 }
 
+    /*
 void UBTTask_MoveToIdealRange::ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
     UBehaviorTreeComponent* OwnerComp = Cast<UBehaviorTreeComponent>(GetOuter());
@@ -80,4 +81,5 @@ void UBTTask_MoveToIdealRange::ReachedLocation(FAIRequestID RequestID, const FPa
         }
     }
 }
+    */
 

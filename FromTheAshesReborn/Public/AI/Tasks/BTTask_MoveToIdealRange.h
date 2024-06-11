@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
+#include "Enums/EMovementSpeed.h"
 #include "BTTask_MoveToIdealRange.generated.h"
 
 UCLASS()
@@ -28,5 +29,5 @@ public:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
-	void ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result);
+	//void ReachedLocation(FAIRequestID RequestID, const FPathFollowingResult& Result);
 };

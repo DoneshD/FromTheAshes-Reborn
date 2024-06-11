@@ -310,12 +310,9 @@ void APlayableCharacter::EnableRootRotation()
 
 void APlayableCharacter::DoubleJump()
 {
-	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
-	UE_LOG(LogTemp, Warning, TEXT("Jump"));
 	if (CanJump())
 	{
-		PlayAnimMontage(JumpAnim);
-		//Jump();
+		Jump();
 		JumpCount++;
 		if (!GetCharacterMovement()->IsFalling())
 		{
@@ -325,8 +322,7 @@ void APlayableCharacter::DoubleJump()
 		{
 			if (JumpCount < 2)
 			{
-				PlayAnimMontage(DoubleJumpAnim);
-				//Jump();
+				Jump();
 			}
 		}
 	}
