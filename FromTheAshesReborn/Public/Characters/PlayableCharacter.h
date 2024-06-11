@@ -6,9 +6,9 @@
 #include "Interfaces/AttackTargetInterface.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
-//#include "Interfaces/PlayerCharacterInterface.h"
 #include "../Interfaces/PlayerCharacterInterface.h"
 #include "../Interfaces/AttackTokenSystemInterface.h"
+#include "../Interfaces/AerialCombatantInterface.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/TimelineComponent.h"
 #include "DamageSystem/DamageSystem.h"
@@ -27,6 +27,7 @@ class UCurveFloat;
 class UComboSystemComponent;
 class UMeleeAttackLogicComponent;
 class UDashSystemComponent;
+class UAerialSystemComponent;
 class UTargetingSystemComponent;
 class UGroundedComboStringComponent;
 class UNiagaraSystem;
@@ -34,7 +35,8 @@ class AFromTheAshesRebornGameMode;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayableCharacter : public AFTACharacter, public IDamagableInterface, public IMeleeCombatantInterface, 
-	public IDashingCombatantInterface, public IAttackTargetInterface, public IPlayerCharacterInterface, public IAttackTokenSystemInterface
+	public IDashingCombatantInterface, public IAttackTargetInterface, public IPlayerCharacterInterface, 
+	public IAttackTokenSystemInterface, public IAerialCombatantInterface
 {
 	GENERATED_BODY()
 
@@ -62,6 +64,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAerialSystemComponent> AerialSystemComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	AMeleeWeapon* MeleeWeapon_L;
@@ -166,6 +171,12 @@ public:
 	int MaxAttackersCount = 1;
 
 	//-----------------------------------------Anim Montages---------------------------------------
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TObjectPtr<UAnimMontage> JumpAnim;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
+	TObjectPtr<UAnimMontage> DoubleJumpAnim;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TArray<TObjectPtr<UAnimMontage>> LightAttackCombo;
@@ -396,5 +407,16 @@ public:
 
 	UFUNCTION()
 	virtual void StoreAttackTokens(AActor* AttackTarget, int Amount) override;
+
+	//Aerial Combatant Interface
+
+	UFUNCTION()
+	virtual bool JumpLineTrace(FVector StartLocation, FVector EndLocation) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void JumpWarpToTarget() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ResetJumpWarpToTarget() override;
 
 };

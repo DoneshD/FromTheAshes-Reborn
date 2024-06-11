@@ -16,5 +16,13 @@ class FROMTHEASHESREBORN_API IAerialCombatantInterface
 
 public:
 
+	UFUNCTION()
+	virtual bool JumpLineTrace(FVector StartLocation, FVector EndLocation) = 0;
+
+	UFUNCTION()
+	virtual void JumpWarpToTarget() = 0;
+
+	UFUNCTION()
+	virtual void ResetJumpWarpToTarget() = 0;
 
 };

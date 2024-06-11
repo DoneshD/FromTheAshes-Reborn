@@ -13,6 +13,7 @@
 #include "CombatComponents/GroundedComboStringComponent.h"
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "CombatComponents/AttackTokenSystemComponent.h"
+#include "CombatComponents/AerialSystemComponent.h"
 #include "MovementComponents/DashSystemComponent.h"
 #include "TargetingComponents/TargetingSystemComponent.h"
 #include "Weapons/MeleeWeapon.h"
@@ -53,6 +54,9 @@ APlayableCharacter::APlayableCharacter()
 
 	TargetingSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>(TEXT("TargetingSystemComponent"));
 	this->AddOwnedComponent(TargetingSystemComponent);
+
+	AerialSystemComponent = CreateDefaultSubobject<UAerialSystemComponent>(TEXT("AerialSystemComponent"));
+	this->AddOwnedComponent(AerialSystemComponent);
 
 	//Jump and Air Control
 	GetCharacterMovement()->JumpZVelocity = 1000.f;
@@ -306,9 +310,12 @@ void APlayableCharacter::EnableRootRotation()
 
 void APlayableCharacter::DoubleJump()
 {
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Flying);
+	UE_LOG(LogTemp, Warning, TEXT("Jump"));
 	if (CanJump())
 	{
-		Jump();
+		PlayAnimMontage(JumpAnim);
+		//Jump();
 		JumpCount++;
 		if (!GetCharacterMovement()->IsFalling())
 		{
@@ -318,10 +325,12 @@ void APlayableCharacter::DoubleJump()
 		{
 			if (JumpCount < 2)
 			{
-				Jump();
+				PlayAnimMontage(DoubleJumpAnim);
+				//Jump();
 			}
 		}
 	}
+	
 }
 
 void APlayableCharacter::StopJump()
@@ -660,4 +669,20 @@ void APlayableCharacter::ReturnAttackToken(int Amount)
 void APlayableCharacter::StoreAttackTokens(AActor* AttackTarget, int Amount)
 {
 	AttackTokenSystemComponent->StoreAttackTokens(AttackTarget, Amount);
+}
+
+bool APlayableCharacter::JumpLineTrace(FVector StartLocation, FVector EndLocation)
+{
+	return AerialSystemComponent->JumpLineTrace(StartLocation, EndLocation);
+}
+
+void APlayableCharacter::JumpWarpToTarget()
+{
+	AerialSystemComponent->JumpWarpToTarget();
+}
+
+void APlayableCharacter::ResetJumpWarpToTarget()
+{
+	GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+	AerialSystemComponent->ResetJumpWarpToTarget();
 }

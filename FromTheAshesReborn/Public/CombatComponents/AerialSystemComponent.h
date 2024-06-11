@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -13,16 +11,21 @@ class FROMTHEASHESREBORN_API UAerialSystemComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
-	UAerialSystemComponent();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
+	UAerialSystemComponent();
+
+	virtual void BeginPlay() override;
+
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+	UFUNCTION()
+	virtual bool JumpLineTrace(FVector StartLocation, FVector EndLocation);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void JumpWarpToTarget();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void ResetJumpWarpToTarget();
 };
