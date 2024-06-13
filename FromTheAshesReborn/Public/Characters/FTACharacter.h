@@ -64,7 +64,7 @@ public:
 
 public:
 
-	AFTACharacter();
+	AFTACharacter(const FObjectInitializer& object_initializer);
 
 	virtual void BeginPlay() override;
 

@@ -24,15 +24,14 @@ void UAerialSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 bool UAerialSystemComponent::JumpLineTrace(FVector StartLocation, FVector EndLocation)
 {
-    DrawDebugLine(
+    DrawDebugSphere(
         GetWorld(),
-        StartLocation,
         EndLocation,
+        15,
+        10,
         FColor::Red,
-        false,  // Persistent lines
-        1.0f,   // Lifetime of the line
-        0,      // Depth priority
-        5.0f    // Line thickness
+        true,
+        5// Line thickness
     );
     UE_LOG(LogTemp, Warning, TEXT("Drake"));
 	return false;
@@ -42,7 +41,7 @@ void UAerialSystemComponent::JumpWarpToTarget()
 {
     FMotionWarpingTarget MotionWarpingTargetParams;
     FVector StartLocation = GetOwner()->GetActorLocation();
-    FVector EndLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorUpVector() * 300.0f;
+    FVector EndLocation = GetOwner()->GetActorLocation() + GetOwner()->GetActorUpVector() * 1000;
     JumpLineTrace(StartLocation, EndLocation);
 
     FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(
@@ -65,4 +64,9 @@ void UAerialSystemComponent::JumpWarpToTarget()
 
 void UAerialSystemComponent::ResetJumpWarpToTarget()
 {
+    IPositionalWarpingInterface* PositionalWarpingInterface = Cast<IPositionalWarpingInterface>(GetOwner());
+    if (PositionalWarpingInterface)
+    {
+        PositionalWarpingInterface->ResetWarpTargetPostion(FName("JumpTarget"));
+    }
 }

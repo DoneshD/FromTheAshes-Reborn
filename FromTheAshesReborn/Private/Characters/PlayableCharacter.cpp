@@ -22,9 +22,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
+#include "MovementComponents/CustomCharacterMovementComponent.h"
+
 //------------------------------------------------------------- Constructor -----------------------------------------------------------------//
 
-APlayableCharacter::APlayableCharacter()
+APlayableCharacter::APlayableCharacter(const FObjectInitializer& object_initializer)
+	: Super(object_initializer.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 
 	LockOnSphere = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LockOnSphere"));
@@ -322,6 +325,7 @@ void APlayableCharacter::DoubleJump()
 		{
 			if (JumpCount < 2)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Pressed"));
 				Jump();
 			}
 		}

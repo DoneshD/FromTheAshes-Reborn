@@ -3,8 +3,11 @@
 #include "CombatComponents/MeleeAttackLogicComponent.h"
 #include "MotionWarpingComponent.h"
 #include "Weapons/MeleeWeapon.h"
+#include "MovementComponents/CustomCharacterMovementComponent.h"
 
-AEnemyMelee::AEnemyMelee()
+
+AEnemyMelee::AEnemyMelee(const FObjectInitializer& object_initializer)
+	: Super(object_initializer.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	MeleeAttackLogicComponent = CreateDefaultSubobject<UMeleeAttackLogicComponent>(TEXT("MeleeAttackLogicComponent"));
 	this->AddOwnedComponent(MeleeAttackLogicComponent);

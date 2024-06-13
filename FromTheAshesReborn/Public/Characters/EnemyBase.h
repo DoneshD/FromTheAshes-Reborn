@@ -40,7 +40,7 @@ public:
 
 public:
 
-	AEnemyBase();
+	AEnemyBase(const FObjectInitializer& object_initializer);
 
 	virtual void BeginPlay() override;
 

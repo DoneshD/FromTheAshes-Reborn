@@ -13,11 +13,15 @@
 #include "EventManagers/CombatManager.h"
 #include "MotionWarpingComponent.h"
 #include "AIController.h"
+#include "MovementComponents/CustomCharacterMovementComponent.h"
 
-AEnemyBase::AEnemyBase()
+
+AEnemyBase::AEnemyBase(const FObjectInitializer& object_initializer)
+	: Super(object_initializer.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 }
+
 void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();

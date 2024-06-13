@@ -117,18 +117,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
 
-	//-----------------------------------------Light Attack-----------------------------------------
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	bool HasMovementInput;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	bool IsSprinting = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	bool IsIdleCombat = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	bool DisableRootMotion = false;
 
 
@@ -213,31 +212,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attack Anim")
 	TObjectPtr<UAnimMontage> ForwardHeavyDashAttack;
 
-	//-----------------------------------------------------------------------------
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> ForwardDashAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> BackwardDashAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> RightDashAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> LeftDashAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> ForwardBlinkAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> BackwardBlinkAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> RightBlinkAnim;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Dash Anim")
-	TObjectPtr<UAnimMontage> LeftBlinkAnim;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Reaction Anim")
 	TObjectPtr<UAnimMontage> DeathMontage;
@@ -247,7 +221,7 @@ public:
 private:
 
 public:
-	APlayableCharacter();
+	APlayableCharacter(const FObjectInitializer& object_initializer);
 
 	virtual void BeginPlay() override;
 

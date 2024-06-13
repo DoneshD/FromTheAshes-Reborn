@@ -10,10 +10,12 @@
 #include "MovementComponents/PositionalWarpingComponent.h"
 #include "Enums/EFacingDirection.h"
 #include "Interfaces/PositionalWarpingInterface.h"
+#include "MovementComponents/CustomCharacterMovementComponent.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(FTACharacter)
 
-AFTACharacter::AFTACharacter()
+AFTACharacter::AFTACharacter(const FObjectInitializer& object_initializer)
+	: Super(object_initializer.SetDefaultSubobjectClass<UCustomCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
