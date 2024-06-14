@@ -326,12 +326,10 @@ void APlayableCharacter::DoubleJump()
 		{
 			if (JumpCount < 2)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Pressed"));
 				Jump();
 			}
 		}
 	}
-	
 }
 
 void APlayableCharacter::StopJump()

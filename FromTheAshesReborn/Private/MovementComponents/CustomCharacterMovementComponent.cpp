@@ -45,10 +45,11 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 			}
 			if (FLeapHeightCurve && PlayerCharacter->CanLeap)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("LEAP SET"));
+				UE_LOG(LogTemp, Warning, TEXT("LEEEAAAPPP"));
 				SetMovementMode(EMovementMode::MOVE_Flying);
 
 				IsJumping = true;
+				IsLeaping = true;
 				bIsFalling = false;
 
 				CurrentTime = LeapMinTime;
@@ -62,9 +63,11 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 
 				return true;
 			}
+			
 			else if (FSpringHeightCurve && JumpCount < 2)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("SPRING SET"));
+				UE_LOG(LogTemp, Warning, TEXT("SPPRRRINNGGG"));
+
 				SetMovementMode(EMovementMode::MOVE_Flying);
 
 				IsJumping = true;
@@ -77,11 +80,12 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 				FCurrentDistanceCurve = FSpringDistanceCurve;
 
 				PrevHeightCurveValue = FSpringHeightCurve->GetFloatValue(SpringMinTime);
-				PrevDistanceCurveValue = FSpringDistanceCurve->GetFloatValue(LeapMinTime);
+				PrevDistanceCurveValue = FSpringDistanceCurve->GetFloatValue(SpringMinTime);
 
 				return true;
 				
 			}
+			
 			else
 			{
 				return Super::DoJump(bReplayingMoves);
@@ -123,11 +127,8 @@ void UCustomCharacterMovementComponent::SetCustomFallingMode()
 
 void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ProcessCustomJump"));
 	if (IsJumping && FCurrentHeightCurve)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("INSIDE ProcessCustomJump"));
-
 		CurrentTime += DeltaTime;
 		if (CurrentTime <= CurrentMaxTime)
 		{
@@ -139,7 +140,7 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 			float DistanceCurveDeltaValue = DistanceCurveValue - PrevDistanceCurveValue;
 			PrevDistanceCurveValue = DistanceCurveValue;
 
-			//Velocity.Z = 0.0f;
+			Velocity.Z = 0.0f;
 			float Z_Velocity = HeightCurveDeltaValue / DeltaTime;
 
 			FVector ActorLocation = GetActorLocation();
@@ -148,6 +149,9 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 			//UE_LOG(LogTemp, Warning, TEXT("DistanceCurveDeltaValue: %d"), DistanceCurveDeltaValue);
 
 			FVector DestinationLocation = ActorLocation + (CharacterOwner->GetActorForwardVector() * DistanceCurveDeltaValue) + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
+			FVector HeightLocation = ActorLocation + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
+
+			
 
 			if (Z_Velocity > 0.0f)
 			{
@@ -173,13 +177,15 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 				}
 
 			}
+			
 			if (Z_Velocity < 0.0f)
 			{
-				//Reached end of curve
 				const FVector CapsuleLocation = UpdatedComponent->GetComponentLocation();
 				FFindFloorResult FloorResult;
 				bool IsFloor = CustomFindFloor(FloorResult, CapsuleLocation, DestinationLocation);
 				const float FloorDistance = FloorResult.GetDistanceToFloor();
+
+				
 				if (IsFloor)
 				{
 					if (FloorDistance < FMath::Abs(HeightCurveDeltaValue))
@@ -193,15 +199,21 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 					IsJumping = false;
 					CharacterOwner->ResetJumpState();
 				}
+				
+
 			}
+			
+			
+
 			FLatentActionInfo LatentInfo;
 			LatentInfo.CallbackTarget = this;
 			UKismetSystemLibrary::MoveComponentTo((USceneComponent*)CharacterOwner->GetCapsuleComponent(), DestinationLocation, CharacterOwner->GetActorRotation(), false, false, 0.0f, true, EMoveComponentAction::Move, LatentInfo);
 
-			
 		}
+
 		else
 		{
+			
 			//Reached end of curve
 			const FVector CapsuleLocation = UpdatedComponent->GetComponentLocation();
 			FFindFloorResult FloorResult;
@@ -216,6 +228,7 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 			{
 				SetCustomFallingMode();
 			}
+			
 			IsJumping = false;
 			CharacterOwner->ResetJumpState();
 		}
@@ -242,7 +255,7 @@ void UCustomCharacterMovementComponent::ProcessCustomFalling(float DeltaTime)
 
 			FFindFloorResult FloorResult;
 			const bool IsFloor = CustomFindFloor(FloorResult, CapsuleLocation, DestinationLocation);
-
+			
 			if (IsFloor)
 			{
 				const float FloorDistance = FloorResult.GetDistanceToFloor();
@@ -257,7 +270,6 @@ void UCustomCharacterMovementComponent::ProcessCustomFalling(float DeltaTime)
 					SetMovementMode(EMovementMode::MOVE_Walking);
 				}
 			}
-
 			
 			FLatentActionInfo LatentInfo;
 			LatentInfo.CallbackTarget = this;
