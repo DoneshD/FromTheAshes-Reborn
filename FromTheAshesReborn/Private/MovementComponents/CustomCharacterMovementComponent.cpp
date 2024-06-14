@@ -45,7 +45,6 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 			}
 			if (FLeapHeightCurve && PlayerCharacter->CanLeap)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("LEEEAAAPPP"));
 				SetMovementMode(EMovementMode::MOVE_Flying);
 
 				IsJumping = true;
@@ -66,8 +65,6 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 			
 			else if (FSpringHeightCurve && JumpCount < 2)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("SPPRRRINNGGG"));
-
 				SetMovementMode(EMovementMode::MOVE_Flying);
 
 				IsJumping = true;
@@ -85,7 +82,6 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 				return true;
 				
 			}
-			
 			else
 			{
 				return Super::DoJump(bReplayingMoves);
@@ -151,8 +147,6 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 			FVector DestinationLocation = ActorLocation + (CharacterOwner->GetActorForwardVector() * DistanceCurveDeltaValue) + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
 			FVector HeightLocation = ActorLocation + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
 
-			
-
 			if (Z_Velocity > 0.0f)
 			{
 				FCollisionQueryParams RoofCheckCollisionParams;
@@ -203,8 +197,6 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 
 			}
 			
-			
-
 			FLatentActionInfo LatentInfo;
 			LatentInfo.CallbackTarget = this;
 			UKismetSystemLibrary::MoveComponentTo((USceneComponent*)CharacterOwner->GetCapsuleComponent(), DestinationLocation, CharacterOwner->GetActorRotation(), false, false, 0.0f, true, EMoveComponentAction::Move, LatentInfo);
