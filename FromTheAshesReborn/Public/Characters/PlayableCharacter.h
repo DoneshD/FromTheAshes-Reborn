@@ -130,6 +130,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool DisableRootMotion = false;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool CanLeap = true;
+
 
 	//-----------------------------------------Lock Ons--------------------------------------------
 

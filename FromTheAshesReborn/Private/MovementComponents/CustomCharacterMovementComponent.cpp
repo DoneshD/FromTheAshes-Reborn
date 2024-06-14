@@ -1,6 +1,7 @@
 #include "MovementComponents/CustomCharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Characters/PlayableCharacter.h"
 #include "RunTime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 
 
@@ -9,9 +10,14 @@ void UCustomCharacterMovementComponent::BeginPlay()
 	Super::BeginPlay();
 
 	bIsFalling = false;
-	if (FJumpCurve)
+	if (FSpringHeightCurve)
 	{
-		FJumpCurve->GetTimeRange(JumpMinTime, JumpMaxTime);
+		FSpringHeightCurve->GetTimeRange(SpringMinTime, SpringMaxTime);
+	}
+
+	if (FLeapHeightCurve)
+	{
+		FLeapHeightCurve->GetTimeRange(LeapMinTime, LeapMaxTime);
 	}
 
 	
@@ -31,15 +37,45 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 	{
 		if (!bConstrainToPlane || FMath::Abs(PlaneConstraintNormal.Z) != 1.0f)
 		{
-			if (FJumpCurve && JumpCount < 2)
+			APlayableCharacter* PlayerCharacter = Cast<APlayableCharacter>(GetOwner());
+			
+			if (!PlayerCharacter)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("NO PC"));
+				return false;
+			}
+			if (FLeapHeightCurve && PlayerCharacter->CanLeap)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("LEAP SET"));
 				SetMovementMode(EMovementMode::MOVE_Flying);
-				UE_LOG(LogTemp, Warning, TEXT("Movement mode set to flying"));
 
 				IsJumping = true;
 				bIsFalling = false;
-				JumpTime = JumpMinTime;
-				PrevJumpCurveValue = FJumpCurve->GetFloatValue(JumpMinTime);
+
+				CurrentTime = LeapMinTime;
+				CurrentMaxTime = LeapMaxTime;
+
+				PrevCurrentCurveValue = FLeapHeightCurve->GetFloatValue(LeapMinTime);
+
+				FCurrentHeightCurve = FLeapHeightCurve;
+				FCurrentDistanceCurve = FLeapDistanceCurve;
+				return true;
+			}
+			else if (FSpringHeightCurve && JumpCount < 2)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("SPRING SET"));
+				SetMovementMode(EMovementMode::MOVE_Flying);
+
+				IsJumping = true;
+				bIsFalling = false;
+
+				CurrentTime = SpringMinTime;
+				CurrentMaxTime = SpringMaxTime;
+
+				PrevCurrentCurveValue = FSpringHeightCurve->GetFloatValue(SpringMinTime);
+
+				FCurrentHeightCurve = FSpringHeightCurve;
+				FCurrentDistanceCurve = FSpringDistanceCurve;
 
 				return true;
 				
@@ -55,7 +91,7 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 
 bool UCustomCharacterMovementComponent::IsFalling() const
 {
-	if (FJumpCurve)
+	if (FSpringHeightCurve)
 	{
 		return Super::IsFalling() || IsJumping || bIsFalling;
 	}
@@ -80,29 +116,36 @@ void UCustomCharacterMovementComponent::SetCustomFallingMode()
 	{
 		SetMovementMode(EMovementMode::MOVE_Falling);
 		UE_LOG(LogTemp, Warning, TEXT("Movement mode set to MOVE_Falling"));
-
 	}
 }
 
 void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 {
-	if (IsJumping && FJumpCurve)
+	if (IsJumping && FCurrentHeightCurve)
 	{
-		JumpTime += DeltaTime;
-		if (JumpTime <= JumpMaxTime)
+		CurrentTime += DeltaTime;
+		if (CurrentTime <= CurrentMaxTime)
 		{
-			float JumpCurveValue = FJumpCurve->GetFloatValue(JumpTime);
-			float JumpCurveDeltaValue = JumpCurveValue - PrevJumpCurveValue;
-			PrevJumpCurveValue = JumpCurveValue;
+			float HeightCurveValue = FCurrentHeightCurve->GetFloatValue(CurrentTime);
+			float HeightCurveDeltaValue = HeightCurveValue - PrevSpringCurveValue;
+			PrevSpringCurveValue = HeightCurveValue;
+
+			float DistanceCurveValue = FCurrentDistanceCurve->GetFloatValue(CurrentTime);
+			float DistanceCurveDeltaValue = DistanceCurveValue - PrevLeapCurveValue;
+			PrevLeapCurveValue = DistanceCurveValue;
 
 			//Velocity.Z = 0.0f;
-			float Y_Velocity = JumpCurveDeltaValue / DeltaTime;
+			float Z_Velocity = HeightCurveDeltaValue / DeltaTime;
 
 			FVector ActorLocation = GetActorLocation();
 
-			FVector DestinationLocation = ActorLocation + FVector(0.0f, 0.0f, JumpCurveDeltaValue);
+			//UE_LOG(LogTemp, Warning, TEXT("HeightCurveDeltaValue: %d"), HeightCurveDeltaValue);
+			//UE_LOG(LogTemp, Warning, TEXT("DistanceCurveDeltaValue: %d"), DistanceCurveDeltaValue);
 
-			if (Y_Velocity > 0.0f)
+			FVector DestinationLocation = ActorLocation + (CharacterOwner->GetActorForwardVector() * DistanceCurveDeltaValue) + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
+			//FVector DestinationLocation = ActorLocation + FVector(0.0f, 0.0f, JumpCurveDeltaValue);
+
+			if (Z_Velocity > 0.0f)
 			{
 				FCollisionQueryParams RoofCheckCollisionParams;
 				RoofCheckCollisionParams.AddIgnoredActor(CharacterOwner);
@@ -126,7 +169,7 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 				}
 
 			}
-			if (Y_Velocity < 0.0f)
+			if (Z_Velocity < 0.0f)
 			{
 				//Reached end of curve
 				const FVector CapsuleLocation = UpdatedComponent->GetComponentLocation();
@@ -135,9 +178,9 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 				const float FloorDistance = FloorResult.GetDistanceToFloor();
 				if (IsFloor)
 				{
-					if (FloorDistance < FMath::Abs(JumpCurveDeltaValue))
+					if (FloorDistance < FMath::Abs(HeightCurveDeltaValue))
 					{
-						DestinationLocation = CapsuleLocation - FVector(0.0f, 0.0f, JumpCurveDeltaValue);
+						DestinationLocation = CapsuleLocation - FVector(0.0f, 0.0f, HeightCurveDeltaValue);
 					}
 					UE_LOG(LogTemp, Warning, TEXT("Movement mode set to MOVE_Walking"));
 
@@ -238,16 +281,9 @@ bool UCustomCharacterMovementComponent::CustomFindFloor(FFindFloorResult& OutFlo
 
 	if (IsBlockingHit)
 	{
-		// Draw green line for a positive hit
-		DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Green, false, 2.0f, 0, 5.0f);
-
 		FindFloor(StartLocation, OutFloorResult, false, &FloorHitResult);
-
 		return OutFloorResult.IsWalkableFloor() && IsValidLandingSpot(StartLocation, OutFloorResult.HitResult);
 	}
-
-	// Draw red line for a false hit
-	DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Red, false, 2.0f, 0, 5.0f);
 	
 	return false;
 }

@@ -11,36 +11,54 @@ class FROMTHEASHESREBORN_API UCustomCharacterMovementComponent : public UCharact
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Jump Curve"))
-	UCurveFloat* FJumpCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Current Height Curve"))
+	UCurveFloat* FCurrentHeightCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Current Distance Curve"))
+	UCurveFloat* FCurrentDistanceCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Spring Height Curve"))
+	UCurveFloat* FSpringHeightCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Spring Distance Curve"))
+	UCurveFloat* FSpringDistanceCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Leap Height Curve"))
+	UCurveFloat* FLeapHeightCurve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Leap Distance Curve"))
+	UCurveFloat* FLeapDistanceCurve;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Fall Curve"))
 	UCurveFloat* F_FallCurve;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Leap Distance Curve"))
-	UCurveFloat* FLeapCurveDistance;
+	//--------Current---------
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Leap Height Curve"))
-	UCurveFloat* FLeapCurveHeight;
+	float CurrentTime;
+	float PrevCurrentCurveValue;
+
+	float CurrentMinTime;
+	float CurrentMaxTime;
 
 	//--------Jump---------
 
 	bool IsJumping;
 
-	float JumpTime;
-	float PrevJumpCurveValue;
-
 	int JumpCount = 0;
 
-	float JumpMinTime;
-	float JumpMaxTime;
+	//--------Spring---------
 
-	//--------Fall---------
+	bool IsSpringing;
 
-	bool bIsFalling;
+	float SpringTime;
+	float PrevSpringCurveValue;
 
-	float FallTime;
-	float PrevFallCurveValue;
+	int SpringCount = 0;
+
+	float SpringMinTime;
+	float SpringMaxTime;
 
 	//--------Leap---------
 
@@ -49,10 +67,15 @@ public:
 	float LeapTime;
 	float PrevLeapCurveValue;
 
-	int LeapCount = 0;
-
 	float LeapMinTime;
 	float LeapMaxTime;
+
+	//--------Fall---------
+
+	bool bIsFalling;
+
+	float FallTime;
+	float PrevFallCurveValue;
 
 public:
 	
@@ -68,7 +91,7 @@ public:
 
 	void ProcessCustomJump(float DeltaTime);
 	void ProcessCustomFalling(float DeltaTime);
-	void ProcessCustomLeap(float DeltaTime);
+	
 	bool CustomFindFloor(FFindFloorResult& OutFloorResult, const FVector StartLocation, const FVector EndLocation);
 	
 };
