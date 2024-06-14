@@ -20,7 +20,6 @@ void UCustomCharacterMovementComponent::BeginPlay()
 		FLeapHeightCurve->GetTimeRange(LeapMinTime, LeapMaxTime);
 	}
 
-	
 }
 
 void UCustomCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* TickFunction)
@@ -55,10 +54,12 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 				CurrentTime = LeapMinTime;
 				CurrentMaxTime = LeapMaxTime;
 
-				PrevCurrentCurveValue = FLeapHeightCurve->GetFloatValue(LeapMinTime);
-
 				FCurrentHeightCurve = FLeapHeightCurve;
 				FCurrentDistanceCurve = FLeapDistanceCurve;
+
+				PrevHeightCurveValue = FLeapHeightCurve->GetFloatValue(LeapMinTime);
+				PrevDistanceCurveValue = FLeapDistanceCurve->GetFloatValue(LeapMinTime);
+
 				return true;
 			}
 			else if (FSpringHeightCurve && JumpCount < 2)
@@ -72,10 +73,11 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 				CurrentTime = SpringMinTime;
 				CurrentMaxTime = SpringMaxTime;
 
-				PrevCurrentCurveValue = FSpringHeightCurve->GetFloatValue(SpringMinTime);
-
 				FCurrentHeightCurve = FSpringHeightCurve;
 				FCurrentDistanceCurve = FSpringDistanceCurve;
+
+				PrevHeightCurveValue = FSpringHeightCurve->GetFloatValue(SpringMinTime);
+				PrevDistanceCurveValue = FSpringDistanceCurve->GetFloatValue(LeapMinTime);
 
 				return true;
 				
@@ -121,18 +123,21 @@ void UCustomCharacterMovementComponent::SetCustomFallingMode()
 
 void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ProcessCustomJump"));
 	if (IsJumping && FCurrentHeightCurve)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("INSIDE ProcessCustomJump"));
+
 		CurrentTime += DeltaTime;
 		if (CurrentTime <= CurrentMaxTime)
 		{
 			float HeightCurveValue = FCurrentHeightCurve->GetFloatValue(CurrentTime);
-			float HeightCurveDeltaValue = HeightCurveValue - PrevSpringCurveValue;
-			PrevSpringCurveValue = HeightCurveValue;
+			float HeightCurveDeltaValue = HeightCurveValue - PrevHeightCurveValue;
+			PrevHeightCurveValue = HeightCurveValue;
 
 			float DistanceCurveValue = FCurrentDistanceCurve->GetFloatValue(CurrentTime);
-			float DistanceCurveDeltaValue = DistanceCurveValue - PrevLeapCurveValue;
-			PrevLeapCurveValue = DistanceCurveValue;
+			float DistanceCurveDeltaValue = DistanceCurveValue - PrevDistanceCurveValue;
+			PrevDistanceCurveValue = DistanceCurveValue;
 
 			//Velocity.Z = 0.0f;
 			float Z_Velocity = HeightCurveDeltaValue / DeltaTime;
@@ -143,7 +148,6 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 			//UE_LOG(LogTemp, Warning, TEXT("DistanceCurveDeltaValue: %d"), DistanceCurveDeltaValue);
 
 			FVector DestinationLocation = ActorLocation + (CharacterOwner->GetActorForwardVector() * DistanceCurveDeltaValue) + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
-			//FVector DestinationLocation = ActorLocation + FVector(0.0f, 0.0f, JumpCurveDeltaValue);
 
 			if (Z_Velocity > 0.0f)
 			{

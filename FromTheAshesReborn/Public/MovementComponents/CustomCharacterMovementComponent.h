@@ -37,7 +37,8 @@ public:
 	//--------Current---------
 
 	float CurrentTime;
-	float PrevCurrentCurveValue;
+	float PrevHeightCurveValue;
+	float PrevDistanceCurveValue;
 
 	float CurrentMinTime;
 	float CurrentMaxTime;

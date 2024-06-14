@@ -140,6 +140,7 @@ void APlayableCharacter::ResetState()
 
 	DashSystemComponent->IsDashSaved = false;
 	DashSystemComponent->CanDashAttack = false;
+	CanLeap = false;
 	ResetComboString();
 
 }
@@ -168,7 +169,7 @@ bool APlayableCharacter::CanDash()
 
 bool APlayableCharacter::CanJump()
 {
-	TArray<EStates> MakeArray = { EStates::EState_Attack, EStates::EState_Dash };
+	TArray<EStates> MakeArray = { EStates::EState_Attack, };
 	return !IsStateEqualToAny(MakeArray);
 }
 
