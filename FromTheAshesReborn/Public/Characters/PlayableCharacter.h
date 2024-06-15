@@ -133,6 +133,10 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool CanLeap = false;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool IsLeaping = false;
+
+
 	//-----------------------------------------Lock Ons--------------------------------------------
 
 	bool IsTargeting = false;

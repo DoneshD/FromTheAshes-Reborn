@@ -5,7 +5,10 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CustomCharacterMovementComponent.generated.h"
 
+class APlayableCharacter;
+
 UCLASS()
+
 class FROMTHEASHESREBORN_API UCustomCharacterMovementComponent : public UCharacterMovementComponent
 {
 	GENERATED_BODY()
@@ -30,9 +33,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Leap Distance Curve"))
 	UCurveFloat* FLeapDistanceCurve;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Custom Movement", meta = (DisplayName = "Fall Curve"))
 	UCurveFloat* F_FallCurve;
+
+	APlayableCharacter* PC;
 
 	//--------Current---------
 

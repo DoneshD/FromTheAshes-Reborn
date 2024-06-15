@@ -20,6 +20,9 @@ void UCustomCharacterMovementComponent::BeginPlay()
 		FLeapHeightCurve->GetTimeRange(LeapMinTime, LeapMaxTime);
 	}
 
+	PC = Cast<APlayableCharacter>(GetOwner());
+
+	
 }
 
 void UCustomCharacterMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* TickFunction)
@@ -38,7 +41,7 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 		{
 			APlayableCharacter* PlayerCharacter = Cast<APlayableCharacter>(GetOwner());
 			
-			if (!PlayerCharacter)
+			if (!PC)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("NO PC"));
 				return false;
@@ -47,6 +50,7 @@ bool UCustomCharacterMovementComponent::DoJump(bool bReplayingMoves)
 			{
 				SetMovementMode(EMovementMode::MOVE_Flying);
 
+				PlayerCharacter->IsLeaping = true;
 				IsJumping = true;
 				IsLeaping = true;
 				bIsFalling = false;
@@ -111,13 +115,11 @@ void UCustomCharacterMovementComponent::SetCustomFallingMode()
 		Velocity.Z = 0.0f;
 
 		SetMovementMode(EMovementMode::MOVE_Flying);
-		UE_LOG(LogTemp, Warning, TEXT("Movement mode set to flying"));
 
 	}
 	else
 	{
 		SetMovementMode(EMovementMode::MOVE_Falling);
-		UE_LOG(LogTemp, Warning, TEXT("Movement mode set to MOVE_Falling"));
 	}
 }
 
@@ -140,9 +142,6 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 			float Z_Velocity = HeightCurveDeltaValue / DeltaTime;
 
 			FVector ActorLocation = GetActorLocation();
-
-			//UE_LOG(LogTemp, Warning, TEXT("HeightCurveDeltaValue: %d"), HeightCurveDeltaValue);
-			//UE_LOG(LogTemp, Warning, TEXT("DistanceCurveDeltaValue: %d"), DistanceCurveDeltaValue);
 
 			FVector DestinationLocation = ActorLocation + (CharacterOwner->GetActorForwardVector() * DistanceCurveDeltaValue) + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
 			FVector HeightLocation = ActorLocation + FVector(0.0f, 0.0f, HeightCurveDeltaValue);
@@ -167,11 +166,8 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 					Velocity.Z = 0.0f;
 					DestinationLocation = ActorLocation;
 					SetCustomFallingMode();
-
 				}
-
 			}
-			
 			if (Z_Velocity < 0.0f)
 			{
 				const FVector CapsuleLocation = UpdatedComponent->GetComponentLocation();
@@ -186,26 +182,21 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 					{
 						DestinationLocation = CapsuleLocation - FVector(0.0f, 0.0f, HeightCurveDeltaValue);
 					}
-					UE_LOG(LogTemp, Warning, TEXT("Movement mode set to MOVE_Walking"));
 
 					JumpCount = 0;
 					SetMovementMode(EMovementMode::MOVE_Walking);
 					IsJumping = false;
 					CharacterOwner->ResetJumpState();
 				}
-				
-
 			}
 			
 			FLatentActionInfo LatentInfo;
 			LatentInfo.CallbackTarget = this;
 			UKismetSystemLibrary::MoveComponentTo((USceneComponent*)CharacterOwner->GetCapsuleComponent(), DestinationLocation, CharacterOwner->GetActorRotation(), false, false, 0.0f, true, EMoveComponentAction::Move, LatentInfo);
-
 		}
 
 		else
 		{
-			
 			//Reached end of curve
 			const FVector CapsuleLocation = UpdatedComponent->GetComponentLocation();
 			FFindFloorResult FloorResult;
@@ -214,15 +205,16 @@ void UCustomCharacterMovementComponent::ProcessCustomJump(float DeltaTime)
 			{
 				JumpCount = 0;
 				SetMovementMode(MOVE_Walking);
-				UE_LOG(LogTemp, Warning, TEXT("Movement mode set to MOVE_Walking"));
+				PC->IsLeaping = false;
+
 			}
 			else
 			{
 				SetCustomFallingMode();
 			}
-			
 			IsJumping = false;
 			CharacterOwner->ResetJumpState();
+
 		}
 	}
 }
@@ -256,9 +248,8 @@ void UCustomCharacterMovementComponent::ProcessCustomFalling(float DeltaTime)
 				{
 					bIsFalling = false;
 					DestinationLocation = CapsuleLocation - FVector(0.0f, 0.0f, FloorDistance);
-					Velocity = FVector::ZeroVector;
 					UE_LOG(LogTemp, Warning, TEXT("Movement mode set to MOVE_Walking"));
-
+					PC->IsLeaping = false;
 					SetMovementMode(EMovementMode::MOVE_Walking);
 				}
 			}
