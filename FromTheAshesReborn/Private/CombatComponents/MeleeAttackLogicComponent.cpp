@@ -1,19 +1,20 @@
 #include "CombatComponents/MeleeAttackLogicComponent.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/ArrowComponent.h"
+#include "GameModes/FromTheAshesRebornGameMode.h"
 #include "Kismet/GameplayStatics.h"
-#include "DamageSystem/DamageSystem.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "MotionWarpingComponent.h"
 #include "Interfaces/DamagableInterface.h"
 #include "Interfaces/AIEnemyInterface.h"
-#include "GameFramework/Character.h"
 #include "Interfaces/EnemySpawnerInterface.h"
 #include "Interfaces/MeleeCombatantInterface.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Components/ArrowComponent.h"
-#include "Enums/EMeleeAttackRange.h"
 #include "Interfaces/PositionalWarpingInterface.h"
+#include "Interfaces/PlayerCharacterInterface.h"
+#include "DamageSystem/DamageSystem.h"
 #include "Weapons/MeleeWeapon.h"
-#include "GameModes/FromTheAshesRebornGameMode.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "Enums/EMeleeAttackRange.h"
 
 UMeleeAttackLogicComponent::UMeleeAttackLogicComponent()
 {
@@ -106,8 +107,18 @@ bool UMeleeAttackLogicComponent::MeleeWeaponSphereTrace(FVector StartLocation, F
 	ActorArray.Add(GetOwner());
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 
+	IAIEnemyInterface* AIEnemy = Cast<IAIEnemyInterface>(GetOwner());
+	IPlayerCharacterInterface* PlayerCharacter = Cast<IPlayerCharacterInterface>(GetOwner());
+	
+	if (AIEnemy)
+	{
+		
+	}
+	else if (PlayerCharacter)
+	{
+		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_GameTraceChannel2));
+	}
 
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(GetOwner());
@@ -300,7 +311,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None ,
 		OutHit,
 		true,
 		FLinearColor::Red,
@@ -346,7 +357,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 			}
 		}
 
-		DrawDebugSphere(GetWorld(), WarpTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
+		//DrawDebugSphere(GetWorld(), WarpTargetLocation, 10.0, 10, FColor::Red, false, 5.0f);
 	}
 
 	TargetRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), WarpTargetLocation);

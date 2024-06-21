@@ -21,7 +21,6 @@ void UCustomCharacterMovementComponent::BeginPlay()
 	}
 
 	PC = Cast<APlayableCharacter>(GetOwner());
-
 	
 }
 
@@ -248,7 +247,6 @@ void UCustomCharacterMovementComponent::ProcessCustomFalling(float DeltaTime)
 				{
 					bIsFalling = false;
 					DestinationLocation = CapsuleLocation - FVector(0.0f, 0.0f, FloorDistance);
-					UE_LOG(LogTemp, Warning, TEXT("Movement mode set to MOVE_Walking"));
 					PC->IsLeaping = false;
 					SetMovementMode(EMovementMode::MOVE_Walking);
 				}
