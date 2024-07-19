@@ -104,5 +104,5 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)
 {
-
+	
 }
