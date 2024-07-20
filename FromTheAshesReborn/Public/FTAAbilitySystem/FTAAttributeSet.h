@@ -19,12 +19,15 @@ class FROMTHEASHESREBORN_API UFTAAttributeSet : public UAttributeSet
 public:
 	
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Ability | Gameplay Attributes")
-	FGameplayAttributeData Health;
-	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, Health);
+	FGameplayAttributeData CurrentHealth;
+	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, CurrentHealth);
 
 	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Ability | Gameplay Attributes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, MaxHealth);
+	
+	FGameplayAttributeData BaseDamage;
+	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, BaseDamage);
 	
 public:
 	

@@ -67,9 +67,11 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 	//only grants on server, change later
 	GiveDefaultAbilities();
 	InitDefaultAttributes();
+	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &APlayerCharacter::OnActiveGameplayEffectAddedCallback);
 	
 }
 
+//network replication, probably dont need
 void APlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();

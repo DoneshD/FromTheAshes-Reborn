@@ -3,16 +3,18 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayTagAssetInterface.h"
 #include "FTAEnums.h"
 #include "FTACharacter.generated.h"
 
+struct FGameplayEffectSpec;
 class UFTAAbilitySystemComponent;
 class UFTAAttributeSet;
 class UFTAGameplayAbility;
 class UGameplayEffect;
 
 UCLASS()
-class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface
+class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -39,13 +41,27 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	virtual UFTAAttributeSet* GetAttributeSet() const;
-
 	int32 GetAbilityLevel(EGAbilityInputID AbilityID);
 	
 	void GiveDefaultAbilities();
 
 	void InitDefaultAttributes() const;
+
+	void InitGameplayEffectDelegate();
+	
+	virtual UFTAAttributeSet* GetAttributeSet() const;
+
+	virtual void OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
+
+	//AbilitySystemInterface functions
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	//GameplayTagAssetInterface functions
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
+
+	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
+	
+	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+
+	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
 };

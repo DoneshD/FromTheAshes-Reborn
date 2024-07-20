@@ -4,6 +4,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+struct FGameplayEffectSpec;
 class UCameraComponent;
 class USpringArmComponent;
 
@@ -26,10 +27,12 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	void InitAbilitySystemComponent();
-	
 	virtual void PossessedBy(AController* NewController) override;
 	
+	void InitAbilitySystemComponent();
+
+
+	//network replication, probably dont need
 	virtual void OnRep_PlayerState() override;
 
 	void AddCharacterAbilities();

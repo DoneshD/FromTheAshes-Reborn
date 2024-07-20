@@ -5,14 +5,18 @@
 
 UFTAAttributeSet::UFTAAttributeSet()
 {
-	InitHealth(100.0f);
+	InitCurrentHealth(100.0f);
+	InitMaxHealth(100.0f);
+	InitBaseDamage(100.0f);
+
+
 }
 
 void UFTAAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	UAttributeSet::GetLifetimeReplicatedProps(OutLifetimeProps);
 	
-	DOREPLIFETIME_CONDITION_NOTIFY(UFTAAttributeSet, Health, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UFTAAttributeSet, CurrentHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UFTAAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
 
 }
@@ -21,7 +25,7 @@ void UFTAAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, f
 {
 	Super::PreAttributeChange(Attribute, NewValue);
 	
-	if(Attribute == GetHealthAttribute())
+	if(Attribute == GetCurrentHealthAttribute())
 	{
 		NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());
 	}
@@ -32,9 +36,9 @@ void UFTAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 {
 	Super::PostGameplayEffectExecute(Data);
 
-	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
+	if(Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		SetCurrentHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
 	}
 
 	

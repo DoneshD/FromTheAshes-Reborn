@@ -1,4 +1,4 @@
-﻿#include "FTAGameplayAbility.h"
+﻿#include "FTAAbilitySystem/FTAGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 
 UFTAGameplayAbility::UFTAGameplayAbility()

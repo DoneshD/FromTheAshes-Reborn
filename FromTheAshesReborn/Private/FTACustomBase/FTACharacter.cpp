@@ -27,16 +27,6 @@ void AFTACharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
-}
-
-UFTAAttributeSet* AFTACharacter::GetAttributeSet() const
-{
-	return AttributeSet;
-}
-
 int32 AFTACharacter::GetAbilityLevel(EGAbilityInputID AbilityID)
 {
 	return 1;
@@ -57,6 +47,11 @@ void AFTACharacter::InitDefaultAttributes() const
 	}
 }
 
+void AFTACharacter::InitGameplayEffectDelegate()
+{
+	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &AFTACharacter::OnActiveGameplayEffectAddedCallback);
+}
+
 void AFTACharacter::GiveDefaultAbilities()
 {
 	if(!AbilitySystemComponent) return;
@@ -66,6 +61,43 @@ void AFTACharacter::GiveDefaultAbilities()
 	{
 		AbilitySystemComponent->GiveAbility(
 			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
-		 	//AbilitySystemComponent->bCharacterAbilitiesGiven = true;
+		//AbilitySystemComponent->bCharacterAbilitiesGiven = true;
 	}
+}
+
+
+UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+void AFTACharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	
+}
+
+bool AFTACharacter::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
+{
+	return IGameplayTagAssetInterface::HasMatchingGameplayTag(TagToCheck);
+}
+
+bool AFTACharacter::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return IGameplayTagAssetInterface::HasAllMatchingGameplayTags(TagContainer);
+}
+
+bool AFTACharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	return IGameplayTagAssetInterface::HasAnyMatchingGameplayTags(TagContainer);
+}
+
+UFTAAttributeSet* AFTACharacter::GetAttributeSet() const
+{
+	return AttributeSet;
+}
+
+void AFTACharacter::OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target,
+	const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
+{
+	
 }
