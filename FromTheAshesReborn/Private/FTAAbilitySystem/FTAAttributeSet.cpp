@@ -38,7 +38,7 @@ void UFTAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 
 	if(Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
 	{
-		SetCurrentHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
+		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.0f, GetMaxHealth()));
 	}
 
 	
@@ -53,7 +53,7 @@ void UFTAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 
 void UFTAAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UFTAAttributeSet, Health, OldHealth);
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UFTAAttributeSet, CurrentHealth, OldHealth);
 }
 
 void UFTAAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const

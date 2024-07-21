@@ -5,6 +5,7 @@
 #include "AbilitySystemInterface.h"
 #include "GameplayTagAssetInterface.h"
 #include "FTAEnums.h"
+#include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
 struct FGameplayEffectSpec;
@@ -12,13 +13,14 @@ class UFTAAbilitySystemComponent;
 class UFTAAttributeSet;
 class UFTAGameplayAbility;
 class UGameplayEffect;
+// class FActiveGameplayEffectHandle;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	
 	UPROPERTY()
 	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
@@ -48,7 +50,7 @@ public:
 	void InitDefaultAttributes() const;
 
 	void InitGameplayEffectDelegate();
-	
+
 	virtual UFTAAttributeSet* GetAttributeSet() const;
 
 	virtual void OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
@@ -57,11 +59,11 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	//GameplayTagAssetInterface functions
-	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const;
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
 
-	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const;
+	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;
 	
-	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 
-	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const;
+	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 };

@@ -9,6 +9,8 @@ AFTACharacter::AFTACharacter()
 
 }
 
+
+
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();

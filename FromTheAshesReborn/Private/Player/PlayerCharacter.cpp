@@ -62,7 +62,6 @@ void APlayerCharacter::InitAbilitySystemComponent()
 void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
-	
 	InitAbilitySystemComponent();
 	//only grants on server, change later
 	GiveDefaultAbilities();
