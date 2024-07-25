@@ -12,7 +12,7 @@ UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
 void UFTAAbilitySystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 }
 
 

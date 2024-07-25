@@ -43,6 +43,8 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void PossessedBy(AController* NewController) override;
+	
 	int32 GetAbilityLevel(EGAbilityInputID AbilityID);
 	
 	void GiveDefaultAbilities();

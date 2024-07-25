@@ -69,25 +69,3 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &APlayerCharacter::OnActiveGameplayEffectAddedCallback);
 	
 }
-
-//network replication, probably dont need
-void APlayerCharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-	
-	InitAbilitySystemComponent();
-	InitDefaultAttributes();
-}
-
-void APlayerCharacter::AddCharacterAbilities()
-{
-
-	// for (TSubclassOf<UFTAGameplayAbility>& StartupAbility : DefaultAbilites)
-	// {
-	// 	AbilitySystemComponent->GiveAbility(
-	// 		FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
-	// }
-	//
-
-	//AbilitySystemComponent->bCharacterAbilitiesGiven = true;
-}

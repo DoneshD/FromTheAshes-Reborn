@@ -4,7 +4,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
-#include "FTACustomBase/FTAEnums.h"
 
 AFTAPlayerController::AFTAPlayerController()
 {
@@ -14,13 +13,6 @@ AFTAPlayerController::AFTAPlayerController()
 void AFTAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-
-	// AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
-	// if (PS)
-	// {
-	// 	// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
-	// 	PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, InPawn);
-	// }
 
 	PlayerCharacter = Cast<APlayerCharacter>(InPawn);
 	if(!PlayerCharacter) { return; }

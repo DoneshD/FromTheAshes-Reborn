@@ -9,8 +9,9 @@ AFTAPlayerState::AFTAPlayerState()
 	NetUpdateFrequency = 100.0f;
 
 	AbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>("AbilitySystemComponent");
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
 	AttributeSet = CreateDefaultSubobject<UFTAAttributeSet>("AttributeSet");
+	AbilitySystemComponent->SetIsReplicated(true);
 }
 
 UAbilitySystemComponent* AFTAPlayerState::GetAbilitySystemComponent() const

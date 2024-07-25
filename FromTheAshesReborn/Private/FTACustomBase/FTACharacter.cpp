@@ -29,6 +29,18 @@ void AFTACharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
+void AFTACharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if (AbilitySystemComponent)
+	{
+		AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	}
+
+	SetOwner(NewController);
+}
+
 int32 AFTACharacter::GetAbilityLevel(EGAbilityInputID AbilityID)
 {
 	return 1;

@@ -31,10 +31,6 @@ public:
 	
 	void InitAbilitySystemComponent();
 
-
-	//network replication, probably dont need
-	virtual void OnRep_PlayerState() override;
-
 	void AddCharacterAbilities();
 	
 };
