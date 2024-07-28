@@ -1,6 +1,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "FTAAbilitySystem/FTAGameplayAbility.h"
 #include "GameplayAbilitySpec.h"
+#include "Abilities/GA_LightAttack.h"
 #include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
 
 AFTACharacter::AFTACharacter()
@@ -70,6 +71,7 @@ void AFTACharacter::GiveDefaultAbilities()
 	if(!AbilitySystemComponent) return;
 
 	if(!HasAuthority()) return;
+	DefaultAbilities.Add(UGA_LightAttack::StaticClass());
 	for(TSubclassOf<UFTAGameplayAbility>& StartupAbility : DefaultAbilities)
 	{
 		AbilitySystemComponent->GiveAbility(

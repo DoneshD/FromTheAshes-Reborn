@@ -3,6 +3,7 @@
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Abilities/GA_LightAttack.h"
 #include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
 
 AFTAPlayerController::AFTAPlayerController()
@@ -113,6 +114,22 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(true, EGAbilityInputID::LightAttack);
+	AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
+	if (PS)
+	{
+		TSubclassOf<UGameplayAbility> GA_LightAttack = UGA_LightAttack::StaticClass();
+		bool Test = PS->GetAbilitySystemComponent()->TryActivateAbilityByClass(GA_LightAttack);
+		if(Test)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Success"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Fail"));
+
+		}
+	}
+	
 }
 
 void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
