@@ -21,14 +21,10 @@ enum class EHitReactDirection : uint8
 UENUM(BlueprintType)
 enum class EGAbilityInputID : uint8
 {
-	// 0 None
 	None			UMETA(DisplayName = "None"),
-	// 1 Confirm
 	Confirm			UMETA(DisplayName = "Confirm"),
-	// 2 Cancel
 	Cancel			UMETA(DisplayName = "Cancel"),
-	// 3 Move
 	Move			UMETA(DisplayName = "Move"),
-	// 4 Look
-	Look			UMETA(DisplayName = "Look")
+	Look			UMETA(DisplayName = "Look"),
+	LightAttack		UMETA(DisplayName = "LightAttack")
 };

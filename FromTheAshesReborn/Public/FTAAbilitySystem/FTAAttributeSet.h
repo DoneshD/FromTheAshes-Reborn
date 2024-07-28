@@ -18,11 +18,11 @@ class FROMTHEASHESREBORN_API UFTAAttributeSet : public UAttributeSet
 
 public:
 	
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Ability | Gameplay Attributes")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability | Gameplay Attributes")
 	FGameplayAttributeData CurrentHealth;
 	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, CurrentHealth);
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Health, Category = "Ability | Gameplay Attributes")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability | Gameplay Attributes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, MaxHealth);
 	
@@ -32,18 +32,11 @@ public:
 public:
 	
 	UFTAAttributeSet();
-	
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual  void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
 	virtual  void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 	
-	UFUNCTION()
-	void OnRep_Health(const FGameplayAttributeData& OldHealth) const;
-	
-	UFUNCTION()
-	void OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const;
 
 	
 };

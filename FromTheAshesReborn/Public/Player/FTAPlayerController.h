@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LookMouse;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_LightAttack;
+
 	//For debugging
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
@@ -47,8 +50,12 @@ public:
 	void SendLocalInputToASC(bool, EGAbilityInputID);
 
 	void HandleMoveActionPressed(const FInputActionValue& InputActionValue);
+	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
+	
+	void HandleLightAttackActionPressed(const FInputActionValue& InputActionValue);
+	void HandleLightAttackActionReleased(const FInputActionValue& InputActionValue);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
 };

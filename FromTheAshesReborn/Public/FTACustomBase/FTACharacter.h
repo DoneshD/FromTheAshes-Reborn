@@ -51,12 +51,12 @@ public:
 
 	void InitDefaultAttributes() const;
 
-	void InitGameplayEffectDelegate();
-
 	virtual UFTAAttributeSet* GetAttributeSet() const;
 
 	virtual void OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent* Target, const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle);
 
+	virtual void OnRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved);
+	
 	//AbilitySystemInterface functions
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 

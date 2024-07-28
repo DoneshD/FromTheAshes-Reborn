@@ -33,12 +33,16 @@ void AFTACharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 
+	//Redundant init for ASC? Possibliy remove 
 	if (AbilitySystemComponent)
 	{
 		AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	}
 
 	SetOwner(NewController);
+	//Bind somewhere else?
+	//AbilitySystemComponent->OnAnyGameplayEffectRemovedDelegate().AddUObject(this, &AFTACharacter::OnRemoveGameplayEffectCallback);
+
 }
 
 int32 AFTACharacter::GetAbilityLevel(EGAbilityInputID AbilityID)
@@ -59,11 +63,6 @@ void AFTACharacter::InitDefaultAttributes() const
 	{
 		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 	}
-}
-
-void AFTACharacter::InitGameplayEffectDelegate()
-{
-	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &AFTACharacter::OnActiveGameplayEffectAddedCallback);
 }
 
 void AFTACharacter::GiveDefaultAbilities()
@@ -114,4 +113,8 @@ void AFTACharacter::OnActiveGameplayEffectAddedCallback(UAbilitySystemComponent*
 	const FGameplayEffectSpec& SpecApplied, FActiveGameplayEffectHandle ActiveHandle)
 {
 	
+}
+
+void AFTACharacter::OnRemoveGameplayEffectCallback(const FActiveGameplayEffect& EffectRemoved)
+{
 }

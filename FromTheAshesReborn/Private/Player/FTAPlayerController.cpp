@@ -16,6 +16,13 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 
 	PlayerCharacter = Cast<APlayerCharacter>(InPawn);
 	if(!PlayerCharacter) { return; }
+
+	AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
+	if (PS)
+	{
+		// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, InPawn);
+	}
 	
 	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 	if(!EnhancedInputComponent) { return; }
@@ -28,8 +35,13 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	InputSubsystem->AddMappingContext(DefaultInputMappingContext, 0);
 	
 	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
+	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleMoveActionReleased);
+	
 	EnhancedInputComponent->BindAction(Input_LookMouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
 	
+	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLightAttackActionPressed);
+	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLightAttackActionReleased);
+
 	//Debug purposes
 	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
 
@@ -52,12 +64,11 @@ void AFTAPlayerController::SendLocalInputToASC(bool IsPressed, EGAbilityInputID 
 
 	if(IsPressed)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Pressing input"));
 		AbilitySystemComponent->AbilityLocalInputPressed(static_cast<int32>(AbilityInputID));
+
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Releasing input"));
 		AbilitySystemComponent->AbilityLocalInputReleased(static_cast<int32>(AbilityInputID));
 	}
 }
@@ -86,12 +97,27 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	SendLocalInputToASC(true, EGAbilityInputID::Move);
 }
 
+void AFTAPlayerController::HandleMoveActionReleased(const FInputActionValue& InputActionValue)
+{
+	SendLocalInputToASC(false, EGAbilityInputID::Move);
+}
+
 void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputActionValue)
 {
 	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
 
 	AddYawInput(LookAxisVector.X);
 	AddPitchInput(LookAxisVector.Y);
+}
+
+void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
+{
+	SendLocalInputToASC(true, EGAbilityInputID::LightAttack);
+}
+
+void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
+{
+	SendLocalInputToASC(false, EGAbilityInputID::LightAttack);
 }
 
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)

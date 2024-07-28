@@ -9,16 +9,6 @@ UFTAAttributeSet::UFTAAttributeSet()
 	InitMaxHealth(100.0f);
 	InitBaseDamage(100.0f);
 
-
-}
-
-void UFTAAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	UAttributeSet::GetLifetimeReplicatedProps(OutLifetimeProps);
-	
-	DOREPLIFETIME_CONDITION_NOTIFY(UFTAAttributeSet, CurrentHealth, COND_None, REPNOTIFY_Always);
-	DOREPLIFETIME_CONDITION_NOTIFY(UFTAAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always);
-
 }
 
 void UFTAAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -50,15 +40,4 @@ void UFTAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	ASCOwner->GetActorLocation();
 	*/
 }
-
-void UFTAAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UFTAAttributeSet, CurrentHealth, OldHealth);
-}
-
-void UFTAAttributeSet::OnRep_MaxHealth(const FGameplayAttributeData& OldMaxHealth) const
-{
-	GAMEPLAYATTRIBUTE_REPNOTIFY(UFTAAttributeSet, MaxHealth, OldMaxHealth);
-}
-
 
