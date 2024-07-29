@@ -4,7 +4,7 @@
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "Abilities/FTAAbilityTypes.h"
+#include "FTAAbilitySystem/FTAAbilityTypes.h"
 
 #include "FTAAbilitySystem/FTAAbilitySystemGlobals.h"
 #include "Player/FTAPlayerController.h"
@@ -139,38 +139,6 @@ TArray<FActiveGameplayEffectHandle> UFTAGameplayAbility::ApplyEffectContainerSpe
 UObject* UFTAGameplayAbility::K2_GetSourceObject(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const
 {
 	return GetSourceObject(Handle, &ActorInfo);
-}
-
-bool UFTAGameplayAbility::BatchRPCTryActivateAbility(FGameplayAbilitySpecHandle InAbilityHandle, bool EndAbilityImmediately)
-{
-	UFTAAbilitySystemComponent* GSASC = Cast<UFTAAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo());
-	if (GSASC)
-	{
-		return GSASC->BatchRPCTryActivateAbility(InAbilityHandle, EndAbilityImmediately);
-	}
-
-	return false;
-}
-
-void UFTAGameplayAbility::ExternalEndAbility()
-{
-	check(CurrentActorInfo);
-
-	bool bReplicateEndAbility = true;
-	bool bWasCancelled = false;
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
-FString UFTAGameplayAbility::GetCurrentPredictionKeyStatus()
-{
-	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
-	return ASC->ScopedPredictionKey.ToString() + " is valid for more prediction: " + (ASC->ScopedPredictionKey.IsValidForMorePrediction() ? TEXT("true") : TEXT("false"));
-}
-
-bool UFTAGameplayAbility::IsPredictionKeyValidForMorePrediction() const
-{
-	UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo();
-	return ASC->ScopedPredictionKey.IsValidForMorePrediction();
 }
 
 bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const

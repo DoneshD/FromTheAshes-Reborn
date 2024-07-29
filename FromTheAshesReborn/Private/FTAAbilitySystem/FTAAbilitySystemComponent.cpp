@@ -143,30 +143,6 @@ void UFTAAbilitySystemComponent::K2_RemoveLooseGameplayTags(const FGameplayTagCo
 	RemoveLooseGameplayTags(GameplayTags, Count);
 }
 
-bool UFTAAbilitySystemComponent::BatchRPCTryActivateAbility(FGameplayAbilitySpecHandle InAbilityHandle, bool EndAbilityImmediately)
-{
-	bool AbilityActivated = false;
-	if (InAbilityHandle.IsValid())
-	{
-		FScopedServerAbilityRPCBatcher GSAbilityRPCBatcher(this, InAbilityHandle);
-		AbilityActivated = TryActivateAbility(InAbilityHandle, true);
-
-		if (EndAbilityImmediately)
-		{
-			FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(InAbilityHandle);
-			if (AbilitySpec)
-			{
-				UFTAGameplayAbility* GSAbility = Cast<UFTAGameplayAbility>(AbilitySpec->GetPrimaryInstance());
-				GSAbility->ExternalEndAbility();
-			}
-		}
-
-		return AbilityActivated;
-	}
-
-	return AbilityActivated;
-}
-
 void UFTAAbilitySystemComponent::ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
 {
 	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Executed, GameplayCueParameters);
@@ -348,7 +324,6 @@ bool UFTAAbilitySystemComponent::IsAnimatingAbilityForAnyMesh(UGameplayAbility* 
 
 	return false;
 }
-
 
 TArray<UAnimMontage*> UFTAAbilitySystemComponent::GetCurrentMontages() const
 {

@@ -1,4 +1,4 @@
-﻿#include "Abilities/FTAAbilityTypes.h"
+﻿#include "FTAAbilitySystem/FTAAbilityTypes.h"
 #include "AbilitySystemGlobals.h"
 #include "FTAAbilitySystem//FTAAbilitySystemComponent.h"
 

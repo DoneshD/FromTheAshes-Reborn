@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "FTACustomBase/FTAEnums.h"
-#include "Abilities/FTAAbilityTypes.h"
+#include "FTAAbilitySystem/FTAAbilityTypes.h"
 #include "FTAGameplayAbility.generated.h"
 
 class USkeletalMeshComponent;
@@ -95,24 +95,10 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ability", meta = (DisplayName = "Get Source Object"))
 	UObject* K2_GetSourceObject(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
 
-	// Attempts to activate the given ability handle and batch all RPCs into one. This will only batch all RPCs that happen
-	// in one frame. Best case scenario we batch ActivateAbility, SendTargetData, and EndAbility into one RPC instead of three.
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	virtual bool BatchRPCTryActivateAbility(FGameplayAbilitySpecHandle InAbilityHandle, bool EndAbilityImmediately);
-
-	// Same as calling K2_EndAbility. Meant for use with batching system to end the ability externally.
-	virtual void ExternalEndAbility();
-	
-	// Returns the current prediction key and if it's valid for more predicting. Used for debugging ability prediction windows.
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	virtual FString GetCurrentPredictionKeyStatus();
-
-	// Returns if the current prediction key is valid for more predicting.
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ability")
-	virtual bool IsPredictionKeyValidForMorePrediction() const;
 
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 
 	// Allows C++ and Blueprint abilities to override how cost is checked in case they don't use a GE like weapon ammo
@@ -121,11 +107,10 @@ public:
 	
 	virtual bool FTACheckCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
 
-	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-
 	// Allows C++ and Blueprint abilities to override how cost is applied in case they don't use a GE like weapon ammo
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Ability")
 	void FTAApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
+	
 	virtual void FTAApplyCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const {};
 	
 
@@ -167,19 +152,11 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Ability|Animation")
 	void MontageSetNextSectionNameForMesh(USkeletalMeshComponent* InMesh, FName FromSectionName, FName ToSectionName);
 
-	/**
-	 * Stops the current animation montage.
-	 *
-	 * @param OverrideBlendOutTime If >= 0, will override the BlendOutTime parameter on the AnimMontage instance
-	 */
+	//Stops the current animation montage.
 	UFUNCTION(BlueprintCallable, Category = "Ability|Animation", Meta = (AdvancedDisplay = "OverrideBlendOutTime"))
 	void MontageStopForMesh(USkeletalMeshComponent* InMesh, float OverrideBlendOutTime = -1.0f);
 
-	/**
-	* Stops all currently animating montages
-	*
-	* @param OverrideBlendOutTime If >= 0, will override the BlendOutTime parameter on the AnimMontage instance
-	 */
+	//Stops all currently animating montages
 	UFUNCTION(BlueprintCallable, Category = "Ability|Animation", Meta = (AdvancedDisplay = "OverrideBlendOutTime"))
 	void MontageStopForAllMeshes(float OverrideBlendOutTime = -1.0f);
 

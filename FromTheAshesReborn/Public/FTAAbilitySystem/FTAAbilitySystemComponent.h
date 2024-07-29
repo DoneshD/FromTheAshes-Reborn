@@ -23,49 +23,14 @@ public:
 	UPROPERTY()
 	FGameplayAbilityLocalAnimMontage LocalMontageInfo;
 
-	FGameplayAbilityLocalAnimMontageForMesh() : Mesh(nullptr), LocalMontageInfo()
-	{
-	}
+	FGameplayAbilityLocalAnimMontageForMesh() : Mesh(nullptr), LocalMontageInfo() {}
 
-	FGameplayAbilityLocalAnimMontageForMesh(USkeletalMeshComponent* InMesh)
-		: Mesh(InMesh), LocalMontageInfo()
-	{
-	}
+	FGameplayAbilityLocalAnimMontageForMesh(USkeletalMeshComponent* InMesh) : Mesh(InMesh), LocalMontageInfo() {}
 
-	FGameplayAbilityLocalAnimMontageForMesh(USkeletalMeshComponent* InMesh, FGameplayAbilityLocalAnimMontage& InLocalMontageInfo)
-		: Mesh(InMesh), LocalMontageInfo(InLocalMontageInfo)
-	{
-	}
+	FGameplayAbilityLocalAnimMontageForMesh(USkeletalMeshComponent* InMesh, FGameplayAbilityLocalAnimMontage& InLocalMontageInfo) : Mesh(InMesh), LocalMontageInfo(InLocalMontageInfo) {}
 };
 
-/**
-* Data about montages that is replicated to simulated clients.
-*/
-USTRUCT()
-struct FROMTHEASHESREBORN_API FGameplayAbilityRepAnimMontageForMesh
-{
-	GENERATED_BODY();
 
-public:
-	UPROPERTY()
-	USkeletalMeshComponent* Mesh;
-
-	UPROPERTY()
-	FGameplayAbilityRepAnimMontage RepMontageInfo;
-
-	FGameplayAbilityRepAnimMontageForMesh() : Mesh(nullptr), RepMontageInfo()
-	{
-	}
-
-	FGameplayAbilityRepAnimMontageForMesh(USkeletalMeshComponent* InMesh)
-		: Mesh(InMesh), RepMontageInfo()
-	{
-	}
-};
-
-/**
- * 
- */
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemComponent
 {
@@ -74,7 +39,7 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 public:
 	UFTAAbilitySystemComponent();
 	
-	bool bCharacterAbilitiesGiven = false;
+	bool IsCharacterAbilitiesGiven = false;
 	bool bStartupEffectsApplied = false;
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -96,9 +61,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Abilities")
 	FGameplayAbilitySpecHandle FindAbilitySpecHandleForClass(TSubclassOf<UGameplayAbility> AbilityClass, UObject* OptionalSourceObject=nullptr);
 
-	// Turn on RPC batching in ASC. Off by default.
-	virtual bool ShouldDoServerAbilityRPCBatch() const override { return true; }
-
 	// Exposes AddLooseGameplayTag to Blueprint. This tag is *not* replicated.
 	UFUNCTION(BlueprintCallable, Category = "Abilities", Meta = (DisplayName = "AddLooseGameplayTag"))
 	void K2_AddLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count = 1);
@@ -114,17 +76,7 @@ public:
 	// Exposes RemoveLooseGameplayTags to Blueprint. These tags are *not* replicated.
 	UFUNCTION(BlueprintCallable, Category = "Abilities", Meta = (DisplayName = "RemoveLooseGameplayTags"))
 	void K2_RemoveLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count = 1);
-
-	// Attempts to activate the given ability handle and batch all RPCs into one. This will only batch all RPCs that happen
-	// in one frame. Best case scenario we batch ActivateAbility, SendTargetData, and EndAbility into one RPC instead of three.
-	// Worst case we batch ActivateAbility and SendTargetData into one RPC instead of two and call EndAbility later in a separate
-	// RPC. If we can't batch SendTargetData or EndAbility with ActivateAbility because they don't happen in the same frame due to
-	// latent ability tasks for example, then batching doesn't help and we should just activate normally.
-	// Single shots (semi auto fire) combine ActivateAbility, SendTargetData, and EndAbility into one RPC instead of three.
-	// Full auto shots combine ActivateAbility and SendTargetData into one RPC instead of two for the first bullet. Each subsequent
-	// bullet is one RPC for SendTargetData. We then send one final RPC for the EndAbility when we're done firing.
-	UFUNCTION(BlueprintCallable, Category = "Abilities")
-	virtual bool BatchRPCTryActivateAbility(FGameplayAbilitySpecHandle InAbilityHandle, bool EndAbilityImmediately);
+	
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
 	void ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
@@ -134,7 +86,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
 	void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
-
 	
 
 	// ----------------------------------------------------------------------------------------------------------------
