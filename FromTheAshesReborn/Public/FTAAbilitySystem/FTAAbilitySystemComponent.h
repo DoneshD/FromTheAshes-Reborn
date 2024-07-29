@@ -90,7 +90,7 @@ public:
 	virtual void AbilityLocalInputPressed(int32 InputID) override;
 
 	// Exposes GetTagCount to Blueprint
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Abilities", Meta = (DisplayName = "GetTagCount", ScriptName = "GetTagCount"))
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Abilities | Gameplaytags", Meta = (DisplayName = "GetTagCount", ScriptName = "GetTagCount"))
 	int32 K2_GetTagCount(FGameplayTag TagToCheck) const;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Abilities")
