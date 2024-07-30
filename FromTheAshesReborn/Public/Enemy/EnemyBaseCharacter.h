@@ -14,7 +14,7 @@ protected:
 	
 
 public:
-	AEnemyBaseCharacter();
+	AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer);
 	
 	virtual void BeginPlay() override;
 	

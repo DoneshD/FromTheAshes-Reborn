@@ -21,7 +21,7 @@ protected:
 	TObjectPtr<UCameraComponent> CameraComp;
 
 public:
-	APlayerCharacter();
+	APlayerCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	virtual void BeginPlay() override;
 
@@ -30,7 +30,5 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	
 	void InitAbilitySystemComponent();
-
-	void AddCharacterAbilities();
 	
 };

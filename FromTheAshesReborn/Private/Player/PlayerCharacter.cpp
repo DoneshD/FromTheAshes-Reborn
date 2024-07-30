@@ -3,9 +3,10 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "FTACustomBase/FTACharacterMovementComponent.h"
 
-APlayerCharacter::APlayerCharacter()
+APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	SpringArmComp->SetupAttachment(RootComponent);
@@ -64,8 +65,7 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	InitAbilitySystemComponent();
 	//only grants on server, change later
-	GiveDefaultAbilities();
-	InitDefaultAttributes();
-	AbilitySystemComponent->OnActiveGameplayEffectAddedDelegateToSelf.AddUObject(this, &APlayerCharacter::OnActiveGameplayEffectAddedCallback);
+	AddCharacterAbilities();
+	InitializeAttributes();
 	
 }

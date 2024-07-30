@@ -1,8 +1,10 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
+#include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/FTAAttributeSet.h"
 
-AEnemyBaseCharacter::AEnemyBaseCharacter()
+AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -16,8 +18,11 @@ void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	GiveDefaultAbilities();
-	InitDefaultAttributes();
+	//Implement later?
+	//GiveDefaultAbilities();
+
+	AddCharacterAbilities();
+	InitializeAttributes();
 }
 
 void AEnemyBaseCharacter::Tick(float DeltaTime)
