@@ -1,13 +1,9 @@
-﻿// Copyright 2020 Dan Kestranek.
-
-
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
+﻿#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Animation/AnimInstance.h"
 #include "FTAAbilitySystem/FTAGameplayAbility.h"
 #include "GameplayCueManager.h"
 #include "AnimNodes/AnimNode_RandomPlayer.h"
-//#include "GSBlueprintFunctionLibrary.h"
 
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
@@ -315,6 +311,17 @@ bool UFTAAbilitySystemComponent::IsAnimatingAbilityForAnyMesh(UGameplayAbility* 
 	}
 
 	return false;
+}
+
+ TWeakObjectPtr<UGameplayAbility> UFTAAbilitySystemComponent::GetAnimatingAbilityFromAnyMesh()
+{
+	// Only one ability can be animating for all meshes
+	for (FGameplayAbilityAnimMontageForMesh& GameplayAbilityAnimMontageForMesh : AnimMontageInfoForMeshes)
+	{
+		return GameplayAbilityAnimMontageForMesh.MontageInfo.AnimatingAbility;
+	}
+
+	return nullptr;
 }
 
 TArray<UAnimMontage*> UFTAAbilitySystemComponent::GetCurrentMontages() const

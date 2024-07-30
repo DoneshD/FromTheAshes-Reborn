@@ -1,6 +1,4 @@
-﻿// Copyright 2020 Dan Kestranek.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
@@ -8,9 +6,6 @@
 
 class USkeletalMeshComponent;
 
-/**
-* Data about montages that were played locally (all montages in case of server. predictive montages in case of client). Never replicated directly.
-*/
 USTRUCT()
 struct FROMTHEASHESREBORN_API FGameplayAbilityAnimMontageForMesh
 {
@@ -129,7 +124,7 @@ public:
 	bool IsAnimatingAbilityForAnyMesh(UGameplayAbility* Ability) const;
 
 	// Returns the current animating ability
-	UGameplayAbility* GetAnimatingAbilityFromAnyMesh();
+	 TWeakObjectPtr<UGameplayAbility> GetAnimatingAbilityFromAnyMesh();
 
 	// Returns montages that are currently playing
 	TArray<UAnimMontage*> GetCurrentMontages() const;
