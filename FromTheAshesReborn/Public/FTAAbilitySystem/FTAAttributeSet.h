@@ -25,7 +25,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Ability | Gameplay Attributes")
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, MaxHealth);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Ability | Gameplay Attributes")
+	FGameplayAttributeData MoveSpeed;
+	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, MoveSpeed);
 	
+	UPROPERTY(BlueprintReadOnly, Category = "Ability | Gameplay Attributes")
 	FGameplayAttributeData BaseDamage;
 	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, BaseDamage);
 	
@@ -33,10 +38,10 @@ public:
 	
 	UFTAAttributeSet();
 
-	virtual  void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
+	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 
-	virtual  void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
-	
+	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
 
+	void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
 	
 };

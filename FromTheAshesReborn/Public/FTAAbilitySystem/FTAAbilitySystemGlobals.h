@@ -19,8 +19,8 @@ public:
 	
 	/**
 	* Cache commonly used tags here. This has the benefit of one place to set the tag FName in case tag names change and
-	* the function call into UGSAbilitySystemGlobals::GSGet() is cheaper than calling FGameplayTag::RequestGameplayTag().
-	* Classes can access them by UGSAbilitySystemGlobals::GSGet().DeadTag
+	* the function call into UFTAAbilitySystemGlobals::FTAGet() is cheaper than calling FGameplayTag::RequestGameplayTag().
+	* Classes can access them by UFTAAbilitySystemGlobals::FTAGet().DeadTag
 	* We're not using this in this sample project (classes are manually caching in their constructors), but it's here as a reference.
 	*/
 
