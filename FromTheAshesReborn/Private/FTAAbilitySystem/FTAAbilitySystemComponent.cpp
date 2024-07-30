@@ -9,11 +9,6 @@
 #include "AnimNodes/AnimNode_RandomPlayer.h"
 //#include "GSBlueprintFunctionLibrary.h"
 
-static TAutoConsoleVariable<float> CVarReplayMontageErrorThreshold(
-	TEXT("GS.replay.MontageErrorThreshold"),
-	0.5f,
-	TEXT("Tolerance level for when montage playback position correction occurs in replays")
-);
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
 {
@@ -28,11 +23,8 @@ void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
 	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
-
-	/*
-	LocalAnimMontageInfoForMeshes = TArray<FGameplayAbilityLocalAnimMontageForMesh>();
-	RepAnimMontageInfoForMeshes = TArray<FGameplayAbilityRepAnimMontageForMesh>();
-	*/
+	
+	AnimMontageInfoForMeshes = TArray<FGameplayAbilityAnimMontageForMesh>();
 	
 }
 
@@ -54,13 +46,13 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 	// Consume the input if this InputID is overloaded with GenericConfirm/Cancel and the GenericConfim/Cancel callback is bound
 	if (IsGenericConfirmInputBound(InputID))
 	{
-		LocalInputConfirm();
+		InputConfirm();
 		return;
 	}
 
 	if (IsGenericCancelInputBound(InputID))
 	{
-		LocalInputCancel();
+		InputCancel();
 		return;
 	}
 
@@ -143,25 +135,25 @@ void UFTAAbilitySystemComponent::K2_RemoveLooseGameplayTags(const FGameplayTagCo
 	RemoveLooseGameplayTags(GameplayTags, Count);
 }
 
-void UFTAAbilitySystemComponent::ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
+void UFTAAbilitySystemComponent::ExecuteGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
 {
 	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Executed, GameplayCueParameters);
 }
 
-void UFTAAbilitySystemComponent::AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
+void UFTAAbilitySystemComponent::AddGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
 {
 	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::OnActive, GameplayCueParameters);
 	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::WhileActive, GameplayCueParameters);
 }
 
-void UFTAAbilitySystemComponent::RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
+void UFTAAbilitySystemComponent::RemoveGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
 {
 	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Removed, GameplayCueParameters);
 }
 
-FGameplayAbilityLocalAnimMontageForMesh& UFTAAbilitySystemComponent::GetLocalAnimMontageInfoForMesh(USkeletalMeshComponent* InMesh)
+FGameplayAbilityAnimMontageForMesh& UFTAAbilitySystemComponent::GetAnimMontageInfoForMesh(USkeletalMeshComponent* InMesh)
 {
-	for (FGameplayAbilityLocalAnimMontageForMesh& MontageInfo : LocalAnimMontageInfoForMeshes)
+	for (FGameplayAbilityAnimMontageForMesh& MontageInfo : AnimMontageInfoForMeshes)
 	{
 		if (MontageInfo.Mesh == InMesh)
 		{
@@ -169,9 +161,9 @@ FGameplayAbilityLocalAnimMontageForMesh& UFTAAbilitySystemComponent::GetLocalAni
 		}
 	}
 
-	FGameplayAbilityLocalAnimMontageForMesh MontageInfo = FGameplayAbilityLocalAnimMontageForMesh(InMesh);
-	LocalAnimMontageInfoForMeshes.Add(MontageInfo);
-	return LocalAnimMontageInfoForMeshes.Last();
+	FGameplayAbilityAnimMontageForMesh MontageInfo = FGameplayAbilityAnimMontageForMesh(InMesh);
+	AnimMontageInfoForMeshes.Add(MontageInfo);
+	return AnimMontageInfoForMeshes.Last();
 }
 
 float UFTAAbilitySystemComponent::PlayMontageForMesh(UGameplayAbility* InAnimatingAbility, USkeletalMeshComponent* InMesh, FGameplayAbilityActivationInfo ActivationInfo, UAnimMontage* NewAnimMontage, float InPlayRate, FName StartSectionName, bool bReplicateMontage)
@@ -186,7 +178,7 @@ float UFTAAbilitySystemComponent::PlayMontageForMesh(UGameplayAbility* InAnimati
 		Duration = AnimInstance->Montage_Play(NewAnimMontage, InPlayRate);
 		if (Duration > 0.f)
 		{
-			FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
+			FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
 
 			if (NewAnimMontage->HasRootMotion() && AnimInstance->GetOwningActor())
 			{
@@ -196,8 +188,8 @@ float UFTAAbilitySystemComponent::PlayMontageForMesh(UGameplayAbility* InAnimati
 					);
 			}
 
-			AnimMontageInfo.LocalMontageInfo.AnimMontage = NewAnimMontage;
-			AnimMontageInfo.LocalMontageInfo.AnimatingAbility = InAnimatingAbility;
+			AnimMontageInfo.MontageInfo.AnimMontage = NewAnimMontage;
+			AnimMontageInfo.MontageInfo.AnimatingAbility = InAnimatingAbility;
 			
 			if (InAbility)
 			{
@@ -225,8 +217,8 @@ float UFTAAbilitySystemComponent::PlayMontageSimulatedForMesh(USkeletalMeshCompo
 		Duration = AnimInstance->Montage_Play(NewAnimMontage, InPlayRate);
 		if (Duration > 0.f)
 		{
-			FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
-			AnimMontageInfo.LocalMontageInfo.AnimMontage = NewAnimMontage;
+			FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
+			AnimMontageInfo.MontageInfo.AnimMontage = NewAnimMontage;
 		}
 	}
 
@@ -236,8 +228,8 @@ float UFTAAbilitySystemComponent::PlayMontageSimulatedForMesh(USkeletalMeshCompo
 void UFTAAbilitySystemComponent::CurrentMontageStopForMesh(USkeletalMeshComponent* InMesh, float OverrideBlendOutTime)
 {
 	UAnimInstance* AnimInstance = IsValid(InMesh) && InMesh->GetOwner() == AbilityActorInfo->AvatarActor ? InMesh->GetAnimInstance() : nullptr;
-	FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
-	UAnimMontage* MontageToStop = AnimMontageInfo.LocalMontageInfo.AnimMontage;
+	FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
+	UAnimMontage* MontageToStop = AnimMontageInfo.MontageInfo.AnimMontage;
 	bool bShouldStopMontage = AnimInstance && MontageToStop && !AnimInstance->Montage_GetIsStopped(MontageToStop);
 
 	if (bShouldStopMontage)
@@ -251,16 +243,16 @@ void UFTAAbilitySystemComponent::CurrentMontageStopForMesh(USkeletalMeshComponen
 
 void UFTAAbilitySystemComponent::StopAllCurrentMontages(float OverrideBlendOutTime)
 {
-	for (FGameplayAbilityLocalAnimMontageForMesh& GameplayAbilityLocalAnimMontageForMesh : LocalAnimMontageInfoForMeshes)
+	for (FGameplayAbilityAnimMontageForMesh& GameplayAbilityAnimMontageForMesh : AnimMontageInfoForMeshes)
 	{
-		CurrentMontageStopForMesh(GameplayAbilityLocalAnimMontageForMesh.Mesh, OverrideBlendOutTime);
+		CurrentMontageStopForMesh(GameplayAbilityAnimMontageForMesh.Mesh, OverrideBlendOutTime);
 	}
 }
 
 void UFTAAbilitySystemComponent::StopMontageIfCurrentForMesh(USkeletalMeshComponent* InMesh, const UAnimMontage& Montage, float OverrideBlendOutTime)
 {
-	FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
-	if (&Montage == AnimMontageInfo.LocalMontageInfo.AnimMontage)
+	FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
+	if (&Montage == AnimMontageInfo.MontageInfo.AnimMontage)
 	{
 		CurrentMontageStopForMesh(InMesh, OverrideBlendOutTime);
 	}
@@ -269,12 +261,12 @@ void UFTAAbilitySystemComponent::StopMontageIfCurrentForMesh(USkeletalMeshCompon
 void UFTAAbilitySystemComponent::ClearAnimatingAbilityForAllMeshes(UGameplayAbility* Ability)
 {
 	UFTAGameplayAbility* GSAbility = Cast<UFTAGameplayAbility>(Ability);
-	for (FGameplayAbilityLocalAnimMontageForMesh& GameplayAbilityLocalAnimMontageForMesh : LocalAnimMontageInfoForMeshes)
+	for (FGameplayAbilityAnimMontageForMesh& GameplayAbilityAnimMontageForMesh : AnimMontageInfoForMeshes)
 	{
-		if (GameplayAbilityLocalAnimMontageForMesh.LocalMontageInfo.AnimatingAbility == Ability)
+		if (GameplayAbilityAnimMontageForMesh.MontageInfo.AnimatingAbility == Ability)
 		{
-			GSAbility->SetCurrentMontageForMesh(GameplayAbilityLocalAnimMontageForMesh.Mesh, nullptr);
-			GameplayAbilityLocalAnimMontageForMesh.LocalMontageInfo.AnimatingAbility = nullptr;
+			GSAbility->SetCurrentMontageForMesh(GameplayAbilityAnimMontageForMesh.Mesh, nullptr);
+			GameplayAbilityAnimMontageForMesh.MontageInfo.AnimatingAbility = nullptr;
 		}
 	}
 }
@@ -282,41 +274,41 @@ void UFTAAbilitySystemComponent::ClearAnimatingAbilityForAllMeshes(UGameplayAbil
 void UFTAAbilitySystemComponent::CurrentMontageJumpToSectionForMesh(USkeletalMeshComponent* InMesh, FName SectionName)
 {
 	UAnimInstance* AnimInstance = IsValid(InMesh) && InMesh->GetOwner() == AbilityActorInfo->AvatarActor ? InMesh->GetAnimInstance() : nullptr;
-	FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
-	if ((SectionName != NAME_None) && AnimInstance && AnimMontageInfo.LocalMontageInfo.AnimMontage)
+	FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
+	if ((SectionName != NAME_None) && AnimInstance && AnimMontageInfo.MontageInfo.AnimMontage)
 	{
-		AnimInstance->Montage_JumpToSection(SectionName, AnimMontageInfo.LocalMontageInfo.AnimMontage);
+		AnimInstance->Montage_JumpToSection(SectionName, AnimMontageInfo.MontageInfo.AnimMontage);
 	}
 }
 
 void UFTAAbilitySystemComponent::CurrentMontageSetNextSectionNameForMesh(USkeletalMeshComponent* InMesh, FName FromSectionName, FName ToSectionName)
 {
 	UAnimInstance* AnimInstance = IsValid(InMesh) && InMesh->GetOwner() == AbilityActorInfo->AvatarActor ? InMesh->GetAnimInstance() : nullptr;
-	FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
-	if (AnimMontageInfo.LocalMontageInfo.AnimMontage && AnimInstance)
+	FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
+	if (AnimMontageInfo.MontageInfo.AnimMontage && AnimInstance)
 	{
 		// Set Next Section Name. 
-		AnimInstance->Montage_SetNextSection(FromSectionName, ToSectionName, AnimMontageInfo.LocalMontageInfo.AnimMontage);
+		AnimInstance->Montage_SetNextSection(FromSectionName, ToSectionName, AnimMontageInfo.MontageInfo.AnimMontage);
 	}
 }
 
 void UFTAAbilitySystemComponent::CurrentMontageSetPlayRateForMesh(USkeletalMeshComponent* InMesh, float InPlayRate)
 {
 	UAnimInstance* AnimInstance = IsValid(InMesh) && InMesh->GetOwner() == AbilityActorInfo->AvatarActor ? InMesh->GetAnimInstance() : nullptr;
-	FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
-	if (AnimMontageInfo.LocalMontageInfo.AnimMontage && AnimInstance)
+	FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
+	if (AnimMontageInfo.MontageInfo.AnimMontage && AnimInstance)
 	{
 		// Set Play Rate
-		AnimInstance->Montage_SetPlayRate(AnimMontageInfo.LocalMontageInfo.AnimMontage, InPlayRate);
+		AnimInstance->Montage_SetPlayRate(AnimMontageInfo.MontageInfo.AnimMontage, InPlayRate);
 		
 	}
 }
 
 bool UFTAAbilitySystemComponent::IsAnimatingAbilityForAnyMesh(UGameplayAbility* InAbility) const
 {
-	for (FGameplayAbilityLocalAnimMontageForMesh GameplayAbilityLocalAnimMontageForMesh : LocalAnimMontageInfoForMeshes)
+	for (FGameplayAbilityAnimMontageForMesh GameplayAbilityAnimMontageForMesh : AnimMontageInfoForMeshes)
 	{
-		if (GameplayAbilityLocalAnimMontageForMesh.LocalMontageInfo.AnimatingAbility == InAbility)
+		if (GameplayAbilityAnimMontageForMesh.MontageInfo.AnimatingAbility == InAbility)
 		{
 			return true;
 		}
@@ -329,15 +321,15 @@ TArray<UAnimMontage*> UFTAAbilitySystemComponent::GetCurrentMontages() const
 {
 	TArray<UAnimMontage*> Montages;
 
-	for (FGameplayAbilityLocalAnimMontageForMesh GameplayAbilityLocalAnimMontageForMesh : LocalAnimMontageInfoForMeshes)
+	for (FGameplayAbilityAnimMontageForMesh GameplayAbilityAnimMontageForMesh : AnimMontageInfoForMeshes)
 	{
-		UAnimInstance* AnimInstance = IsValid(GameplayAbilityLocalAnimMontageForMesh.Mesh) 
-			&& GameplayAbilityLocalAnimMontageForMesh.Mesh->GetOwner() == AbilityActorInfo->AvatarActor ? GameplayAbilityLocalAnimMontageForMesh.Mesh->GetAnimInstance() : nullptr;
+		UAnimInstance* AnimInstance = IsValid(GameplayAbilityAnimMontageForMesh.Mesh) 
+			&& GameplayAbilityAnimMontageForMesh.Mesh->GetOwner() == AbilityActorInfo->AvatarActor ? GameplayAbilityAnimMontageForMesh.Mesh->GetAnimInstance() : nullptr;
 
-		if (GameplayAbilityLocalAnimMontageForMesh.LocalMontageInfo.AnimMontage && AnimInstance 
-			&& AnimInstance->Montage_IsActive(GameplayAbilityLocalAnimMontageForMesh.LocalMontageInfo.AnimMontage))
+		if (GameplayAbilityAnimMontageForMesh.MontageInfo.AnimMontage && AnimInstance 
+			&& AnimInstance->Montage_IsActive(GameplayAbilityAnimMontageForMesh.MontageInfo.AnimMontage))
 		{
-			Montages.Add(GameplayAbilityLocalAnimMontageForMesh.LocalMontageInfo.AnimMontage);
+			Montages.Add(GameplayAbilityAnimMontageForMesh.MontageInfo.AnimMontage);
 		}
 	}
 
@@ -347,12 +339,12 @@ TArray<UAnimMontage*> UFTAAbilitySystemComponent::GetCurrentMontages() const
 UAnimMontage* UFTAAbilitySystemComponent::GetCurrentMontageForMesh(USkeletalMeshComponent* InMesh)
 {
 	UAnimInstance* AnimInstance = IsValid(InMesh) && InMesh->GetOwner() == AbilityActorInfo->AvatarActor ? InMesh->GetAnimInstance() : nullptr;
-	FGameplayAbilityLocalAnimMontageForMesh& AnimMontageInfo = GetLocalAnimMontageInfoForMesh(InMesh);
+	FGameplayAbilityAnimMontageForMesh& AnimMontageInfo = GetAnimMontageInfoForMesh(InMesh);
 
-	if (AnimMontageInfo.LocalMontageInfo.AnimMontage && AnimInstance
-		&& AnimInstance->Montage_IsActive(AnimMontageInfo.LocalMontageInfo.AnimMontage))
+	if (AnimMontageInfo.MontageInfo.AnimMontage && AnimInstance
+		&& AnimInstance->Montage_IsActive(AnimMontageInfo.MontageInfo.AnimMontage))
 	{
-		return AnimMontageInfo.LocalMontageInfo.AnimMontage;
+		return AnimMontageInfo.MontageInfo.AnimMontage;
 	}
 
 	return nullptr;

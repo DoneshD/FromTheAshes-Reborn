@@ -12,7 +12,7 @@ class USkeletalMeshComponent;
 * Data about montages that were played locally (all montages in case of server. predictive montages in case of client). Never replicated directly.
 */
 USTRUCT()
-struct FROMTHEASHESREBORN_API FGameplayAbilityLocalAnimMontageForMesh
+struct FROMTHEASHESREBORN_API FGameplayAbilityAnimMontageForMesh
 {
 	GENERATED_BODY();
 
@@ -21,13 +21,13 @@ public:
 	USkeletalMeshComponent* Mesh;
 
 	UPROPERTY()
-	FGameplayAbilityLocalAnimMontage LocalMontageInfo;
+	FGameplayAbilityLocalAnimMontage MontageInfo;
 
-	FGameplayAbilityLocalAnimMontageForMesh() : Mesh(nullptr), LocalMontageInfo() {}
+	FGameplayAbilityAnimMontageForMesh() : Mesh(nullptr), MontageInfo() {}
 
-	FGameplayAbilityLocalAnimMontageForMesh(USkeletalMeshComponent* InMesh) : Mesh(InMesh), LocalMontageInfo() {}
+	FGameplayAbilityAnimMontageForMesh(USkeletalMeshComponent* InMesh) : Mesh(InMesh), MontageInfo() {}
 
-	FGameplayAbilityLocalAnimMontageForMesh(USkeletalMeshComponent* InMesh, FGameplayAbilityLocalAnimMontage& InLocalMontageInfo) : Mesh(InMesh), LocalMontageInfo(InLocalMontageInfo) {}
+	FGameplayAbilityAnimMontageForMesh(USkeletalMeshComponent* InMesh, FGameplayAbilityLocalAnimMontage& InMontageInfo) : Mesh(InMesh), MontageInfo(InMontageInfo) {}
 };
 
 
@@ -40,7 +40,7 @@ public:
 	UFTAAbilitySystemComponent();
 	
 	bool IsCharacterAbilitiesGiven = false;
-	bool bStartupEffectsApplied = false;
+	bool IsStartupEffectsApplied = false;
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -79,13 +79,13 @@ public:
 	
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
-	void ExecuteGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+	void ExecuteGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
-	void AddGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+	void AddGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
 
 	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
-	void RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+	void RemoveGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
 	
 
 	// ----------------------------------------------------------------------------------------------------------------
@@ -94,9 +94,9 @@ public:
 	// ----------------------------------------------------------------------------------------------------------------	
 
 	UPROPERTY()
-	TArray<FGameplayAbilityLocalAnimMontageForMesh> LocalAnimMontageInfoForMeshes;
+	TArray<FGameplayAbilityAnimMontageForMesh> AnimMontageInfoForMeshes;
 	
-	FGameplayAbilityLocalAnimMontageForMesh& GetLocalAnimMontageInfoForMesh(USkeletalMeshComponent* InMesh);
+	FGameplayAbilityAnimMontageForMesh& GetAnimMontageInfoForMesh(USkeletalMeshComponent* InMesh);
 	
 	// Plays a montage and handles replication and prediction based on passed in ability/activation info
 	virtual float PlayMontageForMesh(UGameplayAbility* AnimatingAbility, class USkeletalMeshComponent* InMesh, FGameplayAbilityActivationInfo ActivationInfo, UAnimMontage* Montage, float InPlayRate, FName StartSectionName = NAME_None, bool bReplicateMontage = true);
