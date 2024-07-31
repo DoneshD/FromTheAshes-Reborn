@@ -1,7 +1,4 @@
-﻿// Copyright 2020 Dan Kestranek.
-
-
-#include "Player/FTAPlayerState.h"
+﻿#include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/FTAAttributeSet.h"
 #include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/FTAAbilitySystemGlobals.h"

@@ -2,33 +2,70 @@
 
 #include "CoreMinimal.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "GameplayEffectTypes.h"
 #include "PlayerCharacter.generated.h"
 
-struct FGameplayEffectSpec;
-class UCameraComponent;
-class USpringArmComponent;
+class UGameplayEffect;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 {
 	GENERATED_BODY()
-
-protected:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USpringArmComponent> SpringArmComp;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	TObjectPtr<UCameraComponent> CameraComp;
-
+	
 public:
 	APlayerCharacter(const class FObjectInitializer& ObjectInitializer);
 
-	virtual void BeginPlay() override;
-
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void PossessedBy(AController* NewController) override;
-	
+
 	void InitAbilitySystemComponent();
+	
+	virtual void FinishDying() override;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Mesh")
+	USkeletalMeshComponent* GetSkeletalMesh() const;
+
+protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
+	float BaseTurnRate;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
+	float BaseLookUpRate;
+	
+	bool IsASCInputBound;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
+	class USpringArmComponent* SpringArmComp;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
+	class UCameraComponent* CameraComp;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GameplayEffect | Death")
+	TSubclassOf<UGameplayEffect> DeathEffect;
+	
+	virtual void BeginPlay() override;
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	virtual void PostInitializeComponents() override;
+
+	void LookUp(float Value);
+
+	void LookUpRate(float Value);
+
+	void Turn(float Value);
+
+	void TurnRate(float Value);
+
+	void MoveForward(float Value);
+
+	void MoveRight(float Value);
+
+	UFUNCTION()
+	void InitializeFloatingStatusBar();
+	
+	void BindASCInput();
 	
 };

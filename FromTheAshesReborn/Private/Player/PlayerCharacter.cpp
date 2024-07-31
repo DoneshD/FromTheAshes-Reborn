@@ -60,6 +60,58 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	AttributeSet = FTAPlayerState->GetAttributeSet();
 }
 
+void APlayerCharacter::FinishDying()
+{
+	Super::FinishDying();
+}
+
+USkeletalMeshComponent* APlayerCharacter::GetSkeletalMesh() const
+{
+	return GetMesh();
+}
+
+void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+}
+
+void APlayerCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
+void APlayerCharacter::LookUp(float Value)
+{
+}
+
+void APlayerCharacter::LookUpRate(float Value)
+{
+}
+
+void APlayerCharacter::Turn(float Value)
+{
+}
+
+void APlayerCharacter::TurnRate(float Value)
+{
+}
+
+void APlayerCharacter::MoveForward(float Value)
+{
+}
+
+void APlayerCharacter::MoveRight(float Value)
+{
+}
+
+void APlayerCharacter::InitializeFloatingStatusBar()
+{
+}
+
+void APlayerCharacter::BindASCInput()
+{
+}
+
 void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
