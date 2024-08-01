@@ -79,10 +79,10 @@ protected:
 	UPROPERTY()
 	class UFTAAttributeSet* AttributeSet;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "FTASCharacter")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "FTACharacter")
 	FText CharacterName;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GAnimation")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Animation")
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Audio")
