@@ -24,17 +24,17 @@ public:
 	// Sets default values for this character's properties
 	AFTACharacter(const class FObjectInitializer& ObjectInitializer);
 
-	UPROPERTY(BlueprintAssignable, Category = "GASShooter|GSCharacter")
+	UPROPERTY(BlueprintAssignable, Category = "Character")
 	FCharacterDiedDelegate OnCharacterDied;
 
 	// Implement IAbilitySystemInterface
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter")
+	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual bool IsAlive() const;
 
 	// Switch on AbilityID to return individual ability levels.
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter")
+	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual int32 GetAbilityLevel(EGAbilityInputID AbilityID) const;
 
 	// Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
@@ -42,7 +42,7 @@ public:
 
 	virtual void Die();
 
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter")
+	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void FinishDying();
 
 
@@ -50,24 +50,24 @@ public:
 	* Getters for attributes from GSAttributeSetBase
 	**/
 
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	int32 GetCharacterLevel() const;
 
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	float GetCurrentHealth() const;
 
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	float GetMaxHealth() const;
 
 	// Gets the Current value of MoveSpeed
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	float GetMoveSpeed() const;
 
 	// Gets the Base value of MoveSpeed
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter|Attributes")
+	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	float GetMoveSpeedBaseValue() const;
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|GSHeroCharacter")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character")
 	FName WeaponAttachPoint;
 	
 	FName GetWeaponAttachPoint();
@@ -84,26 +84,26 @@ protected:
 	UPROPERTY()
 	class UFTAAttributeSet* AttributeSet;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "FTACharacter")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character")
 	FText CharacterName;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Animation")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character | Animation")
 	UAnimMontage* DeathMontage;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Audio")
 	class USoundCue* DeathSound;
 
 	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
 	TArray<TSubclassOf<class UFTAGameplayAbility>> CharacterAbilities;
 
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Attributes")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
 
 	// These effects are only applied one time on startup
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|Abilities")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Effects")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 	// Called when the game starts or when spawned

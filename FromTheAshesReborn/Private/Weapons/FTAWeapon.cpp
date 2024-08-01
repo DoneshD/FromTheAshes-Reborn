@@ -135,6 +135,7 @@ void AFTAWeapon::RemoveAbilities()
 	}
 }
 
+
 int32 AFTAWeapon::GetAbilityLevel(EGAbilityInputID AbilityID)
 {
 	return 1;
@@ -145,3 +146,7 @@ UAnimMontage* AFTAWeapon::GetEquipMontage() const
 	return EquipMontage;
 }
 
+void AFTAWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}

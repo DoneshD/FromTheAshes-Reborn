@@ -8,9 +8,6 @@
 #include "FTACustomBase/FTAEnums.h"
 #include "FTAWeapon.generated.h"
 
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWeaponAmmoChangedDelegate, int32, OldValue, int32, NewValue);
-
-
 class AFTACharacter;
 class UAnimMontage;
 class UFTAAbilitySystemComponent;
@@ -59,16 +56,16 @@ public:
 
 	virtual int32 GetAbilityLevel(EGAbilityInputID AbilityID);
 
-
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|Animation")
+	UFUNCTION(BlueprintCallable, Category = "Weapon | Animation")
 	UAnimMontage* GetEquipMontage() const;
-	
 
 protected:
 
 	virtual void BeginPlay() override;
 	
 	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+	
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	UPROPERTY()
 	UFTAAbilitySystemComponent* AbilitySystemComponent;
@@ -78,27 +75,25 @@ protected:
 	class UCapsuleComponent* CollisionComp;
 
 	//Probably change to static mesh 
-	UPROPERTY(VisibleAnywhere, Category = "GASShooter|GSWeapon")
+	UPROPERTY(VisibleAnywhere, Category = "Weapon | Base")
 	USkeletalMeshComponent* WeaponMesh;
 
-	UPROPERTY(EditDefaultsOnly, Category = "GASShooter|GSWeapon")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon | Base")
 	FVector WeaponMeshEquippedRelativeLocation;
 
-	UPROPERTY(BlueprintReadOnly, Replicated, Category = "GASShooter|GSWeapon")
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = "Weapon | Base")
 	AFTACharacter* OwningCharacter;
 
-	UPROPERTY(EditAnywhere, Category = "GASShooter|GSWeapon")
+	UPROPERTY(EditAnywhere, Category = "Ability System |Abilities")
 	TArray<TSubclassOf<UFTAGameplayAbility>> Abilities;
 
-	UPROPERTY(BlueprintReadOnly, Category = "GASShooter|GSWeapon")
+	UPROPERTY(BlueprintReadOnly, Category = "Ability System |Abilities")
 	TArray<FGameplayAbilitySpecHandle> AbilitySpecHandles;
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|Animation")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Weapon | Animation")
 	UAnimMontage* EquipMontage;
 	
 	// Cache tags
 	FGameplayTag WeaponInstantAbilityTag;
-	
-	
 
 };
