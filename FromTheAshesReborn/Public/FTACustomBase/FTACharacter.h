@@ -66,6 +66,11 @@ public:
 	// Gets the Base value of MoveSpeed
 	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSCharacter|Attributes")
 	float GetMoveSpeedBaseValue() const;
+	
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|GSHeroCharacter")
+	FName WeaponAttachPoint;
+	
+	FName GetWeaponAttachPoint();
 
 protected:
 	FGameplayTag DeadTag;

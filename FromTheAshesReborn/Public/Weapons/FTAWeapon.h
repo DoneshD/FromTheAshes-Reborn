@@ -59,20 +59,17 @@ public:
 
 	virtual int32 GetAbilityLevel(EGAbilityInputID AbilityID);
 
-	// Resets things like fire mode to default
-	UFUNCTION(BlueprintCallable, Category = "GASShooter|GSWeapon")
-	virtual void ResetWeapon();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void OnDropped(FVector NewLocation);
-	virtual void OnDropped_Implementation(FVector NewLocation);
-	virtual bool OnDropped_Validate(FVector NewLocation);
 
 	UFUNCTION(BlueprintCallable, Category = "GASShooter|Animation")
 	UAnimMontage* GetEquipMontage() const;
 	
 
 protected:
+
+	virtual void BeginPlay() override;
+	
+	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
+	
 	UPROPERTY()
 	UFTAAbilitySystemComponent* AbilitySystemComponent;
 	
@@ -80,8 +77,12 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UCapsuleComponent* CollisionComp;
 
+	//Probably change to static mesh 
 	UPROPERTY(VisibleAnywhere, Category = "GASShooter|GSWeapon")
 	USkeletalMeshComponent* WeaponMesh;
+
+	UPROPERTY(EditDefaultsOnly, Category = "GASShooter|GSWeapon")
+	FVector WeaponMeshEquippedRelativeLocation;
 
 	UPROPERTY(BlueprintReadOnly, Replicated, Category = "GASShooter|GSWeapon")
 	AFTACharacter* OwningCharacter;
@@ -98,8 +99,6 @@ protected:
 	// Cache tags
 	FGameplayTag WeaponInstantAbilityTag;
 	
-	virtual void BeginPlay() override;
 	
-	virtual void EndPlay(EEndPlayReason::Type EndPlayReason) override;
 
 };

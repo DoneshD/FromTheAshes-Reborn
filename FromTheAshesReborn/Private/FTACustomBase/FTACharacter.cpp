@@ -160,6 +160,11 @@ float AFTACharacter::GetMoveSpeedBaseValue() const
 	return 0.0f;
 }
 
+FName AFTACharacter::GetWeaponAttachPoint()
+{
+	return WeaponAttachPoint;
+}
+
 // Called when the game starts or when spawned
 void AFTACharacter::BeginPlay()
 {
