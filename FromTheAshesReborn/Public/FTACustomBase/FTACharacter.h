@@ -101,7 +101,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "GASShooter|Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
