@@ -7,12 +7,6 @@
 UFTACharacterMovementComponent::UFTACharacterMovementComponent()
 {
 	SprintSpeedMultiplier = 1.4f;
-	ADSSpeedMultiplier = 0.8f;
-	KnockedDownSpeedMultiplier = 0.4f;
-
-	KnockedDownTag = FGameplayTag::RequestGameplayTag("State.KnockedDown");
-	InteractingTag = FGameplayTag::RequestGameplayTag("State.Interacting");
-	InteractingRemovalTag = FGameplayTag::RequestGameplayTag("State.InteractingRemoval");
 }
 
 float UFTACharacterMovementComponent::GetMaxSpeed() const

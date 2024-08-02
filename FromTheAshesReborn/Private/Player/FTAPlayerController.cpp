@@ -53,7 +53,7 @@ void AFTAPlayerController::OnUnPossess()
 	EnhancedInputComponent->ClearActionBindings();
 }
 
-void AFTAPlayerController::SendLocalInputToASC(bool IsPressed, EGAbilityInputID AbilityInputID)
+void AFTAPlayerController::SendLocalInputToASC(bool IsPressed, EAbilityInputID AbilityInputID)
 {
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
 	
@@ -94,12 +94,12 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	
 	PlayerCharacter->AddMovementInput(RightVector, InputDirection.X);
 
-	SendLocalInputToASC(true, EGAbilityInputID::Move);
+	SendLocalInputToASC(true, EAbilityInputID::Move);
 }
 
 void AFTAPlayerController::HandleMoveActionReleased(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(false, EGAbilityInputID::Move);
+	SendLocalInputToASC(false, EAbilityInputID::Move);
 }
 
 void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputActionValue)
@@ -112,13 +112,13 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(true, EGAbilityInputID::LightAttack);
+	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
 	
 }
 
 void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(false, EGAbilityInputID::LightAttack);
+	SendLocalInputToASC(false, EAbilityInputID::LightAttack);
 }
 
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)

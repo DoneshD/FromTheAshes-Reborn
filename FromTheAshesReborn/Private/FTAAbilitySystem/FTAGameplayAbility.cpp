@@ -26,13 +26,6 @@ UFTAGameplayAbility::UFTAGameplayAbility()
 	// UGSAbilitySystemGlobals hasn't initialized tags yet to set ActivationBlockedTags
 	
 	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.Dead"));
-	ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("State.KnockedDown"));
-
-	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("Ability.BlocksInteraction"));
-
-	InteractingTag = FGameplayTag::RequestGameplayTag("State.Interacting");
-	InteractingRemovalTag = FGameplayTag::RequestGameplayTag("State.InteractingRemoval");
-	
 }
 
 void UFTAGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)

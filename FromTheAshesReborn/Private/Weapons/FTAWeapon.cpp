@@ -136,7 +136,7 @@ void AFTAWeapon::RemoveAbilities()
 }
 
 
-int32 AFTAWeapon::GetAbilityLevel(EGAbilityInputID AbilityID)
+int32 AFTAWeapon::GetAbilityLevel(EAbilityInputID AbilityID)
 {
 	return 1;
 }

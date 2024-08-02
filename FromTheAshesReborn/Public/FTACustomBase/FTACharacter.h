@@ -35,7 +35,7 @@ public:
 
 	// Switch on AbilityID to return individual ability levels.
 	UFUNCTION(BlueprintCallable, Category = "Character")
-	virtual int32 GetAbilityLevel(EGAbilityInputID AbilityID) const;
+	virtual int32 GetAbilityLevel(EAbilityInputID AbilityID) const;
 
 	// Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
 	virtual void RemoveCharacterAbilities();

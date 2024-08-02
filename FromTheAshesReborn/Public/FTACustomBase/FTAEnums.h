@@ -19,7 +19,7 @@ enum class EHitReactDirection : uint8
 };
 
 UENUM(BlueprintType)
-enum class EGAbilityInputID : uint8
+enum class EAbilityInputID : uint8
 {
 	None			UMETA(DisplayName = "None"),
 	Confirm			UMETA(DisplayName = "Confirm"),

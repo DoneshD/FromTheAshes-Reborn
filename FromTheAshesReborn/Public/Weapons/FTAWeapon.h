@@ -54,7 +54,7 @@ public:
 
 	virtual void RemoveAbilities();
 
-	virtual int32 GetAbilityLevel(EGAbilityInputID AbilityID);
+	virtual int32 GetAbilityLevel(EAbilityInputID AbilityID);
 
 	UFUNCTION(BlueprintCallable, Category = "Weapon | Animation")
 	UAnimMontage* GetEquipMontage() const;

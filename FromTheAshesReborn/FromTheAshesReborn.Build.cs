@@ -12,6 +12,8 @@ public class FromTheAshesReborn : ModuleRules
 			"CoreUObject", 
 			"Engine", 
 			"InputCore", 
+			"Slate",
+			"SlateCore",
 			"HeadMountedDisplay", 
 			"EnhancedInput", 
 			"GameplayTasks", 

@@ -20,9 +20,6 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 
 	// Cache tags
 	DeadTag = FGameplayTag::RequestGameplayTag("State.Dead");
-	EffectRemoveOnDeathTag = FGameplayTag::RequestGameplayTag("Effect.RemoveOnDeath");
-
-	
 }
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
@@ -35,7 +32,7 @@ bool AFTACharacter::IsAlive() const
 	return GetCurrentHealth() > 0.0f;
 }
 
-int32 AFTACharacter::GetAbilityLevel(EGAbilityInputID AbilityID) const
+int32 AFTACharacter::GetAbilityLevel(EAbilityInputID AbilityID) const
 {
 	//TODO
 	return 1;

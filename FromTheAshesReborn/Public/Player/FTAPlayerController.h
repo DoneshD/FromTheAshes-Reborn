@@ -47,7 +47,7 @@ public:
 
 	virtual void OnUnPossess() override;
 
-	void SendLocalInputToASC(bool, EGAbilityInputID);
+	void SendLocalInputToASC(bool, EAbilityInputID);
 
 	void HandleMoveActionPressed(const FInputActionValue& InputActionValue);
 	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
