@@ -6,7 +6,7 @@
 
 UFTACharacterMovementComponent::UFTACharacterMovementComponent()
 {
-	SprintSpeedMultiplier = 1.4f;
+	//SprintSpeedMultiplier = 1.4f;
 }
 
 float UFTACharacterMovementComponent::GetMaxSpeed() const
@@ -17,41 +17,10 @@ float UFTACharacterMovementComponent::GetMaxSpeed() const
 		UE_LOG(LogTemp, Error, TEXT("%s() No Owner"), *FString(__FUNCTION__));
 		return Super::GetMaxSpeed();
 	}
-
+	
 	if (!Owner->IsAlive())
 	{
 		return 0.0f;
 	}
-
-	// Don't move while interacting or being interacted on (revived)
-	if (Owner->GetAbilitySystemComponent() && Owner->GetAbilitySystemComponent()->GetTagCount(InteractingTag)
-		> Owner->GetAbilitySystemComponent()->GetTagCount(InteractingRemovalTag))
-	{
-		return 0.0f;
-	}
-
-	if (Owner->GetAbilitySystemComponent() && Owner->GetAbilitySystemComponent()->HasMatchingGameplayTag(KnockedDownTag))
-	{
-		return Owner->GetMoveSpeed() * KnockedDownSpeedMultiplier;
-	}
-
-	if (RequestToStartSprinting)
-	{
-		return Owner->GetMoveSpeed() * SprintSpeedMultiplier;
-	}
-
 	return Owner->GetMoveSpeed();
 }
-
-
-
-void UFTACharacterMovementComponent::StartSprinting()
-{
-	RequestToStartSprinting = true;
-}
-
-void UFTACharacterMovementComponent::StopSprinting()
-{
-	RequestToStartSprinting = false;
-}
-

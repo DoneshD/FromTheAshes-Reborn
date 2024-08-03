@@ -9,6 +9,7 @@ UFTAAttributeSet::UFTAAttributeSet()
 	InitCurrentHealth(100.0f);
 	InitMaxHealth(100.0f);
 	InitBaseDamage(100.0f);
+	InitMoveSpeed(600.0f);
 
 }
 
@@ -91,9 +92,7 @@ void UFTAAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	{
 		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), 0.0f, GetMaxHealth()));
 	}
-	
 }
-
 
 void UFTAAttributeSet::AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty)
 {

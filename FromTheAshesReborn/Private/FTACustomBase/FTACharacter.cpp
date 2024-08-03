@@ -107,8 +107,6 @@ void AFTACharacter::FinishDying()
 	Destroy();
 }
 
-
-
 int32 AFTACharacter::GetCharacterLevel() const
 {
 	//TODO
@@ -121,7 +119,6 @@ float AFTACharacter::GetCurrentHealth() const
 	{
 		return AttributeSet->GetCurrentHealth();
 	}
-
 	return 0.0f;
 }
 
@@ -134,8 +131,6 @@ float AFTACharacter::GetMaxHealth() const
 	
 	return 0.0f;
 }
-
-
 
 float AFTACharacter::GetMoveSpeed() const
 {

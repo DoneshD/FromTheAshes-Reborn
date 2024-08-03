@@ -25,13 +25,13 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->GravityScale = 2.f;
 	GetCharacterMovement()->AirControl = 0.7f;
 	GetCharacterMovement()->AirControlBoostMultiplier = 6.f;
-
+	
 	//Walk and crouch
 	GetCharacterMovement()->SetCrouchedHalfHeight(48.f);
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	//GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-
+	
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 }
 
