@@ -10,6 +10,8 @@ UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
 {
 }
 
+
+
 void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
@@ -431,3 +433,8 @@ float UFTAAbilitySystemComponent::GetCurrentMontageSectionTimeLeftForMesh(USkele
 	return -1.f;
 }
 
+void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage,
+	float MitigatedDamage)
+{
+	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
+}
