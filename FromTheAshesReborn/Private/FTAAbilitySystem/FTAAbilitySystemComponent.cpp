@@ -57,6 +57,7 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 	ABILITYLIST_SCOPE_LOCK();
 	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
 	{
+		
 		if (Spec.InputID == InputID)
 		{
 			if (Spec.Ability)
@@ -68,9 +69,7 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 					{
 						ServerSetInputPressed(Spec.Handle);
 					}
-
 					AbilitySpecInputPressed(Spec);
-
 					// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
 					InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 				}

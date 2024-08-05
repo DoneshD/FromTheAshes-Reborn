@@ -65,8 +65,6 @@ void AFTAPlayerController::SendLocalInputToASC(bool IsPressed, EAbilityInputID A
 	if(IsPressed)
 	{
 		AbilitySystemComponent->AbilityLocalInputPressed(static_cast<int32>(AbilityInputID));
-		
-
 	}
 	else
 	{
