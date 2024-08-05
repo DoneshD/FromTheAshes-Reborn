@@ -1,4 +1,4 @@
-﻿#include "FTAAbilitySystem/FTAAttributeSet.h"
+﻿#include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
 #include "FTACustomBase/FTACharacter.h"

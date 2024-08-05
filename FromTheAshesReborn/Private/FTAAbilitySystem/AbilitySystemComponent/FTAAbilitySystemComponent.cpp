@@ -1,7 +1,7 @@
-﻿#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
+﻿#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Animation/AnimInstance.h"
-#include "FTAAbilitySystem/FTAGameplayAbility.h"
+#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "GameplayCueManager.h"
 #include "AnimNodes/AnimNode_RandomPlayer.h"
 

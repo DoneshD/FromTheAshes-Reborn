@@ -1,6 +1,5 @@
-﻿#include "FTAAbilitySystem/FTAAbilityTypes.h"
-#include "AbilitySystemGlobals.h"
-#include "FTAAbilitySystem//FTAAbilitySystemComponent.h"
+﻿#include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 bool FFTAGameplayEffectContainerSpec::HasValidEffects() const
 {

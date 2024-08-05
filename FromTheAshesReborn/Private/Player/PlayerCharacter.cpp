@@ -1,7 +1,7 @@
 #include "Player/PlayerCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "Player/FTAPlayerState.h"
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 

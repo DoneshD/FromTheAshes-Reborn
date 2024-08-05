@@ -1,6 +1,6 @@
 ﻿
-#include "FTAAbilitySystem/FTAAT_WaitReceiveDamage.h"
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_WaitReceiveDamage.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 UFTAAT_WaitReceiveDamage::UFTAAT_WaitReceiveDamage(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

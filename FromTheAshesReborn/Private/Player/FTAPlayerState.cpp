@@ -1,7 +1,7 @@
 ﻿#include "Player/FTAPlayerState.h"
-#include "FTAAbilitySystem/FTAAttributeSet.h"
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/FTAAbilitySystemGlobals.h"
+#include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/Globals/FTAAbilitySystemGlobals.h"
 #include "Player/PlayerCharacter.h"
 
 AFTAPlayerState::AFTAPlayerState()

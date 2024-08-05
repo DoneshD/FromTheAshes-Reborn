@@ -1,16 +1,11 @@
-﻿#include "FTAAbilitySystem/FTAGameplayAbility.h"
+﻿#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "AbilitySystemComponent.h"
-#include "FTAAbilitySystem/FTATargetType.h"
+#include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "FTAAbilitySystem/FTAAbilityTypes.h"
+#include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
 
-#include "FTAAbilitySystem/FTAAbilitySystemGlobals.h"
-#include "Player/FTAPlayerController.h"
-//#include "GSBlueprintFunctionLibrary.h"
-//#include "Characters/Heroes/GSHeroCharacter.h"
-//#include "Weapons/GSWeapon.h"
 
 UFTAGameplayAbility::UFTAGameplayAbility()
 {

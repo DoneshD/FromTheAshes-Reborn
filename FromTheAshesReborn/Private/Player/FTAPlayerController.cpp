@@ -3,7 +3,7 @@
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 AFTAPlayerController::AFTAPlayerController()
 {

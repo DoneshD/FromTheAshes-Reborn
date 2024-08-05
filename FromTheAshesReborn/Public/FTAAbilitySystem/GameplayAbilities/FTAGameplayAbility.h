@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "FTACustomBase/FTAEnums.h"
-#include "FTAAbilitySystem/FTAAbilityTypes.h"
+#include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
 #include "FTAGameplayAbility.generated.h"
 
 class USkeletalMeshComponent;

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Abilities/GameplayAbilityTypes.h"
-#include "FTAAbilitySystem/FTAAbilityTypes.h"
 #include "FTATargetType.generated.h"
 
 class AFTACharacter;

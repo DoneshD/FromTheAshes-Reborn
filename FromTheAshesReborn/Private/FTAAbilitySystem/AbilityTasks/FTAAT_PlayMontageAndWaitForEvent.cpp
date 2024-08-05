@@ -1,13 +1,9 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "FTAAbilitySystem/FTAAT_PlayMontageAndWaitForEvent.h"
+﻿#include "FTAAbilitySystem//AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Animation/AnimInstance.h"
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/FTAGameplayAbility.h"
-#include "FTACustomBase/FTAEnums.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "GameFramework/Character.h"
 
 UFTAAT_PlayMontageAndWaitForEvent::UFTAAT_PlayMontageAndWaitForEvent(const FObjectInitializer& ObjectInitializer)

@@ -1,4 +1,4 @@
-﻿#include "FTAAbilitySystem/FTATargetType.h"
+﻿#include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "FTACustomBase/FTACharacter.h"
 
 void UFTATargetType::GetTargets_Implementation(AFTACharacter* TargetingCharacter, AActor* TargetingActor, FGameplayEventData EventData, TArray<FGameplayAbilityTargetDataHandle>& OutTargetData, TArray<FHitResult>& OutHitResults, TArray<AActor*>& OutActors) const

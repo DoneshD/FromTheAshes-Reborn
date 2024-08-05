@@ -1,6 +1,6 @@
 ﻿#include "Weapons/FTAWeapon.h"
-#include "FTAAbilitySystem/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/FTAGameplayAbility.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
