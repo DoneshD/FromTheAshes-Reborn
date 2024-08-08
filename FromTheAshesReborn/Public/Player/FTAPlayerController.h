@@ -24,10 +24,16 @@ protected:
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<ACharacter> PlayerCharacter;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Move;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LookMouse;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Jump;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LightAttack;
@@ -36,9 +42,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<ACharacter> PlayerCharacter;
-
+	bool IsTimeSlowed = false;
+	
 public:
 
 	AFTAPlayerController();
@@ -53,6 +58,9 @@ public:
 	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
+
+	void HandleJumpAttackActionPressed(const FInputActionValue& InputActionValue);
+	void HandleJumpAttackActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleLightAttackActionPressed(const FInputActionValue& InputActionValue);
 	void HandleLightAttackActionReleased(const FInputActionValue& InputActionValue);

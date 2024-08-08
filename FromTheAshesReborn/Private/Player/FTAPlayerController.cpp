@@ -4,6 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 AFTAPlayerController::AFTAPlayerController()
 {
@@ -41,6 +42,9 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	
 	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLightAttackActionPressed);
 	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLightAttackActionReleased);
+
+	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Started, this, &AFTAPlayerController::HandleJumpAttackActionPressed);
+	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleJumpAttackActionReleased);
 
 	//Debug purposes
 	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
@@ -94,6 +98,7 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	PlayerCharacter->AddMovementInput(RightVector, InputDirection.X);
 
 	SendLocalInputToASC(true, EAbilityInputID::Move);
+
 }
 
 void AFTAPlayerController::HandleMoveActionReleased(const FInputActionValue& InputActionValue)
@@ -109,6 +114,18 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 	AddPitchInput(LookAxisVector.Y);
 }
 
+void AFTAPlayerController::HandleJumpAttackActionPressed(const FInputActionValue& InputActionValue)
+{
+	//SendLocalInputToASC(true, EAbilityInputID::Jump);
+	PlayerCharacter->Jump();
+}
+
+void AFTAPlayerController::HandleJumpAttackActionReleased(const FInputActionValue& InputActionValue)
+{
+	//SendLocalInputToASC(false, EAbilityInputID::Jump);
+	PlayerCharacter->StopJumping();
+}
+
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
@@ -122,5 +139,14 @@ void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionVal
 
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)
 {
-	
+	if(IsTimeSlowed)
+	{
+		IsTimeSlowed = false;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1);
+	}
+	else
+	{
+		IsTimeSlowed = true;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), .1);
+	}
 }

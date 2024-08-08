@@ -75,15 +75,20 @@ public:
 protected:
 	FGameplayTag DeadTag;
 	FGameplayTag AliveTag;
+	
 	FGameplayTag LockOnTag;
 	FGameplayTag FreeCamTag;
+	
 	FGameplayTag ExecutingTag;
 	FGameplayTag LightMeleeTag;
 	FGameplayTag HeavyMeleeTag;
+	
 	FGameplayTag DashingInitialTag;
 	FGameplayTag DashingSecondaryTag;
+	
 	FGameplayTag JumpingSingleTag;
 	FGameplayTag JumpingDoubleTag;
+	
 	FGameplayTag AirborneTag;
 	FGameplayTag FallingTag;
 	FGameplayTag RunningTag;
