@@ -74,6 +74,21 @@ public:
 
 protected:
 	FGameplayTag DeadTag;
+	FGameplayTag AliveTag;
+	FGameplayTag LockOnTag;
+	FGameplayTag FreeCamTag;
+	FGameplayTag ExecutingTag;
+	FGameplayTag LightMeleeTag;
+	FGameplayTag HeavyMeleeTag;
+	FGameplayTag DashingInitialTag;
+	FGameplayTag DashingSecondaryTag;
+	FGameplayTag JumpingSingleTag;
+	FGameplayTag JumpingDoubleTag;
+	FGameplayTag AirborneTag;
+	FGameplayTag FallingTag;
+	FGameplayTag RunningTag;
+	FGameplayTag SprintingTag;
+	
 	FGameplayTag EffectRemoveOnDeathTag;
 	
 	// Reference to the ASC. It will live on the PlayerState or here if the character doesn't have a PlayerState.
@@ -95,7 +110,7 @@ protected:
 
 	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
-	TArray<TSubclassOf<class UFTAGameplayAbility>> CharacterAbilities;
+	TArray<TSubclassOf<class UFTAGameplayAbility>> DefaultAbilities;
 
 	// Default attributes for a character for initializing on spawn/respawn.
 	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
@@ -109,7 +124,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void AddCharacterAbilities();
+	virtual void AddDefaultAbilities();
 
 	// Initialize the Character's attributes. 
 	virtual void InitializeAttributes();

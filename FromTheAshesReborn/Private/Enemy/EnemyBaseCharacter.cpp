@@ -21,7 +21,7 @@ void AEnemyBaseCharacter::BeginPlay()
 	//Implement later?
 	//GiveDefaultAbilities();
 
-	AddCharacterAbilities();
+	AddDefaultAbilities();
 	InitializeAttributes();
 }
 

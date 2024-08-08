@@ -24,7 +24,7 @@ AFTAPlayerState::AFTAPlayerState()
 	// 100 is probably way too high for a shipping game, you can adjust to fit your needs.
 	NetUpdateFrequency = 100.0f;
 
-	DeadTag = FGameplayTag::RequestGameplayTag("State.Dead");
+	DeadTag = FGameplayTag::RequestGameplayTag("Condition.Health.Dead");
 }
 
 UAbilitySystemComponent* AFTAPlayerState::GetAbilitySystemComponent() const

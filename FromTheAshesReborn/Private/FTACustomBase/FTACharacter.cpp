@@ -19,7 +19,23 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 	bAlwaysRelevant = true;
 
 	// Cache tags
-	DeadTag = FGameplayTag::RequestGameplayTag("State.Dead");
+	// FGameplayTag::RequestGameplayTag(FName(""))
+	DeadTag = FGameplayTag::RequestGameplayTag(FName("Condition.Health.Dead"));
+	AliveTag = FGameplayTag::RequestGameplayTag(FName("Condition.Health.Dead"));
+	LockOnTag = FGameplayTag::RequestGameplayTag(FName("Controls.LockedOn"));
+	FreeCamTag = FGameplayTag::RequestGameplayTag(FName("Controls.FreeCam"));
+	ExecutingTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Executing"));
+	LightMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Light.Melee"));
+	HeavyMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Heavy.Melee"));
+	DashingInitialTag = FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial"));
+	DashingSecondaryTag = FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary"));
+	JumpingSingleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Single"));
+	JumpingDoubleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Double"));
+
+	AirborneTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Airborne"));
+	FallingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Falling"));
+	RunningTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Running"));
+	SprintingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Sprinting"));
 }
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
@@ -49,7 +65,7 @@ void AFTACharacter::RemoveCharacterAbilities()
 	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
 	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
 	{
-		if ((Spec.SourceObject == this) && CharacterAbilities.Contains(Spec.Ability->GetClass()))
+		if ((Spec.SourceObject == this) && DefaultAbilities.Contains(Spec.Ability->GetClass()))
 		{
 			AbilitiesToRemove.Add(Spec.Handle);
 		}
@@ -163,7 +179,7 @@ void AFTACharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AFTACharacter::AddCharacterAbilities()
+void AFTACharacter::AddDefaultAbilities()
 {
 	// Grant abilities, but only on the server	
 	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->IsCharacterAbilitiesGiven)
@@ -171,7 +187,7 @@ void AFTACharacter::AddCharacterAbilities()
 		return;
 	}
 
-	for (TSubclassOf<UFTAGameplayAbility>& StartupAbility : CharacterAbilities)
+	for (TSubclassOf<UFTAGameplayAbility>& StartupAbility : DefaultAbilities)
 	{
 		AbilitySystemComponent->GiveAbility(
 			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));

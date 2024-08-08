@@ -114,10 +114,10 @@ void APlayerCharacter::BindASCInput()
 
 void APlayerCharacter::PossessedBy(AController* NewController)
 {
+	//TODO: Not init correctly
 	Super::PossessedBy(NewController);
 	InitAbilitySystemComponent();
 	//only grants on server, change later
-	AddCharacterAbilities();
+	AddDefaultAbilities();
 	InitializeAttributes();
-	
 }
