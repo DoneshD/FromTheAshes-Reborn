@@ -21,6 +21,7 @@ UFTAGameplayAbility::UFTAGameplayAbility()
 	// UGSAbilitySystemGlobals hasn't initialized tags yet to set ActivationBlockedTags
 	
 	//ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("Condition.Health.Dead"));
+	
 }
 
 void UFTAGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)

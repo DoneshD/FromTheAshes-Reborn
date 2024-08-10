@@ -81,7 +81,9 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 					if (GA && GA->bActivateOnInput)
 					{
 						// Ability is not active, so try to activate it
+						UE_LOG(LogTemp, Warning, TEXT("YES"));
 						TryActivateAbility(Spec.Handle);
+						UE_LOG(LogTemp, Warning, TEXT("SIR"));
 					}
 				}
 			}

@@ -14,6 +14,7 @@ enum class EAbilityInputID : uint8
 	Move			UMETA(DisplayName = "Move"),
 	Look			UMETA(DisplayName = "Look"),
 	Jump			UMETA(DisplayName = "Jump"),
+	Dash			UMETA(DisplayName = "Dash"),
 	LightAttack		UMETA(DisplayName = "LightAttack")
 };
 

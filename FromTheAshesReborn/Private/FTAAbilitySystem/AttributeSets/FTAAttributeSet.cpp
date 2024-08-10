@@ -2,7 +2,6 @@
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "Net/UnrealNetwork.h"
 
 UFTAAttributeSet::UFTAAttributeSet()
 {
@@ -21,12 +20,9 @@ void UFTAAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, f
 	// If a Max value changes, adjust current to keep Current % of Current to Max
 	if (Attribute == GetMaxHealthAttribute()) // GetMaxHealthAttribute comes from the Macros defined at the top of the header
 	{
-		AdjustAttributeForMaxChange(MaxHealth, MaxHealth, NewValue, GetMaxHealthAttribute());
+		AdjustAttributeForMaxChange(CurrentHealth, MaxHealth, NewValue, GetCurrentHealthAttribute());
 	}
-	else if (Attribute == GetCurrentHealthAttribute())
-	{
-		AdjustAttributeForMaxChange(CurrentHealth, CurrentHealth, NewValue, GetCurrentHealthAttribute());
-	}
+	
 	else if (Attribute == GetMoveSpeedAttribute())
 	{
 		// Cannot slow less than 150 units/s and cannot boost more than 1000 units/s

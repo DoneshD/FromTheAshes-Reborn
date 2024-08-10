@@ -17,13 +17,11 @@ class FROMTHEASHESREBORN_API AFTAPlayerController : public APlayerController
 	
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<ACharacter> PlayerCharacter;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -34,6 +32,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Jump;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Dash;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LightAttack;
@@ -59,8 +60,11 @@ public:
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
 
-	void HandleJumpAttackActionPressed(const FInputActionValue& InputActionValue);
-	void HandleJumpAttackActionReleased(const FInputActionValue& InputActionValue);
+	void HandleJumpActionPressed(const FInputActionValue& InputActionValue);
+	void HandleJumpActionReleased(const FInputActionValue& InputActionValue);
+
+	void HandleDashActionPressed(const FInputActionValue& InputActionValue);
+	void HandleDashActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleLightAttackActionPressed(const FInputActionValue& InputActionValue);
 	void HandleLightAttackActionReleased(const FInputActionValue& InputActionValue);

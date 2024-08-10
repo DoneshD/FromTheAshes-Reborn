@@ -43,8 +43,11 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLightAttackActionPressed);
 	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLightAttackActionReleased);
 
-	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Started, this, &AFTAPlayerController::HandleJumpAttackActionPressed);
-	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleJumpAttackActionReleased);
+	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Started, this, &AFTAPlayerController::HandleJumpActionPressed);
+	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleJumpActionReleased);
+
+	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Started, this, &AFTAPlayerController::HandleDashActionPressed);
+	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleDashActionReleased);
 
 	//Debug purposes
 	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
@@ -114,16 +117,27 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 	AddPitchInput(LookAxisVector.Y);
 }
 
-void AFTAPlayerController::HandleJumpAttackActionPressed(const FInputActionValue& InputActionValue)
+void AFTAPlayerController::HandleJumpActionPressed(const FInputActionValue& InputActionValue)
 {
-	//SendLocalInputToASC(true, EAbilityInputID::Jump);
-	PlayerCharacter->Jump();
+	SendLocalInputToASC(true, EAbilityInputID::Jump);
+	//PlayerCharacter->Jump();
 }
 
-void AFTAPlayerController::HandleJumpAttackActionReleased(const FInputActionValue& InputActionValue)
+void AFTAPlayerController::HandleJumpActionReleased(const FInputActionValue& InputActionValue)
 {
-	//SendLocalInputToASC(false, EAbilityInputID::Jump);
-	PlayerCharacter->StopJumping();
+	SendLocalInputToASC(false, EAbilityInputID::Jump);
+	//PlayerCharacter->StopJumping();
+}
+
+void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
+{
+	SendLocalInputToASC(true, EAbilityInputID::Dash);
+
+}
+
+void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& InputActionValue)
+{
+	SendLocalInputToASC(false, EAbilityInputID::Dash);
 }
 
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
