@@ -132,7 +132,6 @@ void AFTAPlayerController::HandleJumpActionReleased(const FInputActionValue& Inp
 void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(true, EAbilityInputID::Dash);
-
 }
 
 void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& InputActionValue)

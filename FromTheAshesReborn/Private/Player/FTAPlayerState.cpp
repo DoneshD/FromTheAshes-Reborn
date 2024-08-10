@@ -37,7 +37,6 @@ UFTAAttributeSet* AFTAPlayerState::GetAttributeSet() const
 	return AttributeSet;
 }
 
-
 bool AFTAPlayerState::IsAlive() const
 {
 	return GetCurrentHealth() > 0.0f;

@@ -9,10 +9,6 @@ class FROMTHEASHESREBORN_API UGA_Jump : public UFTAGameplayAbility
 {
 	GENERATED_BODY()
 
-protected:
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	UAnimMontage* FireHipMontage;
-	
 public:
 	UGA_Jump();
 
