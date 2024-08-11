@@ -38,6 +38,10 @@ bool UGA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 void UGA_Dash::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
 {
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
+	if (ActorInfo != NULL && ActorInfo->AvatarActor != NULL)
+	{
+		CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+	}
 }
 
 void UGA_Dash::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

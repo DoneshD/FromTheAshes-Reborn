@@ -3,6 +3,8 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "TargetSystemComponent.h"
+
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -33,6 +35,9 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
+
+	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
+
 }
 
 void APlayerCharacter::BeginPlay()

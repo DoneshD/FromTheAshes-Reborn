@@ -12,6 +12,7 @@ class UFTAAbilitySystemComponent;
 class UFTAAttributeSet;
 class UFTAGameplayAbility;
 class UGameplayEffect;
+class UDidItHitActorComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFTACharacter*, Character);
 
@@ -125,6 +126,9 @@ protected:
 	// These effects are only applied one time on startup
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Effects")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon Collision")
+	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

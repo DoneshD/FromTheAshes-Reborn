@@ -2,10 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "GameplayEffectTypes.h"
 #include "PlayerCharacter.generated.h"
 
 class UGameplayEffect;
+class UTargetSystemComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
@@ -23,6 +23,7 @@ public:
 	
 	virtual void FinishDying() override;
 
+	//Move to super class
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Mesh")
 	USkeletalMeshComponent* GetSkeletalMesh() const;
 
@@ -41,6 +42,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* CameraComp;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Targeting")
+	TObjectPtr<UTargetSystemComponent> TargetSystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GameplayEffect | Death")
 	TSubclassOf<UGameplayEffect> DeathEffect;

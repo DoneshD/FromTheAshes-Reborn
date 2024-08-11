@@ -3,6 +3,8 @@
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
+#include "DidItHitActorComponent.h"
+#include "DidItHit.h"
 #include "GameplayAbilitySpec.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -38,6 +40,9 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 	FallingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Falling"));
 	RunningTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Running"));
 	SprintingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Sprinting"));
+
+	DidItHitActorComponent = CreateDefaultSubobject<UDidItHitActorComponent>("DiditHitActorComponent");
+
 }
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
