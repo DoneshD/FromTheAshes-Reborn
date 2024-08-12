@@ -117,6 +117,7 @@ void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 	bool bPlayedMontage = false;
 	UFTAAbilitySystemComponent* FTAAbilitySystemComponent = GetTargetASC();
 
+	
 	if (FTAAbilitySystemComponent)
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
@@ -125,28 +126,31 @@ void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 		{
 			// Bind to event callback
 			EventHandle = FTAAbilitySystemComponent->AddGameplayEventTagContainerDelegate(EventTags, FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UFTAAT_PlayMontageAndWaitForEvent::OnGameplayEvent));
-
+			
 			if (FTAAbilitySystemComponent->PlayMontage(Ability, Ability->GetCurrentActivationInfo(), MontageToPlay, Rate, StartSection) > 0.f)
 			{
+			
 				// Playing a montage could potentially fire off a callback into game code which could kill this ability! Early out if we are  pending kill.
 				if (ShouldBroadcastAbilityTaskDelegates() == false)
 				{
 					return;
 				}
-
+			
 				CancelledHandle = Ability->OnGameplayAbilityCancelled.AddUObject(this, &UFTAAT_PlayMontageAndWaitForEvent::OnAbilityCancelled);
-
+			
 				BlendingOutDelegate.BindUObject(this, &UFTAAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut);
 				AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutDelegate, MontageToPlay);
-
+			
 				MontageEndedDelegate.BindUObject(this, &UFTAAT_PlayMontageAndWaitForEvent::OnMontageEnded);
 				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, MontageToPlay);
-
+			
+			
 				ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
 				if (Character && (Character->GetLocalRole() == ROLE_Authority ||
 					(Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
 				{
 					Character->SetAnimRootMotionTranslationScale(AnimRootMotionTranslationScale);
+			
 				}
 
 				bPlayedMontage = true;
@@ -154,17 +158,17 @@ void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("UGSAbilityTask_PlayMontageAndWaitForEvent call to PlayMontage failed!"));
+			UE_LOG(LogTemp, Warning, TEXT("UFTAAbilityTask_PlayMontageAndWaitForEvent call to PlayMontage failed!"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGSAbilityTask_PlayMontageAndWaitForEvent called on invalid AbilitySystemComponent"));
+		UE_LOG(LogTemp, Warning, TEXT("UFTAAbilityTask_PlayMontageAndWaitForEvent called on invalid AbilitySystemComponent"));
 	}
 
 	if (!bPlayedMontage)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGSAbilityTask_PlayMontageAndWaitForEvent called in Ability %s failed to play montage %s; Task Instance Name %s."), *Ability->GetName(), *GetNameSafe(MontageToPlay), *InstanceName.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("UFTAAbilityTask_PlayMontageAndWaitForEvent called in Ability %s failed to play montage %s; Task Instance Name %s."), *Ability->GetName(), *GetNameSafe(MontageToPlay), *InstanceName.ToString());
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
 			//ABILITY_LOG(Display, TEXT("%s: OnCancelled"), *GetName());
