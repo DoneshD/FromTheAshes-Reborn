@@ -21,27 +21,28 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 	bAlwaysRelevant = true;
 
 	// Cache tags
-	DeadTag = FGameplayTag::RequestGameplayTag(FName("Condition.Health.Dead"));
-	AliveTag = FGameplayTag::RequestGameplayTag(FName("Condition.Health.Dead"));
-	
-	LockOnTag = FGameplayTag::RequestGameplayTag(FName("Controls.LockedOn"));
-	FreeCamTag = FGameplayTag::RequestGameplayTag(FName("Controls.FreeCam"));
-	
-	ExecutingTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Executing"));
-	LightMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Light.Melee"));
-	HeavyMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Heavy.Melee"));
+	// DeadTag = FGameplayTag::RequestGameplayTag(FName("Condition.Health.Dead"));
+	// AliveTag = FGameplayTag::RequestGameplayTag(FName("Condition.Health.Alive"));
+	//
+	// LockOnTag = FGameplayTag::RequestGameplayTag(FName("Controls.LockedOn"));
+	// FreeCamTag = FGameplayTag::RequestGameplayTag(FName("Controls.FreeCam"));
+	//
+	// ExecutingTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Executing"));
+	// LightMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Light.Melee"));
+	// HeavyMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Heavy.Melee"));
 	
 	DashingInitialTag = FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial"));
-	DashingSecondaryTag = FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary"));
-	JumpingSingleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Single"));
-	JumpingDoubleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Double"));
-
-	AirborneTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Airborne"));
-	FallingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Falling"));
-	RunningTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Running"));
-	SprintingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Sprinting"));
+	// DashingSecondaryTag = FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary"));
+	// JumpingSingleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Single"));
+	// JumpingDoubleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Double"));
+	//
+	// AirborneTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Airborne"));
+	// FallingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Falling"));
+	// RunningTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Running"));
+	// SprintingTag = FGameplayTag::RequestGameplayTag(FName("State.Movement.Sprinting"));
 
 	DidItHitActorComponent = CreateDefaultSubobject<UDidItHitActorComponent>("DiditHitActorComponent");
+	
 
 }
 
@@ -225,6 +226,7 @@ void AFTACharacter::InitializeAttributes()
 	{
 		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*NewHandle.Data.Get());
 	}
+
 }
 
 void AFTACharacter::AddStartupEffects()

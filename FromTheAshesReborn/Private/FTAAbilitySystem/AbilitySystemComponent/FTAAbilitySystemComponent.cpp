@@ -3,7 +3,10 @@
 #include "Animation/AnimInstance.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "GameplayCueManager.h"
+#include "GameplayTags.h"
+#include "GameplayTagContainer.h"
 #include "AnimNodes/AnimNode_RandomPlayer.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_Dash.h"
 
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
@@ -61,18 +64,28 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 	{
 		if (Spec.InputID == InputID)
 		{
+			
 			if (Spec.Ability)
 			{
 				Spec.InputPressed = true;
+				
 				if (Spec.IsActive())
 				{
-					if (Spec.Ability->bReplicateInputDirectly && IsOwnerActorAuthoritative() == false)
+					//Dash ability
+					if(Spec.InputID == 6)
 					{
-						ServerSetInputPressed(Spec.Handle);
+						if (HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary"))))
+						{
+							return;
+						}
+						if (HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial"))))
+						{
+							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary")));
+							CancelAbility(Spec.Ability);
+							TryActivateAbility(Spec.Handle);
+
+						}
 					}
-					AbilitySpecInputPressed(Spec);
-					// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-					InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 				}
 				else
 				{
@@ -83,6 +96,7 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 						TryActivateAbility(Spec.Handle);
 					}
 				}
+				
 			}
 		}
 	}

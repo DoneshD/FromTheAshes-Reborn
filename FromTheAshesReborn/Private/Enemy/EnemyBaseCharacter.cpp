@@ -20,7 +20,6 @@ void AEnemyBaseCharacter::BeginPlay()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	//Implement later?
 	//GiveDefaultAbilities();
-
 	AddDefaultAbilities();
 	InitializeAttributes();
 }

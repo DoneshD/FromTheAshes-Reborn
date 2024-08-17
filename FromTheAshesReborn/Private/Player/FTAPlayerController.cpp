@@ -120,13 +120,11 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 void AFTAPlayerController::HandleJumpActionPressed(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(true, EAbilityInputID::Jump);
-	//PlayerCharacter->Jump();
 }
 
 void AFTAPlayerController::HandleJumpActionReleased(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(false, EAbilityInputID::Jump);
-	//PlayerCharacter->StopJumping();
 }
 
 void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
