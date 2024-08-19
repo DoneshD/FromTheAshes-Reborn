@@ -18,13 +18,13 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	}
 	UAnimMontage* MontageToPlay = DashMontage;
 	
-	if (GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary"))))
+	if (GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.Second"))))
 	{
 		MontageToPlay = BlinkMontage;
 	}
 	else
 	{
-		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial")));
+		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First")));
 	}
 	
 	UFTAAT_PlayMontageAndWaitForEvent* Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
@@ -71,8 +71,8 @@ void UGA_Dash::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	
 	
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial")));
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary")));
+	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First")));
+	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.Second")));
 
 	
 }

@@ -20,6 +20,7 @@ UAsyncTaskGameplayTagAddedRemoved* UAsyncTaskGameplayTagAddedRemoved::ListenForG
 	{
 		AbilitySystemComponent->RegisterGameplayTagEvent(Tag, EGameplayTagEventType::NewOrRemoved).AddUObject(ListenForGameplayTagAddedRemoved, &UAsyncTaskGameplayTagAddedRemoved::TagChanged);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("ListenForGameplayTagAddedRemoved"));
 
 	return ListenForGameplayTagAddedRemoved;
 }
@@ -34,6 +35,8 @@ void UAsyncTaskGameplayTagAddedRemoved::EndTask()
 		for (FGameplayTag Tag : TagArray)
 		{
 			ASC->RegisterGameplayTagEvent(Tag, EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+			UE_LOG(LogTemp, Warning, TEXT("EndTask"));
+
 		}
 	}
 
@@ -46,9 +49,12 @@ void UAsyncTaskGameplayTagAddedRemoved::TagChanged(const FGameplayTag Tag, int32
 	if (NewCount > 0)
 	{
 		OnTagAdded.Broadcast(Tag);
+		UE_LOG(LogTemp, Warning, TEXT("OnTagAdded"));
 	}
 	else
 	{
 		OnTagRemoved.Broadcast(Tag);
+		UE_LOG(LogTemp, Warning, TEXT("OnTagRemoved"));
+
 	}
 }

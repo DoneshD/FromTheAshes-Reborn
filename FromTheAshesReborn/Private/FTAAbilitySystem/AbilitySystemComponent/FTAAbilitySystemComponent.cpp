@@ -64,7 +64,6 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 	{
 		if (Spec.InputID == InputID)
 		{
-			
 			if (Spec.Ability)
 			{
 				Spec.InputPressed = true;
@@ -74,15 +73,13 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 					//Dash ability
 					if(Spec.InputID == 6)
 					{
-						if (HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary"))))
+						if (HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First"))))
 						{
-							return;
-						}
-						if (HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial"))))
-						{
-							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary")));
+							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.Second")));
+							RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First")));
 							CancelAbility(Spec.Ability);
 							TryActivateAbility(Spec.Handle);
+							
 
 						}
 					}

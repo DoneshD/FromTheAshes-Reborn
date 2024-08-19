@@ -31,7 +31,7 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 	// LightMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Light.Melee"));
 	// HeavyMeleeTag = FGameplayTag::RequestGameplayTag(FName("State.Attacking.Heavy.Melee"));
 	
-	DashingInitialTag = FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial"));
+	DashingInitialTag = FGameplayTag::RequestGameplayTag(FName("Character.State.Airborne.Movement.Dashing.First"));
 	// DashingSecondaryTag = FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary"));
 	// JumpingSingleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Single"));
 	// JumpingDoubleTag = FGameplayTag::RequestGameplayTag(FName("State.Jumping.Double"));
