@@ -50,7 +50,7 @@ public:
 	FFTAPlayMontageAndWaitForEventDelegate OnCancelled;
 
 	/** One of the triggering gameplay events happened */
-	UPROPERTY(BlueprintAssignable)
+	UPROPERTY(BlueprintCallable)
 	FFTAPlayMontageAndWaitForEventDelegate EventReceived;
 
 	/**
@@ -111,7 +111,11 @@ private:
 	void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
 	void OnAbilityCancelled();
 	void OnMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	
 	void OnGameplayEvent(FGameplayTag EventTag, const FGameplayEventData* Payload);
+
+	
 
 	FOnMontageBlendingOutStarted BlendingOutDelegate;
 	FOnMontageEnded MontageEndedDelegate;

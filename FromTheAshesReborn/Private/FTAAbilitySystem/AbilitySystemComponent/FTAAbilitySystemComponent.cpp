@@ -443,8 +443,19 @@ float UFTAAbilitySystemComponent::GetCurrentMontageSectionTimeLeftForMesh(USkele
 	return -1.f;
 }
 
+void UFTAAbilitySystemComponent::SetActiveMontageTask(UFTAAT_PlayMontageAndWaitForEvent* Task)
+{
+	ActiveMontageTask = Task;
+	
+}
+
+UFTAAT_PlayMontageAndWaitForEvent* UFTAAbilitySystemComponent::GetActiveMontageTask() const
+{
+	return ActiveMontageTask;
+}
+
 void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage,
-	float MitigatedDamage)
+                                               float MitigatedDamage)
 {
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
 }

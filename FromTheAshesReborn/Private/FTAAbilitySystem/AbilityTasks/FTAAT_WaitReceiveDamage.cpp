@@ -10,8 +10,10 @@ UFTAAT_WaitReceiveDamage::UFTAAT_WaitReceiveDamage(const FObjectInitializer& Obj
 
 UFTAAT_WaitReceiveDamage* UFTAAT_WaitReceiveDamage::WaitReceiveDamage(UGameplayAbility* OwningAbility, bool InTriggerOnce)
 {
+	
 	UFTAAT_WaitReceiveDamage* MyObj = NewAbilityTask<UFTAAT_WaitReceiveDamage>(OwningAbility);
 	MyObj->TriggerOnce = InTriggerOnce;
+	
 	return MyObj;
 }
 

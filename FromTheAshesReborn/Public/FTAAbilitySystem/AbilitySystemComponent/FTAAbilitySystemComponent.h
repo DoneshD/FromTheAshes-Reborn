@@ -4,9 +4,11 @@
 #include "AbilitySystemComponent.h"
 #include "FTAAbilitySystemComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbilitySystemComponent*, SourceASC, float, UnmitigatedDamage, float, MitigatedDamage);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbilitySystemComponent*, SourceASC, float,
+                                               UnmitigatedDamage, float, MitigatedDamage);
 
 class USkeletalMeshComponent;
+class UFTAAT_PlayMontageAndWaitForEvent;
 
 USTRUCT()
 struct FROMTHEASHESREBORN_API FGameplayAbilityAnimMontageForMesh
@@ -147,6 +149,14 @@ public:
 
 	// Returns amount of time left in current section
 	float GetCurrentMontageSectionTimeLeftForMesh(USkeletalMeshComponent* InMesh);
+
+	UFTAAT_PlayMontageAndWaitForEvent* ActiveMontageTask;
+
+	UFUNCTION(BlueprintCallable)
+	void SetActiveMontageTask(UFTAAT_PlayMontageAndWaitForEvent* Task);
+
+	UFUNCTION(BlueprintCallable)
+	UFTAAT_PlayMontageAndWaitForEvent* GetActiveMontageTask() const;
 
 
 };

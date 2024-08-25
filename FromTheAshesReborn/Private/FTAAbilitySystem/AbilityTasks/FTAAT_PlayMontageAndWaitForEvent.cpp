@@ -91,8 +91,10 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnGameplayEvent(FGameplayTag EventTag, c
 	}
 }
 
+
+
 UFTAAT_PlayMontageAndWaitForEvent* UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(UGameplayAbility* OwningAbility,
-	FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer EventTags, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale)
+                                                                                                 FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer EventTags, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale)
 {
 	UAbilitySystemGlobals::NonShipping_ApplyGlobalAbilityScaler_Rate(Rate);
 
@@ -106,6 +108,7 @@ UFTAAT_PlayMontageAndWaitForEvent* UFTAAT_PlayMontageAndWaitForEvent::PlayMontag
 
 	return MyObj;
 }
+
 
 void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 {

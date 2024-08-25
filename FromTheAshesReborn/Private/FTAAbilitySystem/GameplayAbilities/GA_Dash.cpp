@@ -27,6 +27,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First")));
 	}
 	
+	
 	UFTAAT_PlayMontageAndWaitForEvent* Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
 		1.0f, NAME_None, false, 1.0f);
 	Task->OnBlendOut.AddDynamic(this, &UGA_Dash::OnCompleted);
@@ -48,16 +49,14 @@ void UGA_Dash::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGam
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 	if (ActorInfo != NULL && ActorInfo->AvatarActor != NULL)
 	{
-		//CancelAbility(Handle, ActorInfo, ActivationInfo, true);
+		
 	}
 }
 
 void UGA_Dash::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
 {
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
-	//
-	// GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Initial")));
-	// GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("State.Dashing.Secondary")));
+	
 }
 
 void UGA_Dash::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -70,10 +69,8 @@ void UGA_Dash::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 	
-	
 	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First")));
 	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.Second")));
-
 	
 }
 
