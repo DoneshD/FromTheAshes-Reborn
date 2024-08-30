@@ -39,6 +39,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LightAttack;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_HeavyAttack;
+	
 	//For debugging
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
@@ -68,6 +71,9 @@ public:
 	
 	void HandleLightAttackActionPressed(const FInputActionValue& InputActionValue);
 	void HandleLightAttackActionReleased(const FInputActionValue& InputActionValue);
+
+	void HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue);
+	void HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
 };

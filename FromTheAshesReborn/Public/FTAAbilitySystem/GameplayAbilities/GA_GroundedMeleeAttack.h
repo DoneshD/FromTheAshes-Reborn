@@ -2,17 +2,22 @@
 
 #include "CoreMinimal.h"
 #include "FTAGameplayAbility.h"
-#include "DataAsset/MeleeAttackDataAsset.h"
-#include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
-#include "GA_MeleeAttack.generated.h"
+#include "GA_GroundedMeleeAttack.generated.h"
+
+
+class UMeleeAttackDataAsset;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeAttack : public UFTAGameplayAbility
+class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbility
 {
 	GENERATED_BODY()
 
 protected:
-	UGA_MeleeAttack();
+
+	UGA_GroundedMeleeAttack();
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
+	TArray<EAbilityInputID> AbilityInputIDs;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TObjectPtr<UMeleeAttackDataAsset>> LightAttacks;
@@ -24,8 +29,8 @@ protected:
 
 	int32 MaxComboNum;
 
+	bool IsComboFinisher;
 	bool IsComboQueued;
-
 	bool IsComboWindowOpen;
 
 	UPROPERTY(EditAnywhere)
@@ -40,8 +45,9 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
+	UAnimMontage* AttackMontageToPlay;
 public:
-	
+
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
@@ -62,9 +68,5 @@ public:
 	void CheckForInput();
 
 	void PlayAttackMontage();
-	UAnimMontage* MontageToPlay;
-
-	UPROPERTY(BlueprintReadWrite)
-	UFTAAT_PlayMontageAndWaitForEvent* Task;
 	
 };

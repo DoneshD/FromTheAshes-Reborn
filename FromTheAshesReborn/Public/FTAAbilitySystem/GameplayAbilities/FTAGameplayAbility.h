@@ -43,6 +43,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	TArray<EAbilityInputID> TESTAbilityInputIDs;
+
 	// Value to associate an ability with an slot without tying it to an automatically activated input.
 	// Passive abilities won't be tied to an input so we need a way to generically associate abilities with slots.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")

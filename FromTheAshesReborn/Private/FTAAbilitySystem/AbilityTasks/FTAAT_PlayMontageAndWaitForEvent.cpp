@@ -33,7 +33,6 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Monta
 			{
 				Character->SetAnimRootMotionTranslationScale(1.f);
 			}
-
 		}
 	}
 
@@ -94,7 +93,7 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnGameplayEvent(FGameplayTag EventTag, c
 
 
 UFTAAT_PlayMontageAndWaitForEvent* UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(UGameplayAbility* OwningAbility,
-                                                                                                 FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer EventTags, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale)
+FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer EventTags, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale)
 {
 	UAbilitySystemGlobals::NonShipping_ApplyGlobalAbilityScaler_Rate(Rate);
 

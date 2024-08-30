@@ -79,9 +79,12 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 							RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First")));
 							CancelAbility(Spec.Ability);
 							TryActivateAbility(Spec.Handle);
-							
-
 						}
+					}
+					if(Spec.InputID == 7)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Cyrus"));
+						AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved")));
 					}
 				}
 				else
@@ -89,7 +92,7 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 					UFTAGameplayAbility* GA = Cast<UFTAGameplayAbility>(Spec.Ability);
 					if (GA && GA->bActivateOnInput)
 					{
-						// Ability is not active, so try to activate it
+						// Ability is not active, so try to activate 
 						TryActivateAbility(Spec.Handle);
 					}
 				}

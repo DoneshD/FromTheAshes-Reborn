@@ -4,6 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 AFTAPlayerController::AFTAPlayerController()
@@ -42,6 +43,9 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	
 	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLightAttackActionPressed);
 	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLightAttackActionReleased);
+
+	EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleHeavyAttackActionPressed);
+	EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleHeavyAttackActionReleased);
 
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Started, this, &AFTAPlayerController::HandleJumpActionPressed);
 	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleJumpActionReleased);
@@ -139,13 +143,37 @@ void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& Inp
 
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
+	AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
+	if(!PS)
+	{
+		return;
+	}
 	
+	if(!PlayerCharacter)
+	{
+		return;
+	}
+	
+	//TODO: Need to find a way to add and remove airborne tag 
+
+	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
 }
 
 void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(false, EAbilityInputID::LightAttack);
+}
+
+void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Interesting"));
+	SendLocalInputToASC(false, EAbilityInputID::HeavyAttack);
+}
+
+void AFTAPlayerController::HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue)
+{
+	SendLocalInputToASC(false, EAbilityInputID::HeavyAttack);
+
 }
 
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)
