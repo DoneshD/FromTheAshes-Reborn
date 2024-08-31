@@ -143,17 +143,6 @@ void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& Inp
 
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
-	if(!PS)
-	{
-		return;
-	}
-	
-	if(!PlayerCharacter)
-	{
-		return;
-	}
-	
 	//TODO: Need to find a way to add and remove airborne tag 
 
 	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
@@ -166,8 +155,8 @@ void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionVal
 
 void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Interesting"));
-	SendLocalInputToASC(false, EAbilityInputID::HeavyAttack);
+	
+	SendLocalInputToASC(true, EAbilityInputID::HeavyAttack);
 }
 
 void AFTAPlayerController::HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue)

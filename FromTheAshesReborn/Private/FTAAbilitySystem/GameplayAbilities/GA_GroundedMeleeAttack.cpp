@@ -1,10 +1,9 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedMeleeAttack.h"
+#include "DataAsset/MeleeAttackDataAsset.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 
 UGA_GroundedMeleeAttack::UGA_GroundedMeleeAttack()
 {
-	AbilityInputIDs.Add(EAbilityInputID::LightAttack);
-	AbilityInputIDs.Add(EAbilityInputID::HeavyAttack);
-
 	CurrentComboIndex = 0;
 	IsComboQueued = false;
 }
@@ -16,7 +15,7 @@ void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventD
 
 void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
 void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -27,25 +26,11 @@ void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEven
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	if(AbilityInputIDs[0] == AbilityInputID)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Light"));
-	}
-	if(AbilityInputIDs[1] == AbilityInputID)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Heavy"));
-	}
 }
 
 bool UGA_GroundedMeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
-}
-
-void UGA_GroundedMeleeAttack::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)
-{
-	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 }
 
 void UGA_GroundedMeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -75,6 +60,17 @@ void UGA_GroundedMeleeAttack::CheckForInput()
 {
 }
 
-void UGA_GroundedMeleeAttack::PlayAttackMontage()
+void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)
 {
+	 AttackMontageToPlay = AttackMontage;
+	 Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
+	 1.0f, NAME_None, false, 1.0f);
+	 Task->OnBlendOut.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+	 Task->OnCompleted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+	 Task->OnInterrupted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+	 Task->OnCancelled.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+	 Task->EventReceived.AddDynamic(this, &UGA_GroundedMeleeAttack::EventReceived);
+	
+	Task->ReadyForActivation();
+	//WaitForComboWindow();
 }

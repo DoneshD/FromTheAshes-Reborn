@@ -6,6 +6,7 @@
 
 
 class UMeleeAttackDataAsset;
+class UFTAAT_PlayMontageAndWaitForEvent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbility
@@ -15,26 +16,12 @@ class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbilit
 protected:
 
 	UGA_GroundedMeleeAttack();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input")
-	TArray<EAbilityInputID> AbilityInputIDs;
-	
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TObjectPtr<UMeleeAttackDataAsset>> LightAttacks;
-
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TObjectPtr<UMeleeAttackDataAsset>> HeavyAttacks;
 	
 	int32 CurrentComboIndex;
-
-	int32 MaxComboNum;
 
 	bool IsComboFinisher;
 	bool IsComboQueued;
 	bool IsComboWindowOpen;
-
-	UPROPERTY(EditAnywhere)
-	FTimerHandle FComboWindowTimer;
 	
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -45,28 +32,28 @@ protected:
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
-	UAnimMontage* AttackMontageToPlay;
+	TObjectPtr<UAnimMontage> AttackMontageToPlay;
+
+	UPROPERTY(BlueprintReadWrite)
+	UFTAAT_PlayMontageAndWaitForEvent* Task;
 public:
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	
-	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
-	
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
+	
+	void WaitForComboWindow();
 	
 	void OnComboWindowOpen(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
-	UFUNCTION()
 	void OnComboWindowClose(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
-
-	void WaitForComboWindow();
 
 	void ProceedToNextCombo();
 
 	void CheckForInput();
 
-	void PlayAttackMontage();
+	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 	
 };
