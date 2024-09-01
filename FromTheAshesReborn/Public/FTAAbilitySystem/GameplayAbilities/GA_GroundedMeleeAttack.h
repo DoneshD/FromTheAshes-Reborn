@@ -2,11 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "FTAGameplayAbility.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "GA_GroundedMeleeAttack.generated.h"
 
 
 class UMeleeAttackDataAsset;
-class UFTAAT_PlayMontageAndWaitForEvent;
+//class UFTAAT_PlayMontageAndWaitForEvent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbility
@@ -22,6 +23,9 @@ protected:
 	bool IsComboFinisher;
 	bool IsComboQueued;
 	bool IsComboWindowOpen;
+
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TObjectPtr<UMeleeAttackDataAsset>> TESTATTACKS;
 	
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -30,7 +34,7 @@ protected:
 	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
-	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	virtual void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 

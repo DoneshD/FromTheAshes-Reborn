@@ -14,15 +14,25 @@ UGA_MeleeAttack::UGA_MeleeAttack()
 void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	if(LightAttacks.IsValidIndex(CurrentComboIndex))
-	{
-		PlayAttackMontage();
-	}
-	else
-	{
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-	}
-	PlayAttackMontage();
+	// MontageToPlay = LightAttacks[CurrentComboIndex]->MontageToPlay;
+	// Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
+	// 1.0f, NAME_None, false, 1.0f);
+	// Task->OnBlendOut.AddDynamic(this, &UGA_MeleeAttack::OnCompleted);
+	// Task->OnCompleted.AddDynamic(this, &UGA_MeleeAttack::OnCompleted);
+	// Task->OnInterrupted.AddDynamic(this, &UGA_MeleeAttack::OnCancelled);
+	// Task->OnCancelled.AddDynamic(this, &UGA_MeleeAttack::OnCancelled);
+	// Task->EventReceived.AddDynamic(this, &UGA_MeleeAttack::EventReceived);
+	
+	// Task->ReadyForActivation();
+	// if(LightAttacks.IsValidIndex(CurrentComboIndex))
+	// {
+	// 	PlayAttackMontage();
+	// }
+	// else
+	// {
+	// 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+	// }
+	//PlayAttackMontage();
 }
 
 bool UGA_MeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -92,16 +102,16 @@ void UGA_MeleeAttack::CheckForInput()
 
 void UGA_MeleeAttack::PlayAttackMontage()
 {
-	MontageToPlay = LightAttacks[CurrentComboIndex]->MontageToPlay;
-	Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
-	1.0f, NAME_None, false, 1.0f);
-	Task->OnBlendOut.AddDynamic(this, &UGA_MeleeAttack::OnCompleted);
-	Task->OnCompleted.AddDynamic(this, &UGA_MeleeAttack::OnCompleted);
-	Task->OnInterrupted.AddDynamic(this, &UGA_MeleeAttack::OnCancelled);
-	Task->OnCancelled.AddDynamic(this, &UGA_MeleeAttack::OnCancelled);
-	Task->EventReceived.AddDynamic(this, &UGA_MeleeAttack::EventReceived);
-	
-	Task->ReadyForActivation();
+	// MontageToPlay = LightAttacks[CurrentComboIndex]->MontageToPlay;
+	// Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
+	// 1.0f, NAME_None, false, 1.0f);
+	// Task->OnBlendOut.AddDynamic(this, &UGA_MeleeAttack::OnCompleted);
+	// Task->OnCompleted.AddDynamic(this, &UGA_MeleeAttack::OnCompleted);
+	// Task->OnInterrupted.AddDynamic(this, &UGA_MeleeAttack::OnCancelled);
+	// Task->OnCancelled.AddDynamic(this, &UGA_MeleeAttack::OnCancelled);
+	// Task->EventReceived.AddDynamic(this, &UGA_MeleeAttack::EventReceived);
+	//
+	// Task->ReadyForActivation();
 	WaitForComboWindow();
 }
 
@@ -121,6 +131,8 @@ void UGA_MeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData Even
 
 void UGA_MeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("EventReceived"));
+
 	if(EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Montage.Combo.Light.Open")))
 	{
 		GetWorld()->GetTimerManager().SetTimer(FComboWindowTimer, this, &UGA_MeleeAttack::CheckForInput, 0.1f, true);

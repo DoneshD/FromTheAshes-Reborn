@@ -20,12 +20,23 @@ void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventD
 
 void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("UGA_GroundedMeleeAttack Event receieved"));
+
 }
 
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	AttackMontageToPlay = TESTATTACKS[CurrentComboIndex]->MontageToPlay;
+	Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
+	1.0f, NAME_None, false, 1.0f);
+	Task->OnBlendOut.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+	Task->OnCompleted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+	Task->OnInterrupted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+	Task->OnCancelled.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+	Task->EventReceived.AddDynamic(this, &UGA_GroundedMeleeAttack::EventReceived);
+	
+	Task->ReadyForActivation();
 }
 
 bool UGA_GroundedMeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -62,15 +73,16 @@ void UGA_GroundedMeleeAttack::CheckForInput()
 
 void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)
 {
-	 AttackMontageToPlay = AttackMontage;
-	 Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
-	 1.0f, NAME_None, false, 1.0f);
-	 Task->OnBlendOut.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
-	 Task->OnCompleted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
-	 Task->OnInterrupted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
-	 Task->OnCancelled.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
-	 Task->EventReceived.AddDynamic(this, &UGA_GroundedMeleeAttack::EventReceived);
-	
-	Task->ReadyForActivation();
+	 //  AttackMontageToPlay = AttackMontage;
+	 //  AttackMontageToPlay = TESTATTACKS[CurrentComboIndex]->MontageToPlay;
+	 //  Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
+	 //  1.0f, NAME_None, false, 1.0f);
+	 //  Task->OnBlendOut.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+	 //  Task->OnCompleted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+	 //  Task->OnInterrupted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+	 //  Task->OnCancelled.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+	 //  Task->EventReceived.AddDynamic(this, &UGA_GroundedMeleeAttack::EventReceived);
+	 //
+	 // Task->ReadyForActivation();
 	//WaitForComboWindow();
 }
