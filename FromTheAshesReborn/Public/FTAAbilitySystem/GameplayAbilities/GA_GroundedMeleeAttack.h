@@ -2,11 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "FTAGameplayAbility.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "GA_GroundedMeleeAttack.generated.h"
 
 
 class UMeleeAttackDataAsset;
-class UFTAAT_PlayMontageAndWaitForEvent;
+//class UFTAAT_PlayMontageAndWaitForEvent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbility
