@@ -34,6 +34,8 @@ protected:
 	
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 
+	FTimerHandle FComboWindowTimer;
+
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
 public:
@@ -45,15 +47,13 @@ public:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	
 	void WaitForComboWindow();
-	
-	void OnComboWindowOpen(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
-
-	void OnComboWindowClose(FName NotifyName, const FBranchingPointNotifyPayload& BranchingPointPayload);
 
 	void ProceedToNextCombo();
 
 	void CheckForInput();
 
 	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
+
+	void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 	
 };

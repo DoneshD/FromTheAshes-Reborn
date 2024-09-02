@@ -149,14 +149,7 @@ public:
 
 	// Returns amount of time left in current section
 	float GetCurrentMontageSectionTimeLeftForMesh(USkeletalMeshComponent* InMesh);
-
-	UFTAAT_PlayMontageAndWaitForEvent* ActiveMontageTask;
-
-	UFUNCTION(BlueprintCallable)
-	void SetActiveMontageTask(UFTAAT_PlayMontageAndWaitForEvent* Task);
-
-	UFUNCTION(BlueprintCallable)
-	UFTAAT_PlayMontageAndWaitForEvent* GetActiveMontageTask() const;
+	
 
 
 };

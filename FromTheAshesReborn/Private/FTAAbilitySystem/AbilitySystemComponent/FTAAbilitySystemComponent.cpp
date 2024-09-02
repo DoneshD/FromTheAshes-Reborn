@@ -83,7 +83,8 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 					}
 					if(Spec.InputID == 7)
 					{
-						//AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved")));
+						UE_LOG(LogTemp, Warning, TEXT("SAVED!!!!"));
+						AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved")));
 					}
 				}
 				else
@@ -443,17 +444,6 @@ float UFTAAbilitySystemComponent::GetCurrentMontageSectionTimeLeftForMesh(USkele
 	}
 
 	return -1.f;
-}
-
-void UFTAAbilitySystemComponent::SetActiveMontageTask(UFTAAT_PlayMontageAndWaitForEvent* Task)
-{
-	ActiveMontageTask = Task;
-	
-}
-
-UFTAAT_PlayMontageAndWaitForEvent* UFTAAbilitySystemComponent::GetActiveMontageTask() const
-{
-	return ActiveMontageTask;
 }
 
 void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage,
