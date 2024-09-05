@@ -17,10 +17,10 @@ class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbilit
 protected:
 
 	UGA_GroundedMeleeAttack();
-	
+
+	FGameplayTagContainer ComboTagContainer;
 	int32 CurrentComboIndex;
 
-	bool IsComboFinisher;
 	bool IsComboQueued;
 	bool IsComboWindowOpen;
 	
@@ -49,12 +49,19 @@ public:
 	
 	void WaitForComboWindow();
 
-	void ProceedToNextCombo();
+	void ProceedToLightCombo();
 
-	void CheckForInput();
+	void ProceedToHeavyCombo();
+	
+	void CheckForLightInput();
 
+	void CheckForHeavyInput();
+	
 	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 
-	void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	void ComboLightWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	void ComboHeavyWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
 	
 };

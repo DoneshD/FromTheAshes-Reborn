@@ -84,7 +84,18 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 					if(Spec.InputID == 7)
 					{
 						UE_LOG(LogTemp, Warning, TEXT("SAVED!!!!"));
-						AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved")));
+						if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved"))))
+						{
+							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved")));
+						}
+					}
+					if(Spec.InputID == 8)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("SAVED!!!!"));
+						if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Heavy.Saved"))))
+						{
+							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Heavy.Saved")));
+						}
 					}
 				}
 				else

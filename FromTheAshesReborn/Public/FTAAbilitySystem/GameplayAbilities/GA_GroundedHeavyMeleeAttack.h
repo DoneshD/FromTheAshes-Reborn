@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GA_GroundedMeleeAttack.h"
-#include "GA_GroundedLightMeleeAttack.generated.h"
+#include "GA_GroundedHeavyMeleeAttack.generated.h"
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_GroundedLightMeleeAttack : public UGA_GroundedMeleeAttack
+class FROMTHEASHESREBORN_API UGA_GroundedHeavyMeleeAttack : public UGA_GroundedMeleeAttack
 {
 	GENERATED_BODY()
-
+	
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TArray<TObjectPtr<UMeleeAttackDataAsset>> LightAttackDataAssets;
+	TArray<TObjectPtr<UMeleeAttackDataAsset>> HeavyAttacksDataAssets;
 
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 

@@ -25,6 +25,9 @@ public:
 	bool RequiredPause = false;
 
 	UPROPERTY(EditDefaultsOnly)
+	bool IsComboFinisher = false;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
 	
