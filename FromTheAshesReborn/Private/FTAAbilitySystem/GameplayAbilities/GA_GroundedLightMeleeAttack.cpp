@@ -10,10 +10,16 @@ void UGA_GroundedLightMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHan
 	{
 		if(CurrentComboIndex == LightAttackDataAssets[CurrentComboIndex]->RequiredIndex)
 		{
+			
 			AttackMontageToPlay = LightAttackDataAssets[CurrentComboIndex]->MontageToPlay;
 			FGameplayTag AttackIndentiferTag = LightAttackDataAssets[CurrentComboIndex]->AttackIndentiferTag;
 			ComboTagContainer.AddTag(AttackIndentiferTag);
 			UE_LOG(LogTemp, Warning, TEXT("LightAnim"));
+			if(LightAttackDataAssets[CurrentComboIndex]->IsComboFinisher)
+			{
+				CurrentComboIndex = 0;
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Index: %d"), CurrentComboIndex);
 
 			PlayAttackMontage(AttackMontageToPlay);
 

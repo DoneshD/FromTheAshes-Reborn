@@ -15,6 +15,11 @@ void UGA_GroundedHeavyMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHan
 			FGameplayTag AttackIndentiferTag = HeavyAttacksDataAssets[CurrentComboIndex]->AttackIndentiferTag;
 			ComboTagContainer.AddTag(AttackIndentiferTag);
 			UE_LOG(LogTemp, Warning, TEXT("HeavyAnim"));
+			if(HeavyAttacksDataAssets[CurrentComboIndex]->IsComboFinisher)
+			{
+				CurrentComboIndex = 0;
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Index: %d"), CurrentComboIndex);
 			PlayAttackMontage(AttackMontageToPlay);
 
 		}

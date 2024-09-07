@@ -18,6 +18,19 @@ UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
 void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+	{
+		if (Spec.Ability)
+		{
+			Spec.InputPressed = true;
+			
+			if (Spec.IsActive())
+			{
+				FString AbilityName = Spec.Ability->GetName();
+				UE_LOG(LogTemp, Log, TEXT("Ability Name: %s"), *AbilityName);
+			}
+		}
+	}
 	
 }
 
