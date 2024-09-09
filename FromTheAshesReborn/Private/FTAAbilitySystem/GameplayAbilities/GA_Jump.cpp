@@ -6,7 +6,6 @@ UGA_Jump::UGA_Jump()
 {
 	AbilityInputID = EAbilityInputID::Jump;
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
-	//AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Jumping.Single")));
 }
 
 void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

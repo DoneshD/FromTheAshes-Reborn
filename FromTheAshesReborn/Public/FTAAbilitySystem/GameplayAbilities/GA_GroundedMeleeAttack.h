@@ -2,12 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "FTAGameplayAbility.h"
-#include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "GA_GroundedMeleeAttack.generated.h"
 
 
 class UMeleeAttackDataAsset;
-//class UFTAAT_PlayMontageAndWaitForEvent;
+class UFTAAT_PlayMontageAndWaitForEvent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbility
@@ -21,9 +20,6 @@ protected:
 	FGameplayTagContainer ComboTagContainer;
 	int32 CurrentComboIndex;
 
-	bool IsComboQueued;
-	bool IsComboWindowOpen;
-	
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
@@ -47,21 +43,8 @@ public:
 	
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	
-	void WaitForComboWindow();
-
-	void ProceedToLightCombo();
-
-	void ProceedToHeavyCombo();
-	
-	void CheckForLightInput();
-
-	void CheckForHeavyInput();
-	
 	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 
-	void ComboLightWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-
-	void ComboHeavyWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	
 };
