@@ -5,15 +5,11 @@
 #include "GameplayCueManager.h"
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
-#include "AnimNodes/AnimNode_RandomPlayer.h"
-#include "FTAAbilitySystem/GameplayAbilities/GA_Dash.h"
-
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
 {
+	
 }
-
-
 
 void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -57,6 +53,7 @@ UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponen
 
 void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 {
+	AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Airborne.Movement.Jumping.First")));
 	// Consume the input if this InputID is overloaded with GenericConfirm/Cancel and the GenericConfim/Cancel callback is bound
 	if (IsGenericConfirmInputBound(InputID))
 	{
@@ -83,40 +80,22 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 				
 				if (Spec.IsActive())
 				{
-					//Dash ability
-					if(Spec.InputID == 6)
+					if (Spec.Ability->bReplicateInputDirectly && IsOwnerActorAuthoritative() == false)
 					{
-						if (HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First"))))
-						{
-							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.Second")));
-							RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Movement.Dashing.First")));
-							CancelAbility(Spec.Ability);
-							TryActivateAbility(Spec.Handle);
-						}
+						ServerSetInputPressed(Spec.Handle);
 					}
-					if(Spec.InputID == 7)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("SAVED!!!!"));
-						if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved"))))
-						{
-							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved")));
-						}
-					}
-					if(Spec.InputID == 8)
-					{
-						UE_LOG(LogTemp, Warning, TEXT("SAVED!!!!"));
-						if(!HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Heavy.Saved"))))
-						{
-							AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Heavy.Saved")));
-						}
-					}
+
+					AbilitySpecInputPressed(Spec);
+
+					// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
+					InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 				}
 				else
 				{
 					UFTAGameplayAbility* GA = Cast<UFTAGameplayAbility>(Spec.Ability);
 					if (GA && GA->bActivateOnInput)
 					{
-						// Ability is not active, so try to activate
+						// Ability is not active, so try to activate it
 						TryActivateAbility(Spec.Handle);
 					}
 				}
