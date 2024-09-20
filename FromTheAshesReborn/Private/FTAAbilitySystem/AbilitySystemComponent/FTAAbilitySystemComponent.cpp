@@ -53,6 +53,7 @@ UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponen
 
 void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 {
+	AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Airborne.Movement.Jumping.First")));
 	// Consume the input if this InputID is overloaded with GenericConfirm/Cancel and the GenericConfim/Cancel callback is bound
 	if (IsGenericConfirmInputBound(InputID))
 	{
