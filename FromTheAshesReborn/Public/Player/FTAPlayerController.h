@@ -17,6 +17,32 @@ class FROMTHEASHESREBORN_API AFTAPlayerController : public APlayerController
 	
 protected:
 
+	//-------------------------TESTING INPUT QUEUE------------------------------//
+
+	UPROPERTY(EditAnywhere)
+	EAllowedInputs QueuedInput;
+
+	UPROPERTY(EditAnywhere)
+	bool IsInInputQueueWindow = false;
+	
+	UPROPERTY(EditAnywhere)
+	TArray<EAllowedInputs> CurrentAllowedInputs;
+
+	UPROPERTY(EditAnywhere)
+	bool InputQueueEnabled = true;
+	
+	UFUNCTION(BlueprintCallable)
+	void InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs);
+
+	UFUNCTION(BlueprintCallable)
+	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
+
+	void ActivateLastQueuedInput();
+
+	void AddInputToQueue(EAllowedInputs InputToQueue);
+	
+	//--------------------------------------------------------------------------//
+
 	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")

@@ -22,8 +22,8 @@ void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 			
 			if (Spec.IsActive())
 			{
-				FString AbilityName = Spec.Ability->GetName();
-				UE_LOG(LogTemp, Log, TEXT("Ability Name: %s"), *AbilityName);
+				// FString AbilityName = Spec.Ability->GetName();
+				// UE_LOG(LogTemp, Log, TEXT("Ability Name: %s"), *AbilityName);
 			}
 		}
 	}
@@ -53,7 +53,6 @@ UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponen
 
 void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 {
-	AddLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Airborne.Movement.Jumping.First")));
 	// Consume the input if this InputID is overloaded with GenericConfirm/Cancel and the GenericConfim/Cancel callback is bound
 	if (IsGenericConfirmInputBound(InputID))
 	{

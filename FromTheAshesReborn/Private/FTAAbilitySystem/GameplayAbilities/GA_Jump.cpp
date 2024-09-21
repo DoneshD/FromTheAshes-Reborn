@@ -1,6 +1,4 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_Jump.h"
-
-#include "AbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "FTACustomBase/FTAEnums.h"
 
@@ -8,8 +6,7 @@ UGA_Jump::UGA_Jump()
 {
 	AbilityInputID = EAbilityInputID::Jump;
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
-	AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Airborne.Movement.Jumping")));
-
+	//AbilityTags.AddTag(FGameplayTag::RequestGameplayTag(FName("State.Jumping.Single")));
 }
 
 void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -20,6 +17,7 @@ void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		{
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		}
+
 		ACharacter* Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get());
 		Character->Jump();
 	}
@@ -33,6 +31,7 @@ bool UGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	}
 
 	const AFTACharacter* Character = CastChecked<AFTACharacter>(ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed);
+	UE_LOG(LogTemp, Warning, TEXT("Jumping"));
 	return Character && Character->CanJump();
 }
 

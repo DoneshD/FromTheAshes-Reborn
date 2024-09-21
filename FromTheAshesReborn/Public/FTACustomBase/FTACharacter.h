@@ -48,7 +48,7 @@ public:
 
 
 	/**
-	* Getters for attributes from GSAttributeSetBase
+	* Getters for attributes from FTAAttributeSetBase
 	**/
 
 	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
@@ -75,25 +75,6 @@ public:
 
 protected:
 	FGameplayTag DeadTag;
-	FGameplayTag AliveTag;
-	
-	FGameplayTag LockOnTag;
-	FGameplayTag FreeCamTag;
-	
-	FGameplayTag ExecutingTag;
-	FGameplayTag LightMeleeTag;
-	FGameplayTag HeavyMeleeTag;
-	
-	FGameplayTag DashingInitialTag;
-	FGameplayTag DashingSecondaryTag;
-	
-	FGameplayTag JumpingSingleTag;
-	FGameplayTag JumpingDoubleTag;
-	
-	FGameplayTag AirborneTag;
-	FGameplayTag FallingTag;
-	FGameplayTag RunningTag;
-	FGameplayTag SprintingTag;
 	
 	FGameplayTag EffectRemoveOnDeathTag;
 	

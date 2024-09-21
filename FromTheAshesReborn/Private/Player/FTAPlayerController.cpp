@@ -7,6 +7,68 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
+void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input Queue BEGIN"));
+	CurrentAllowedInputs = AllowedInputs;
+	IsInInputQueueWindow = true;
+}
+
+void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Input Queue END"));
+	IsInInputQueueWindow = false;
+}
+
+void AFTAPlayerController::ActivateLastQueuedInput()
+{
+	switch (QueuedInput)
+	{
+	case EAllowedInputs::None:
+		UE_LOG(LogTemp, Warning, TEXT("No input queued."));
+		break;
+
+	case EAllowedInputs::Jump:
+		UE_LOG(LogTemp, Warning, TEXT("Jump input detected."));
+		break;
+
+	case EAllowedInputs::Dash:
+		UE_LOG(LogTemp, Warning, TEXT("Dash input detected."));
+		break;
+
+	case EAllowedInputs::LightAttack:
+		UE_LOG(LogTemp, Warning, TEXT("Light attack input detected."));
+		break;
+
+	case EAllowedInputs::HeavyAttack:
+		UE_LOG(LogTemp, Warning, TEXT("Heavy attack input detected."));
+		break;
+
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("Unknown input."));
+		break;
+	}
+}
+
+void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
+{
+	if(IsInInputQueueWindow)
+	{
+		if(CurrentAllowedInputs.Num() == 0)
+		{
+			
+		}
+		else
+		{
+			if(CurrentAllowedInputs.Contains(InputToQueue))
+			{
+				 QueuedInput = InputToQueue;
+				 ActivateLastQueuedInput();
+			}
+		}
+	}
+}
+
 AFTAPlayerController::AFTAPlayerController()
 {
 	
@@ -145,7 +207,15 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 {
 	//TODO: Need to find a way to add and remove airborne tag 
 
-	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
+	if(IsInInputQueueWindow)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Lets cook"));
+		AddInputToQueue(EAllowedInputs::LightAttack);
+	}
+	else
+	{
+		SendLocalInputToASC(true, EAbilityInputID::LightAttack);
+	}
 }
 
 void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)

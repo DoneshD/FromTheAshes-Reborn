@@ -16,6 +16,8 @@ protected:
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 
 public:
+	UGA_GroundedLightMeleeAttack();
+	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 
 	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage) override;

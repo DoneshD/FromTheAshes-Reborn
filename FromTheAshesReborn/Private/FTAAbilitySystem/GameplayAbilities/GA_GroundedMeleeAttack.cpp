@@ -14,8 +14,8 @@ void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventD
 
 void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
-
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+	UE_LOG(LogTemp, Warning, TEXT("Ability DONE"));
 }
 
 void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)

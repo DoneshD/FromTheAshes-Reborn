@@ -28,6 +28,22 @@ enum class EAbilityInputID : uint8
 	HeavyAttack		UMETA(DisplayName = "HeavyAttack")
 };
 
+
+UENUM(BlueprintType)
+enum class EAllowedInputs : uint8
+{
+	// 0
+	None			UMETA(DisplayName = "None"),
+	
+	Jump			UMETA(DisplayName = "Jump"),
+	// 1
+	Dash			UMETA(DisplayName = "Dash"),
+	//2
+	LightAttack		UMETA(DisplayName = "LightAttack"),
+	//3
+	HeavyAttack		UMETA(DisplayName = "HeavyAttack")
+};
+
 //-----------------------------------Hit Reaction Direction-----------------------------------//
 
 UENUM(BlueprintType)

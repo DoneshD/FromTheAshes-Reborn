@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "FTACustomBase/FTAEnums.h"
 #include "PlayerCharacter.generated.h"
 
 class UGameplayEffect;
@@ -13,6 +14,7 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 	GENERATED_BODY()
 	
 public:
+	
 	APlayerCharacter(const class FObjectInitializer& ObjectInitializer);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
