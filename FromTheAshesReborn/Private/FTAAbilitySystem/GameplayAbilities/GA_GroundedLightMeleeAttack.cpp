@@ -11,7 +11,6 @@ UGA_GroundedLightMeleeAttack::UGA_GroundedLightMeleeAttack()
 void UGA_GroundedLightMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	UE_LOG(LogTemp, Warning, TEXT("LightMelee Activated"));
 	AttackMontageToPlay = LightAttackDataAssets[0]->MontageToPlay;
 	PlayAttackMontage(AttackMontageToPlay);
 

@@ -45,5 +45,8 @@ public:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	
 	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
-	
+
+	void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	void CheckForLightInput();
 };

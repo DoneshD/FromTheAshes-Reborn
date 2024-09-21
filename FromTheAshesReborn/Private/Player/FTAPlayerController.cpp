@@ -9,23 +9,26 @@
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Queue BEGIN"));
 	CurrentAllowedInputs = AllowedInputs;
 	IsInInputQueueWindow = true;
+	GetWorld()->GetTimerManager().SetTimer(FComboWindowTimer, this, &AFTAPlayerController::CheckLastQueuedInput, 0.1f, true);
+	
 }
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Input Queue END"));
+	//Possibly fail if I interrupt montage before ending notify
 	IsInInputQueueWindow = false;
+	QueuedInput = EAllowedInputs::None;
+	GetWorld()->GetTimerManager().ClearTimer(FComboWindowTimer);
 }
 
-void AFTAPlayerController::ActivateLastQueuedInput()
+void AFTAPlayerController::CheckLastQueuedInput()
 {
 	switch (QueuedInput)
 	{
 	case EAllowedInputs::None:
-		UE_LOG(LogTemp, Warning, TEXT("No input queued."));
+		//UE_LOG(LogTemp, Warning, TEXT("No input queued."));
 		break;
 
 	case EAllowedInputs::Jump:
@@ -37,7 +40,11 @@ void AFTAPlayerController::ActivateLastQueuedInput()
 		break;
 
 	case EAllowedInputs::LightAttack:
-		UE_LOG(LogTemp, Warning, TEXT("Light attack input detected."));
+		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Add light saved tag"));
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+		}
 		break;
 
 	case EAllowedInputs::HeavyAttack:
@@ -63,7 +70,6 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
 			if(CurrentAllowedInputs.Contains(InputToQueue))
 			{
 				 QueuedInput = InputToQueue;
-				 ActivateLastQueuedInput();
 			}
 		}
 	}
@@ -85,7 +91,8 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	if (PS)
 	{
 		// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
-		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, InPawn);
+		ASC = PS->GetAbilitySystemComponent();
+		ASC->InitAbilityActorInfo(PS, InPawn);
 	}
 	
 	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
@@ -205,11 +212,8 @@ void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& Inp
 
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	//TODO: Need to find a way to add and remove airborne tag 
-
 	if(IsInInputQueueWindow)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Lets cook"));
 		AddInputToQueue(EAllowedInputs::LightAttack);
 	}
 	else
@@ -225,7 +229,6 @@ void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionVal
 
 void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	
 	SendLocalInputToASC(true, EAbilityInputID::HeavyAttack);
 }
 

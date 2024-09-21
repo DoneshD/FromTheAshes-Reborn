@@ -7,6 +7,7 @@
 #include "GameFramework/PlayerController.h"
 #include "FTAPlayerController.generated.h"
 
+class UAbilitySystemComponent;
 class UEnhancedInputComponent;
 class UInputMappingContext;
 
@@ -37,9 +38,13 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
 
-	void ActivateLastQueuedInput();
+	void CheckLastQueuedInput();
 
 	void AddInputToQueue(EAllowedInputs InputToQueue);
+
+	FTimerHandle FComboWindowTimer;
+
+	void CheckForInput();
 	
 	//--------------------------------------------------------------------------//
 
@@ -67,8 +72,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_HeavyAttack;
+
+	UAbilitySystemComponent* ASC;
 	
-	//For debugging
+	//-----------------------------For debugging--------------------------//
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
 
