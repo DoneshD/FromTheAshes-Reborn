@@ -11,8 +11,6 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 {
 	CurrentAllowedInputs = AllowedInputs;
 	IsInInputQueueWindow = true;
-	GetWorld()->GetTimerManager().SetTimer(FComboWindowTimer, this, &AFTAPlayerController::CheckLastQueuedInput, 0.1f, true);
-	
 }
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
@@ -20,7 +18,6 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInput
 	//Possibly fail if I interrupt montage before ending notify
 	IsInInputQueueWindow = false;
 	QueuedInput = EAllowedInputs::None;
-	GetWorld()->GetTimerManager().ClearTimer(FComboWindowTimer);
 }
 
 void AFTAPlayerController::CheckLastQueuedInput()
@@ -40,15 +37,11 @@ void AFTAPlayerController::CheckLastQueuedInput()
 		break;
 
 	case EAllowedInputs::LightAttack:
-		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Add light saved tag"));
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-		}
+		UE_LOG(LogTemp, Warning, TEXT("LightAttack input detected."));
 		break;
 
 	case EAllowedInputs::HeavyAttack:
-		UE_LOG(LogTemp, Warning, TEXT("Heavy attack input detected."));
+		UE_LOG(LogTemp, Warning, TEXT("HeavyAttack input detected."));
 		break;
 
 	default:
@@ -214,6 +207,11 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
+		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")))
+		{
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+	
+		}
 		AddInputToQueue(EAllowedInputs::LightAttack);
 	}
 	else
@@ -229,7 +227,14 @@ void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionVal
 
 void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(true, EAbilityInputID::HeavyAttack);
+	if(IsInInputQueueWindow)
+	{
+		AddInputToQueue(EAllowedInputs::HeavyAttack);
+	}
+	else
+	{
+		SendLocalInputToASC(true, EAbilityInputID::HeavyAttack);
+	}
 }
 
 void AFTAPlayerController::HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue)

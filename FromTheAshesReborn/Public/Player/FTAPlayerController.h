@@ -42,9 +42,10 @@ protected:
 
 	void AddInputToQueue(EAllowedInputs InputToQueue);
 
-	FTimerHandle FComboWindowTimer;
+	FTimerHandle FInputQueueWindowTimer;
 
 	void CheckForInput();
+
 	
 	//--------------------------------------------------------------------------//
 

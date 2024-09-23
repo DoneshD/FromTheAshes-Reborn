@@ -31,7 +31,13 @@ protected:
 	
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 
+	
+	FTimerHandle FLightComboWindowTimer;
+	FTimerHandle FHeavyComboWindowTimer;
+	
 	FTimerHandle FComboWindowTimer;
+	FDelegateHandle ComboWindowTagDelegateHandle;
+
 
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
@@ -46,7 +52,9 @@ public:
 	
 	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 
-	void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	void CheckForLightInput();
+	void CheckForHeavyInput();
+	void ProccedToNextCombo();
 };
