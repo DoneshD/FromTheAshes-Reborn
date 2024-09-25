@@ -17,6 +17,11 @@ protected:
 
 	UGA_GroundedMeleeAttack();
 
+	FGameplayTag LightInput = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"));
+	FGameplayTag HeavyInput = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"));
+	FGameplayTag LightComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
+	FGameplayTag HeavyComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
+
 	FGameplayTagContainer ComboTagContainer;
 	int32 CurrentComboIndex;
 
@@ -49,11 +54,15 @@ public:
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
+
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	
 	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 
 	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
+	void ProccedToLightCombo();
+	void ProccedToHeavyCombo();
 	void CheckForLightInput();
 	void CheckForHeavyInput();
 	void ProccedToNextCombo();

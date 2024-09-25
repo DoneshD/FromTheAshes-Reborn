@@ -229,6 +229,11 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
+		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy")))
+		{
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
+	
+		}
 		AddInputToQueue(EAllowedInputs::HeavyAttack);
 	}
 	else

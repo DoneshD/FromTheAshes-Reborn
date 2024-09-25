@@ -4,7 +4,7 @@
 
 UGA_GroundedMeleeAttack::UGA_GroundedMeleeAttack()
 {
-
+	CurrentComboIndex = 0;
 }
 
 void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -18,9 +18,9 @@ void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventD
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	CurrentComboIndex = 0;
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light")));
-
-
+	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
+	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
+	ComboTagContainer.Reset();
 }
 
 void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -31,15 +31,20 @@ void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEven
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(
-		FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light")),
-		EGameplayTagEventType::NewOrRemoved
-	).RemoveAll(this);
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(
-		FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light")),
+	UE_LOG(LogTemp, Warning, TEXT("Counter: %d"), CurrentComboIndex);
+
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
+		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
+			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+	
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
+		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::ComboWindowTagChanged);
+
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
 		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::ComboWindowTagChanged);
 	
-	// GetAbilitySystemComponentFromActorInfo()->UnregisterGameplayTagEvent(ComboWindowTagDelegateHandle, FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light")), EGameplayTagEventType::NewOrRemoved);
 
 }
 bool UGA_GroundedMeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -50,6 +55,13 @@ bool UGA_GroundedMeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandl
 void UGA_GroundedMeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
 {
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
+}
+
+void UGA_GroundedMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)
@@ -75,14 +87,8 @@ void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackM
 
 void UGA_GroundedMeleeAttack::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
-	{
-		if (NewCount > 0)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Gameplay Tag: %s, New Count: %d"), *CallbackTag.ToString(), NewCount);
-		}
-	}
 
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"))))
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightComboWindow))
 	{
 		GetWorld()->GetTimerManager().SetTimer(FLightComboWindowTimer, this, &UGA_GroundedMeleeAttack::CheckForLightInput, 0.1f, true);
 	}
@@ -90,7 +96,7 @@ void UGA_GroundedMeleeAttack::ComboWindowTagChanged(const FGameplayTag CallbackT
 	{
 		GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
 	}
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"))))
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyComboWindow))
 	{
 		GetWorld()->GetTimerManager().SetTimer(FHeavyComboWindowTimer, this, &UGA_GroundedMeleeAttack::CheckForHeavyInput, 0.1f, true);
 	}
@@ -100,33 +106,62 @@ void UGA_GroundedMeleeAttack::ComboWindowTagChanged(const FGameplayTag CallbackT
 	}
 }
 
+void UGA_GroundedMeleeAttack::ProccedToLightCombo()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Light Combo"));
+	for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
+	{
+		if (Spec.Ability)
+		{
+			if(Spec.InputID == 7)
+			{
+				GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(Spec.Handle);
+
+			}
+		}
+	}
+}
+
+
+void UGA_GroundedMeleeAttack::ProccedToHeavyCombo()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Heavy Combo"));
+	for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
+	{
+		if (Spec.Ability)
+		{
+			if(Spec.InputID == 8)
+			{
+				GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(Spec.Handle);
+
+			}
+		}
+	}
+}
+
 void UGA_GroundedMeleeAttack::CheckForLightInput()
 {
-
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))))
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightInput))
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 		CurrentComboIndex += 1;
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light")));
-		ProccedToNextCombo();
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
+		ProccedToLightCombo();
 	}
 }
 
 void UGA_GroundedMeleeAttack::CheckForHeavyInput()
 {
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"))))
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyInput))
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy")));
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 		CurrentComboIndex += 1;
-		ProccedToNextCombo();
-		
+		ProccedToHeavyCombo();
 	}
 }
 
 void UGA_GroundedMeleeAttack::ProccedToNextCombo()
 {
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Light.Saved")));
-
-	UE_LOG(LogTemp, Warning, TEXT("Next Combo"));
+	
 }

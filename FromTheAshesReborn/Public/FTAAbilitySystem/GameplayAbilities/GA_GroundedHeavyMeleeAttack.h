@@ -11,9 +11,10 @@ class FROMTHEASHESREBORN_API UGA_GroundedHeavyMeleeAttack : public UGA_GroundedM
 	
 protected:
 	UPROPERTY(EditDefaultsOnly)
-	TArray<TObjectPtr<UMeleeAttackDataAsset>> HeavyAttacksDataAssets;
+	TArray<TObjectPtr<UMeleeAttackDataAsset>> HeavyAttackDataAssets;
 
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
+	
 
 public:
 	UGA_GroundedHeavyMeleeAttack();

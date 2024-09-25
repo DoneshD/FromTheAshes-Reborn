@@ -18,8 +18,6 @@ void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 	{
 		if (Spec.Ability)
 		{
-			Spec.InputPressed = true;
-			
 			if (Spec.IsActive())
 			{
 				// FString AbilityName = Spec.Ability->GetName();
@@ -27,7 +25,6 @@ void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 			}
 		}
 	}
-	
 }
 
 void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
