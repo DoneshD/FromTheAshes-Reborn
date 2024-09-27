@@ -23,7 +23,7 @@ protected:
 	FGameplayTag LightComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
 	FGameplayTag HeavyComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
 
-	FGameplayTagContainer ComboTagContainer;
+	FGameplayTagContainer CurrentComboTagContainer;
 	int32 CurrentComboIndex = 0;
 
 	UFUNCTION()
@@ -60,9 +60,6 @@ public:
 
 	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
-	void ProccedToLightCombo();
-	void ProccedToHeavyCombo();
-
 	void LightComboWindowOpen();
 	void HeavyComboWindowOpen();
 
@@ -70,5 +67,9 @@ public:
 	virtual void HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	void PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets);
+	void ProceedToNextCombo(int32 IDToActivate);
 	void ResetGroundedMeleeAttack();
+
+	bool FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets,
+		TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset);
 };

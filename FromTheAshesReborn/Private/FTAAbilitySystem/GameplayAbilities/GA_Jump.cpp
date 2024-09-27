@@ -31,7 +31,6 @@ bool UGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	}
 
 	const AFTACharacter* Character = CastChecked<AFTACharacter>(ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed);
-	UE_LOG(LogTemp, Warning, TEXT("Jumping"));
 	return Character && Character->CanJump();
 }
 
