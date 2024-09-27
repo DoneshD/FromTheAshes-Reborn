@@ -62,7 +62,7 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
 		{
 			if(CurrentAllowedInputs.Contains(InputToQueue))
 			{
-				 QueuedInput = InputToQueue;
+				QueuedInput = InputToQueue;
 			}
 		}
 	}
@@ -231,8 +231,8 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 	{
 		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy")))
 		{
+			
 			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
-	
 		}
 		AddInputToQueue(EAllowedInputs::HeavyAttack);
 	}

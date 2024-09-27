@@ -5,6 +5,7 @@
 #include "GA_GroundedMeleeAttack.generated.h"
 
 
+class AFTAPlayerController;
 class UMeleeAttackDataAsset;
 class UFTAAT_PlayMontageAndWaitForEvent;
 
@@ -23,7 +24,7 @@ protected:
 	FGameplayTag HeavyComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
 
 	FGameplayTagContainer ComboTagContainer;
-	int32 CurrentComboIndex;
+	int32 CurrentComboIndex = 0;
 
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
@@ -35,17 +36,15 @@ protected:
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
-
 	
 	FTimerHandle FLightComboWindowTimer;
 	FTimerHandle FHeavyComboWindowTimer;
 	
 	FTimerHandle FComboWindowTimer;
-	FDelegateHandle ComboWindowTagDelegateHandle;
-
 
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
+
 	
 public:
 
@@ -63,7 +62,13 @@ public:
 
 	void ProccedToLightCombo();
 	void ProccedToHeavyCombo();
-	void CheckForLightInput();
-	void CheckForHeavyInput();
-	void ProccedToNextCombo();
+
+	void LightComboWindowOpen();
+	void HeavyComboWindowOpen();
+
+	virtual void LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	virtual void HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+
+	void PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets);
+	void ResetGroundedMeleeAttack();
 };

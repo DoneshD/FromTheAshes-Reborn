@@ -23,8 +23,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	EAllowedInputs QueuedInput;
 
-	UPROPERTY(EditAnywhere)
-	bool IsInInputQueueWindow = false;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<EAllowedInputs> CurrentAllowedInputs;
@@ -96,6 +94,9 @@ public:
 	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
+	
+	UPROPERTY(EditAnywhere)
+	bool IsInInputQueueWindow = false;
 
 	void HandleJumpActionPressed(const FInputActionValue& InputActionValue);
 	void HandleJumpActionReleased(const FInputActionValue& InputActionValue);

@@ -132,14 +132,14 @@ UObject* UFTAGameplayAbility::K2_GetSourceObject(FGameplayAbilitySpecHandle Hand
 
 bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
-	if (bCannotActivateWhileInteracting)
-	{
-		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
-		if (ASC->GetTagCount(InteractingTag) > ASC->GetTagCount(InteractingRemovalTag))
-		{
-			return false;
-		}
-	}
+	// if (bCannotActivateWhileInteracting)
+	// {
+	// 	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+	// 	if (ASC->GetTagCount(InteractingTag) > ASC->GetTagCount(InteractingRemovalTag))
+	// 	{
+	// 		return false;
+	// 	}
+	// }
 
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
