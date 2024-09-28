@@ -25,15 +25,6 @@ protected:
 
 	FGameplayTagContainer CurrentComboTagContainer;
 	int32 CurrentComboIndex = 0;
-
-	UFUNCTION()
-	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
-	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
-	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 	
@@ -48,6 +39,23 @@ protected:
 	
 public:
 
+	void ResetGroundedMeleeAttack();
+	
+	virtual void LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	virtual void HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	
+	void LightComboWindowOpen();
+	void HeavyComboWindowOpen();
+	
+	bool FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets,
+		TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset);
+	
+	void ProceedToNextCombo(int32 IDToActivate);
+	
+	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
+	
+	void PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets);
+
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
@@ -56,20 +64,13 @@ public:
 
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	
-	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 
-	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	UFUNCTION()
+	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	void LightComboWindowOpen();
-	void HeavyComboWindowOpen();
+	UFUNCTION()
+	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	virtual void LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	virtual void HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-
-	void PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets);
-	void ProceedToNextCombo(int32 IDToActivate);
-	void ResetGroundedMeleeAttack();
-
-	bool FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets,
-		TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset);
+	UFUNCTION()
+	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 };

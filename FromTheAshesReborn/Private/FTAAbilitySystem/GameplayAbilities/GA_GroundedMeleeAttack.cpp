@@ -5,14 +5,11 @@
 
 UGA_GroundedMeleeAttack::UGA_GroundedMeleeAttack()
 {
-}
-
-void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
-{
 	
 }
 
-void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+
+void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 {
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
 		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
@@ -26,13 +23,130 @@ void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventD
 	CurrentComboTagContainer.Reset();
 	GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
 	GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
-
+	UE_LOG(LogTemp, Warning, TEXT("Reseting ability"));
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+void UGA_GroundedMeleeAttack::LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightComboWindow))
+	{
+		GetWorld()->GetTimerManager().SetTimer(FLightComboWindowTimer, this, &UGA_GroundedMeleeAttack::LightComboWindowOpen, 0.01f, true);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
+	}
+}
 
+void UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+{
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyComboWindow))
+	{
+		GetWorld()->GetTimerManager().SetTimer(FHeavyComboWindowTimer, this, &UGA_GroundedMeleeAttack::HeavyComboWindowOpen, 0.01f, true);
+	}
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
+	}
+}
+
+void UGA_GroundedMeleeAttack::LightComboWindowOpen()
+{
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightInput))
+	{
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		ProceedToNextCombo(7);
+	}
+}
+
+void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
+{
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyInput))
+	{
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+		ProceedToNextCombo(8);
+
+	}
+}
+
+bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)
+{
+	for (int32 Index = 0; Index < GroundedAttackDataAssets.Num(); ++Index)
+	{
+		if (GroundedAttackDataAssets[Index])
+		{
+			if (CurrentComboTagContainer == GroundedAttackDataAssets[Index]->RequiredTags)
+			{
+				OutMatchingDataAsset = GroundedAttackDataAssets[Index];
+				//maybe change increment location
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void UGA_GroundedMeleeAttack::ProceedToNextCombo(int32 IDToActivate)
+{
+	for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
+	{
+		if (Spec.Ability)
+		{
+			if(Spec.InputID == IDToActivate)
+			{
+				if(Spec.IsActive())
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Ability is still active"));
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Ability not currently active"));
+
+				}
+				GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(Spec.Handle);
+			}
+		}
+	}
+}
+
+void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets)
+{
+	if (!GroundedAttackDataAssets.IsValidIndex(CurrentComboIndex))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Index out of bounds: %d"), CurrentComboIndex);
+		ResetGroundedMeleeAttack();
+	}
+	
+	if (!GroundedAttackDataAssets[CurrentComboIndex])
+	{
+		UE_LOG(LogTemp, Error, TEXT("No asset at index"));
+		ResetGroundedMeleeAttack();
+	}
+	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
+	bool DataAssetFound = FindMatchingTagContainer(GroundedAttackDataAssets, MatchingDataAsset);
+	if(!DataAssetFound)
+	{
+		ResetGroundedMeleeAttack();
+		//return bool? is this even being called?
+		return;
+	}
+	AttackMontageToPlay = MatchingDataAsset->MontageToPlay;
+	if(AttackMontageToPlay)
+	{
+		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
+		CurrentComboTagContainer.AddTag(AttackIndentiferTag);
+		PlayAttackMontage(AttackMontageToPlay);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
+		ResetGroundedMeleeAttack();
+	}
 }
 
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
@@ -84,153 +198,17 @@ void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackM
 	}
 }
 
-void UGA_GroundedMeleeAttack::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
+void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightComboWindow))
-	{
-		GetWorld()->GetTimerManager().SetTimer(FLightComboWindowTimer, this, &UGA_GroundedMeleeAttack::LightComboWindowOpen, 0.1f, true);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
-	}
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyComboWindow))
-	{
-		GetWorld()->GetTimerManager().SetTimer(FHeavyComboWindowTimer, this, &UGA_GroundedMeleeAttack::HeavyComboWindowOpen, 0.1f, true);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
-	}
-}
-
-void UGA_GroundedMeleeAttack::LightComboWindowOpen()
-{
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightInput))
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
-		CurrentComboIndex += 1;
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		ProceedToNextCombo(7);
-	}
-}
-
-void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
-{
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyInput))
-	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
-		CurrentComboIndex += 1;
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		ProceedToNextCombo(8);
-	}
-}
-
-void UGA_GroundedMeleeAttack::LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightComboWindow))
-	{
-		GetWorld()->GetTimerManager().SetTimer(FLightComboWindowTimer, this, &UGA_GroundedMeleeAttack::LightComboWindowOpen, 0.1f, true);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
-	}
-}
-
-void UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyComboWindow))
-	{
-		GetWorld()->GetTimerManager().SetTimer(FHeavyComboWindowTimer, this, &UGA_GroundedMeleeAttack::HeavyComboWindowOpen, 0.1f, true);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
-	}
-}
-void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets)
-{
-	UE_LOG(LogTemp, Warning, TEXT("Current Index: %d"), CurrentComboIndex);
-	if (!GroundedAttackDataAssets.IsValidIndex(CurrentComboIndex))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Index out of bounds: %d"), CurrentComboIndex);
-		ResetGroundedMeleeAttack();
-	}
 	
-	if (!GroundedAttackDataAssets[CurrentComboIndex])
-	{
-		UE_LOG(LogTemp, Error, TEXT("No asset at index"));
-		ResetGroundedMeleeAttack();
-	}
-	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
-	bool DataAssetFound = FindMatchingTagContainer(GroundedAttackDataAssets, MatchingDataAsset);
-	if(!DataAssetFound)
-	{
-		ResetGroundedMeleeAttack();
-		//return bool? is this even being called?
-		return;
-	}
-	AttackMontageToPlay = MatchingDataAsset->MontageToPlay;
-	if(AttackMontageToPlay)
-	{
-		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
-		CurrentComboTagContainer.AddTag(AttackIndentiferTag);
-
-		PlayAttackMontage(AttackMontageToPlay);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
-		ResetGroundedMeleeAttack();
-	}
 }
 
-void UGA_GroundedMeleeAttack::ProceedToNextCombo(int32 IDToActivate)
+void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
-	{
-		if (Spec.Ability)
-		{
-			if(Spec.InputID == IDToActivate)
-			{
-				GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(Spec.Handle);
-			}
-		}
-	}
+	ResetGroundedMeleeAttack();
 }
 
-void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
+void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
-		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
-			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-	
-	CurrentComboIndex = 0;
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
-	CurrentComboTagContainer.Reset();
-	GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
-	GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
-
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
-
-bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)
-{
-	for (int32 Index = 0; Index < GroundedAttackDataAssets.Num(); ++Index)
-	{
-		if (GroundedAttackDataAssets[Index])
-		{
-			if (CurrentComboTagContainer == GroundedAttackDataAssets[Index]->RequiredTags)
-			{
-				OutMatchingDataAsset = GroundedAttackDataAssets[Index];
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
