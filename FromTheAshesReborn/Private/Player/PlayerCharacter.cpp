@@ -61,7 +61,7 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	
 	if(!FTAPlayerState)
 	{
-		// return;
+		return;
 	}
 	AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
@@ -89,38 +89,6 @@ void APlayerCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
-void APlayerCharacter::LookUp(float Value)
-{
-}
-
-void APlayerCharacter::LookUpRate(float Value)
-{
-}
-
-void APlayerCharacter::Turn(float Value)
-{
-}
-
-void APlayerCharacter::TurnRate(float Value)
-{
-}
-
-void APlayerCharacter::MoveForward(float Value)
-{
-}
-
-void APlayerCharacter::MoveRight(float Value)
-{
-}
-
-void APlayerCharacter::InitializeFloatingStatusBar()
-{
-}
-
-void APlayerCharacter::BindASCInput()
-{
-}
-
 FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()
 {
 	return GroundedMeleeComboComponent->GetCurrentComboContainer();
@@ -138,10 +106,8 @@ void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 
 void APlayerCharacter::PossessedBy(AController* NewController)
 {
-	//TODO: Not init correctly
 	Super::PossessedBy(NewController);
 	InitAbilitySystemComponent();
-	//only grants on server, change later
 	AddDefaultAbilities();
 	InitializeAttributes();
 }

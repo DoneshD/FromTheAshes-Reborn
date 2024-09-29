@@ -19,7 +19,6 @@ class FROMTHEASHESREBORN_API AFTAPlayerState : public APlayerState, public IAbil
 public:
 	AFTAPlayerState();
 
-	// Implement IAbilitySystemInterface
 	class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	class UFTAAttributeSet* GetAttributeSet() const;
@@ -49,13 +48,10 @@ protected:
 	UPROPERTY()
 	class UFTAAttributeSet* AttributeSet;
 
-	// Attribute changed delegate handles
 	FDelegateHandle HealthChangedDelegateHandle;
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Attribute changed callbacks
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 
 };

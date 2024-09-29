@@ -22,30 +22,25 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilityS
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AFTACharacter(const class FObjectInitializer& ObjectInitializer);
 
 	UPROPERTY(BlueprintAssignable, Category = "Character")
 	FCharacterDiedDelegate OnCharacterDied;
 
-	// Implement IAbilitySystemInterface
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual bool IsAlive() const;
 
-	// Switch on AbilityID to return individual ability levels.
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual int32 GetAbilityLevel(EAbilityInputID AbilityID) const;
 
-	// Removes all CharacterAbilities. Can only be called by the Server. Removing on the Server will remove from Client too.
 	virtual void RemoveCharacterAbilities();
 
 	virtual void Die();
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual void FinishDying();
-
 
 	/**
 	* Getters for attributes from FTAAttributeSetBase
@@ -95,36 +90,26 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Audio")
 	class USoundCue* DeathSound;
 
-	// Default abilities for this Character. These will be removed on Character death and regiven if Character respawns.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
 	TArray<TSubclassOf<class UFTAGameplayAbility>> DefaultAbilities;
 
-	// Default attributes for a character for initializing on spawn/respawn.
-	// This is an instant GE that overrides the values for attributes that get reset on spawn/respawn.
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
 	TSubclassOf<class UGameplayEffect> DefaultAttributes;
 
-	// These effects are only applied one time on startup
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Effects")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon Collision")
 	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	virtual void AddDefaultAbilities();
 
-	// Initialize the Character's attributes. 
 	virtual void InitializeAttributes();
 
 	virtual void AddStartupEffects();
 
-	/**
-	* Setters for Attributes. Only use these in special cases like Respawning, otherwise use a GE to change Attributes.
-	* These change the Attribute's Base Value.
-	*/
 
 	virtual void SetCurrentHealth(float Health);
 };

@@ -11,9 +11,9 @@ UGA_GroundedMeleeAttack::UGA_GroundedMeleeAttack()
 
 void UGA_GroundedMeleeAttack::PrintCurrentComboContainer()
 {
-	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(OwnerActorRef);
+	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
 
-	for (const FGameplayTag& Tag : CurrentComboTagContainer)
+	for (const FGameplayTag& Tag : MeleeCombatantInterface->GetCurrentComboContainer())
 	{
 		if(*Tag.ToString())
 		{
@@ -40,8 +40,6 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 
 	MeleeCombatantInterface->GetCurrentComboContainer().Reset();
 	MeleeCombatantInterface->SetCurrentComboIndex(0);
-	// CurrentComboTagContainer.Reset();
-	// CurrentComboIndex = 0;
 	
 	GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
 	GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
@@ -106,8 +104,6 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 		{
 			if (MeleeCombatantInterface->GetCurrentComboContainer().HasAll(GroundedAttackDataAssets[Index]->RequiredTags))
 			{
-			// if (CurrentComboTagContainer.HasAll(GroundedAttackDataAssets[Index]->RequiredTags))
-			// {
 				if(GroundedAttackDataAssets[Index]->RequiredIndex == MeleeCombatantInterface->GetCurrentComboIndex())
 				{
 					OutMatchingDataAsset = GroundedAttackDataAssets[Index];
@@ -127,14 +123,6 @@ void UGA_GroundedMeleeAttack::ProceedToNextCombo(int32 IDToActivate)
 		{
 			if(Spec.InputID == IDToActivate)
 			{
-				if(Spec.IsActive())
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Ability is still active"));
-				}
-				else
-				{
-					//UE_LOG(LogTemp, Warning, TEXT("Ability not currently active"));
-				}
 				GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(Spec.Handle);
 			}
 		}
@@ -163,11 +151,7 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
 	bool DataAssetFound = FindMatchingTagContainer(GroundedAttackDataAssets, MatchingDataAsset);
 
-	if(DataAssetFound)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Data Asset found: CurrentComboIndex: %d"), MeleeCombatantInterface->GetCurrentComboIndex());
-	}
-	else
+	if(!DataAssetFound)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Data Asset NOT found!"));
 		
@@ -181,27 +165,20 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 	{
 		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
 		
-		// CurrentComboTagContainer.AddTag(AttackIndentiferTag);
-		// CurrentComboIndex += 1;
 		MeleeCombatantInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
 		MeleeCombatantInterface->SetCurrentComboIndex(MeleeCombatantInterface->GetCurrentComboIndex() + 1);
-		UE_LOG(LogTemp, Warning, TEXT("INDEX NUM!!!!!!!!!!: %d"), MeleeCombatantInterface->GetCurrentComboIndex());
 		PlayAttackMontage(AttackMontageToPlay);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
 		ResetGroundedMeleeAttack();
-
-		return;
 	}
 }
 
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	OwnerActorRef = ActorInfo->AvatarActor.Get();
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
 		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::LightComboWindowTagChanged);
@@ -257,7 +234,6 @@ void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventD
 void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	ResetGroundedMeleeAttack();
-
 }
 
 void UGA_GroundedMeleeAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)

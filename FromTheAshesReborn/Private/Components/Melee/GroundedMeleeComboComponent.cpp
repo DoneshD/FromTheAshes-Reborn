@@ -14,26 +14,6 @@ UGroundedMeleeComboComponent::UGroundedMeleeComboComponent()
 void UGroundedMeleeComboComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//TODO: Implement interface
-	AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
-	if(FTAChar)
-	{
-		AbilitySystemComponent = FTAChar->GetAbilitySystemComponent();
-		
-		if(AbilitySystemComponent)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("AbilitySystemComponent Found"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("AbilitySystemComponent is NULL"));
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("FTAChar is NULL"));
-	}
 }
 
 

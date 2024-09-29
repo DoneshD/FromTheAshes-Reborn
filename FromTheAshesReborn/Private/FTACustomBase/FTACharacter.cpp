@@ -4,7 +4,6 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "DidItHitActorComponent.h"
-#include "DidItHit.h"
 #include "GameplayAbilitySpec.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -21,7 +20,6 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 	bAlwaysRelevant = true;
 
 	DidItHitActorComponent = CreateDefaultSubobject<UDidItHitActorComponent>("DiditHitActorComponent");
-	
 
 }
 
@@ -37,7 +35,6 @@ bool AFTACharacter::IsAlive() const
 
 int32 AFTACharacter::GetAbilityLevel(EAbilityInputID AbilityID) const
 {
-	//TODO
 	return 1;
 }
 
@@ -48,7 +45,6 @@ void AFTACharacter::RemoveCharacterAbilities()
 		return;
 	}
 
-	// Remove any abilities added from a previous call. This checks to make sure the ability is in the startup 'CharacterAbilities' array.
 	TArray<FGameplayAbilitySpecHandle> AbilitiesToRemove;
 	for (const FGameplayAbilitySpec& Spec : AbilitySystemComponent->GetActivatableAbilities())
 	{
@@ -69,7 +65,6 @@ void AFTACharacter::RemoveCharacterAbilities()
 
 void AFTACharacter::Die()
 {
-	// Only runs on Server
 	RemoveCharacterAbilities();
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -89,7 +84,6 @@ void AFTACharacter::Die()
 		AbilitySystemComponent->AddLooseGameplayTag(DeadTag);
 	}
 
-	//TODO replace with a locally executed GameplayCue
 	if (DeathSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
@@ -112,7 +106,6 @@ void AFTACharacter::FinishDying()
 
 int32 AFTACharacter::GetCharacterLevel() const
 {
-	//TODO
 	return 1;
 }
 
@@ -160,7 +153,6 @@ FName AFTACharacter::GetWeaponAttachPoint()
 	return WeaponAttachPoint;
 }
 
-// Called when the game starts or when spawned
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -168,7 +160,6 @@ void AFTACharacter::BeginPlay()
 
 void AFTACharacter::AddDefaultAbilities()
 {
-	// Grant abilities, but only on the server	
 	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->IsCharacterAbilitiesGiven)
 	{
 		return;

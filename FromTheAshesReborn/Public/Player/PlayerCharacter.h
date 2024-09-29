@@ -60,24 +60,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void PostInitializeComponents() override;
-
-	void LookUp(float Value);
-
-	void LookUpRate(float Value);
-
-	void Turn(float Value);
-
-	void TurnRate(float Value);
-
-	void MoveForward(float Value);
-
-	void MoveRight(float Value);
-
-	UFUNCTION()
-	void InitializeFloatingStatusBar();
 	
-	void BindASCInput();
-
 	//---------------------------------------INTERFACES-----------------------------------//
 
 	virtual FGameplayTagContainer& GetCurrentComboContainer() override;

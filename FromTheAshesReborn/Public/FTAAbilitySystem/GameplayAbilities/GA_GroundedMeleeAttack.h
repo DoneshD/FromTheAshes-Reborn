@@ -33,7 +33,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
 
-	AActor* OwnerActorRef;
 	
 public:
 
