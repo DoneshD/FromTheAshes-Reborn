@@ -1,5 +1,5 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
-
+#include "DataAsset/MeleeAttackDataAsset.h"
 UGA_GroundedLightMeleeAttack::UGA_GroundedLightMeleeAttack()
 {
 }
@@ -7,7 +7,7 @@ UGA_GroundedLightMeleeAttack::UGA_GroundedLightMeleeAttack()
 void UGA_GroundedLightMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	CancelAbilitiesWithTag.AddTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Grounded.Attacking.Melee.Heavy")));
+	
 	PerformGroundedMeleeAttack(LightAttackDataAssets);
 
 }

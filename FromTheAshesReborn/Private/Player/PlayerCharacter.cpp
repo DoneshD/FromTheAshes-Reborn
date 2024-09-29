@@ -4,6 +4,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TargetSystemComponent.h"
+#include "Components/Melee/GroundedMeleeComboComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
 
@@ -38,6 +39,9 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 
 	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
 
+	GroundedMeleeComboComponent = CreateDefaultSubobject<UGroundedMeleeComboComponent>(TEXT("GroundedMeleeComboComponent"));
+	this->AddOwnedComponent(GroundedMeleeComboComponent);
+
 }
 
 void APlayerCharacter::BeginPlay()
@@ -57,12 +61,12 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	
 	if(!FTAPlayerState)
 	{
-		return;
+		// return;
 	}
-	
 	AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
 	AttributeSet = FTAPlayerState->GetAttributeSet();
+	
 }
 
 void APlayerCharacter::FinishDying()
@@ -115,6 +119,21 @@ void APlayerCharacter::InitializeFloatingStatusBar()
 
 void APlayerCharacter::BindASCInput()
 {
+}
+
+FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()
+{
+	return GroundedMeleeComboComponent->GetCurrentComboContainer();
+}
+
+int32 APlayerCharacter::GetCurrentComboIndex()
+{
+	return GroundedMeleeComboComponent->GetCurrentComboIndex();
+}
+
+void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
+{
+	GroundedMeleeComboComponent->SetCurrentComboIndex(ComboIndex);
 }
 
 void APlayerCharacter::PossessedBy(AController* NewController)

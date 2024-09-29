@@ -5,7 +5,6 @@
 #include "GA_GroundedMeleeAttack.generated.h"
 
 
-class AFTAPlayerController;
 class UMeleeAttackDataAsset;
 class UFTAAT_PlayMontageAndWaitForEvent;
 
@@ -26,18 +25,19 @@ protected:
 	FGameplayTagContainer CurrentComboTagContainer;
 	int32 CurrentComboIndex = 0;
 	
-	TObjectPtr<UAnimMontage> AttackMontageToPlay;
-	
 	FTimerHandle FLightComboWindowTimer;
 	FTimerHandle FHeavyComboWindowTimer;
 	
-	FTimerHandle FComboWindowTimer;
-
+	TObjectPtr<UAnimMontage> AttackMontageToPlay;
+	
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
 
+	AActor* OwnerActorRef;
 	
 public:
+
+	void PrintCurrentComboContainer();
 
 	void ResetGroundedMeleeAttack();
 	
@@ -52,9 +52,9 @@ public:
 	
 	void ProceedToNextCombo(int32 IDToActivate);
 	
-	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
-	
 	void PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets);
+	
+	virtual void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	

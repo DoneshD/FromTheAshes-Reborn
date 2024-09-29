@@ -15,6 +15,7 @@ protected:
 
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 
+
 public:
 	UGA_GroundedLightMeleeAttack();
 	

@@ -28,6 +28,9 @@ public:
 	bool IsComboFinisher = false;
 
 	UPROPERTY(EditDefaultsOnly)
+	bool ShouldEmptyComboContainer;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
 	
