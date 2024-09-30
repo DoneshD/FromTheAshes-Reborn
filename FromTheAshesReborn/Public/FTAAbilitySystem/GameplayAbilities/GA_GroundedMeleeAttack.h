@@ -24,6 +24,9 @@ protected:
 
 	FGameplayTagContainer CurrentComboTagContainer;
 	int32 CurrentComboIndex = 0;
+
+	bool LastInputWasLight = false;
+	bool LastInputWasHeavy = false;
 	
 	FTimerHandle FLightComboWindowTimer;
 	FTimerHandle FHeavyComboWindowTimer;

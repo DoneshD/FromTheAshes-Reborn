@@ -43,6 +43,7 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 	
 	GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
 	GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
+
 	UE_LOG(LogTemp, Warning, TEXT("Reseting ability"));
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -77,6 +78,7 @@ void UGA_GroundedMeleeAttack::LightComboWindowOpen()
 	
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightInput))
 	{
+		LastInputWasLight = true;
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -88,6 +90,7 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
 {
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyInput))
 	{
+		LastInputWasHeavy = true;
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -98,6 +101,27 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
 bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)
 {
 	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+	if (!GroundedAttackDataAssets.IsValidIndex(MeleeCombatantInterface->GetCurrentComboIndex()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Index out of bounds: %d"), MeleeCombatantInterface->GetCurrentComboIndex());
+		MeleeCombatantInterface->SetCurrentComboIndex(0);
+		if(LastInputWasLight)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Last Input was light"));
+			OutMatchingDataAsset = GroundedAttackDataAssets[0];
+			LastInputWasLight = false;
+			return true;
+		}
+		if(LastInputWasHeavy)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Last Input was heavy"));
+			OutMatchingDataAsset = GroundedAttackDataAssets[0];
+			LastInputWasHeavy = false;
+			return true;
+		}
+		
+		return false;
+	}
 	for (int32 Index = 0; Index < GroundedAttackDataAssets.Num(); ++Index)
 	{
 		if (GroundedAttackDataAssets[Index])
@@ -112,6 +136,7 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 			}
 		}
 	}
+	
 	return false;
 }
 
@@ -133,40 +158,38 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 {
 	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
 
-	if (!GroundedAttackDataAssets.IsValidIndex(MeleeCombatantInterface->GetCurrentComboIndex()))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Index out of bounds: %d"), MeleeCombatantInterface->GetCurrentComboIndex());
-		ResetGroundedMeleeAttack();
-		return;
-	}
-	
-	if (!GroundedAttackDataAssets[MeleeCombatantInterface->GetCurrentComboIndex()])
-	{
-		UE_LOG(LogTemp, Error, TEXT("No asset at index"));
-		ResetGroundedMeleeAttack();
-
-		return;
-	}
-	
 	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
 	bool DataAssetFound = FindMatchingTagContainer(GroundedAttackDataAssets, MatchingDataAsset);
-
+	
 	if(!DataAssetFound)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Data Asset NOT found!"));
-		
+		UE_LOG(LogTemp, Error, TEXT("DA NOT found"));
 		ResetGroundedMeleeAttack();
 		return;
 	}
 	
+	// if (!GroundedAttackDataAssets[MeleeCombatantInterface->GetCurrentComboIndex()])
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("No asset at index"));
+	// 	ResetGroundedMeleeAttack();
+	// 	return;
+	// }
+	
+	if(!MatchingDataAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MatchingDataAsset is NULL"));
+		ResetGroundedMeleeAttack();
+		return;
+	}
+
 	AttackMontageToPlay = MatchingDataAsset->MontageToPlay;
 	
 	if(AttackMontageToPlay)
 	{
 		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
-		
 		MeleeCombatantInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
 		MeleeCombatantInterface->SetCurrentComboIndex(MeleeCombatantInterface->GetCurrentComboIndex() + 1);
+
 		PlayAttackMontage(AttackMontageToPlay);
 	}
 	else
