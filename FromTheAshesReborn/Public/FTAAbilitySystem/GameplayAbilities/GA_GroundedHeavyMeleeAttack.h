@@ -14,7 +14,6 @@ protected:
 	TArray<TObjectPtr<UMeleeAttackDataAsset>> HeavyAttackDataAssets;
 
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
-	
 
 public:
 	UGA_GroundedHeavyMeleeAttack();
