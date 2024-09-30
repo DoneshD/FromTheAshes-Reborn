@@ -136,7 +136,6 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 			}
 		}
 	}
-	
 	return false;
 }
 
@@ -167,13 +166,6 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 		ResetGroundedMeleeAttack();
 		return;
 	}
-	
-	// if (!GroundedAttackDataAssets[MeleeCombatantInterface->GetCurrentComboIndex()])
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("No asset at index"));
-	// 	ResetGroundedMeleeAttack();
-	// 	return;
-	// }
 	
 	if(!MatchingDataAsset)
 	{
