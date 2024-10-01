@@ -16,8 +16,8 @@ protected:
 
 	UGA_GroundedDash();
 
-	FGameplayTag DashInput = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"));
-	FGameplayTag DashWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
+	FGameplayTag DashInputTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"));
+	FGameplayTag DashWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Dash"));
 
 	FTimerHandle FDashComboWindowTimer;
 	
@@ -37,9 +37,9 @@ public:
 	
 	void DashWindowTagOpen();
 	
-	void PerformDash(TArray<TObjectPtr<UDashDataAsset>> SelectDashDataAssets);
+	void PerformDash();
 	
-	virtual void PlayDashMontage(TObjectPtr<UAnimMontage> DashMontage);
+	void PlayDashMontage();
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	

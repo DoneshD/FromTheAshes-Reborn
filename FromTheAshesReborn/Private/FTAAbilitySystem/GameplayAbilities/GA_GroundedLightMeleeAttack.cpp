@@ -9,7 +9,6 @@ void UGA_GroundedLightMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHan
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	PerformGroundedMeleeAttack(LightAttackDataAssets);
-
 }
 
 void UGA_GroundedLightMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)

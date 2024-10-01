@@ -44,7 +44,7 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 	GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
 	GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
 
-	UE_LOG(LogTemp, Warning, TEXT("Reseting ability"));
+	UE_LOG(LogTemp, Warning, TEXT("Reseting Melee Attack"));
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
@@ -155,6 +155,7 @@ void UGA_GroundedMeleeAttack::ProceedToNextCombo(int32 IDToActivate)
 
 void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets)
 {
+
 	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
 
 	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
@@ -191,6 +192,27 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 	}
 }
 
+void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)
+{
+	AttackMontageToPlay = AttackMontage;
+	if(AttackMontageToPlay)
+	{
+		Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
+		1.0f, NAME_None, false, 1.0f);
+		Task->OnBlendOut.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+		Task->OnCompleted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
+		Task->OnInterrupted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+		Task->OnCancelled.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
+		Task->EventReceived.AddDynamic(this, &UGA_GroundedMeleeAttack::EventReceived);
+		
+		Task->ReadyForActivation();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No attack montage"));
+	}
+}
+
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -220,26 +242,6 @@ void UGA_GroundedMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle
 	
 }
 
-void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)
-{
-	AttackMontageToPlay = AttackMontage;
-	if(AttackMontageToPlay)
-	{
-		Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
-		1.0f, NAME_None, false, 1.0f);
-		Task->OnBlendOut.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
-		Task->OnCompleted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCompleted);
-		Task->OnInterrupted.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
-		Task->OnCancelled.AddDynamic(this, &UGA_GroundedMeleeAttack::OnCancelled);
-		Task->EventReceived.AddDynamic(this, &UGA_GroundedMeleeAttack::EventReceived);
-		
-		Task->ReadyForActivation();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No attack montage"));
-	}
-}
 
 void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
