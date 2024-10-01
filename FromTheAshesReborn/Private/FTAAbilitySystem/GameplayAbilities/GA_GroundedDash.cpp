@@ -59,8 +59,9 @@ void UGA_GroundedDash::PerformDash()
 		return;
 	}
 	FGameplayTag DashIndentiferTag;
-	DashMontageToPlay = DashMontageToPlay[0];
+	DashMontageToPlay = DashDataAssets[0]->MontageToPlay;
 	DashIndentiferTag = DashDataAssets[0]->DashIndentiferTag;
+	
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashInputTag))
 	{
 		DashMontageToPlay = DashDataAssets[1]->MontageToPlay;
