@@ -1,4 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedDash.h"
+
+#include "SNegativeActionButton.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "DataAsset/DashDataAsset.h"
@@ -36,7 +38,6 @@ void UGA_GroundedDash::DashWindowTagOpen()
 {
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashInputTag))
 	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(DashInputTag);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
 		{
@@ -61,9 +62,10 @@ void UGA_GroundedDash::PerformDash()
 	FGameplayTag DashIndentiferTag;
 	DashMontageToPlay = DashDataAssets[0]->MontageToPlay;
 	DashIndentiferTag = DashDataAssets[0]->DashIndentiferTag;
-	
+
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashInputTag))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Inside"));
 		DashMontageToPlay = DashDataAssets[1]->MontageToPlay;
 		DashIndentiferTag = DashDataAssets[1]->DashIndentiferTag;
 	}
@@ -133,7 +135,7 @@ void UGA_GroundedDash::OnCancelled(FGameplayTag EventTag, FGameplayEventData Eve
 
 void UGA_GroundedDash::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
+	ResetDash();
 }
 
 void UGA_GroundedDash::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)

@@ -1,8 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
-#include "DataAsset/MeleeAttackDataAsset.h"
 
 UGA_GroundedHeavyMeleeAttack::UGA_GroundedHeavyMeleeAttack()
 {
+	
 }
 
 void UGA_GroundedHeavyMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

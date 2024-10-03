@@ -22,7 +22,6 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	EAllowedInputs QueuedInput;
-
 	
 	UPROPERTY(EditAnywhere)
 	TArray<EAllowedInputs> CurrentAllowedInputs;

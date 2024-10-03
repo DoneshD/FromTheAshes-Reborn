@@ -195,7 +195,20 @@ void AFTAPlayerController::HandleJumpActionReleased(const FInputActionValue& Inp
 
 void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(true, EAbilityInputID::Dash);
+	if(IsInInputQueueWindow)
+	{
+		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash")))
+		{
+			
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
+		}
+		AddInputToQueue(EAllowedInputs::Dash);
+	}
+	else
+	{
+		SendLocalInputToASC(true, EAbilityInputID::Dash);
+
+	}
 }
 
 void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& InputActionValue)
@@ -210,6 +223,7 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")))
 		{
 			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+			ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
 	
 		}
 		AddInputToQueue(EAllowedInputs::LightAttack);
@@ -233,6 +247,8 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 		{
 			
 			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
+			ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+
 		}
 		AddInputToQueue(EAllowedInputs::HeavyAttack);
 	}

@@ -35,6 +35,7 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
 			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+	
 	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
 	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 
@@ -44,7 +45,7 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 	GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
 	GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
 
-	UE_LOG(LogTemp, Warning, TEXT("Reseting Melee Attack"));
+	//UE_LOG(LogTemp, Warning, TEXT("Reset Attack"));
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
@@ -75,10 +76,10 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged(const FGameplayTag Call
 
 void UGA_GroundedMeleeAttack::LightComboWindowOpen()
 {
-	
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightInput))
 	{
 		LastInputWasLight = true;
+		LastInputWasHeavy = false;
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -91,6 +92,7 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyInput))
 	{
 		LastInputWasHeavy = true;
+		LastInputWasLight = false;
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
@@ -101,27 +103,7 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
 bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)
 {
 	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
-	if (!GroundedAttackDataAssets.IsValidIndex(MeleeCombatantInterface->GetCurrentComboIndex()))
-	{
-		UE_LOG(LogTemp, Error, TEXT("Index out of bounds: %d"), MeleeCombatantInterface->GetCurrentComboIndex());
-		MeleeCombatantInterface->SetCurrentComboIndex(0);
-		if(LastInputWasLight)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Last Input was light"));
-			OutMatchingDataAsset = GroundedAttackDataAssets[0];
-			LastInputWasLight = false;
-			return true;
-		}
-		if(LastInputWasHeavy)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Last Input was heavy"));
-			OutMatchingDataAsset = GroundedAttackDataAssets[0];
-			LastInputWasHeavy = false;
-			return true;
-		}
-		
-		return false;
-	}
+	
 	for (int32 Index = 0; Index < GroundedAttackDataAssets.Num(); ++Index)
 	{
 		if (GroundedAttackDataAssets[Index])
@@ -135,6 +117,18 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 				}
 			}
 		}
+	}
+	if(LastInputWasHeavy)
+	{
+		OutMatchingDataAsset = GroundedAttackDataAssets[0];
+		LastInputWasHeavy = false;
+		return true;
+	}
+	if(LastInputWasLight)
+	{
+		OutMatchingDataAsset = GroundedAttackDataAssets[0];
+		LastInputWasLight = false;
+		return true;
 	}
 	return false;
 }
@@ -155,7 +149,6 @@ void UGA_GroundedMeleeAttack::ProceedToNextCombo(int32 IDToActivate)
 
 void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets)
 {
-
 	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
 
 	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;

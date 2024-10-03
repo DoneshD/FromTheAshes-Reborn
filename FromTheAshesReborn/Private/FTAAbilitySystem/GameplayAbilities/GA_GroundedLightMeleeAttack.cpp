@@ -1,5 +1,4 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
-#include "DataAsset/MeleeAttackDataAsset.h"
 UGA_GroundedLightMeleeAttack::UGA_GroundedLightMeleeAttack()
 {
 }
