@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "FTACustomBase/FTAEnums.h"
@@ -37,10 +38,14 @@ protected:
 
 	void CheckLastQueuedInput();
 
-	void AddInputToQueue(EAllowedInputs InputToQueue);
+	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
 
 	FTimerHandle FInputQueueWindowTimer;
 
+	FGameplayTag InputQueueWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.InputQueue.Open"));
+
+	FGameplayTag LastSavedInputTag;
+	
 	void CheckForInput();
 
 	
@@ -82,6 +87,8 @@ protected:
 public:
 
 	AFTAPlayerController();
+
+	virtual void BeginPlay() override;
 
 	virtual void OnPossess(APawn* InPawn) override;
 

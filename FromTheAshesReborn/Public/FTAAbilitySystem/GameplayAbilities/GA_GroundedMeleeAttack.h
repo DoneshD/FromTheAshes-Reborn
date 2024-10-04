@@ -35,21 +35,15 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
-
 	
 public:
 
 	void PrintCurrentComboContainer();
 
-	void CheckLastInputFromQueue();
-
 	void ResetGroundedMeleeAttack();
-	
-	virtual void LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	virtual void HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	
-	void LightComboWindowOpen();
-	void HeavyComboWindowOpen();
+
+	virtual void LightComboSavedTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
+	virtual void HeavyComboSavedTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 	
 	bool FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets,
 		TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset);

@@ -11,6 +11,8 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 {
 	CurrentAllowedInputs = AllowedInputs;
 	IsInInputQueueWindow = true;
+
+	GetWorld()->GetTimerManager().SetTimer(FInputQueueWindowTimer, this, &AFTAPlayerController::CheckLastQueuedInput, 0.01f, true);
 }
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
@@ -19,6 +21,8 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInput
 	IsInInputQueueWindow = false;
 	QueuedInput = EAllowedInputs::None;
 	CurrentAllowedInputs.Empty();
+	GetWorld()->GetTimerManager().ClearTimer(FInputQueueWindowTimer);
+	UE_LOG(LogTemp, Warning, TEXT("QUEUE CLOSED"));
 }
 
 void AFTAPlayerController::CheckLastQueuedInput()
@@ -26,7 +30,7 @@ void AFTAPlayerController::CheckLastQueuedInput()
 	switch (QueuedInput)
 	{
 	case EAllowedInputs::None:
-		//UE_LOG(LogTemp, Warning, TEXT("No input queued."));
+		UE_LOG(LogTemp, Warning, TEXT("No input queued."));
 		break;
  
 	case EAllowedInputs::Jump:
@@ -38,10 +42,23 @@ void AFTAPlayerController::CheckLastQueuedInput()
 		break;
 
 	case EAllowedInputs::LightAttack:
+
+		if(LastSavedInputTag.MatchesTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")) &&
+			ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Montage.ComboWindow.Open.Light")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Light attack Saved!!!!"));
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+		}
 		UE_LOG(LogTemp, Warning, TEXT("LightAttack input detected."));
 		break;
 
 	case EAllowedInputs::HeavyAttack:
+		if(LastSavedInputTag.MatchesTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy")) &&
+			ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Montage.ComboWindow.Open.Heavy")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Heavy attack Saved!!!!"));
+			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
+		}
 		UE_LOG(LogTemp, Warning, TEXT("HeavyAttack input detected."));
 		break;
 
@@ -51,7 +68,7 @@ void AFTAPlayerController::CheckLastQueuedInput()
 	}
 }
 
-void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
+void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag)
 {
 	if(IsInInputQueueWindow)
 	{
@@ -63,6 +80,7 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
 		{
 			if(CurrentAllowedInputs.Contains(InputToQueue))
 			{
+				LastSavedInputTag = SavedInputTag;
 				QueuedInput = InputToQueue;
 			}
 		}
@@ -72,6 +90,12 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
 AFTAPlayerController::AFTAPlayerController()
 {
 	
+}
+
+void AFTAPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
 }
 
 void AFTAPlayerController::OnPossess(APawn* InPawn)
@@ -198,12 +222,11 @@ void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& Inpu
 {
 	if(IsInInputQueueWindow)
 	{
-		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash")))
-		{
-			
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
-		}
-		AddInputToQueue(EAllowedInputs::Dash);
+		// if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash")))
+		// {
+		// 	ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
+		// }
+		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
 	}
 	else
 	{
@@ -221,13 +244,7 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
-		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")))
-		{
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-			ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
-	
-		}
-		AddInputToQueue(EAllowedInputs::LightAttack);
+		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
 	}
 	else
 	{
@@ -244,13 +261,7 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
-		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy")))
-		{
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
-			ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-
-		}
-		AddInputToQueue(EAllowedInputs::HeavyAttack);
+		AddInputToQueue(EAllowedInputs::HeavyAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
 	}
 	else
 	{
