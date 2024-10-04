@@ -4,7 +4,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
@@ -17,30 +16,31 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
 {
-	//Possibly fail if I interrupt montage before ending notify
 	IsInInputQueueWindow = false;
 	QueuedInput = EAllowedInputs::None;
 	CurrentAllowedInputs.Empty();
 	GetWorld()->GetTimerManager().ClearTimer(FInputQueueWindowTimer);
-	UE_LOG(LogTemp, Warning, TEXT("QUEUE CLOSED"));
 }
 
 void AFTAPlayerController::CheckLastQueuedInput()
 {
+	bool LastSavedInputTagTest = LastSavedInputTag.MatchesTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
+	bool ComboWindowTagTest = ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Montage.ComboWindow.Open.Heavy"));
 	switch (QueuedInput)
 	{
 	case EAllowedInputs::None:
-		UE_LOG(LogTemp, Warning, TEXT("No input queued."));
+		//UE_LOG(LogTemp, Warning, TEXT("No input queued."));
 		break;
  
 	case EAllowedInputs::Jump:
-		UE_LOG(LogTemp, Warning, TEXT("Jump input detected."));
+		//UE_LOG(LogTemp, Warning, TEXT("Jump input detected."));
 		break;
 
 	case EAllowedInputs::Dash:
-		UE_LOG(LogTemp, Warning, TEXT("Dash input detected."));
+		//UE_LOG(LogTemp, Warning, TEXT("Dash input detected."));
 		break;
 
+		
 	case EAllowedInputs::LightAttack:
 
 		if(LastSavedInputTag.MatchesTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")) &&
@@ -49,21 +49,23 @@ void AFTAPlayerController::CheckLastQueuedInput()
 			UE_LOG(LogTemp, Warning, TEXT("Light attack Saved!!!!"));
 			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
 		}
-		UE_LOG(LogTemp, Warning, TEXT("LightAttack input detected."));
 		break;
 
 	case EAllowedInputs::HeavyAttack:
+
+		UE_LOG(LogTemp, Error, TEXT("LastSavedInputTagTest is: %s"), LastSavedInputTagTest ? TEXT("true") : TEXT("false"));
+		UE_LOG(LogTemp, Error, TEXT("ComboWindowTagTest is: %s"), ComboWindowTagTest ? TEXT("true") : TEXT("false"));
+
 		if(LastSavedInputTag.MatchesTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy")) &&
 			ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Montage.ComboWindow.Open.Heavy")))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Heavy attack Saved!!!!"));
 			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
 		}
-		UE_LOG(LogTemp, Warning, TEXT("HeavyAttack input detected."));
 		break;
 
 	default:
-		UE_LOG(LogTemp, Warning, TEXT("Unknown input."));
+		//UE_LOG(LogTemp, Warning, TEXT("Unknown input."));
 		break;
 	}
 }
@@ -222,10 +224,6 @@ void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& Inpu
 {
 	if(IsInInputQueueWindow)
 	{
-		// if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash")))
-		// {
-		// 	ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
-		// }
 		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
 	}
 	else

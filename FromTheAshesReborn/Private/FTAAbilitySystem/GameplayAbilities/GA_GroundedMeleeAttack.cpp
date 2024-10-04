@@ -55,7 +55,6 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 
 void UGA_GroundedMeleeAttack::LightComboSavedTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
-
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightInput))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Next Light"));
@@ -64,13 +63,11 @@ void UGA_GroundedMeleeAttack::LightComboSavedTagChanged(const FGameplayTag Callb
 		//Change later to gameplay event instead of input ID
 		ProceedToNextCombo(7);
 	}
-	
-
 }
 
 void UGA_GroundedMeleeAttack::HeavyComboSavedTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
-
+	UE_LOG(LogTemp, Warning, TEXT("HeavyTagChanged"));
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyInput))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Next Heavy"));
@@ -99,18 +96,7 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 			}
 		}
 	}
-	if(LastInputWasHeavy)
-	{
-		OutMatchingDataAsset = GroundedAttackDataAssets[0];
-		LastInputWasHeavy = false;
-		return true;
-	}
-	if(LastInputWasLight)
-	{
-		OutMatchingDataAsset = GroundedAttackDataAssets[0];
-		LastInputWasLight = false;
-		return true;
-	}
+	
 	return false;
 }
 
@@ -190,6 +176,12 @@ void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackM
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightInput,
+		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyInput,
+			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightInput,
 		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::LightComboSavedTagChanged);
