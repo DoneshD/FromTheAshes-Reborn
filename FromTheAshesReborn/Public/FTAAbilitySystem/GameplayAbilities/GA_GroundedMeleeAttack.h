@@ -41,6 +41,8 @@ public:
 
 	void PrintCurrentComboContainer();
 
+	void CheckLastInputFromQueue();
+
 	void ResetGroundedMeleeAttack();
 	
 	virtual void LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);

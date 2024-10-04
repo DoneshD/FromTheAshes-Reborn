@@ -18,6 +18,7 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInput
 	//Possibly fail if I interrupt montage before ending notify
 	IsInInputQueueWindow = false;
 	QueuedInput = EAllowedInputs::None;
+	CurrentAllowedInputs.Empty();
 }
 
 void AFTAPlayerController::CheckLastQueuedInput()
@@ -27,7 +28,7 @@ void AFTAPlayerController::CheckLastQueuedInput()
 	case EAllowedInputs::None:
 		//UE_LOG(LogTemp, Warning, TEXT("No input queued."));
 		break;
-
+ 
 	case EAllowedInputs::Jump:
 		UE_LOG(LogTemp, Warning, TEXT("Jump input detected."));
 		break;
@@ -245,7 +246,6 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 	{
 		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy")))
 		{
-			
 			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
 			ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
 
