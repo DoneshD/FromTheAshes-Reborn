@@ -79,7 +79,6 @@ void UGA_GroundedMeleeAttack::LightComboWindowOpen()
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		ProceedToNextCombo(7);
 	}
-	
 }
 
 void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
@@ -109,9 +108,10 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 			}
 		}
 	}
-	
-	// OutMatchingDataAsset = GroundedAttackDataAssets[0];
-	return false;
+	MeleeCombatantInterface->GetCurrentComboContainer().Reset();
+	MeleeCombatantInterface->SetCurrentComboIndex(0);
+	OutMatchingDataAsset = GroundedAttackDataAssets[0];
+	return true;
 }
 
 void UGA_GroundedMeleeAttack::ProceedToNextCombo(int32 IDToActivate)
@@ -156,8 +156,9 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
 		MeleeCombatantInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
 		MeleeCombatantInterface->SetCurrentComboIndex(MeleeCombatantInterface->GetCurrentComboIndex() + 1);
-
+		PrintCurrentComboContainer();
 		PlayAttackMontage(AttackMontageToPlay);
+
 	}
 	else
 	{
@@ -197,14 +198,12 @@ void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 		if(!PC)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("!PC"));
-
 			return;
 		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("!GetAvatarActorFromActorInfo()->GetInstigatorController()"));
-
 		return;
 	}
 
@@ -230,6 +229,12 @@ void UGA_GroundedMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
+		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+
+	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
+			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 	
 }
 

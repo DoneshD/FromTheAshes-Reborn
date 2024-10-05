@@ -14,32 +14,29 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
 {
-	//Possibly fail if I interrupt montage before ending notify
 	IsInInputQueueWindow = false;
 	CurrentAllowedInputs.Empty();
-	QueuedInput = EAllowedInputs::None;
-	LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event");
+	LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 }
 
 void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag)
 {
 	if(IsInInputQueueWindow)
 	{
-		if(CurrentAllowedInputs.Num() == 0)
+		if(CurrentAllowedInputs.IsEmpty())
 		{
-			
+			UE_LOG(LogTemp, Warning, TEXT("No CurrentAllowedInputs"));
+			return;
 		}
-		else
+		
+		if(CurrentAllowedInputs.Contains(InputToQueue))
 		{
-			if(CurrentAllowedInputs.Contains(InputToQueue))
+			if(!ASC->HasMatchingGameplayTag(SavedInputTag))
 			{
-				if(!ASC->HasMatchingGameplayTag(SavedInputTag))
-				{
-					LastInputSavedTag = SavedInputTag;
-				}
-				QueuedInput = InputToQueue;
+				LastInputSavedTag = SavedInputTag;
 			}
 		}
+		
 	}
 }
 
