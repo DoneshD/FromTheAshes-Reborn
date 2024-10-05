@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "FTACustomBase/FTAEnums.h"
@@ -35,15 +36,10 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
 
-	void CheckLastQueuedInput();
-
-	void AddInputToQueue(EAllowedInputs InputToQueue);
+	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
 
 	FTimerHandle FInputQueueWindowTimer;
 
-	void CheckForInput();
-
-	
 	//--------------------------------------------------------------------------//
 
 	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
@@ -80,6 +76,11 @@ protected:
 	bool IsTimeSlowed = false;
 	
 public:
+
+	//TODO: MOVE LATER
+
+	FGameplayTag LastInputSavedTag;
+
 
 	AFTAPlayerController();
 

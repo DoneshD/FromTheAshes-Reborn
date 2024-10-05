@@ -4,7 +4,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
@@ -17,40 +16,12 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInput
 {
 	//Possibly fail if I interrupt montage before ending notify
 	IsInInputQueueWindow = false;
+	CurrentAllowedInputs.Empty();
 	QueuedInput = EAllowedInputs::None;
+	LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event");
 }
 
-void AFTAPlayerController::CheckLastQueuedInput()
-{
-	switch (QueuedInput)
-	{
-	case EAllowedInputs::None:
-		//UE_LOG(LogTemp, Warning, TEXT("No input queued."));
-		break;
-
-	case EAllowedInputs::Jump:
-		UE_LOG(LogTemp, Warning, TEXT("Jump input detected."));
-		break;
-
-	case EAllowedInputs::Dash:
-		UE_LOG(LogTemp, Warning, TEXT("Dash input detected."));
-		break;
-
-	case EAllowedInputs::LightAttack:
-		UE_LOG(LogTemp, Warning, TEXT("LightAttack input detected."));
-		break;
-
-	case EAllowedInputs::HeavyAttack:
-		UE_LOG(LogTemp, Warning, TEXT("HeavyAttack input detected."));
-		break;
-
-	default:
-		UE_LOG(LogTemp, Warning, TEXT("Unknown input."));
-		break;
-	}
-}
-
-void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
+void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag)
 {
 	if(IsInInputQueueWindow)
 	{
@@ -62,6 +33,10 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue)
 		{
 			if(CurrentAllowedInputs.Contains(InputToQueue))
 			{
+				if(!ASC->HasMatchingGameplayTag(SavedInputTag))
+				{
+					LastInputSavedTag = SavedInputTag;
+				}
 				QueuedInput = InputToQueue;
 			}
 		}
@@ -197,17 +172,11 @@ void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& Inpu
 {
 	if(IsInInputQueueWindow)
 	{
-		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash")))
-		{
-			
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
-		}
-		AddInputToQueue(EAllowedInputs::Dash);
+		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
 	}
 	else
 	{
 		SendLocalInputToASC(true, EAbilityInputID::Dash);
-
 	}
 }
 
@@ -220,13 +189,7 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
-		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light")))
-		{
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-			ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
-	
-		}
-		AddInputToQueue(EAllowedInputs::LightAttack);
+		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
 	}
 	else
 	{
@@ -243,14 +206,7 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
-		if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy")))
-		{
-			
-			ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
-			ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-
-		}
-		AddInputToQueue(EAllowedInputs::HeavyAttack);
+		AddInputToQueue(EAllowedInputs::HeavyAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
 	}
 	else
 	{

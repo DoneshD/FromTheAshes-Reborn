@@ -5,6 +5,7 @@
 #include "GA_GroundedMeleeAttack.generated.h"
 
 
+class AFTAPlayerController;
 class UMeleeAttackDataAsset;
 class UFTAAT_PlayMontageAndWaitForEvent;
 
@@ -35,6 +36,8 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
+
+	AFTAPlayerController* PC;
 
 	
 public:

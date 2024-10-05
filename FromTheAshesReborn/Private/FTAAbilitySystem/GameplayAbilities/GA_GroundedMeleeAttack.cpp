@@ -3,6 +3,7 @@
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "Interfaces/MeleeCombatantInterface.h"
 #include "DataAsset/MeleeAttackDataAsset.h"
+#include "Player/FTAPlayerController.h"
 
 UGA_GroundedMeleeAttack::UGA_GroundedMeleeAttack()
 {
@@ -35,9 +36,6 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
 			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-	
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 
 	MeleeCombatantInterface->GetCurrentComboContainer().Reset();
 	MeleeCombatantInterface->SetCurrentComboIndex(0);
@@ -76,25 +74,18 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged(const FGameplayTag Call
 
 void UGA_GroundedMeleeAttack::LightComboWindowOpen()
 {
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightInput))
+	if(PC->LastInputSavedTag.MatchesTag(LightInput))
 	{
-		LastInputWasLight = true;
-		LastInputWasHeavy = false;
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		ProceedToNextCombo(7);
 	}
+	
 }
 
 void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
 {
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyInput))
+	if(PC->LastInputSavedTag.MatchesTag(HeavyInput))
 	{
-		LastInputWasHeavy = true;
-		LastInputWasLight = false;
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HeavyInput);
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LightInput);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		ProceedToNextCombo(8);
 	}
@@ -118,18 +109,8 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 			}
 		}
 	}
-	if(LastInputWasHeavy)
-	{
-		OutMatchingDataAsset = GroundedAttackDataAssets[0];
-		LastInputWasHeavy = false;
-		return true;
-	}
-	if(LastInputWasLight)
-	{
-		OutMatchingDataAsset = GroundedAttackDataAssets[0];
-		LastInputWasLight = false;
-		return true;
-	}
+	
+	// OutMatchingDataAsset = GroundedAttackDataAssets[0];
 	return false;
 }
 
@@ -209,6 +190,23 @@ void UGA_GroundedMeleeAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackM
 void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	if(GetAvatarActorFromActorInfo()->GetInstigatorController())
+	{
+		PC = Cast<AFTAPlayerController>(GetAvatarActorFromActorInfo()->GetInstigatorController());
+		if(!PC)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("!PC"));
+
+			return;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("!GetAvatarActorFromActorInfo()->GetInstigatorController()"));
+
+		return;
+	}
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
 		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::LightComboWindowTagChanged);
