@@ -1,10 +1,11 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Interface.h"
 #include "MeleeCombatantInterface.generated.h"
 
-struct FGameplayTagContainer;
+// struct FGameplayTagContainer;
 
 UINTERFACE()
 class UMeleeCombatantInterface : public UInterface
@@ -23,4 +24,6 @@ public:
 	virtual int GetCurrentComboIndex() = 0;
 
 	virtual void SetCurrentComboIndex(int ComboIndex) = 0;
+
+	virtual void RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindow, FTimerHandle FComboWindowTimer) = 0;
 };

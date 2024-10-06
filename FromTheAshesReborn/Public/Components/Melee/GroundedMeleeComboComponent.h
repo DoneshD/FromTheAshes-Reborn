@@ -34,4 +34,5 @@ public:
 	int GetCurrentComboIndex();
 
 	void SetCurrentComboIndex(int Index);
+
 };

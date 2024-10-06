@@ -23,12 +23,6 @@ protected:
 	FGameplayTag LightComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
 	FGameplayTag HeavyComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
 
-	FGameplayTagContainer CurrentComboTagContainer;
-	int32 CurrentComboIndex = 0;
-
-	bool LastInputWasLight = false;
-	bool LastInputWasHeavy = false;
-	
 	FTimerHandle FLightComboWindowTimer;
 	FTimerHandle FHeavyComboWindowTimer;
 	

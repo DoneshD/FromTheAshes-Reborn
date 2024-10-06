@@ -74,8 +74,6 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged(const FGameplayTag Call
 
 void UGA_GroundedMeleeAttack::LightComboWindowOpen()
 {
-	UE_LOG(LogTemp, Warning, TEXT("LightComboWindowOpen::LastInputSavedTag: %s"), *PC->LastInputSavedTag.GetTagName().ToString());
-	
 	if(PC->LastInputSavedTag.MatchesTag(LightInput))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Light matches Called"));
@@ -208,6 +206,10 @@ void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 		UE_LOG(LogTemp, Warning, TEXT("!GetAvatarActorFromActorInfo()->GetInstigatorController()"));
 		return;
 	}
+
+	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+
+	MeleeCombatantInterface->RegisterGameplayTagEvent(LightInput, LightComboWindow, FLightComboWindowTimer);
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
 		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::LightComboWindowTagChanged);

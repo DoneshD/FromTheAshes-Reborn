@@ -67,7 +67,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Dash;
 
-	UAbilitySystemComponent* ASC;
 	
 	//-----------------------------For debugging--------------------------//
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
@@ -78,7 +77,7 @@ protected:
 public:
 
 	//TODO: MOVE LATER
-
+	UAbilitySystemComponent* ASC;
 	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 
 

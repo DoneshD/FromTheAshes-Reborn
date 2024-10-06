@@ -4,6 +4,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TargetSystemComponent.h"
+#include "Components/Combat/PlayerComboManagerComponent.h"
 #include "Components/Melee/GroundedMeleeComboComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
@@ -41,6 +42,9 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 
 	GroundedMeleeComboComponent = CreateDefaultSubobject<UGroundedMeleeComboComponent>(TEXT("GroundedMeleeComboComponent"));
 	this->AddOwnedComponent(GroundedMeleeComboComponent);
+
+	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
+	this->AddOwnedComponent(PlayerComboManagerComponent);
 
 }
 
@@ -102,6 +106,11 @@ int32 APlayerCharacter::GetCurrentComboIndex()
 void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 {
 	GroundedMeleeComboComponent->SetCurrentComboIndex(ComboIndex);
+}
+
+void APlayerCharacter::RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindow, FTimerHandle FComboWindowTimer)
+{
+	PlayerComboManagerComponent->RegisterGameplayTagEvent(InputSavedTag, ComboWindow, FComboWindowTimer);
 }
 
 void APlayerCharacter::PossessedBy(AController* NewController)

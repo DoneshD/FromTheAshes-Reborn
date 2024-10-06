@@ -5,6 +5,7 @@
 #include "Interfaces/MeleeCombatantInterface.h"
 #include "PlayerCharacter.generated.h"
 
+class UPlayerComboManagerComponent;
 class UGroundedMeleeComboComponent;
 class UGameplayEffect;
 class UTargetSystemComponent;
@@ -32,6 +33,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGroundedMeleeComboComponent> GroundedMeleeComboComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManagerComponent;
 
 protected:
 
@@ -68,4 +72,6 @@ protected:
 	virtual int32 GetCurrentComboIndex() override;
 
 	virtual void SetCurrentComboIndex(int ComboIndex) override;
+
+	virtual void RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindow, FTimerHandle FComboWindowTimer) override;
 };
