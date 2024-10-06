@@ -66,10 +66,10 @@ public:
 	// void HeavyComboWindowOpen();
 	// void DashWindowTagOpen();
 	
-	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount, FGameplayTag InWindowTag, FTimerHandle InFComboWindowTimer);
+	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount, FGameplayTag InputSavedTag, FGameplayTag ComboWindowTag, FTimerHandle ComboWindowTimer);
 
 	void ComboWindowOpen(FGameplayTag InputToCheck);
 
-	void RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindow, FTimerHandle FComboWindowTimer);
+	void RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindowTag, FTimerHandle FComboWindowTimer);
 	
 };

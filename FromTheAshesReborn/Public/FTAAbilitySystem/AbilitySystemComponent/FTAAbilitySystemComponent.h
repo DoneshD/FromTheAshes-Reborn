@@ -88,7 +88,8 @@ public:
 	FReceivedDamageDelegate ReceivedDamage;
 	// Called from GDDamageExecCalculation. Broadcasts on ReceivedDamage whenever this ASC receives damage.
 	virtual void ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
-	
+	UGameplayAbility* GetCurrentAbility() const;
+
 	// ----------------------------------------------------------------------------------------------------------------
 	//	AnimMontage Support for multiple USkeletalMeshComponents on the AvatarActor.
 	//  Only one ability can be animating at a time though?

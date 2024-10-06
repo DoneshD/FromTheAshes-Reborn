@@ -1,6 +1,7 @@
 ﻿#include "Components/Combat/PlayerComboManagerComponent.h"
 
 #include "AbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "Player/FTAPlayerController.h"
 
 UPlayerComboManagerComponent::UPlayerComboManagerComponent()
@@ -35,16 +36,6 @@ void UPlayerComboManagerComponent::BeginPlay()
 	}
 	
 	ASComponent = PC->ASC;
-	
-// 	FGameplayTag WindowTag;
-// 	ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddLambda(
-// 	[this, WindowTag](const FGameplayTag CallbackTag, int32 NewCount)
-// 	{
-// 		ComboWindowTagChanged(CallbackTag, NewCount, WindowTag);
-// 	}
-// );
-
-
 }
 
 void UPlayerComboManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -85,15 +76,18 @@ void UPlayerComboManagerComponent::SetCurrentComboIndex(int Index)
 }
 
 void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount,
-	FGameplayTag WindowTag, FTimerHandle ComboWindowTimer)
+	FGameplayTag InputSavedTag, FGameplayTag ComboWindowTag,FTimerHandle ComboWindowTimer)
 {
-	if (ASComponent->HasMatchingGameplayTag(WindowTag))
+	UE_LOG(LogTemp, Warning, TEXT("InputSavedTag: %s"), *InputSavedTag.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindow: %s"), *ComboWindowTag.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("FComboWindowTimer: %s"), *ComboWindowTimer.ToString());
+
+	if (ASComponent->HasMatchingGameplayTag(ComboWindowTag))
 	{
-		// Capture 'WindowTag' in the lambda
-		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, WindowTag]()
+		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, InputSavedTag]()
 		{
-			ComboWindowOpen(WindowTag);  // Pass 'WindowTag' to ComboWindowOpen
-		}, 0.01f, true);  // Set the interval to 0.01 seconds, looping every 0.01 seconds
+			ComboWindowOpen(InputSavedTag);  
+		}, 0.01f, true);  
 	}
 	else
 	{
@@ -103,11 +97,34 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag InputToCheck)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpen::LastInputSavedTag: %s"), *PC->LastInputSavedTag.GetTagName().ToString());
+	UE_LOG(LogTemp, Warning, TEXT("LastInputSavedTag: %s"), *PC->LastInputSavedTag.GetTagName().ToString());
 	
+	UFTAAbilitySystemComponent* ASCTEST = Cast<UFTAAbilitySystemComponent>(ASComponent);
+	if(!ASCTEST)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ASCTEST NULL"));
+		return;
+
+	}
+	if (ASCTEST->GetCurrentAbility())
+	{
+		// ASCTEST->GetCurrentAbility()->EndAbility(ASCTEST->GetCurrentAbility()->GetCurrentAbilitySpecHandle(), ASCTEST->GetCurrentAbility()->GetCurrentActorInfo(),
+		// 	ASCTEST->GetCurrentAbility()->GetCurrentActivationInfo(),true, false);
+	}
+
 	if(PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Call light attack"));
+		for (FGameplayAbilitySpec& Spec : ASComponent->GetActivatableAbilities())
+		{
+			if (Spec.Ability)
+			{
+				if(Spec.InputID == 7)
+				{
+					ASComponent->TryActivateAbility(Spec.Handle);
+				}
+			}
+		}
 	}
 	else if(PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"))))
 	{
@@ -123,17 +140,13 @@ void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag InputToCheck)
 	}
 }
 
-void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindow,
+void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindowTag,
 	FTimerHandle FComboWindowTimer)
 {
-	ASComponent->RegisterGameplayTagEvent(ComboWindow, EGameplayTagEventType::NewOrRemoved).AddLambda(
-	[this, InputSavedTag, FComboWindowTimer](const FGameplayTag CallbackTag, int32 NewCount)
+	ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddLambda(
+	[this, InputSavedTag, ComboWindowTag, FComboWindowTimer](const FGameplayTag CallbackTag, int32 NewCount)
 	{
-		ComboWindowTagChanged(CallbackTag, NewCount, InputSavedTag, FComboWindowTimer);
+		ComboWindowTagChanged(CallbackTag, NewCount, InputSavedTag, ComboWindowTag, FComboWindowTimer);
 	});
-
-	UE_LOG(LogTemp, Warning, TEXT("InputSavedTag: %s"), *InputSavedTag.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("ComboWindow: %s"), *ComboWindow.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("FComboWindowTimer: %s"), *FComboWindowTimer.ToString());
+	
 }
-
