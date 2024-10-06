@@ -74,8 +74,11 @@ void UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged(const FGameplayTag Call
 
 void UGA_GroundedMeleeAttack::LightComboWindowOpen()
 {
+	UE_LOG(LogTemp, Warning, TEXT("LightComboWindowOpen::LastInputSavedTag: %s"), *PC->LastInputSavedTag.GetTagName().ToString());
+	
 	if(PC->LastInputSavedTag.MatchesTag(LightInput))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Light matches Called"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		ProceedToNextCombo(7);
 	}
@@ -156,7 +159,6 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
 		MeleeCombatantInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
 		MeleeCombatantInterface->SetCurrentComboIndex(MeleeCombatantInterface->GetCurrentComboIndex() + 1);
-		PrintCurrentComboContainer();
 		PlayAttackMontage(AttackMontageToPlay);
 
 	}

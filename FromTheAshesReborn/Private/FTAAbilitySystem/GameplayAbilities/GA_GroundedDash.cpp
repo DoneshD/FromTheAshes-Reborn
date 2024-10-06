@@ -4,6 +4,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "DataAsset/DashDataAsset.h"
+#include "Player/FTAPlayerController.h"
 
 UGA_GroundedDash::UGA_GroundedDash()
 {
@@ -24,6 +25,7 @@ void UGA_GroundedDash::ResetDash()
 
 void UGA_GroundedDash::DashWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
+	
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashWindowTag))
 	{
 		GetWorld()->GetTimerManager().SetTimer(FDashComboWindowTimer, this, &UGA_GroundedDash::DashWindowTagOpen, 0.01f, true);
@@ -36,8 +38,9 @@ void UGA_GroundedDash::DashWindowTagChanged(const FGameplayTag CallbackTag, int3
 
 void UGA_GroundedDash::DashWindowTagOpen()
 {
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashInputTag))
+	if(PC->LastInputSavedTag.MatchesTag(DashInputTag))
 	{
+		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(DashInputTag);
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 		for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
 		{
@@ -65,6 +68,7 @@ void UGA_GroundedDash::PerformDash()
 
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashInputTag))
 	{
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(DashInputTag);
 		UE_LOG(LogTemp, Warning, TEXT("Inside"));
 		DashMontageToPlay = DashDataAssets[1]->MontageToPlay;
 		DashIndentiferTag = DashDataAssets[1]->DashIndentiferTag;
@@ -106,6 +110,20 @@ void UGA_GroundedDash::PlayDashMontage()
 void UGA_GroundedDash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	if(GetAvatarActorFromActorInfo()->GetInstigatorController())
+	{
+		PC = Cast<AFTAPlayerController>(GetAvatarActorFromActorInfo()->GetInstigatorController());
+		if(!PC)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("!PC"));
+			return;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("!GetAvatarActorFromActorInfo()->GetInstigatorController()"));
+		return;
+	}
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(DashWindowTag,
 		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedDash::DashWindowTagChanged);

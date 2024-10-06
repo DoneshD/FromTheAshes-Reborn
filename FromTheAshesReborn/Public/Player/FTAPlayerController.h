@@ -79,10 +79,12 @@ public:
 
 	//TODO: MOVE LATER
 
-	FGameplayTag LastInputSavedTag;
+	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 
 
 	AFTAPlayerController();
+
+	virtual  void Tick(float DeltaSeconds) override;
 
 	virtual void OnPossess(APawn* InPawn) override;
 

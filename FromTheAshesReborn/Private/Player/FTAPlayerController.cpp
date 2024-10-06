@@ -45,6 +45,15 @@ AFTAPlayerController::AFTAPlayerController()
 	
 }
 
+void AFTAPlayerController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	// if(IsInInputQueueWindow)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("LastInputSavedTag: %s"), *LastInputSavedTag.GetTagName().ToString());
+	// }
+}
+
 void AFTAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);

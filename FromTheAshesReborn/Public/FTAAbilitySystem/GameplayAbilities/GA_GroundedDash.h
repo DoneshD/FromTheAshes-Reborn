@@ -5,6 +5,7 @@
 #include "GA_GroundedDash.generated.h"
 
 class UDashDataAsset;
+class AFTAPlayerController;
 class UFTAAT_PlayMontageAndWaitForEvent;
 
 UCLASS()
@@ -28,6 +29,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
+
+	AFTAPlayerController* PC;
+
 
 public:
 
