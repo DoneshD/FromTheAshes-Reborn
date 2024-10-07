@@ -50,15 +50,15 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 
 bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)
 {
-	IPlayerComboManagerInterface* MeleeCombatantInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 	
 	for (int32 Index = 0; Index < GroundedAttackDataAssets.Num(); ++Index)
 	{
 		if (GroundedAttackDataAssets[Index])
 		{
-			if (MeleeCombatantInterface->GetCurrentComboContainer().HasAll(GroundedAttackDataAssets[Index]->RequiredTags))
+			if (PlayerComboManagerInterface->GetCurrentComboContainer().HasAll(GroundedAttackDataAssets[Index]->RequiredTags))
 			{
-				if(GroundedAttackDataAssets[Index]->RequiredIndex == MeleeCombatantInterface->GetCurrentComboIndex())
+				if(GroundedAttackDataAssets[Index]->RequiredIndex == PlayerComboManagerInterface->GetCurrentComboIndex())
 				{
 					OutMatchingDataAsset = GroundedAttackDataAssets[Index];
 					return true;
@@ -66,15 +66,15 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 			}
 		}
 	}
-	MeleeCombatantInterface->GetCurrentComboContainer().Reset();
-	MeleeCombatantInterface->SetCurrentComboIndex(0);
+	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
+	PlayerComboManagerInterface->SetCurrentComboIndex(0);
 	OutMatchingDataAsset = GroundedAttackDataAssets[0];
 	return true;
 }
 
 void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets)
 {
-	IPlayerComboManagerInterface* MeleeCombatantInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
 	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
 	bool DataAssetFound = FindMatchingTagContainer(GroundedAttackDataAssets, MatchingDataAsset);
@@ -98,8 +98,8 @@ void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMele
 	if(AttackMontageToPlay)
 	{
 		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
-		MeleeCombatantInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
-		MeleeCombatantInterface->SetCurrentComboIndex(MeleeCombatantInterface->GetCurrentComboIndex() + 1);
+		PlayerComboManagerInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
+		PlayerComboManagerInterface->SetCurrentComboIndex(PlayerComboManagerInterface->GetCurrentComboIndex() + 1);
 		PlayAttackMontage(AttackMontageToPlay);
 
 	}

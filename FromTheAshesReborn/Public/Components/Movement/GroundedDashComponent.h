@@ -12,9 +12,10 @@ class FROMTHEASHESREBORN_API UGroundedDashComponent : public UActorComponent
 
 protected:
 	
-	UGroundedDashComponent();
 
 public:
+	
+	UGroundedDashComponent();
 	
 	virtual void BeginPlay() override;
 	

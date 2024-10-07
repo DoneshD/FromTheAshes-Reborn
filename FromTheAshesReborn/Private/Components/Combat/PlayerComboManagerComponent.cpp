@@ -8,7 +8,6 @@ UPlayerComboManagerComponent::UPlayerComboManagerComponent()
 
 }
 
-
 void UPlayerComboManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -76,8 +75,6 @@ void UPlayerComboManagerComponent::SetCurrentComboIndex(int Index)
 void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount,
 	FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer)
 {
-	UE_LOG(LogTemp, Error, TEXT("UPlayerComboManagerComponent FComboWindowTimer: %s"), ComboWindowTimer.IsValid() ? TEXT("true") : TEXT("false"));
-
 	if (ASComponent->HasMatchingGameplayTag(ComboWindowTag))
 	{
 		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, ComboWindowTag]()
@@ -87,7 +84,6 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Clear Timer"))
 		GetWorld()->GetTimerManager().ClearTimer(ComboWindowTimer);
 	}
 }
@@ -96,36 +92,11 @@ void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
 	if(PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))))
 	{
-		PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
-		ASComponent->CancelAllAbilities();
-
-		UE_LOG(LogTemp, Warning, TEXT("Call light attack"));
-		for (FGameplayAbilitySpec& Spec : ASComponent->GetActivatableAbilities())
-		{
-			if (Spec.Ability)
-			{
-				if(Spec.InputID == 7)
-				{
-					ASComponent->TryActivateAbility(Spec.Handle);
-				}
-			}
-		}
+		ProceedNextAbility(7);
 	}
 	else if(PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"))))
 	{
-		PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
-		ASComponent->CancelAllAbilities();
-		for (FGameplayAbilitySpec& Spec : ASComponent->GetActivatableAbilities())
-		{
-			if (Spec.Ability)
-			{
-				if(Spec.InputID == 8)
-				{
-					ASComponent->TryActivateAbility(Spec.Handle);
-				}
-			}
-		}
-		UE_LOG(LogTemp, Warning, TEXT("Call heavy attack"));
+		ProceedNextAbility(8);
 	}
 	else if(PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"))))
 	{
@@ -153,4 +124,21 @@ void UPlayerComboManagerComponent::RemoveGameplayTagEvent(FGameplayTag ComboWind
 
 	ASComponent->RegisterGameplayTagEvent(ComboWindowTag,
 			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+}
+
+void UPlayerComboManagerComponent::ProceedNextAbility(int GameplayAbilityInputID)
+{
+	PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
+	ASComponent->CancelAllAbilities();
+
+	for (FGameplayAbilitySpec& Spec : ASComponent->GetActivatableAbilities())
+	{
+		if (Spec.Ability)
+		{
+			if(Spec.InputID == GameplayAbilityInputID)
+			{
+				ASComponent->TryActivateAbility(Spec.Handle);
+			}
+		}
+	}
 }

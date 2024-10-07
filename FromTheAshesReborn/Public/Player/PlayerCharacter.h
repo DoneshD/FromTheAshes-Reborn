@@ -32,9 +32,6 @@ public:
 	USkeletalMeshComponent* GetSkeletalMesh() const;
 
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UGroundedMeleeComboComponent> GroundedMeleeComboComponent;
-
-	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManagerComponent;
 
 protected:

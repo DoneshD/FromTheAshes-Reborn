@@ -46,4 +46,6 @@ public:
 	void RegisterGameplayTagEvent(FGameplayTag ComboWindowTag, FTimerHandle& FComboWindowTimer);
 
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
+
+	void ProceedNextAbility(int GameplayAbilityInputID);
 };

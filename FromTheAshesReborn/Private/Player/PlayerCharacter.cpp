@@ -5,7 +5,6 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "TargetSystemComponent.h"
 #include "Components/Combat/PlayerComboManagerComponent.h"
-#include "Components/Melee/GroundedMeleeComboComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
 
@@ -39,9 +38,6 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
-
-	GroundedMeleeComboComponent = CreateDefaultSubobject<UGroundedMeleeComboComponent>(TEXT("GroundedMeleeComboComponent"));
-	this->AddOwnedComponent(GroundedMeleeComboComponent);
 
 	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
 	this->AddOwnedComponent(PlayerComboManagerComponent);
@@ -93,6 +89,14 @@ void APlayerCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
+void APlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	InitAbilitySystemComponent();
+	AddDefaultAbilities();
+	InitializeAttributes();
+}
+
 FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()
 {
 	return PlayerComboManagerComponent->GetCurrentComboContainer();
@@ -118,10 +122,3 @@ void APlayerCharacter::RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag)
 	PlayerComboManagerComponent->RemoveGameplayTagEvent(ComboWindowTag);
 }
 
-void APlayerCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	InitAbilitySystemComponent();
-	AddDefaultAbilities();
-	InitializeAttributes();
-}
