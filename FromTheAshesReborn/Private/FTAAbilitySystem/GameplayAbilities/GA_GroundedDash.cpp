@@ -78,6 +78,7 @@ void UGA_GroundedDash::PerformDash()
 	{
 		// MeleeCombatantInterface->GetCurrentComboContainer().AddTag(DashIndentiferTag);
 		// MeleeCombatantInterface->SetCurrentComboIndex(MeleeCombatantInterface->GetCurrentComboIndex() + 1);
+		
 		PlayDashMontage();
 	}
 	else

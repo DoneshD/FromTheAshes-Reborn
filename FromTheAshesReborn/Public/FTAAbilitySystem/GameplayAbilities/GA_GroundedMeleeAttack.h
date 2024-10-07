@@ -42,16 +42,8 @@ public:
 
 	void ResetGroundedMeleeAttack();
 	
-	virtual void LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	virtual void HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	
-	void LightComboWindowOpen();
-	void HeavyComboWindowOpen();
-	
 	bool FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets,
 		TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset);
-	
-	void ProceedToNextCombo(int32 IDToActivate);
 	
 	void PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets);
 	

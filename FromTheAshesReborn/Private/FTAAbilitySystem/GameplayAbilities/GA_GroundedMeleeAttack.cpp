@@ -1,7 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedMeleeAttack.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
-#include "Interfaces/MeleeCombatantInterface.h"
+#include "Interfaces/PlayerComboManagerInterface.h"
 #include "DataAsset/MeleeAttackDataAsset.h"
 #include "Player/FTAPlayerController.h"
 
@@ -12,9 +12,9 @@ UGA_GroundedMeleeAttack::UGA_GroundedMeleeAttack()
 
 void UGA_GroundedMeleeAttack::PrintCurrentComboContainer()
 {
-	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
-	for (const FGameplayTag& Tag : MeleeCombatantInterface->GetCurrentComboContainer())
+	for (const FGameplayTag& Tag : PlayerComboManagerInterface->GetCurrentComboContainer())
 	{
 		if(*Tag.ToString())
 		{
@@ -29,7 +29,7 @@ void UGA_GroundedMeleeAttack::PrintCurrentComboContainer()
 
 void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 {
-	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
 		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
@@ -37,8 +37,8 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
 			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 
-	MeleeCombatantInterface->GetCurrentComboContainer().Reset();
-	MeleeCombatantInterface->SetCurrentComboIndex(0);
+	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
+	PlayerComboManagerInterface->SetCurrentComboIndex(0);
 	
 	GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
 	GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
@@ -48,54 +48,9 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void UGA_GroundedMeleeAttack::LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
-	UE_LOG(LogTemp, Error, TEXT("UGA_GroundedMeleeAttack LightComboWindowTagChanged: %s"), FLightComboWindowTimer.IsValid() ? TEXT("true") : TEXT("false"));
-
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightComboWindow))
-	{
-		GetWorld()->GetTimerManager().SetTimer(FLightComboWindowTimer, this, &UGA_GroundedMeleeAttack::LightComboWindowOpen, 0.01f, true);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(FLightComboWindowTimer);
-	}
-}
-
-void UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HeavyComboWindow))
-	{
-		GetWorld()->GetTimerManager().SetTimer(FHeavyComboWindowTimer, this, &UGA_GroundedMeleeAttack::HeavyComboWindowOpen, 0.01f, true);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(FHeavyComboWindowTimer);
-	}
-}
-
-void UGA_GroundedMeleeAttack::LightComboWindowOpen()
-{
-	if(PC->LastInputSavedTag.MatchesTag(LightInput))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Light matches Called"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		ProceedToNextCombo(7);
-	}
-}
-
-void UGA_GroundedMeleeAttack::HeavyComboWindowOpen()
-{
-	if(PC->LastInputSavedTag.MatchesTag(HeavyInput))
-	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		ProceedToNextCombo(8);
-	}
-}
-
 bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)
 {
-	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+	IPlayerComboManagerInterface* MeleeCombatantInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 	
 	for (int32 Index = 0; Index < GroundedAttackDataAssets.Num(); ++Index)
 	{
@@ -117,23 +72,9 @@ bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<U
 	return true;
 }
 
-void UGA_GroundedMeleeAttack::ProceedToNextCombo(int32 IDToActivate)
-{
-	for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
-	{
-		if (Spec.Ability)
-		{
-			if(Spec.InputID == IDToActivate)
-			{
-				GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(Spec.Handle);
-			}
-		}
-	}
-}
-
 void UGA_GroundedMeleeAttack::PerformGroundedMeleeAttack(TArray<TObjectPtr<UMeleeAttackDataAsset>> GroundedAttackDataAssets)
 {
-	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+	IPlayerComboManagerInterface* MeleeCombatantInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
 	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
 	bool DataAssetFound = FindMatchingTagContainer(GroundedAttackDataAssets, MatchingDataAsset);
@@ -209,16 +150,10 @@ void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 		return;
 	}
 
-	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
-	MeleeCombatantInterface->RegisterGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
-	MeleeCombatantInterface->RegisterGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
-	//
-	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
-	// 	EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::LightComboWindowTagChanged);
-	//
-	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
-	// 	EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::HeavyComboWindowTagChanged);
+	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
+	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
  
 }
 bool UGA_GroundedMeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -237,19 +172,11 @@ void UGA_GroundedMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
-	// 	EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-	//
-	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
-	// 		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-
-	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
-
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 	
-	MeleeCombatantInterface->RemoveGameplayTagEvent(LightComboWindow);
-	MeleeCombatantInterface->RemoveGameplayTagEvent(HeavyComboWindow);
+	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow);
+	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow);
 }
-
 
 void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {

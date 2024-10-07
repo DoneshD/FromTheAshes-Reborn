@@ -95,25 +95,25 @@ void APlayerCharacter::PostInitializeComponents()
 
 FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()
 {
-	return GroundedMeleeComboComponent->GetCurrentComboContainer();
+	return PlayerComboManagerComponent->GetCurrentComboContainer();
 }
 
 int32 APlayerCharacter::GetCurrentComboIndex()
 {
-	return GroundedMeleeComboComponent->GetCurrentComboIndex();
+	return PlayerComboManagerComponent->GetCurrentComboIndex();
 }
 
 void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 {
-	GroundedMeleeComboComponent->SetCurrentComboIndex(ComboIndex);
+	PlayerComboManagerComponent->SetCurrentComboIndex(ComboIndex);
 }
 
-void APlayerCharacter::RegisterGameplayTagEvent(FGameplayTag ComboWindow, FTimerHandle& FComboWindowTimer)
+void APlayerCharacter::RegisterWindowGameplayTagEvent(FGameplayTag ComboWindow, FTimerHandle& FComboWindowTimer)
 {
 	PlayerComboManagerComponent->RegisterGameplayTagEvent(ComboWindow, FComboWindowTimer);
 }
 
-void APlayerCharacter::RemoveGameplayTagEvent(FGameplayTag ComboWindowTag)
+void APlayerCharacter::RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag)
 {
 	PlayerComboManagerComponent->RemoveGameplayTagEvent(ComboWindowTag);
 }

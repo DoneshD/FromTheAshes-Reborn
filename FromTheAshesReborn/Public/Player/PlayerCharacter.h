@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "Interfaces/MeleeCombatantInterface.h"
+#include "Interfaces/PlayerComboManagerInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class UPlayerComboManagerComponent;
@@ -11,7 +11,7 @@ class UGameplayEffect;
 class UTargetSystemComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter, public IMeleeCombatantInterface
+class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter, public IPlayerComboManagerInterface
 {
 	GENERATED_BODY()
 	
@@ -73,8 +73,8 @@ protected:
 
 	virtual void SetCurrentComboIndex(int ComboIndex) override;
 
-	virtual void RegisterGameplayTagEvent(FGameplayTag ComboWindow, FTimerHandle& FComboWindowTimer) override;
+	virtual void RegisterWindowGameplayTagEvent(FGameplayTag ComboWindow, FTimerHandle& FComboWindowTimer) override;
 
-	virtual void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag) override;
+	virtual void RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag) override;
 	
 };
