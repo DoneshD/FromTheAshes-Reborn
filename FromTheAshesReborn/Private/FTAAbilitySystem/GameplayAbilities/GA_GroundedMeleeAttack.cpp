@@ -50,6 +50,8 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 
 void UGA_GroundedMeleeAttack::LightComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
+	UE_LOG(LogTemp, Error, TEXT("UGA_GroundedMeleeAttack LightComboWindowTagChanged: %s"), FLightComboWindowTimer.IsValid() ? TEXT("true") : TEXT("false"));
+
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(LightComboWindow))
 	{
 		GetWorld()->GetTimerManager().SetTimer(FLightComboWindowTimer, this, &UGA_GroundedMeleeAttack::LightComboWindowOpen, 0.01f, true);
@@ -209,8 +211,9 @@ void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 
 	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
 
-	MeleeCombatantInterface->RegisterGameplayTagEvent(LightInput, LightComboWindow, FLightComboWindowTimer);
-
+	MeleeCombatantInterface->RegisterGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
+	MeleeCombatantInterface->RegisterGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
+	//
 	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
 	// 	EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedMeleeAttack::LightComboWindowTagChanged);
 	//
@@ -234,12 +237,17 @@ void UGA_GroundedMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
-		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(LightComboWindow,
+	// 	EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+	//
+	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
+	// 		EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
 
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(HeavyComboWindow,
-			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+	IMeleeCombatantInterface* MeleeCombatantInterface = Cast<IMeleeCombatantInterface>(GetAvatarActorFromActorInfo());
+
 	
+	MeleeCombatantInterface->RemoveGameplayTagEvent(LightComboWindow);
+	MeleeCombatantInterface->RemoveGameplayTagEvent(HeavyComboWindow);
 }
 
 

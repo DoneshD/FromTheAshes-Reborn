@@ -451,15 +451,3 @@ void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* Sourc
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
 }
 
-UGameplayAbility* UFTAAbilitySystemComponent::GetCurrentAbility() const
-{
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	{
-		if (Spec.IsActive())
-		{
-			return Spec.Ability; // Return the active ability
-		}
-	}
-	return nullptr;
-}
-

@@ -108,9 +108,14 @@ void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 	GroundedMeleeComboComponent->SetCurrentComboIndex(ComboIndex);
 }
 
-void APlayerCharacter::RegisterGameplayTagEvent(FGameplayTag InputSavedTag, FGameplayTag ComboWindow, FTimerHandle FComboWindowTimer)
+void APlayerCharacter::RegisterGameplayTagEvent(FGameplayTag ComboWindow, FTimerHandle& FComboWindowTimer)
 {
-	PlayerComboManagerComponent->RegisterGameplayTagEvent(InputSavedTag, ComboWindow, FComboWindowTimer);
+	PlayerComboManagerComponent->RegisterGameplayTagEvent(ComboWindow, FComboWindowTimer);
+}
+
+void APlayerCharacter::RemoveGameplayTagEvent(FGameplayTag ComboWindowTag)
+{
+	PlayerComboManagerComponent->RemoveGameplayTagEvent(ComboWindowTag);
 }
 
 void APlayerCharacter::PossessedBy(AController* NewController)

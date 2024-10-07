@@ -25,6 +25,8 @@ protected:
 
 	FTimerHandle FLightComboWindowTimer;
 	FTimerHandle FHeavyComboWindowTimer;
+
+	FTimerHandle TEST;
 	
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 	
