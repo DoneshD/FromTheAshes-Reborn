@@ -73,5 +73,7 @@ protected:
 	virtual void RegisterWindowGameplayTagEvent(FGameplayTag& ComboWindow, FTimerHandle& FComboWindowTimer) override;
 
 	virtual void RemoveWindowGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& ComboWindowTimer) override;
-	
+
+	virtual void ClearAllComboWindows() override;
+
 };

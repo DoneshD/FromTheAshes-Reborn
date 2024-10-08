@@ -122,3 +122,8 @@ void APlayerCharacter::RemoveWindowGameplayTagEvent(FGameplayTag& ComboWindowTag
 	PlayerComboManagerComponent->RemoveGameplayTagEvent(ComboWindowTag, ComboWindowTimer);
 }
 
+void APlayerCharacter::ClearAllComboWindows()
+{
+	PlayerComboManagerComponent->ClearAllComboWindows();
+}
+

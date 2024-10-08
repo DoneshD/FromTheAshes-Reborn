@@ -25,5 +25,6 @@ public:
 	virtual void RegisterWindowGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& FComboWindowTimer) = 0;
 
 	virtual void RemoveWindowGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& ComboWindowTimer) = 0;
-	
+
+	virtual void ClearAllComboWindows() = 0;
 };
