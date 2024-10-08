@@ -23,6 +23,11 @@ protected:
 
 	AFTAPlayerController* PC;
 
+	//TEST
+	bool bIsTimerValid;
+
+	TMap<FGameplayTag, FDelegateHandle> TagEventHandles;
+
 public:
 	
 	UPlayerComboManagerComponent();
@@ -43,9 +48,9 @@ public:
 
 	void ComboWindowOpen(FGameplayTag InputToCheck);
 
-	void RegisterGameplayTagEvent(FGameplayTag ComboWindowTag, FTimerHandle& FComboWindowTimer);
+	void RegisterGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& FComboWindowTimer);
 
-	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
+	void RemoveGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& ComboWindowTimer);
 
 	void ProceedNextAbility(int GameplayAbilityInputID);
 };

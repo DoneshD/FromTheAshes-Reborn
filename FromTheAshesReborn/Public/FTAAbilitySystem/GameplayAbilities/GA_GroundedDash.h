@@ -17,7 +17,6 @@ protected:
 
 	UGA_GroundedDash();
 
-	FGameplayTag DashInputTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"));
 	FGameplayTag DashWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Dash"));
 
 	FTimerHandle FDashComboWindowTimer;
@@ -36,10 +35,6 @@ protected:
 public:
 
 	void ResetDash();
-	
-	virtual void DashWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	
-	void DashWindowTagOpen();
 	
 	void PerformDash();
 	

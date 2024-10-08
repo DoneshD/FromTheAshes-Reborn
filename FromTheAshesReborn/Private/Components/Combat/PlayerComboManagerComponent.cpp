@@ -75,12 +75,16 @@ void UPlayerComboManagerComponent::SetCurrentComboIndex(int Index)
 void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount,
 	FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ComboWindowTagChanged"));
 	if (ASComponent->HasMatchingGameplayTag(ComboWindowTag))
 	{
-		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, ComboWindowTag]()
+		if (!GetWorld()->GetTimerManager().IsTimerActive(ComboWindowTimer))
 		{
-			ComboWindowOpen(ComboWindowTag);  
-		}, 0.01f, true);  
+			GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, ComboWindowTag]()
+			{
+				ComboWindowOpen(ComboWindowTag);  
+			}, 0.01f, true);
+		}
 	}
 	else
 	{
@@ -90,6 +94,8 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
+	// UE_LOG(LogTemp, Warning, TEXT("INSIDE Valid: %s"), bIsTimerValid ? TEXT("True") : TEXT("False"));
+
 	if(PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))))
 	{
 		ProceedNextAbility(7);
@@ -100,7 +106,8 @@ void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 	}
 	else if(PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"))))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Call Dash attack"));
+		UE_LOG(LogTemp, Warning, TEXT("CALLING DASH"));
+		ProceedNextAbility(6);
 	}
 	else
 	{
@@ -108,27 +115,9 @@ void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 	}
 }
 
-void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag ComboWindowTag,
-	FTimerHandle& FComboWindowTimer)
-{
-	ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddLambda(
-	[this, ComboWindowTag, &FComboWindowTimer](const FGameplayTag CallbackTag, int32 NewCount)
-	{
-		ComboWindowTagChanged(CallbackTag, NewCount, ComboWindowTag, FComboWindowTimer);
-	});
-	
-}
-
-void UPlayerComboManagerComponent::RemoveGameplayTagEvent(FGameplayTag ComboWindowTag)
-{
-
-	ASComponent->RegisterGameplayTagEvent(ComboWindowTag,
-			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-}
-
 void UPlayerComboManagerComponent::ProceedNextAbility(int GameplayAbilityInputID)
 {
-	PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
+	// PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 	ASComponent->CancelAllAbilities();
 
 	for (FGameplayAbilitySpec& Spec : ASComponent->GetActivatableAbilities())
@@ -142,3 +131,23 @@ void UPlayerComboManagerComponent::ProceedNextAbility(int GameplayAbilityInputID
 		}
 	}
 }
+
+void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag& ComboWindowTag,
+	FTimerHandle& FComboWindowTimer)
+{
+	ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddLambda(
+	[this, ComboWindowTag, &FComboWindowTimer](const FGameplayTag CallbackTag, int32 NewCount)
+	{
+		ComboWindowTagChanged(CallbackTag, NewCount, ComboWindowTag, FComboWindowTimer);
+	});
+	
+}
+
+void UPlayerComboManagerComponent::RemoveGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& ComboWindowTimer)
+{
+	GetWorld()->GetTimerManager().ClearTimer(ComboWindowTimer);
+	// UE_LOG(LogTemp, Error, TEXT("REMOVE"));
+	ASComponent->RegisterGameplayTagEvent(ComboWindowTag,
+			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
+}
+

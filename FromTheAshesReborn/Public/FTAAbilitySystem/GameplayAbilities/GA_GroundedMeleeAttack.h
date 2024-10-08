@@ -17,17 +17,13 @@ class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbilit
 protected:
 
 	UGA_GroundedMeleeAttack();
-
-	FGameplayTag LightInput = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"));
-	FGameplayTag HeavyInput = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"));
+	
 	FGameplayTag LightComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
 	FGameplayTag HeavyComboWindow = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
 
 	FTimerHandle FLightComboWindowTimer;
 	FTimerHandle FHeavyComboWindowTimer;
 
-	FTimerHandle TEST;
-	
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 	
 	UPROPERTY(BlueprintReadWrite)

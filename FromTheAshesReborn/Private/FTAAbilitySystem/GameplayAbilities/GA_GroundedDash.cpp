@@ -4,6 +4,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "DataAsset/DashDataAsset.h"
+#include "Interfaces/PlayerComboManagerInterface.h"
 #include "Player/FTAPlayerController.h"
 
 UGA_GroundedDash::UGA_GroundedDash()
@@ -15,45 +16,12 @@ void UGA_GroundedDash::ResetDash()
 {
 	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(DashWindowTag,
 			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-
-	GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(DashInputTag);
-
+	
 	GetWorld()->GetTimerManager().ClearTimer(FDashComboWindowTimer);
 	
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
-void UGA_GroundedDash::DashWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
-{
-	
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashWindowTag))
-	{
-		GetWorld()->GetTimerManager().SetTimer(FDashComboWindowTimer, this, &UGA_GroundedDash::DashWindowTagOpen, 0.01f, true);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().ClearTimer(FDashComboWindowTimer);
-	}
-}
-
-void UGA_GroundedDash::DashWindowTagOpen()
-{
-	if(PC->LastInputSavedTag.MatchesTag(DashInputTag))
-	{
-		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(DashInputTag);
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
-		for (FGameplayAbilitySpec& Spec : GetAbilitySystemComponentFromActorInfo()->GetActivatableAbilities())
-		{
-			if (Spec.Ability)
-			{
-				if(Spec.InputID == 6)
-				{
-					GetAbilitySystemComponentFromActorInfo()->TryActivateAbility(Spec.Handle);
-				}
-			}
-		}
-	}
-}
 
 void UGA_GroundedDash::PerformDash()
 {
@@ -66,10 +34,10 @@ void UGA_GroundedDash::PerformDash()
 	DashMontageToPlay = DashDataAssets[0]->MontageToPlay;
 	DashIndentiferTag = DashDataAssets[0]->DashIndentiferTag;
 
-	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashInputTag))
+	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"))))
 	{
-		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(DashInputTag);
-		UE_LOG(LogTemp, Warning, TEXT("Inside"));
+		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash")));
+		UE_LOG(LogTemp, Warning, TEXT("PerformDash Inside"));
 		DashMontageToPlay = DashDataAssets[1]->MontageToPlay;
 		DashIndentiferTag = DashDataAssets[1]->DashIndentiferTag;
 	}
@@ -126,8 +94,11 @@ void UGA_GroundedDash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		return;
 	}
 
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(DashWindowTag,
-		EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedDash::DashWindowTagChanged);
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
+	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
+	
+	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(DashWindowTag,
+	// 	EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedDash::DashWindowTagChanged);
 
 	PerformDash();
 }
@@ -145,6 +116,10 @@ void UGA_GroundedDash::CancelAbility(const FGameplayAbilitySpecHandle Handle, co
 void UGA_GroundedDash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
+	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
+
 }
 
 void UGA_GroundedDash::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
