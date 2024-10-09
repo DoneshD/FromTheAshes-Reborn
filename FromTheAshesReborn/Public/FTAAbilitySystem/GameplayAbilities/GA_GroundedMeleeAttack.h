@@ -24,9 +24,6 @@ protected:
 	FTimerHandle FLightComboWindowTimer;
 	FTimerHandle FHeavyComboWindowTimer;
 
-	FGameplayTag TESTWINDOW;
-	FTimerHandle TESTTIMERHANDLE;
-
 	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 	
 	UPROPERTY(BlueprintReadWrite)

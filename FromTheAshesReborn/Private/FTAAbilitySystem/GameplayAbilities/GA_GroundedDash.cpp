@@ -1,6 +1,4 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedDash.h"
-
-#include "SNegativeActionButton.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "DataAsset/DashDataAsset.h"
@@ -14,10 +12,11 @@ UGA_GroundedDash::UGA_GroundedDash()
 
 void UGA_GroundedDash::ResetDash()
 {
-	GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(DashWindowTag,
-			EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-	
-	GetWorld()->GetTimerManager().ClearTimer(FDashComboWindowTimer);
+
+	UE_LOG(LogTemp, Warning, TEXT("RESET DASH"));
+
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
+	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
 	
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
@@ -31,8 +30,8 @@ void UGA_GroundedDash::PerformDash()
 		return;
 	}
 	FGameplayTag DashIndentiferTag;
-	DashMontageToPlay = DashDataAssets[0]->MontageToPlay;
 	DashIndentiferTag = DashDataAssets[0]->DashIndentiferTag;
+	DashMontageToPlay = DashDataAssets[0]->MontageToPlay;
 
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"))))
 	{
@@ -97,9 +96,6 @@ void UGA_GroundedDash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
 	
-	// GetAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(DashWindowTag,
-	// 	EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UGA_GroundedDash::DashWindowTagChanged);
-
 	PerformDash();
 }
 
@@ -116,9 +112,6 @@ void UGA_GroundedDash::CancelAbility(const FGameplayAbilitySpecHandle Handle, co
 void UGA_GroundedDash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
 
 }
 

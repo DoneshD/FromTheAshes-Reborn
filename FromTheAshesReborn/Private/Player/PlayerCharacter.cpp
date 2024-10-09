@@ -112,18 +112,14 @@ void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 	PlayerComboManagerComponent->SetCurrentComboIndex(ComboIndex);
 }
 
-void APlayerCharacter::RegisterWindowGameplayTagEvent(FGameplayTag& ComboWindow, FTimerHandle& FComboWindowTimer)
+void APlayerCharacter::RegisterWindowGameplayTagEvent(FGameplayTag ComboWindow, FTimerHandle& FComboWindowTimer)
 {
 	PlayerComboManagerComponent->RegisterGameplayTagEvent(ComboWindow, FComboWindowTimer);
 }
 
-void APlayerCharacter::RemoveWindowGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& ComboWindowTimer)
+void APlayerCharacter::RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer)
 {
 	PlayerComboManagerComponent->RemoveGameplayTagEvent(ComboWindowTag, ComboWindowTimer);
 }
 
-void APlayerCharacter::ClearAllComboWindows()
-{
-	PlayerComboManagerComponent->ClearAllComboWindows();
-}
 

@@ -29,12 +29,15 @@ void UGA_GroundedMeleeAttack::PrintCurrentComboContainer()
 
 void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 {
+	UE_LOG(LogTemp, Warning, TEXT("RESET ResetGroundedMeleeAttack"));
+
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
 	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
 	PlayerComboManagerInterface->SetCurrentComboIndex(0);
 
-	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
+	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
+	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 
 	//UE_LOG(LogTemp, Warning, TEXT("Reset Attack"));
 
@@ -144,8 +147,6 @@ void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
-	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
-	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
 	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 }
@@ -166,10 +167,6 @@ void UGA_GroundedMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-	
-	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
-	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 
 }
 
