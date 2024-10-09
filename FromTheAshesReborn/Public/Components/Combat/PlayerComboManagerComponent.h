@@ -43,12 +43,11 @@ public:
 	
 	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount, FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer);
 
-	void ComboWindowOpen(FGameplayTag InputToCheck);
+	void ComboWindowOpen(FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer);
 
 	void RegisterGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& FComboWindowTimer);
 
 	void RemoveGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& FComboWindowTimer);
-	void ClearAllComboWindows();
-
+	
 	void ProceedNextAbility(int GameplayAbilityInputID);
 };

@@ -34,8 +34,7 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
 	PlayerComboManagerInterface->SetCurrentComboIndex(0);
 
-	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
-	PlayerComboManagerInterface->ClearAllComboWindows();
+	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
 
 	//UE_LOG(LogTemp, Warning, TEXT("Reset Attack"));
 
@@ -149,8 +148,8 @@ void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
 	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
- 
 }
+
 bool UGA_GroundedMeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
@@ -169,14 +168,14 @@ void UGA_GroundedMeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle
 
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 	
-	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
-	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FHeavyComboWindowTimer);
+	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
+	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 
 }
 
 void UGA_GroundedMeleeAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("WHAT THE"))
+	
 }
 
 void UGA_GroundedMeleeAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
