@@ -14,27 +14,20 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 
 	for (const EAllowedInputs& AllowedInputElement : AllowedInputs)
 	{
-		// FGameplayTag ComboWindowTag;
-		// FTimerHandle FComboWindowTimerHandle;
 		
 		switch (AllowedInputElement)
 		{
 		case EAllowedInputs::LightAttack:
-			UE_LOG(LogTemp, Warning, TEXT("INPUT LIGHT"));
-			// ComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
-			OnRegisterWindowTagEventDelegate.Broadcast(LightComboWindowTag);
+			
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->LightComboWindowTag);
 			break;
 			
 		case EAllowedInputs::HeavyAttack:
-			UE_LOG(LogTemp, Warning, TEXT("INPUT HEAVY"));
-			// ComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
-			OnRegisterWindowTagEventDelegate.Broadcast(HeavyComboWindowTag);
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->HeavyComboWindowTag);
 			break;
 
 		case EAllowedInputs::Dash:
-			UE_LOG(LogTemp, Warning, TEXT("INPUT DASH"));
-			// ComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
-			OnRegisterWindowTagEventDelegate.Broadcast(DashComboWindowTag);
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->DashComboWindowTag);
 			
 		default:
 			break;
@@ -125,17 +118,15 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	//Debug purposes
 	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
 
-	UPlayerComboManagerComponent* PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
+	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
 	if (PlayerComboManager)
 	{
 		OnRegisterWindowTagEventDelegate.AddDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
-		// OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("PlayerComboManager NOT FOUND"));
 	}
-
 }
 
 void AFTAPlayerController::OnUnPossess()

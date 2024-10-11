@@ -9,6 +9,7 @@
 #include "FTAPlayerController.generated.h"
 
 
+class UPlayerComboManagerComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FGameplayTag, ComboWindowTag);
 
 class UAbilitySystemComponent;
@@ -45,13 +46,7 @@ protected:
 
 	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
 
-	FGameplayTag LightComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
-	FGameplayTag HeavyComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
-	FGameplayTag DashComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Dash"));
-	
-	FTimerHandle LightTimerHandle;
-	FTimerHandle HeavyTimerHandle;
-	FTimerHandle DashTimerHandle;
+	UPlayerComboManagerComponent* PlayerComboManager;
 
 	//--------------------------------------------------------------------------//
 

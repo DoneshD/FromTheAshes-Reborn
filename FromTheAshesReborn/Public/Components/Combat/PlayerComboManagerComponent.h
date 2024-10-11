@@ -28,8 +28,12 @@ protected:
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
 
 
-
 public:
+
+	FGameplayTag LightComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
+	FGameplayTag HeavyComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
+	FGameplayTag DashComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Dash"));
+	
 	
 	UPlayerComboManagerComponent();
 	
@@ -52,7 +56,7 @@ public:
 	UFUNCTION()
 	void RegisterGameplayTagEvent(FGameplayTag ComboWindowTag);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
 	
 	void ProceedNextAbility(int GameplayAbilityInputID);
