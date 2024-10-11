@@ -32,6 +32,8 @@ void UPlayerComboManagerComponent::BeginPlay()
 	}
 	
 	ASComponent = PC->ASC;
+	
+	
 }
 
 void UPlayerComboManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
@@ -70,77 +72,101 @@ void UPlayerComboManagerComponent::SetCurrentComboIndex(int Index)
 	CurrentComboIndex = Index;
 }
 
-void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount,
-                                                         FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer)
+void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount, FGameplayTag ComboWindowTag)
 {
-	if (ASComponent->HasMatchingGameplayTag(ComboWindowTag))
+	if (NewCount > 0 && ASComponent->HasMatchingGameplayTag(ComboWindowTag))
 	{
-		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, ComboWindowTag, &ComboWindowTimer]()
+		UE_LOG(LogTemp, Warning, TEXT("Starting timer for ComboWindowTag: %s"), *ComboWindowTag.ToString());
+
+		// Start timer when the combo window tag is added
+		FTimerHandle& ComboWindowTimer = TagTimerHandles.FindOrAdd(ComboWindowTag);
+		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, ComboWindowTag]()
 		{
-			ComboWindowOpen(ComboWindowTag, ComboWindowTimer);
+			ComboWindowOpen(ComboWindowTag);
 		}, 0.01f, true);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CLEAR TIMER"));
-		GetWorld()->GetTimerManager().ClearTimer(ComboWindowTimer);
+		UE_LOG(LogTemp, Warning, TEXT("Removing tag and clearing timer for: %s"), *ComboWindowTag.ToString());
+
+		// When the tag is removed or count is zero, clear the timer and event
+		RemoveGameplayTagEvent(ComboWindowTag);
 	}
 }
 
-void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer)
+void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
-	UE_LOG(LogTemp, Error, TEXT("IM OPEN with: %s"), *ComboWindowTag.GetTagName().ToString());
+    // UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpen called for: %s"), *ComboWindowTag.ToString());
 
-	if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))))
-	{
-		ProceedNextAbility(7);
-	}
-	else if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"))))
-	{
-		ProceedNextAbility(8);
-	}
-	else if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"))))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CALLING DASH"));
-		ProceedNextAbility(6);
-	}
+    if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))))
+    {
+        RemoveGameplayTagEvent(ComboWindowTag);
+        ProceedNextAbility(7);
+    }
+    else if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"))))
+    {
+        RemoveGameplayTagEvent(ComboWindowTag);
+        ProceedNextAbility(8);
+    }
+    else if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"))))
+    {
+        UE_LOG(LogTemp, Warning, TEXT("CALLING DASH"));
+        ProceedNextAbility(6);
+    }
 }
 
 void UPlayerComboManagerComponent::ProceedNextAbility(int GameplayAbilityInputID)
 {
-	PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
-	ASComponent->CancelAllAbilities();
+    PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
+    ASComponent->CancelAllAbilities();
 
-	for (FGameplayAbilitySpec& Spec : ASComponent->GetActivatableAbilities())
-	{
-		if (Spec.Ability && Spec.InputID == GameplayAbilityInputID)
-		{
-			ASComponent->TryActivateAbility(Spec.Handle);
-		}
-	}
+    for (const FGameplayAbilitySpec& Spec : ASComponent->GetActivatableAbilities())
+    {
+        if (Spec.Ability && Spec.InputID == GameplayAbilityInputID)
+        {
+            ASComponent->TryActivateAbility(Spec.Handle);
+        }
+    }
 }
 
-void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& FComboWindowTimer)
+void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag ComboWindowTag)
 {
-	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddLambda(
-		[this, ComboWindowTag, &FComboWindowTimer](const FGameplayTag CallbackTag, int32 NewCount)
+	if (!ASComponent)
 	{
-		ComboWindowTagChanged(CallbackTag, NewCount, ComboWindowTag, FComboWindowTimer);
+		UE_LOG(LogTemp, Error, TEXT("ASComponent is null in RegisterGameplayTagEvent"));
+		return;
+	}
+
+	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddLambda(
+		[this, ComboWindowTag](const FGameplayTag CallbackTag, int32 NewCount)
+	{
+		ComboWindowTagChanged(CallbackTag, NewCount, ComboWindowTag);
 	});
 	
-	TagEventHandles.Add(ComboWindowTag, Handle);
+	TagDelegateHandles.Add(ComboWindowTag, Handle);
 }
 
-void UPlayerComboManagerComponent::RemoveGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& ComboWindowTimer)
+
+void UPlayerComboManagerComponent::RemoveGameplayTagEvent(FGameplayTag ComboWindowTag)
 {
-	if (FDelegateHandle* Handle = TagEventHandles.Find(ComboWindowTag))
-	{
-		ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).RemoveAll(this);
-		ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).Remove(*Handle);
-		ASComponent->UnregisterGameplayTagEvent(*Handle, ComboWindowTag);
+    // Clear the timer
+    if (TagTimerHandles.Contains(ComboWindowTag))
+    {
+        FTimerHandle& ComboWindowTimer = TagTimerHandles[ComboWindowTag];
+        if (GetWorld()->GetTimerManager().IsTimerActive(ComboWindowTimer))
+        {
+            GetWorld()->GetTimerManager().ClearTimer(ComboWindowTimer);
+            UE_LOG(LogTemp, Warning, TEXT("Timer cleared for ComboWindowTag: %s"), *ComboWindowTag.ToString());
+        }
+        TagTimerHandles.Remove(ComboWindowTag);
+    }
 
-		UE_LOG(LogTemp, Warning, TEXT("FGDSGDSGSDGSDGG"))
-		TagEventHandles.Remove(ComboWindowTag);
-	}
+    // Unregister the delegate
+    if (TagDelegateHandles.Contains(ComboWindowTag))
+    {
+        FDelegateHandle Handle = TagDelegateHandles[ComboWindowTag];
+        ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).Remove(Handle);
+        UE_LOG(LogTemp, Warning, TEXT("GameplayTag event unregistered for: %s"), *ComboWindowTag.ToString());
+        TagDelegateHandles.Remove(ComboWindowTag);
+    }
 }
-

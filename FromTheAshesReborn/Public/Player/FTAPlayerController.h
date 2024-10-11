@@ -8,6 +8,9 @@
 #include "GameFramework/PlayerController.h"
 #include "FTAPlayerController.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FGameplayTag, ComboWindowTag);
+
 class UAbilitySystemComponent;
 class UEnhancedInputComponent;
 class UInputMappingContext;
@@ -39,6 +42,16 @@ protected:
 	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
 
 	FTimerHandle FInputQueueWindowTimer;
+
+	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
+
+	FGameplayTag LightComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
+	FGameplayTag HeavyComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
+	FGameplayTag DashComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Dash"));
+	
+	FTimerHandle LightTimerHandle;
+	FTimerHandle HeavyTimerHandle;
+	FTimerHandle DashTimerHandle;
 
 	//--------------------------------------------------------------------------//
 

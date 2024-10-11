@@ -35,9 +35,9 @@ void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 
 	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
 	PlayerComboManagerInterface->SetCurrentComboIndex(0);
-
-	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
-	PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
+	
+	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
+	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 
 	//UE_LOG(LogTemp, Warning, TEXT("Reset Attack"));
 
@@ -147,8 +147,8 @@ void UGA_GroundedMeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle H
 	}
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
-	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
-	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
+	// PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(LightComboWindow, FLightComboWindowTimer);
+	// PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(HeavyComboWindow, FHeavyComboWindowTimer);
 }
 
 bool UGA_GroundedMeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const

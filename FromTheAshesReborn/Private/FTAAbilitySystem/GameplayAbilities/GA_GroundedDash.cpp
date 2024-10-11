@@ -94,7 +94,7 @@ void UGA_GroundedDash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 	}
 
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-	PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
+	// PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
 	
 	PerformDash();
 }

@@ -4,7 +4,6 @@
 #include "FTAGameplayAbility.h"
 #include "GA_GroundedMeleeAttack.generated.h"
 
-
 class AFTAPlayerController;
 class UMeleeAttackDataAsset;
 class UFTAAT_PlayMontageAndWaitForEvent;

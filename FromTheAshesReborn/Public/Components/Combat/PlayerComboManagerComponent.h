@@ -5,6 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "PlayerComboManagerComponent.generated.h"
 
+
 class AFTAPlayerController;
 class UAbilitySystemComponent;
 
@@ -23,7 +24,10 @@ protected:
 
 	AFTAPlayerController* PC;
 
-	TMap<FGameplayTag, FDelegateHandle> TagEventHandles;
+	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
+	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
+
+
 
 public:
 	
@@ -41,13 +45,15 @@ public:
 
 	void SetCurrentComboIndex(int Index);
 	
-	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount, FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer);
+	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount, FGameplayTag ComboWindowTag);
 
-	void ComboWindowOpen(FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer);
+	void ComboWindowOpen(FGameplayTag ComboWindowTag);
 
-	void RegisterGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& FComboWindowTimer);
+	UFUNCTION()
+	void RegisterGameplayTagEvent(FGameplayTag ComboWindowTag);
 
-	void RemoveGameplayTagEvent(FGameplayTag& ComboWindowTag, FTimerHandle& FComboWindowTimer);
+	UFUNCTION()
+	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
 	
 	void ProceedNextAbility(int GameplayAbilityInputID);
 };

@@ -70,8 +70,8 @@ protected:
 
 	virtual void SetCurrentComboIndex(int ComboIndex) override;
 
-	virtual void RegisterWindowGameplayTagEvent(FGameplayTag ComboWindow, FTimerHandle& FComboWindowTimer) override;
+	virtual void RegisterWindowGameplayTagEvent(FGameplayTag ComboWindow) override;
 
-	virtual void RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag, FTimerHandle& ComboWindowTimer) override;
+	virtual void RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag) override;
 
 };
