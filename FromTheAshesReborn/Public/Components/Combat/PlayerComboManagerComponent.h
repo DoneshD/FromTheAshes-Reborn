@@ -27,7 +27,6 @@ protected:
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
 
-
 public:
 
 	FGameplayTag LightComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
@@ -49,14 +48,13 @@ public:
 
 	void SetCurrentComboIndex(int Index);
 	
-	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount, FGameplayTag ComboWindowTag);
+	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 
 	void ComboWindowOpen(FGameplayTag ComboWindowTag);
 
 	UFUNCTION()
 	void RegisterGameplayTagEvent(FGameplayTag ComboWindowTag);
-
-	UFUNCTION(BlueprintCallable)
+	
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
 	
 	void ProceedNextAbility(int GameplayAbilityInputID);

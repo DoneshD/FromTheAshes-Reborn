@@ -14,16 +14,16 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 
 	for (const EAllowedInputs& AllowedInputElement : AllowedInputs)
 	{
-		
 		switch (AllowedInputElement)
 		{
 		case EAllowedInputs::LightAttack:
-			
 			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->LightComboWindowTag);
+
 			break;
 			
 		case EAllowedInputs::HeavyAttack:
 			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->HeavyComboWindowTag);
+
 			break;
 
 		case EAllowedInputs::Dash:
@@ -121,7 +121,7 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
 	if (PlayerComboManager)
 	{
-		OnRegisterWindowTagEventDelegate.AddDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
+		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
 	}
 	else
 	{
