@@ -22,8 +22,4 @@ public:
 
 	virtual void SetCurrentComboIndex(int ComboIndex) = 0;
 
-	virtual void RegisterWindowGameplayTagEvent(FGameplayTag ComboWindowTag) = 0;
-
-	virtual void RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag) = 0;
-
 };

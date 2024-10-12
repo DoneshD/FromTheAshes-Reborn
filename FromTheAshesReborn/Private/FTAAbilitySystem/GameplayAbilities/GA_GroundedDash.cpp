@@ -16,7 +16,6 @@ void UGA_GroundedDash::ResetDash()
 	UE_LOG(LogTemp, Warning, TEXT("RESET DASH"));
 
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-	// PlayerComboManagerInterface->RemoveWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
 	
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
@@ -24,6 +23,8 @@ void UGA_GroundedDash::ResetDash()
 
 void UGA_GroundedDash::PerformDash()
 {
+	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
+
 	if(DashDataAssets.IsEmpty())
 	{
 		UE_LOG(LogTemp, Error, TEXT("DashDataAssets is empty"));
@@ -92,9 +93,6 @@ void UGA_GroundedDash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 		UE_LOG(LogTemp, Warning, TEXT("!GetAvatarActorFromActorInfo()->GetInstigatorController()"));
 		return;
 	}
-
-	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-	// PlayerComboManagerInterface->RegisterWindowGameplayTagEvent(DashWindowTag, FDashComboWindowTimer);
 	
 	PerformDash();
 }

@@ -112,14 +112,3 @@ void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 	PlayerComboManagerComponent->SetCurrentComboIndex(ComboIndex);
 }
 
-void APlayerCharacter::RegisterWindowGameplayTagEvent(FGameplayTag ComboWindow)
-{
-	PlayerComboManagerComponent->RegisterGameplayTagEvent(ComboWindow);
-}
-
-void APlayerCharacter::RemoveWindowGameplayTagEvent(FGameplayTag ComboWindowTag)
-{
-	PlayerComboManagerComponent->RemoveGameplayTagEvent(ComboWindowTag);
-}
-
-

@@ -74,15 +74,11 @@ void UPlayerComboManagerComponent::SetCurrentComboIndex(int Index)
 
 void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("ComboWindowTag: %s"), *ComboWindowTag.ToString());
-	UE_LOG(LogTemp, Warning, TEXT("CallbackTag: %s"), *CallbackTag.ToString());
-	
 	
 	if (NewCount > 0 && ASComponent->HasMatchingGameplayTag(CallbackTag))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Starting timer for ComboWindowTag: %s"), *CallbackTag.ToString());
 
-		// Start timer when the combo window tag is added
 		FTimerHandle& ComboWindowTimer = TagTimerHandles.FindOrAdd(CallbackTag);
 		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, CallbackTag]()
 		{
@@ -93,16 +89,12 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 	{
 		// UE_LOG(LogTemp, Warning, TEXT("Removing tag and clearing timer for: %s"), *ComboWindowTag.ToString());
 
-		// When the tag is removed or count is zero, clear the timer and event
 		RemoveGameplayTagEvent(CallbackTag);
 	}
 }
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
- //    UE_LOG(LogTemp, Warning, TEXT("ComboWindowOpen called for: %s"), *ComboWindowTag.ToString());
-	// UE_LOG(LogTemp, Warning, TEXT("PC->LastInputSavedTag called for: %s"), *PC->LastInputSavedTag.ToString());
-
     if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))) && ComboWindowTag.MatchesTag(LightComboWindowTag))
     {
         ProceedNextAbility(7);
