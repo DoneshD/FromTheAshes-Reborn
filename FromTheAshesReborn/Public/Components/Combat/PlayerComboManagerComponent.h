@@ -5,7 +5,11 @@
 #include "Components/ActorComponent.h"
 #include "PlayerComboManagerComponent.generated.h"
 
-
+class UGameplayAbility;
+class UFTAGameplayAbility;
+class UGA_GroundedDash;
+class UGA_GroundedLightMeleeAttack;
+class UGA_GroundedHeavyMeleeAttack;
 class AFTAPlayerController;
 class UAbilitySystemComponent;
 
@@ -27,7 +31,21 @@ protected:
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
 
+	// TSubclassOf<UFTAGameplayAbility> NextGameplayAbilityClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGA_GroundedLightMeleeAttack> GA_GroundedLightMeleeAttack;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGA_GroundedHeavyMeleeAttack> GA_GroundedHeavyMeleeAttack;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGA_GroundedDash> GA_GroundedDash;
+
 public:
+
+	FGameplayTag LightInputSavedTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"));
+	FGameplayTag HeavyInputSavedTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"));
+	FGameplayTag DashInputSavedTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"));
 
 	FGameplayTag LightComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
 	FGameplayTag HeavyComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
@@ -58,4 +76,6 @@ public:
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
 	
 	void ProceedNextAbility(int GameplayAbilityInputID);
+
+	void ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityToActivateClass);
 };

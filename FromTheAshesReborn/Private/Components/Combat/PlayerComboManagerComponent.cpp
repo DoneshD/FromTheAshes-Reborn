@@ -1,5 +1,9 @@
 ﻿#include "Components/Combat/PlayerComboManagerComponent.h"
 #include "AbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedDash.h"
+
 #include "Player/FTAPlayerController.h"
 
 UPlayerComboManagerComponent::UPlayerComboManagerComponent()
@@ -77,8 +81,6 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 	
 	if (NewCount > 0 && ASComponent->HasMatchingGameplayTag(CallbackTag))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Starting timer for ComboWindowTag: %s"), *CallbackTag.ToString());
-
 		FTimerHandle& ComboWindowTimer = TagTimerHandles.FindOrAdd(CallbackTag);
 		GetWorld()->GetTimerManager().SetTimer(ComboWindowTimer, [this, CallbackTag]()
 		{
@@ -87,27 +89,39 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 	}
 	else
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("Removing tag and clearing timer for: %s"), *ComboWindowTag.ToString());
-
 		RemoveGameplayTagEvent(CallbackTag);
 	}
 }
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
-    if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"))) && ComboWindowTag.MatchesTag(LightComboWindowTag))
+	
+    if (PC->LastInputSavedTag.MatchesTag(LightInputSavedTag) && ComboWindowTag.MatchesTag(LightComboWindowTag))
     {
-        ProceedNextAbility(7);
+    	ProceedToNextAbility(GA_GroundedLightMeleeAttack);
     }
-    else if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"))) && ComboWindowTag.MatchesTag(HeavyComboWindowTag))
+    else if (PC->LastInputSavedTag.MatchesTag(HeavyInputSavedTag) && ComboWindowTag.MatchesTag(HeavyComboWindowTag))
     {
-        ProceedNextAbility(8);
+    	ProceedToNextAbility(GA_GroundedHeavyMeleeAttack);
     }
-    else if (PC->LastInputSavedTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"))) && ComboWindowTag.MatchesTag(DashComboWindowTag))
+    else if (PC->LastInputSavedTag.MatchesTag(DashInputSavedTag) && ComboWindowTag.MatchesTag(DashComboWindowTag))
     {
-        ProceedNextAbility(6);
+    	ProceedToNextAbility(GA_GroundedDash);
     }
 }
+
+void UPlayerComboManagerComponent::ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
+	ASComponent->CancelAllAbilities();
+	
+	bool bActivateAbility = ASComponent->TryActivateAbilityByClass(AbilityClass);
+	if(!bActivateAbility)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ProceedToNextAbility: Ability did not activate"));
+	}
+}
+
 
 void UPlayerComboManagerComponent::ProceedNextAbility(int GameplayAbilityInputID)
 {
@@ -132,9 +146,8 @@ void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag ComboWi
 	}
 
 	RemoveGameplayTagEvent(ComboWindowTag);
-
-	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UPlayerComboManagerComponent::ComboWindowTagChanged);
 	
+	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UPlayerComboManagerComponent::ComboWindowTagChanged);
 	TagDelegateHandles.Add(ComboWindowTag, Handle);
 }
 
