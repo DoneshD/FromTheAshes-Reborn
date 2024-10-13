@@ -8,7 +8,6 @@
 
 #include "GameplayEffectTypes.h"
 #include "Abilities/GameplayAbilityTargetTypes.h"
-#include "Abilities/Tasks/AbilityTask_WaitGameplayEffectStackChange.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEffectRemoved.h"
 #include "FTAAbilityTypes.generated.h"
 

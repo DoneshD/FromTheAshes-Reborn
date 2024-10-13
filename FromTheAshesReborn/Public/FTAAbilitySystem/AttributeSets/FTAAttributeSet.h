@@ -34,7 +34,7 @@ public:
 	FGameplayAttributeData BaseDamage;
 	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, BaseDamage);
 	
-public:
+protected:
 	
 	UFTAAttributeSet();
 

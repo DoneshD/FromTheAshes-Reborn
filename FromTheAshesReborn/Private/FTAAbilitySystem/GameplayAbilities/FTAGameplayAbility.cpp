@@ -20,7 +20,7 @@ UFTAGameplayAbility::UFTAGameplayAbility()
 	/* Implement later */
 	// UGSAbilitySystemGlobals hasn't initialized tags yet to set ActivationBlockedTags
 	
-	//ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("Condition.Health.Dead"));
+	// ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("Condition.Health.Dead"));
 	
 }
 
@@ -101,14 +101,14 @@ FFTAGameplayEffectContainerSpec UFTAGameplayAbility::MakeEffectContainerSpecFrom
 
 FFTAGameplayEffectContainerSpec UFTAGameplayAbility::MakeEffectContainerSpec(FGameplayTag ContainerTag, const FGameplayEventData& EventData, int32 OverrideGameplayLevel)
 {
-	/*
-	FFTAGameplayEffectContainerSpec* FoundContainer = EffectContainerMap.Find(ContainerTag);
-
-	if (FoundContainer)
-	{
-		return MakeEffectContainerSpecFromContainer(*FoundContainer, EventData, OverrideGameplayLevel);
-	}
-	*/
+	
+	// FFTAGameplayEffectContainerSpec* FoundContainer = EffectContainerMap.Find(ContainerTag);
+	//
+	// if (FoundContainer)
+	// {
+	// 	return MakeEffectContainerSpecFromContainer(*FoundContainer, EventData, OverrideGameplayLevel);
+	// }
+	//
 	return FFTAGameplayEffectContainerSpec();
 	
 }
@@ -176,7 +176,7 @@ UAnimMontage* UFTAGameplayAbility::GetCurrentMontageForMesh(USkeletalMeshCompone
 	{
 		return AbilityMeshMontage.Montage;
 	}
-
+	
 	return nullptr;
 }
 

@@ -16,17 +16,14 @@ class FROMTHEASHESREBORN_API UGA_GroundedMeleeAttack : public UFTAGameplayAbilit
 protected:
 
 	UGA_GroundedMeleeAttack();
-
-	TObjectPtr<UAnimMontage> AttackMontageToPlay;
 	
 	UPROPERTY(BlueprintReadWrite)
 	UFTAAT_PlayMontageAndWaitForEvent* Task;
 
 	AFTAPlayerController* PC;
-
 	
-public:
-
+	TObjectPtr<UAnimMontage> AttackMontageToPlay;
+	
 	void PrintCurrentComboContainer();
 
 	void ResetGroundedMeleeAttack();
@@ -46,7 +43,6 @@ public:
 
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	
-
 	UFUNCTION()
 	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
@@ -55,4 +51,5 @@ public:
 
 	UFUNCTION()
 	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	
 };

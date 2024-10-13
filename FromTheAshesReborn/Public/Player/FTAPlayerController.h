@@ -26,14 +26,14 @@ protected:
 
 	//-------------------------TESTING INPUT QUEUE------------------------------//
 
-	UPROPERTY(EditAnywhere)
-	EAllowedInputs QueuedInput;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<EAllowedInputs> CurrentAllowedInputs;
 
 	UPROPERTY(EditAnywhere)
-	bool InputQueueEnabled = true;
+	bool IsInInputQueueWindow = false;
+
+	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManager;
 	
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs);
@@ -47,7 +47,6 @@ protected:
 
 	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
 
-	UPlayerComboManagerComponent* PlayerComboManager;
 
 	//--------------------------------------------------------------------------//
 
@@ -75,21 +74,14 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Dash;
-
 	
 	//-----------------------------For debugging--------------------------//
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
 
 	bool IsTimeSlowed = false;
+	//------------------------------------------------------------------/
 	
-public:
-
-	//TODO: MOVE LATER
-	UAbilitySystemComponent* ASC;
-	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
-
-
 	AFTAPlayerController();
 
 	virtual  void Tick(float DeltaSeconds) override;
@@ -104,9 +96,6 @@ public:
 	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
-	
-	UPROPERTY(EditAnywhere)
-	bool IsInInputQueueWindow = false;
 
 	void HandleJumpActionPressed(const FInputActionValue& InputActionValue);
 	void HandleJumpActionReleased(const FInputActionValue& InputActionValue);
@@ -121,4 +110,10 @@ public:
 	void HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
+
+public:
+	
+	UAbilitySystemComponent* ASC;
+	
+	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 };

@@ -21,8 +21,53 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilityS
 {
 	GENERATED_BODY()
 
-public:
+protected:
+	FGameplayTag DeadTag;
+	
+	FGameplayTag EffectRemoveOnDeathTag;
+	
+	// Reference to the ASC. It will live on the PlayerState or here if the character doesn't have a PlayerState.
+	UPROPERTY()
+	class UFTAAbilitySystemComponent* AbilitySystemComponent;
+
+	// Reference to the AttributeSetBase. It will live on the PlayerState or here if the character doesn't have a PlayerState.
+	UPROPERTY()
+	class UFTAAttributeSet* AttributeSet;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character")
+	FText CharacterName;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character | Animation")
+	UAnimMontage* DeathMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Audio")
+	class USoundCue* DeathSound;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
+	TArray<TSubclassOf<class UFTAGameplayAbility>> DefaultAbilities;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
+	TSubclassOf<class UGameplayEffect> DefaultAttributes;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Effects")
+	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon Collision")
+	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
+
 	AFTACharacter(const class FObjectInitializer& ObjectInitializer);
+
+	virtual void BeginPlay() override;
+
+	virtual void AddDefaultAbilities();
+
+	virtual void InitializeAttributes();
+
+	virtual void AddStartupEffects();
+	
+	virtual void SetCurrentHealth(float Health);
+
+public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Character")
 	FCharacterDiedDelegate OnCharacterDied;
@@ -67,49 +112,5 @@ public:
 	FName WeaponAttachPoint;
 	
 	FName GetWeaponAttachPoint();
-
-protected:
-	FGameplayTag DeadTag;
 	
-	FGameplayTag EffectRemoveOnDeathTag;
-	
-	// Reference to the ASC. It will live on the PlayerState or here if the character doesn't have a PlayerState.
-	UPROPERTY()
-	class UFTAAbilitySystemComponent* AbilitySystemComponent;
-
-	// Reference to the AttributeSetBase. It will live on the PlayerState or here if the character doesn't have a PlayerState.
-	UPROPERTY()
-	class UFTAAttributeSet* AttributeSet;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character")
-	FText CharacterName;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character | Animation")
-	UAnimMontage* DeathMontage;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Audio")
-	class USoundCue* DeathSound;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
-	TArray<TSubclassOf<class UFTAGameplayAbility>> DefaultAbilities;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Abilities")
-	TSubclassOf<class UGameplayEffect> DefaultAttributes;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Effects")
-	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Weapon Collision")
-	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
-
-	virtual void BeginPlay() override;
-
-	virtual void AddDefaultAbilities();
-
-	virtual void InitializeAttributes();
-
-	virtual void AddStartupEffects();
-
-
-	virtual void SetCurrentHealth(float Health);
 };
