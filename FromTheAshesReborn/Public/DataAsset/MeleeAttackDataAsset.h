@@ -29,6 +29,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAnimMontage> MontageToPlay;
-
 	
 };

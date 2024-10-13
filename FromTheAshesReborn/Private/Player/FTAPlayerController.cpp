@@ -17,17 +17,17 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 		switch (AllowedInputElement)
 		{
 		case EAllowedInputs::LightAttack:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->LightAbilityData);
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->LightAbilityComboData);
 
 			break;
 			
 		case EAllowedInputs::HeavyAttack:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->HeavyAbilityData);
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->HeavyAbilityComboData);
 
 			break;
 
 		case EAllowedInputs::Dash:
-			// OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->DashComboWindowTag);
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->DashAbilityComboData);
 			
 		default:
 			break;
@@ -206,7 +206,7 @@ void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& Inpu
 {
 	if(IsInInputQueueWindow)
 	{
-		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
+		AddInputToQueue(EAllowedInputs::Dash, PlayerComboManager->DashAbilityComboData.InputSavedTag);
 	}
 	else
 	{
@@ -223,7 +223,8 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
-		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+		
+		AddInputToQueue(EAllowedInputs::LightAttack, PlayerComboManager->LightAbilityComboData.InputSavedTag);
 	}
 	else
 	{
@@ -240,7 +241,7 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
-		AddInputToQueue(EAllowedInputs::HeavyAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
+		AddInputToQueue(EAllowedInputs::HeavyAttack, PlayerComboManager->HeavyAbilityComboData.InputSavedTag);
 	}
 	else
 	{

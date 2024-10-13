@@ -12,8 +12,6 @@ class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
 
 protected:
 	
-
-public:
 	AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer);
 	
 	virtual void BeginPlay() override;
