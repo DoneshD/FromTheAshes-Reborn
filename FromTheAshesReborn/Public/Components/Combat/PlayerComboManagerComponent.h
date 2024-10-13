@@ -13,6 +13,21 @@ class UGA_GroundedHeavyMeleeAttack;
 class AFTAPlayerController;
 class UAbilitySystemComponent;
 
+USTRUCT(BlueprintType)
+struct FAbilityComboData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayAbility> AbilityComboClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag InputSavedTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag ComboWindowTag;
+};
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UPlayerComboManagerComponent : public UActorComponent
 {
@@ -20,18 +35,16 @@ class FROMTHEASHESREBORN_API UPlayerComboManagerComponent : public UActorCompone
 
 protected:
 	
-	FGameplayTagContainer CurrentComboTagContainer;
-
-	int CurrentComboIndex = 0;
-
 	UAbilitySystemComponent* ASComponent;
-
+	
+	FGameplayTagContainer CurrentComboTagContainer;
+	int CurrentComboIndex = 0;
+	
 	AFTAPlayerController* PC;
 
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
 
-	// TSubclassOf<UFTAGameplayAbility> NextGameplayAbilityClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGA_GroundedLightMeleeAttack> GA_GroundedLightMeleeAttack;
 
@@ -43,14 +56,10 @@ protected:
 
 public:
 
-	FGameplayTag LightInputSavedTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light"));
-	FGameplayTag HeavyInputSavedTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy"));
-	FGameplayTag DashInputSavedTag = FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash"));
+	FAbilityComboData LightAbilityData;
+	FAbilityComboData HeavyAbilityData;
 
-	FGameplayTag LightComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light"));
-	FGameplayTag HeavyComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy"));
-	FGameplayTag DashComboWindowTag = FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Dash"));
-	
+	TArray<FAbilityComboData> AbilityComboDataArray;
 	
 	UPlayerComboManagerComponent();
 	
@@ -71,11 +80,9 @@ public:
 	void ComboWindowOpen(FGameplayTag ComboWindowTag);
 
 	UFUNCTION()
-	void RegisterGameplayTagEvent(FGameplayTag ComboWindowTag);
+	void RegisterGameplayTagEvent(FAbilityComboData AbilityComboData);
 	
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
-	
-	void ProceedNextAbility(int GameplayAbilityInputID);
 
 	void ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityToActivateClass);
 };

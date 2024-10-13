@@ -17,17 +17,17 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 		switch (AllowedInputElement)
 		{
 		case EAllowedInputs::LightAttack:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->LightComboWindowTag);
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->LightAbilityData);
 
 			break;
 			
 		case EAllowedInputs::HeavyAttack:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->HeavyComboWindowTag);
+			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->HeavyAbilityData);
 
 			break;
 
 		case EAllowedInputs::Dash:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->DashComboWindowTag);
+			// OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->DashComboWindowTag);
 			
 		default:
 			break;

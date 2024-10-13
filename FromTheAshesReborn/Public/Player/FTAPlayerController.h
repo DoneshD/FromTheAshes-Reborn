@@ -4,14 +4,15 @@
 #include "GameplayTagContainer.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
+#include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "GameFramework/PlayerController.h"
 #include "FTAPlayerController.generated.h"
 
 
-class UPlayerComboManagerComponent;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FGameplayTag, ComboWindowTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FAbilityComboData, AbilityComboData);
 
+class UPlayerComboManagerComponent;
 class UAbilitySystemComponent;
 class UEnhancedInputComponent;
 class UInputMappingContext;
