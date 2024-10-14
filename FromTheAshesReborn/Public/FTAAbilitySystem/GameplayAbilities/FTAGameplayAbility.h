@@ -6,7 +6,23 @@
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UPlayerComboManagerComponent;
 class USkeletalMeshComponent;
+
+USTRUCT(BlueprintType)
+struct FAbilityComboDataStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayAbility> AbilityComboClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag InputSavedTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag ComboWindowTag;
+};
 
 USTRUCT()
 struct FROMTHEASHESREBORN_API FAbilityMeshMontage
@@ -36,6 +52,10 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
+
+	//TODO: is reference PCMC neccessary?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability|Combo")
+	FAbilityComboDataStruct AbilityComboDataStruct;
 	
 	UFTAGameplayAbility();
 

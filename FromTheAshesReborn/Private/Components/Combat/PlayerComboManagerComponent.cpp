@@ -33,23 +33,7 @@ void UPlayerComboManagerComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("UPlayerComboManagerComponent: No ASC in player controller found"));
 		return;
 	}
-
-	//maybe move to the actual ability in begin play?
-	LightAbilityComboData = FAbilityComboData{ GA_GroundedLightMeleeAttack, 
-	FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Light")),
-	FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Light")) };
-
-	HeavyAbilityComboData = FAbilityComboData{ GA_GroundedHeavyMeleeAttack, 
-		FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Heavy")),
-		FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Heavy")) };
-
-	DashAbilityComboData = FAbilityComboData{ GA_GroundedDash, 
-	FGameplayTag::RequestGameplayTag(FName("Event.Input.Saved.Dash")),
-	FGameplayTag::RequestGameplayTag(FName("Event.Montage.ComboWindow.Open.Dash")) };
 	
-	AbilityComboDataArray.Add(LightAbilityComboData);
-	AbilityComboDataArray.Add(HeavyAbilityComboData);
-	AbilityComboDataArray.Add(DashAbilityComboData);
 
 	ASComponent = PC->ASC;
 	if(!ASComponent)
@@ -113,7 +97,8 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
-	for (const FAbilityComboData& AbilityComboData : AbilityComboDataArray)
+
+	for (const FAbilityComboDataStruct& AbilityComboData : AbilityComboDataArray)
 	{
 		if (PC->LastInputSavedTag.MatchesTag(AbilityComboData.InputSavedTag) && ComboWindowTag.MatchesTag(AbilityComboData.ComboWindowTag))
 		{
@@ -135,7 +120,7 @@ void UPlayerComboManagerComponent::ProceedToNextAbility(TSubclassOf<UGameplayAbi
 	}
 }
 
-void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FAbilityComboData AbilityComboData)
+void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FAbilityComboDataStruct AbilityComboData)
 {
 
 	RemoveGameplayTagEvent(AbilityComboData.ComboWindowTag);

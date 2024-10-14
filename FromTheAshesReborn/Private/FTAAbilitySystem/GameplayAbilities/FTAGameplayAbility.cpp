@@ -2,6 +2,7 @@
 #include "AbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
+#include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"

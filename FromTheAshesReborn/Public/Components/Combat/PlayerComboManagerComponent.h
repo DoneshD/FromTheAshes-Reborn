@@ -13,20 +13,6 @@ class UGA_GroundedHeavyMeleeAttack;
 class AFTAPlayerController;
 class UAbilitySystemComponent;
 
-USTRUCT(BlueprintType)
-struct FAbilityComboData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> AbilityComboClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTag InputSavedTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTag ComboWindowTag;
-};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UPlayerComboManagerComponent : public UActorComponent
@@ -44,16 +30,7 @@ protected:
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
 
-	TArray<FAbilityComboData> AbilityComboDataArray;
 	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGA_GroundedLightMeleeAttack> GA_GroundedLightMeleeAttack;
-	
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGA_GroundedHeavyMeleeAttack> GA_GroundedHeavyMeleeAttack;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGA_GroundedDash> GA_GroundedDash;
 
 	UPlayerComboManagerComponent();
 
@@ -72,11 +49,9 @@ protected:
 	void PrintCurrentComboContainer();
 
 public:
-
-	FAbilityComboData LightAbilityComboData;
-	FAbilityComboData HeavyAbilityComboData;
-	FAbilityComboData DashAbilityComboData;
-
+	
+	TArray<FAbilityComboDataStruct> AbilityComboDataArray;
+	
 	FGameplayTagContainer& GetCurrentComboContainer();
 
 	int GetCurrentComboIndex();
@@ -84,6 +59,6 @@ public:
 	void SetCurrentComboIndex(int Index);
 
 	UFUNCTION()
-	void RegisterGameplayTagEvent(FAbilityComboData AbilityComboData);
+	void RegisterGameplayTagEvent(FAbilityComboDataStruct AbilityComboData);
 	
 };

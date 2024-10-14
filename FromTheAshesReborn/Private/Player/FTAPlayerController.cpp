@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "Kismet/GameplayStatics.h"
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
@@ -17,17 +18,29 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 		switch (AllowedInputElement)
 		{
 		case EAllowedInputs::LightAttack:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->LightAbilityComboData);
+
+			for (FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+			{
+				if (Spec.InputID == 7)
+				{
+					UGA_GroundedLightMeleeAttack* LightMeleeAbility = Cast<UGA_GroundedLightMeleeAttack>(Spec.Ability);
+					if (LightMeleeAbility)
+					{
+						PlayerComboManager->AbilityComboDataArray.Add(LightMeleeAbility->AbilityComboDataStruct);
+						OnRegisterWindowTagEventDelegate.Broadcast(LightMeleeAbility->AbilityComboDataStruct);
+					}
+				}
+				
+			}
+			
 
 			break;
 			
 		case EAllowedInputs::HeavyAttack:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->HeavyAbilityComboData);
 
 			break;
 
 		case EAllowedInputs::Dash:
-			OnRegisterWindowTagEventDelegate.Broadcast(PlayerComboManager->DashAbilityComboData);
 			
 		default:
 			break;
@@ -61,6 +74,7 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGamepla
 		}
 	}
 }
+
 
 AFTAPlayerController::AFTAPlayerController()
 {
@@ -206,7 +220,7 @@ void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& Inpu
 {
 	if(IsInInputQueueWindow)
 	{
-		AddInputToQueue(EAllowedInputs::Dash, PlayerComboManager->DashAbilityComboData.InputSavedTag);
+		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
 	}
 	else
 	{
@@ -224,7 +238,7 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 	if(IsInInputQueueWindow)
 	{
 		
-		AddInputToQueue(EAllowedInputs::LightAttack, PlayerComboManager->LightAbilityComboData.InputSavedTag);
+		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
 	}
 	else
 	{
@@ -241,7 +255,7 @@ void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
-		AddInputToQueue(EAllowedInputs::HeavyAttack, PlayerComboManager->HeavyAbilityComboData.InputSavedTag);
+		AddInputToQueue(EAllowedInputs::HeavyAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
 	}
 	else
 	{
