@@ -8,6 +8,42 @@
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "Kismet/GameplayStatics.h"
 
+void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
+{
+	UFTAGameplayAbility* FTAGameplayAbility = Cast<UFTAGameplayAbility>(Ability);
+	if (FTAGameplayAbility && PlayerComboManager)
+	{
+		PlayerComboManager->AbilityComboDataArray.Add(FTAGameplayAbility->AbilityComboDataStruct);
+		OnRegisterWindowTagEventDelegate.Broadcast(FTAGameplayAbility->AbilityComboDataStruct);
+	}
+}
+
+UGameplayAbility* AFTAPlayerController::GetAbilityForInput(EAllowedInputs InputType)
+{
+	for (FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+	{
+		switch (InputType)
+		{
+		case EAllowedInputs::LightAttack:
+			if (Spec.InputID == 7)
+				return Spec.Ability;
+
+		case EAllowedInputs::HeavyAttack:
+			if (Spec.InputID == 8)
+				return Spec.Ability;
+
+		case EAllowedInputs::Dash:
+			if (Spec.InputID == 6)
+				return Spec.Ability;
+			break;
+
+		default:
+			break;
+		}
+	}
+	return nullptr;
+}
+
 void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
 {
 	CurrentAllowedInputs = AllowedInputs;
@@ -15,36 +51,10 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 
 	for (const EAllowedInputs& AllowedInputElement : AllowedInputs)
 	{
-		switch (AllowedInputElement)
-		{
-		case EAllowedInputs::LightAttack:
+		UGameplayAbility* Ability = GetAbilityForInput(AllowedInputElement);
+		if (!Ability) continue;
 
-			for (FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
-			{
-				if (Spec.InputID == 7)
-				{
-					UGA_GroundedLightMeleeAttack* LightMeleeAbility = Cast<UGA_GroundedLightMeleeAttack>(Spec.Ability);
-					if (LightMeleeAbility)
-					{
-						PlayerComboManager->AbilityComboDataArray.Add(LightMeleeAbility->AbilityComboDataStruct);
-						OnRegisterWindowTagEventDelegate.Broadcast(LightMeleeAbility->AbilityComboDataStruct);
-					}
-				}
-				
-			}
-			
-
-			break;
-			
-		case EAllowedInputs::HeavyAttack:
-
-			break;
-
-		case EAllowedInputs::Dash:
-			
-		default:
-			break;
-		}
+		ProcessAbilityComboData(Ability);
 	}
 }
 

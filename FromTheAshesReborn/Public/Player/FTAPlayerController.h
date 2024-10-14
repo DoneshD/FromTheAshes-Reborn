@@ -38,7 +38,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs);
+	UGameplayAbility* GetAbilityForInput(EAllowedInputs InputType);
 
+	void ProcessAbilityComboData(UGameplayAbility* Ability);
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
 
