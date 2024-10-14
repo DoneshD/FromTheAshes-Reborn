@@ -13,6 +13,7 @@ UFTAAbilitySystemComponent::UFTAAbilitySystemComponent()
 
 void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
+	//DEBUGGING PURPOSES
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
 	{
@@ -450,3 +451,4 @@ void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* Sourc
 {
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
 }
+

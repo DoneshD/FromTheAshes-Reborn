@@ -6,7 +6,23 @@
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UPlayerComboManagerComponent;
 class USkeletalMeshComponent;
+
+USTRUCT(BlueprintType)
+struct FAbilityComboDataStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TSubclassOf<UGameplayAbility> AbilityComboClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag InputSavedTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FGameplayTag ComboWindowTag;
+};
 
 USTRUCT()
 struct FROMTHEASHESREBORN_API FAbilityMeshMontage
@@ -36,6 +52,10 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 
 public:
+
+	//TODO: is reference PCMC neccessary?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability|Combo")
+	FAbilityComboDataStruct AbilityComboDataStruct;
 	
 	UFTAGameplayAbility();
 
@@ -95,7 +115,6 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ability", meta = (DisplayName = "Get Source Object"))
 	UObject* K2_GetSourceObject(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
 
-
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 
 	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
@@ -112,7 +131,6 @@ public:
 	void FTAApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
 	
 	virtual void FTAApplyCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const {};
-	
 
 	// Is the player's input currently pressed? Only works if the ability is bound to input.
 	UFUNCTION(BlueprintCallable, Category = "Ability")

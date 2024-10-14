@@ -3,13 +3,59 @@
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "Kismet/GameplayStatics.h"
+
+void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
+{
+	UFTAGameplayAbility* FTAGameplayAbility = Cast<UFTAGameplayAbility>(Ability);
+	if (FTAGameplayAbility && PlayerComboManager)
+	{
+		PlayerComboManager->AbilityComboDataArray.Add(FTAGameplayAbility->AbilityComboDataStruct);
+		OnRegisterWindowTagEventDelegate.Broadcast(FTAGameplayAbility->AbilityComboDataStruct);
+	}
+}
+
+UGameplayAbility* AFTAPlayerController::GetAbilityForInput(EAllowedInputs InputType)
+{
+	for (FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+	{
+		switch (InputType)
+		{
+		case EAllowedInputs::LightAttack:
+			if (Spec.InputID == 7)
+				return Spec.Ability;
+
+		case EAllowedInputs::HeavyAttack:
+			if (Spec.InputID == 8)
+				return Spec.Ability;
+
+		case EAllowedInputs::Dash:
+			if (Spec.InputID == 6)
+				return Spec.Ability;
+			break;
+
+		default:
+			break;
+		}
+	}
+	return nullptr;
+}
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
 {
 	CurrentAllowedInputs = AllowedInputs;
 	IsInInputQueueWindow = true;
+
+	for (const EAllowedInputs& AllowedInputElement : AllowedInputs)
+	{
+		UGameplayAbility* Ability = GetAbilityForInput(AllowedInputElement);
+		if (!Ability) continue;
+
+		ProcessAbilityComboData(Ability);
+	}
 }
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
@@ -36,9 +82,9 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGamepla
 				LastInputSavedTag = SavedInputTag;
 			}
 		}
-		
 	}
 }
+
 
 AFTAPlayerController::AFTAPlayerController()
 {
@@ -48,10 +94,7 @@ AFTAPlayerController::AFTAPlayerController()
 void AFTAPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	// if(IsInInputQueueWindow)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("LastInputSavedTag: %s"), *LastInputSavedTag.GetTagName().ToString());
-	// }
+	
 }
 
 void AFTAPlayerController::OnPossess(APawn* InPawn)
@@ -99,6 +142,15 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	//Debug purposes
 	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
 
+	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
+	if (PlayerComboManager)
+	{
+		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("PlayerComboManager NOT FOUND"));
+	}
 }
 
 void AFTAPlayerController::OnUnPossess()
@@ -195,6 +247,7 @@ void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValu
 {
 	if(IsInInputQueueWindow)
 	{
+		
 		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
 	}
 	else

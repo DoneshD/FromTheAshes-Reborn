@@ -29,17 +29,16 @@ public:
 	bool bSpawnWithCollision;
 
 	// This tag is primarily used by the first person Animation Blueprint to determine which animations to play
-	// (Rifle vs Rocket Launcher)
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GASShooter|GSWeapon")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "FTAWeapon")
 	FGameplayTag WeaponTag;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GASShooter|GSWeapon")
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "FTAWeapon")
 	FGameplayTagContainer RestrictedPickupTags;
 	
 	// Implement IAbilitySystemInterface
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GASShooter|GSWeapon")
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "FTAWeapon")
 	virtual USkeletalMeshComponent* GetWeaponMesh() const;
 
 	void SetOwningCharacter(AFTACharacter* InOwningCharacter);

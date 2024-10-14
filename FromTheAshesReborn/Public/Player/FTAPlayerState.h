@@ -17,7 +17,6 @@ class FROMTHEASHESREBORN_API AFTAPlayerState : public APlayerState, public IAbil
 	GENERATED_BODY()
 	
 public:
-	AFTAPlayerState();
 
 	class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
@@ -49,6 +48,8 @@ protected:
 	class UFTAAttributeSet* AttributeSet;
 
 	FDelegateHandle HealthChangedDelegateHandle;
+
+	AFTAPlayerState();
 
 	virtual void BeginPlay() override;
 

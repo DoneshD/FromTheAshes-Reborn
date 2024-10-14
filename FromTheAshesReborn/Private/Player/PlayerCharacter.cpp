@@ -4,7 +4,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "TargetSystemComponent.h"
-#include "Components/Melee/GroundedMeleeComboComponent.h"
+#include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
 
@@ -39,8 +39,8 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 
 	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
 
-	GroundedMeleeComboComponent = CreateDefaultSubobject<UGroundedMeleeComboComponent>(TEXT("GroundedMeleeComboComponent"));
-	this->AddOwnedComponent(GroundedMeleeComboComponent);
+	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
+	this->AddOwnedComponent(PlayerComboManagerComponent);
 
 }
 
@@ -89,21 +89,6 @@ void APlayerCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 }
 
-FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()
-{
-	return GroundedMeleeComboComponent->GetCurrentComboContainer();
-}
-
-int32 APlayerCharacter::GetCurrentComboIndex()
-{
-	return GroundedMeleeComboComponent->GetCurrentComboIndex();
-}
-
-void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
-{
-	GroundedMeleeComboComponent->SetCurrentComboIndex(ComboIndex);
-}
-
 void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -111,3 +96,19 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 	AddDefaultAbilities();
 	InitializeAttributes();
 }
+
+FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()
+{
+	return PlayerComboManagerComponent->GetCurrentComboContainer();
+}
+
+int32 APlayerCharacter::GetCurrentComboIndex()
+{
+	return PlayerComboManagerComponent->GetCurrentComboIndex();
+}
+
+void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
+{
+	PlayerComboManagerComponent->SetCurrentComboIndex(ComboIndex);
+}
+

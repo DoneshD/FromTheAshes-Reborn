@@ -34,24 +34,15 @@ UCLASS()
 class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
-	
-public:
+
+
+	//public
+protected:
 	UFTAAbilitySystemComponent();
-	
-	bool IsCharacterAbilitiesGiven = false;
-	bool IsStartupEffectsApplied = false;
 
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
-
 	virtual void NotifyAbilityEnded(FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, bool bWasCancelled) override;
-
-	// Version of function in AbilitySystemGlobals that returns correct type
-	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
-
-	// Input bound to an ability is pressed
-	virtual void AbilityLocalInputPressed(int32 InputID) override;
 
 	// Exposes GetTagCount to Blueprint
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Abilities | Gameplaytags", Meta = (DisplayName = "GetTagCount", ScriptName = "GetTagCount"))
@@ -85,10 +76,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
 	void RemoveGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
 	
-	FReceivedDamageDelegate ReceivedDamage;
+	
 	// Called from GDDamageExecCalculation. Broadcasts on ReceivedDamage whenever this ASC receives damage.
 	virtual void ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
-	
+
 	// ----------------------------------------------------------------------------------------------------------------
 	//	AnimMontage Support for multiple USkeletalMeshComponents on the AvatarActor.
 	//  Only one ability can be animating at a time though?
@@ -105,29 +96,11 @@ public:
 	// Plays a montage without updating replication/prediction structures. Used by simulated proxies when replication tells them to play a montage.
 	virtual float PlayMontageSimulatedForMesh(USkeletalMeshComponent* InMesh, UAnimMontage* Montage, float InPlayRate, FName StartSectionName = NAME_None);
 
-	// Stops whatever montage is currently playing. Expectation is caller should only be stopping it if they are the current animating ability (or have good reason not to check)
-	virtual void CurrentMontageStopForMesh(USkeletalMeshComponent* InMesh, float OverrideBlendOutTime = -1.0f);
-
-	// Stops all montages currently playing
-	virtual void StopAllCurrentMontages(float OverrideBlendOutTime = -1.0f);
-
-	// Stops current montage if it's the one given as the Montage param
-	virtual void StopMontageIfCurrentForMesh(USkeletalMeshComponent* InMesh, const UAnimMontage& Montage, float OverrideBlendOutTime = -1.0f);
-
 	// Clear the animating ability that is passed in, if it's still currently animating
 	virtual void ClearAnimatingAbilityForAllMeshes(UGameplayAbility* Ability);
 
-	// Jumps current montage to given section. Expectation is caller should only be stopping it if they are the current animating ability (or have good reason not to check)
-	virtual void CurrentMontageJumpToSectionForMesh(USkeletalMeshComponent* InMesh, FName SectionName);
-
-	// Sets current montages next section name. Expectation is caller should only be stopping it if they are the current animating ability (or have good reason not to check)
-	virtual void CurrentMontageSetNextSectionNameForMesh(USkeletalMeshComponent* InMesh, FName FromSectionName, FName ToSectionName);
-
 	// Sets current montage's play rate
 	virtual void CurrentMontageSetPlayRateForMesh(USkeletalMeshComponent* InMesh, float InPlayRate);
-
-	// Returns true if the passed in ability is the current animating ability
-	bool IsAnimatingAbilityForAnyMesh(UGameplayAbility* Ability) const;
 
 	// Returns the current animating ability
 	 TWeakObjectPtr<UGameplayAbility> GetAnimatingAbilityFromAnyMesh();
@@ -150,6 +123,38 @@ public:
 	// Returns amount of time left in current section
 	float GetCurrentMontageSectionTimeLeftForMesh(USkeletalMeshComponent* InMesh);
 	
+public:
 
+	bool IsCharacterAbilitiesGiven = false;
 
+	bool IsStartupEffectsApplied = false;
+	
+	FReceivedDamageDelegate ReceivedDamage;
+
+	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+
+	// Version of function in AbilitySystemGlobals that returns correct type
+	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
+
+	// Returns true if the passed in ability is the current animating ability
+	bool IsAnimatingAbilityForAnyMesh(UGameplayAbility* Ability) const;
+
+	// Jumps current montage to given section. Expectation is caller should only be stopping it if they are the current animating ability (or have good reason not to check)
+	virtual void CurrentMontageJumpToSectionForMesh(USkeletalMeshComponent* InMesh, FName SectionName);
+
+	// Sets current montages next section name. Expectation is caller should only be stopping it if they are the current animating ability (or have good reason not to check)
+	virtual void CurrentMontageSetNextSectionNameForMesh(USkeletalMeshComponent* InMesh, FName FromSectionName, FName ToSectionName);
+
+	// Stops whatever montage is currently playing. Expectation is caller should only be stopping it if they are the current animating ability (or have good reason not to check)
+	virtual void CurrentMontageStopForMesh(USkeletalMeshComponent* InMesh, float OverrideBlendOutTime = -1.0f);
+
+	// Stops all montages currently playing
+	virtual void StopAllCurrentMontages(float OverrideBlendOutTime = -1.0f);
+
+	// Stops current montage if it's the one given as the Montage param
+	virtual void StopMontageIfCurrentForMesh(USkeletalMeshComponent* InMesh, const UAnimMontage& Montage, float OverrideBlendOutTime = -1.0f);
+
+	// Input bound to an ability is pressed
+	virtual void AbilityLocalInputPressed(int32 InputID) override;
+	
 };

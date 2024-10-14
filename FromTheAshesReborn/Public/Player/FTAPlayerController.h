@@ -4,10 +4,16 @@
 #include "GameplayTagContainer.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
+//damn...
+#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "GameFramework/PlayerController.h"
 #include "FTAPlayerController.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FAbilityComboDataStruct, AbilityComboData);
+
+class UPlayerComboManagerComponent;
 class UAbilitySystemComponent;
 class UEnhancedInputComponent;
 class UInputMappingContext;
@@ -21,24 +27,29 @@ protected:
 
 	//-------------------------TESTING INPUT QUEUE------------------------------//
 
-	UPROPERTY(EditAnywhere)
-	EAllowedInputs QueuedInput;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<EAllowedInputs> CurrentAllowedInputs;
 
 	UPROPERTY(EditAnywhere)
-	bool InputQueueEnabled = true;
+	bool IsInInputQueueWindow = false;
+
+	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManager;
 	
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs);
+	UGameplayAbility* GetAbilityForInput(EAllowedInputs InputType);
 
+	void ProcessAbilityComboData(UGameplayAbility* Ability);
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
 
 	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
 
 	FTimerHandle FInputQueueWindowTimer;
+
+	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
+
 
 	//--------------------------------------------------------------------------//
 
@@ -66,22 +77,14 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Dash;
-
-	UAbilitySystemComponent* ASC;
 	
 	//-----------------------------For debugging--------------------------//
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
 
 	bool IsTimeSlowed = false;
+	//------------------------------------------------------------------/
 	
-public:
-
-	//TODO: MOVE LATER
-
-	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
-
-
 	AFTAPlayerController();
 
 	virtual  void Tick(float DeltaSeconds) override;
@@ -96,9 +99,6 @@ public:
 	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
-	
-	UPROPERTY(EditAnywhere)
-	bool IsInInputQueueWindow = false;
 
 	void HandleJumpActionPressed(const FInputActionValue& InputActionValue);
 	void HandleJumpActionReleased(const FInputActionValue& InputActionValue);
@@ -113,4 +113,10 @@ public:
 	void HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
+
+public:
+	
+	UAbilitySystemComponent* ASC;
+	
+	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 };
