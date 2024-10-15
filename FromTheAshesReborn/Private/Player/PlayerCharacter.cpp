@@ -47,6 +47,13 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	 if (LightWeapon = GetWorld()->SpawnActor<AFTAWeapon>(LightWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_player_weapon_socket"))))
+	 {
+		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
+	 	LightWeapon->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
+	 }
+	
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -63,6 +70,7 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	{
 		return;
 	}
+	
 	AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
 	AttributeSet = FTAPlayerState->GetAttributeSet();
@@ -72,6 +80,7 @@ void APlayerCharacter::InitAbilitySystemComponent()
 void APlayerCharacter::FinishDying()
 {
 	Super::FinishDying();
+	
 }
 
 USkeletalMeshComponent* APlayerCharacter::GetSkeletalMesh() const

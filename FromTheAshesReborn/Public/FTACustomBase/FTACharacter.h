@@ -4,7 +4,9 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "FTAEnums.h"
+#include "Weapons/FTAWeapon.h"
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
+#include "Interfaces/WeaponInterface.h"
 #include "FTACharacter.generated.h"
 
 struct FGameplayEffectSpec;
@@ -17,7 +19,7 @@ class UDidItHitActorComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFTACharacter*, Character);
 
 UCLASS()
-class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface
+class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface, public IWeaponInterface
 {
 	GENERATED_BODY()
 
@@ -52,7 +54,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability System | Effects")
 	TArray<TSubclassOf<class UGameplayEffect>> StartupEffects;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Weapon Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Collision")
 	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
 
 	AFTACharacter(const class FObjectInitializer& ObjectInitializer);
@@ -66,6 +68,24 @@ protected:
 	virtual void AddStartupEffects();
 	
 	virtual void SetCurrentHealth(float Health);
+
+	//-----------------------------Weapons----------------------//
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AFTAWeapon> LightWeaponClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AFTAWeapon> HeavyWeaponClass;
+
+	TObjectPtr<AFTAWeapon> LightWeapon;
+
+	TObjectPtr<AFTAWeapon> HeavyWeapon;
+
+	UFUNCTION(BlueprintCallable)
+	virtual AFTAWeapon* GetLightWeapon() override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual AFTAWeapon* GetHeavyWeapon() override;
 
 public:
 

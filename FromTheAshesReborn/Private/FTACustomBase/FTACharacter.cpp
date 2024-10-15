@@ -23,6 +23,32 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 
 }
 
+AFTAWeapon* AFTACharacter::GetLightWeapon()
+{
+	if(LightWeapon)
+	{
+		return LightWeapon;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Light Weapon Is NULL"));
+		return nullptr;
+	}
+}
+
+AFTAWeapon* AFTACharacter::GetHeavyWeapon()
+{
+	if(HeavyWeapon)
+	{
+		return HeavyWeapon;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Heavy Weapon Is NULL"));
+		return nullptr;
+	}
+}
+
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;

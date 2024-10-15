@@ -1,16 +1,20 @@
 ﻿#include "Weapons/FTAWeapon.h"
+
+#include "DidItHitActorComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/SkeletalMeshComponent.h"
+#include "Components/StaticMeshComponent.h"
 
 AFTAWeapon::AFTAWeapon()
 {
 	// Set this actor to never tick
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
-	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(FName("WeaponMesh"));
+	WeaponMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WeaponMesh"));
+
+	DidItHitActorComponent = CreateDefaultSubobject<UDidItHitActorComponent>("DiditHitActorComponent");
 	// //Not sure if right collision type
 	// WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
@@ -46,7 +50,7 @@ UAbilitySystemComponent* AFTAWeapon::GetAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-USkeletalMeshComponent* AFTAWeapon::GetWeaponMesh() const
+UStaticMeshComponent* AFTAWeapon::GetWeaponMesh() const
 {
 	return WeaponMesh;
 }

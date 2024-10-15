@@ -245,20 +245,20 @@ void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& Inp
 
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	if(IsInInputQueueWindow)
-	{
-		
-		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-	}
-	else
-	{
-		SendLocalInputToASC(true, EAbilityInputID::LightAttack);
-	}
+	// if(IsInInputQueueWindow)
+	// {
+	// 	
+	// 	AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+	// }
+	// else
+	// {
+	// 	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
+	// }
 }
 
 void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(false, EAbilityInputID::LightAttack);
+	// SendLocalInputToASC(false, EAbilityInputID::LightAttack);
 }
 
 void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)

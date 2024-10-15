@@ -12,7 +12,8 @@ class AFTACharacter;
 class UAnimMontage;
 class UFTAAbilitySystemComponent;
 class UFTAGameplayAbility;
-class USkeletalMeshComponent;
+class UStaticMeshComponent;
+class UDidItHitActorComponent;
 
 UCLASS(Blueprintable, BlueprintType)
 class FROMTHEASHESREBORN_API AFTAWeapon : public AActor, public IAbilitySystemInterface
@@ -39,7 +40,7 @@ public:
 	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "FTAWeapon")
-	virtual USkeletalMeshComponent* GetWeaponMesh() const;
+	virtual UStaticMeshComponent* GetWeaponMesh() const;
 
 	void SetOwningCharacter(AFTACharacter* InOwningCharacter);
 
@@ -58,6 +59,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon | Animation")
 	UAnimMontage* GetEquipMontage() const;
 
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -68,15 +70,16 @@ protected:
 	
 	UPROPERTY()
 	UFTAAbilitySystemComponent* AbilitySystemComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Collision")
+	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
 	
-	// Collision capsule for when weapon is in pickup mode
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon Collision")
+	TObjectPtr<UStaticMeshComponent> WeaponMesh;
+	
 	UPROPERTY(VisibleAnywhere)
 	class UCapsuleComponent* CollisionComp;
-
-	//Probably change to static mesh 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon | Base")
-	USkeletalMeshComponent* WeaponMesh;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon | Base")
 	FVector WeaponMeshEquippedRelativeLocation;
 

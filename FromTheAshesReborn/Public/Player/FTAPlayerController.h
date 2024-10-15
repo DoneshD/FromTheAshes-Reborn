@@ -25,7 +25,7 @@ class FROMTHEASHESREBORN_API AFTAPlayerController : public APlayerController
 	
 protected:
 
-	//-------------------------TESTING INPUT QUEUE------------------------------//
+	//-------------------------INPUT QUEUE------------------------------//
 
 	
 	UPROPERTY(EditAnywhere)
@@ -38,18 +38,17 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs);
+
+	UFUNCTION(BlueprintCallable)
+	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
+	
 	UGameplayAbility* GetAbilityForInput(EAllowedInputs InputType);
 
 	void ProcessAbilityComboData(UGameplayAbility* Ability);
-	UFUNCTION(BlueprintCallable)
-	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
-
+	
 	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
 
-	FTimerHandle FInputQueueWindowTimer;
-
 	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
-
 
 	//--------------------------------------------------------------------------//
 
