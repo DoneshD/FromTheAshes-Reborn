@@ -5,6 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -25,13 +26,17 @@ UGameplayAbility* AFTAPlayerController::GetAbilityForInput(EAllowedInputs InputT
 		switch (InputType)
 		{
 		case EAllowedInputs::LightAttack:
-			if (Spec.InputID == 7)
+			if (Spec.Ability->IsA(UGA_GroundedLightMeleeAttack::StaticClass()))
+			{
 				return Spec.Ability;
-
+			}
+			
 		case EAllowedInputs::HeavyAttack:
-			if (Spec.InputID == 8)
+			if (Spec.Ability->IsA(UGA_GroundedHeavyMeleeAttack::StaticClass()))
+			{
 				return Spec.Ability;
-
+			}
+			
 		case EAllowedInputs::Dash:
 			if (Spec.InputID == 6)
 				return Spec.Ability;
@@ -53,7 +58,7 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInp
 	{
 		UGameplayAbility* Ability = GetAbilityForInput(AllowedInputElement);
 		if (!Ability) continue;
-
+		
 		ProcessAbilityComboData(Ability);
 	}
 }
@@ -63,6 +68,7 @@ void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInput
 	IsInInputQueueWindow = false;
 	CurrentAllowedInputs.Empty();
 	LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
+	AllowedInputs.Empty();
 }
 
 void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag)
@@ -139,10 +145,14 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Started, this, &AFTAPlayerController::HandleDashActionPressed);
 	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleDashActionReleased);
 
+	EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLockOnActionPressed);
+	EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLockOnActionReleased);
+
 	//Debug purposes
 	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
 
 	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
+	
 	if (PlayerComboManager)
 	{
 		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
@@ -226,39 +236,22 @@ void AFTAPlayerController::HandleJumpActionReleased(const FInputActionValue& Inp
 	SendLocalInputToASC(false, EAbilityInputID::Jump);
 }
 
-void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
+void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
 	if(IsInInputQueueWindow)
 	{
-		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
+		
+		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
 	}
 	else
 	{
-		SendLocalInputToASC(true, EAbilityInputID::Dash);
+		SendLocalInputToASC(true, EAbilityInputID::LightAttack);
 	}
-}
-
-void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& InputActionValue)
-{
-	SendLocalInputToASC(false, EAbilityInputID::Dash);
-}
-
-void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
-{
-	// if(IsInInputQueueWindow)
-	// {
-	// 	
-	// 	AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-	// }
-	// else
-	// {
-	// 	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
-	// }
 }
 
 void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
 {
-	// SendLocalInputToASC(false, EAbilityInputID::LightAttack);
+	SendLocalInputToASC(false, EAbilityInputID::LightAttack);
 }
 
 void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)
@@ -279,6 +272,23 @@ void AFTAPlayerController::HandleHeavyAttackActionReleased(const FInputActionVal
 
 }
 
+void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
+{
+	if(IsInInputQueueWindow)
+	{
+		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
+	}
+	else
+	{
+		SendLocalInputToASC(true, EAbilityInputID::Dash);
+	}
+}
+
+void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& InputActionValue)
+{
+	SendLocalInputToASC(false, EAbilityInputID::Dash);
+}
+
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)
 {
 	if(IsTimeSlowed)
@@ -291,4 +301,15 @@ void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionVal
 		IsTimeSlowed = true;
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), .1);
 	}
+}
+
+void AFTAPlayerController::HandleLockOnActionPressed(const FInputActionValue& InputActionValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Lock On"))
+}
+
+void AFTAPlayerController::HandleLockOnActionReleased(const FInputActionValue& InputActionValue)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Lock On OFF"))
+
 }

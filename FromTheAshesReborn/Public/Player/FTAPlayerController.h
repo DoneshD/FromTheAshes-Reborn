@@ -76,12 +76,17 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_Dash;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_LockOn;
 	
 	//-----------------------------For debugging--------------------------//
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_SlowTime;
 
 	bool IsTimeSlowed = false;
+	
 	//------------------------------------------------------------------/
 	
 	AFTAPlayerController();
@@ -101,15 +106,18 @@ protected:
 
 	void HandleJumpActionPressed(const FInputActionValue& InputActionValue);
 	void HandleJumpActionReleased(const FInputActionValue& InputActionValue);
-
-	void HandleDashActionPressed(const FInputActionValue& InputActionValue);
-	void HandleDashActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleLightAttackActionPressed(const FInputActionValue& InputActionValue);
 	void HandleLightAttackActionReleased(const FInputActionValue& InputActionValue);
 
 	void HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue);
 	void HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue);
+	
+	void HandleDashActionPressed(const FInputActionValue& InputActionValue);
+	void HandleDashActionReleased(const FInputActionValue& InputActionValue);
+
+	void HandleLockOnActionPressed(const FInputActionValue& InputActionValue);
+	void HandleLockOnActionReleased(const FInputActionValue& InputActionValue);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
 

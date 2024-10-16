@@ -1,4 +1,6 @@
 #include "Player/PlayerCharacter.h"
+
+#include "DidItHitActorComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -53,7 +55,6 @@ void APlayerCharacter::BeginPlay()
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
 	 	LightWeapon->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
 	 }
-	
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
