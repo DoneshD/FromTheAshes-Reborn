@@ -27,7 +27,7 @@ enum class EAbilityInputID : uint8
 	//8
 	HeavyAttack		UMETA(DisplayName = "HeavyAttack"),
 	//9
-	LockOn		UMETA(DisplayName = "LockOn")
+	LockOn			UMETA(DisplayName = "LockOn")
 };
 
 

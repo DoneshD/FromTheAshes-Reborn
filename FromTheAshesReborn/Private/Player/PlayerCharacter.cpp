@@ -1,12 +1,10 @@
 #include "Player/PlayerCharacter.h"
-
-#include "DidItHitActorComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "TargetSystemComponent.h"
 #include "Components/Combat/PlayerComboManagerComponent.h"
+#include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
 
@@ -40,7 +38,6 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
-
 	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
 	this->AddOwnedComponent(PlayerComboManagerComponent);
 

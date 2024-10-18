@@ -20,8 +20,8 @@ public class FromTheAshesReborn : ModuleRules
 			"AIModule", 
 			"AnimGraphRuntime", 
 			"MotionWarping", 
-			"Niagara", 
-			"DidItHit", 
-			"TargetSystem"});
+			"Niagara",
+			"TargetSystem",
+			"DidItHit"});
 	}
 }
