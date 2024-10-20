@@ -34,10 +34,10 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	//GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-	
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
+	
 	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
 	this->AddOwnedComponent(PlayerComboManagerComponent);
 

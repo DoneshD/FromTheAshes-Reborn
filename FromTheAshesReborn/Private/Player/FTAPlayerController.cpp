@@ -3,6 +3,7 @@
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "TargetSystemComponent.h"
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
@@ -224,6 +225,19 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 
 	AddYawInput(LookAxisVector.X);
 	AddPitchInput(LookAxisVector.Y);
+
+	//This is costly, refactor later
+	UTargetSystemComponent* TargetSystemComponent = GetPawn()->FindComponentByClass<UTargetSystemComponent>();
+	if(!TargetSystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
+		return;
+	}
+	if(!TargetSystemComponent->GetLockedOnTargetActor())
+	{
+		return;
+	}
+	TargetSystemComponent->TargetActorWithAxisInput(LookAxisVector.X);
 }
 
 void AFTAPlayerController::HandleJumpActionPressed(const FInputActionValue& InputActionValue)
@@ -305,11 +319,10 @@ void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionVal
 
 void AFTAPlayerController::HandleLockOnActionPressed(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Lock On"))
+	SendLocalInputToASC(true, EAbilityInputID::LockOn);
 }
 
 void AFTAPlayerController::HandleLockOnActionReleased(const FInputActionValue& InputActionValue)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Lock On OFF"))
-
+	SendLocalInputToASC(false, EAbilityInputID::LockOn);
 }
