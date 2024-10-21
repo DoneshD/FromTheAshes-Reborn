@@ -46,12 +46,7 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	 if (LightWeapon = GetWorld()->SpawnActor<AFTAWeapon>(LightWeaponClass, GetMesh()->GetSocketTransform(TEXT("hand_r_player_weapon_socket"))))
-	 {
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
-	 	LightWeapon->AttachToComponent(GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
-	 }
+	
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "Weapons/WeaponManagerComponent.h"
 
 AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -20,33 +21,7 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 	bAlwaysRelevant = true;
 
 	DidItHitActorComponent = CreateDefaultSubobject<UDidItHitActorComponent>("DiditHitActorComponent");
-
-}
-
-AFTAWeapon* AFTACharacter::GetLightWeapon()
-{
-	if(LightWeapon)
-	{
-		return LightWeapon;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Light Weapon Is NULL"));
-		return nullptr;
-	}
-}
-
-AFTAWeapon* AFTACharacter::GetHeavyWeapon()
-{
-	if(HeavyWeapon)
-	{
-		return HeavyWeapon;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Heavy Weapon Is NULL"));
-		return nullptr;
-	}
+	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManagerComponent");
 }
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const

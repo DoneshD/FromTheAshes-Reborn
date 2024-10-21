@@ -6,9 +6,9 @@
 #include "FTAEnums.h"
 #include "Weapons/FTAWeapon.h"
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
-#include "Interfaces/WeaponInterface.h"
 #include "FTACharacter.generated.h"
 
+class UWeaponManagerComponent;
 struct FGameplayEffectSpec;
 class UFTAAbilitySystemComponent;
 class UFTAAttributeSet;
@@ -19,7 +19,7 @@ class UDidItHitActorComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFTACharacter*, Character);
 
 UCLASS()
-class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface, public IWeaponInterface
+class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -71,23 +71,12 @@ protected:
 
 	//-----------------------------Weapons----------------------//
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AFTAWeapon> LightWeaponClass;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AFTAWeapon> HeavyWeaponClass;
-
-	TObjectPtr<AFTAWeapon> LightWeapon;
-
-	TObjectPtr<AFTAWeapon> HeavyWeapon;
-
-	UFUNCTION(BlueprintCallable)
-	virtual AFTAWeapon* GetLightWeapon() override;
-
-	UFUNCTION(BlueprintCallable)
-	virtual AFTAWeapon* GetHeavyWeapon() override;
+	
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent;
 
 	UPROPERTY(BlueprintAssignable, Category = "Character")
 	FCharacterDiedDelegate OnCharacterDied;
