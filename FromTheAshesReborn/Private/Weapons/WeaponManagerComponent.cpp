@@ -1,4 +1,6 @@
 ﻿#include "Weapons/WeaponManagerComponent.h"
+
+#include "DidItHitActorComponent.h"
 #include "GameFramework/Character.h"
 #include "Weapons/FTAWeapon.h"
 
@@ -9,7 +11,6 @@ UWeaponManagerComponent::UWeaponManagerComponent()
 
 }
 
-
 void UWeaponManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -17,8 +18,13 @@ void UWeaponManagerComponent::BeginPlay()
 
 	if (LightWeapon = GetWorld()->SpawnActor<AFTAWeapon>(LightWeaponClass, OwnerPawn->GetMesh()->GetSocketTransform(TEXT("hand_r_player_weapon_socket"))))
 	{
-		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
-		LightWeapon->AttachToComponent(OwnerPawn->GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
+		if(LightWeapon)
+		{
+			FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, false);
+			LightWeapon->AttachToComponent(OwnerPawn->GetMesh(), AttachmentRules, TEXT("hand_r_player_weapon_socket"));
+			LightWeapon->DidItHitActorComponent->SetupVariables(LightWeapon->GetWeaponMesh(), GetOwner());
+			LightWeapon->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UWeaponManagerComponent::UWeaponManagerComponent::OnHitAdded);
+		}
 	}
 	
 }
@@ -28,6 +34,28 @@ void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void UWeaponManagerComponent::StartWeaponTrace()
+{
+	LightWeapon->DidItHitActorComponent->ToggleTraceCheck(true);
+}
+
+void UWeaponManagerComponent::EndWeaponTrace()
+{
+	for(const FHitResult& Hit : LightWeapon->DidItHitActorComponent->HitArray)
+	{
+		FName Name = Hit.GetActor()->GetFName();
+		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *Name.ToString());
+	}
+	LightWeapon->DidItHitActorComponent->ToggleTraceCheck(false);
+	
+}
+
+void UWeaponManagerComponent::OnHitAdded(FHitResult LastItem)
+{
+	UE_LOG(LogTemp, Warning, TEXT("HIT!"))
+	
 }
 
 AFTAWeapon* UWeaponManagerComponent::GetLightWeapon()

@@ -35,4 +35,13 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 							   FActorComponentTickFunction* ThisTickFunction) override;
+	
+	UFUNCTION(BlueprintCallable)
+	void StartWeaponTrace();
+
+	UFUNCTION(BlueprintCallable)
+	void EndWeaponTrace();
+
+	UFUNCTION()
+	void OnHitAdded(FHitResult LastItem);
 };

@@ -24,6 +24,9 @@ public:
 	// Sets default values for this actor's properties
 	AFTAWeapon();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Collision")
+	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
+
 	// Whether or not to spawn this weapon with collision enabled (pickup mode).
 	// Set to false when spawning directly into a player's inventory or true when spawning into the world in pickup mode.
 	UPROPERTY(BlueprintReadWrite)
@@ -70,9 +73,6 @@ protected:
 	
 	UPROPERTY()
 	UFTAAbilitySystemComponent* AbilitySystemComponent;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Collision")
-	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon Collision")
 	TObjectPtr<UStaticMeshComponent> WeaponMesh;
