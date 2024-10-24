@@ -53,7 +53,6 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 
 public:
 
-	//TODO: is reference PCMC neccessary?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability|Combo")
 	FAbilityComboDataStruct AbilityComboDataStruct;
 	
@@ -65,6 +64,7 @@ public:
 
 	// Value to associate an ability with an slot without tying it to an automatically activated input.
 	// Passive abilities won't be tied to an input so we need a way to generically associate abilities with slots.
+	//TODO: Need to fix this
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAbilityInputID AbilityID = EAbilityInputID::None;
 
