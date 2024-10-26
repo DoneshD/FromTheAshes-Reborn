@@ -73,24 +73,21 @@ void UWeaponManagerComponent::OnHitAdded(FHitResult LastItem)
 
 AFTAWeapon* UWeaponManagerComponent::GetLightWeapon()
 {
-	if(LightWeapon)
+	if(!LightWeapon)
 	{
-		return LightWeapon;
+		UE_LOG(LogTemp, Error, TEXT("Light Weapon Is NULL"));
+		return nullptr;
 	}
-	
-	UE_LOG(LogTemp, Error, TEXT("Light Weapon Is NULL"));
-	return nullptr;
-	
+	return LightWeapon;
 }
 
 AFTAWeapon* UWeaponManagerComponent::GetHeavyWeapon()
 {
-	if(HeavyWeapon)
+	if(!HeavyWeapon)
 	{
-		return HeavyWeapon;
+		UE_LOG(LogTemp, Error, TEXT("Heavy Weapon Is NULL"));
+		return nullptr;
 	}
-	
-	UE_LOG(LogTemp, Error, TEXT("Heavy Weapon Is NULL"));
-	return nullptr;
+	return HeavyWeapon;
 }
 
