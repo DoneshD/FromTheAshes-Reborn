@@ -38,16 +38,29 @@ void UWeaponManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UWeaponManagerComponent::StartWeaponTrace()
 {
+	if(!LightWeapon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Light weapon is NULL"));
+		return;
+	}
+	
 	LightWeapon->DidItHitActorComponent->ToggleTraceCheck(true);
 }
 
 void UWeaponManagerComponent::EndWeaponTrace()
 {
+	if(!LightWeapon)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Light weapon is NULL"));
+		return;
+	}
+	
 	for(const FHitResult& Hit : LightWeapon->DidItHitActorComponent->HitArray)
 	{
 		FName Name = Hit.GetActor()->GetFName();
 		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *Name.ToString());
 	}
+	
 	LightWeapon->DidItHitActorComponent->ToggleTraceCheck(false);
 	
 }
