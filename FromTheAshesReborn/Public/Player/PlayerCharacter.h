@@ -5,6 +5,7 @@
 #include "Interfaces/PlayerComboManagerInterface.h"
 #include "PlayerCharacter.generated.h"
 
+class UGroundedParkourComponent;
 class UPlayerComboManagerComponent;
 class UGroundedMeleeComboComponent;
 class UGameplayEffect;
@@ -19,6 +20,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManagerComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UGroundedParkourComponent> GroundedParkourComponent;
+
+	
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseTurnRate;

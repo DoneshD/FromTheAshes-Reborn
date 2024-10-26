@@ -6,6 +6,7 @@
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
+#include "Movement/GroundedParkourComponent.h"
 
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -40,6 +41,9 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	
 	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
 	this->AddOwnedComponent(PlayerComboManagerComponent);
+
+	GroundedParkourComponent = CreateDefaultSubobject<UGroundedParkourComponent>(TEXT("GroundedParkourComponent"));
+	this->AddOwnedComponent(GroundedParkourComponent);
 
 }
 
@@ -113,4 +117,3 @@ void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 {
 	PlayerComboManagerComponent->SetCurrentComboIndex(ComboIndex);
 }
-

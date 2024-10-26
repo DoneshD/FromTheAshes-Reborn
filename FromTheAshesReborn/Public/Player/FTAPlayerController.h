@@ -79,6 +79,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputAction> Input_LockOn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_Vault;
 	
 	//-----------------------------For debugging--------------------------//
 	
@@ -118,6 +121,9 @@ protected:
 
 	void HandleLockOnActionPressed(const FInputActionValue& InputActionValue);
 	void HandleLockOnActionReleased(const FInputActionValue& InputActionValue);
+
+	void HandleVaultActionPressed(const FInputActionValue& InputActionValue);
+	void HandleVaultActionReleased(const FInputActionValue& InputActionValue);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
 
