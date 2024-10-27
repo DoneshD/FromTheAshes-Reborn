@@ -30,21 +30,6 @@ protected:
 	UPROPERTY()
 	float JumpZVelocity;
 
-	UPROPERTY()
-	bool CanParkour;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grounded Parkour System|Vault")
-	float TraceForwardActorDistance = 300.0f;
-
-	UPROPERTY()
-	TObjectPtr<AActor> TraceFirstActor;
-
-	UPROPERTY()
-	FVector TraceFirstActorImpactPoint;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Grounded Parkour System|Vault")
-	float CheckVerticalBlockerDistance = 150.0f;
-
 public:
 	UGroundedParkourComponent();
 	
@@ -53,11 +38,5 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void ParkourInputPressedVault();
-
-	bool ParkourMasterTracerVault();
-
-	bool GetForwardActorTrace();
-
-	bool GetVerticalBlockerTrace();
 
 };
