@@ -4,6 +4,9 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "ParkourSystem/ParkourFunctionLibrary.h"
 #include "ParkourSystem/ArrowActor.h"
 #include "ParkourSystem/WidgetActor.h"
 
@@ -183,7 +186,6 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 	{
 		for(int32 k = 0; k <= 11; k++)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Here"))
 			FVector ZLocation = FVector(0.0f, 0.0f, i * 16) + FVector(0.0f, 0.0f, -60.0f) + OwnerCharacter->GetActorLocation();
 			FVector ForwardInverseVector = OwnerCharacter->GetActorForwardVector() * -20.0f;
 			
@@ -191,25 +193,53 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 			FVector EndLocation = ZLocation + (OwnerCharacter->GetActorForwardVector() * (10.0f + (k * 10.0f)));
 			
 			FCollisionShape SphereShape = FCollisionShape::MakeSphere(10.0f);
-			FHitResult OutResult;
+			FHitResult OutHitResult;
 			
-			bool bHit = GetWorld()->SweepSingleByChannel(OutResult, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility, SphereShape);
+			bool bHit = GetWorld()->SweepSingleByChannel(OutHitResult, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility, SphereShape);
 
-			DrawDebugSphere(GetWorld(), StartLocation, 10.0f, 12, FColor::Green, true, 5.0f);
-			DrawDebugSphere(GetWorld(), EndLocation, 10.0f, 12, FColor::Red, true, 5.0f);
+			DrawDebugSphere(GetWorld(), StartLocation, 10.0f, 4, FColor::Green, true, 5.0f);
+			DrawDebugSphere(GetWorld(), EndLocation, 10.0f, 4, FColor::Red, true, 5.0f);
 
 			DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true, 5.0f, 0, 2.0f);
 
 			if (bHit)
 			{
-				DrawDebugSphere(GetWorld(), OutResult.Location, 10.0f * 0.5f, 12, FColor::Yellow, true, 5.0f);
+				DrawDebugSphere(GetWorld(), OutHitResult.Location, 10.0f * 0.5f, 12, FColor::Yellow, true, 5.0f);
 			}
 
-			if(OutResult.bBlockingHit && !OutResult.bStartPenetrating)
+			if(OutHitResult.bBlockingHit && !OutHitResult.bStartPenetrating)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("k: %d"), k);
-				UE_LOG(LogTemp, Warning, TEXT("I: %d"), i);
+				WallHitTraces.Empty();
+				
+				float ParkourStateFloat = UParkourFunctionLibrary::SelectParkourStateFloat(4.0f, 0.0f, 0.0f, 2.0f, ParkourStateTag);
+				for(int j = 0; j <= UKismetMathLibrary::FTrunc(ParkourStateFloat); j++)
+				{
+					float IndexStateFloat = UParkourFunctionLibrary::SelectParkourStateFloat(-40.0f, 0.0f, 0.0f, -20.0f, ParkourStateTag);
+					
+					FRotator ReverseRotationZ = UParkourFunctionLibrary::NormalReverseRotationZ(OutHitResult.ImpactNormal);
+					FVector LastVector = ReverseRotationZ.Vector().RightVector * FVector((j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat); 
+					
+					
+					float FirstZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Climb")) ? 0 : -60.0;
+					float SecondZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Climb")) ? OutHitResult.ImpactPoint.Z : OwnerCharacter->GetActorLocation().Z;
 
+					FVector FirstVector = FVector(0.0f, 0.0f, FirstZValue) + FVector(OutHitResult.ImpactPoint.X, OutHitResult.ImpactPoint.Y, SecondZValue) + LastVector;
+					FVector StartLocationLine = FirstVector + ReverseRotationZ.Vector().ForwardVector * -40.0f;
+					FVector EndLocationLine = FirstVector + ReverseRotationZ.Vector().ForwardVector * 30.0f;
+
+					FHitResult OutHitLineResult;
+					bool bHitLine = GetWorld()->LineTraceSingleByChannel(OutHitLineResult, StartLocationLine, EndLocationLine, ECC_Visibility);
+
+					DrawDebugSphere(GetWorld(), FirstVector, 10.0f, 4, FColor::Yellow, false, 5.0f);
+    
+					// Draw debug point where the line trace hits, if bHitLine is true
+					if (bHitLine)
+					{
+						DrawDebugPoint(GetWorld(), OutHitLineResult.ImpactPoint, 10.0f, FColor::Red, false, 5.0f);
+					}
+
+				}
+				
 				break;
 			}
 		}

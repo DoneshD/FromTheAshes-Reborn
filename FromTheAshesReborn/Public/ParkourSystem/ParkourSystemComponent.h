@@ -61,10 +61,13 @@ protected:
 	FVector FirstArmRelativeLocation;
 
 	FGameplayTag ParkourActionTag = FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction");
+	FGameplayTag ParkourStateTag = FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy");
 
 	bool CanManualClimb = false;
 	bool CanAutoClimb = true;
 	bool AutoClimb = true;
+
+	TArray<FHitResult> WallHitTraces;
 
 public:
 	UParkourSystemComponent();
