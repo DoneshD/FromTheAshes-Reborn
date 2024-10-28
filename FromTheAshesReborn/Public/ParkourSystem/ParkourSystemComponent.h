@@ -69,6 +69,8 @@ protected:
 
 	TArray<FHitResult> WallHitTraces;
 
+	TArray<FHitResult> HopHitResult;
+
 public:
 	UParkourSystemComponent();
 	

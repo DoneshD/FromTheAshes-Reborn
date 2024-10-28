@@ -220,8 +220,8 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 					FVector LastVector = ReverseRotationZ.Vector().RightVector * FVector((j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat); 
 					
 					
-					float FirstZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Climb")) ? 0 : -60.0;
-					float SecondZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Climb")) ? OutHitResult.ImpactPoint.Z : OwnerCharacter->GetActorLocation().Z;
+					float FirstZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) ? 0 : -60.0;
+					float SecondZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) ? OutHitResult.ImpactPoint.Z : OwnerCharacter->GetActorLocation().Z;
 
 					FVector FirstVector = FVector(0.0f, 0.0f, FirstZValue) + FVector(OutHitResult.ImpactPoint.X, OutHitResult.ImpactPoint.Y, SecondZValue) + LastVector;
 					FVector StartLocationLine = FirstVector + ReverseRotationZ.Vector().ForwardVector * -40.0f;
@@ -237,6 +237,31 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 					{
 						DrawDebugPoint(GetWorld(), OutHitLineResult.ImpactPoint, 10.0f, FColor::Red, false, 5.0f);
 					}
+
+					HopHitResult.Empty();
+					float SelectParkourStateFloat = UParkourFunctionLibrary::SelectParkourStateFloat(30.0f, 0.0f, 0.0f, 7.0f, ParkourStateTag);
+					for (int m = 0; m <= UKismetMathLibrary::FTrunc(SelectParkourStateFloat); m++)
+					{
+						FHitResult OutHitLineResultSecond;
+						UE_LOG(LogTemp, Warning, TEXT("HELLLLOO!!"))
+						// Calculate the start and end locations for the line trace
+						FVector StartLocationLineSecond = FVector(0.0f, 0.0f, m * 8) + OutHitLineResult.TraceStart;
+						FVector EndLocationLineSecond = FVector(0.0f, 0.0f, m * 8) + OutHitLineResult.TraceEnd;
+
+						// Perform the line trace
+						bool bHitLineSecond = GetWorld()->LineTraceSingleByChannel(OutHitLineResultSecond, StartLocationLineSecond, EndLocationLineSecond, ECC_Visibility);
+						HopHitResult.Add(OutHitLineResultSecond);
+
+						// Draw the debug line for visualization
+						DrawDebugLine(GetWorld(), StartLocationLineSecond, EndLocationLineSecond, FColor::Green, true, 2.0f, 0, 1.0f);
+
+						// If a hit is detected, draw a debug point at the hit location
+						if (bHitLineSecond)
+						{
+							DrawDebugPoint(GetWorld(), OutHitLineResultSecond.ImpactPoint, 20.0f, FColor::Red, true, 2.0f);
+						}
+					}
+
 
 				}
 				
