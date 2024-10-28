@@ -1,9 +1,14 @@
 ﻿#include "ParkourSystem/ArrowActor.h"
 
+#include "Components/ArrowComponent.h"
+
 
 AArrowActor::AArrowActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	ArrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("ArrowComponent"));
+
 }
 
 void AArrowActor::BeginPlay()

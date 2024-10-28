@@ -6,7 +6,7 @@
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
-#include "Movement/GroundedParkourComponent.h"
+#include "ParkourSystem/ParkourSystemComponent.h"
 
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -42,14 +42,18 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
 	this->AddOwnedComponent(PlayerComboManagerComponent);
 
-	GroundedParkourComponent = CreateDefaultSubobject<UGroundedParkourComponent>(TEXT("GroundedParkourComponent"));
-	this->AddOwnedComponent(GroundedParkourComponent);
+	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
+	this->AddOwnedComponent(ParkourSystemComponent);
+
+	// Parkours
 
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// GroundedParkourComponent->SetIntializeReference(this, SpringArmComp, CameraComp)
 	
 }
 

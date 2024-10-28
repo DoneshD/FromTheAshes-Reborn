@@ -20,7 +20,7 @@ class FROMTHEASHESREBORN_API IParkourInterface
 
 public:
 
-	virtual bool SetIntializeReference(ACharacter Character, USpringArmComponent CameraBoom, UCameraComponent Camera,
-		UMotionWarpingComponent MotionWarping) = 0;
+	virtual bool SetIntializeReference(ACharacter* Character, USpringArmComponent* CameraBoom, UCameraComponent* Camera,
+		UMotionWarpingComponent* MotionWarping) = 0;
 	
 };

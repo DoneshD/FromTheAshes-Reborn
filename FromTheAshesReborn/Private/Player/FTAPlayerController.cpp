@@ -9,7 +9,7 @@
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "Kismet/GameplayStatics.h"
-#include "Movement/GroundedParkourComponent.h"
+#include "ParkourSystem/ParkourSystemComponent.h"
 
 void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
 {
@@ -333,12 +333,12 @@ void AFTAPlayerController::HandleLockOnActionReleased(const FInputActionValue& I
 
 void AFTAPlayerController::HandleVaultActionPressed(const FInputActionValue& InputActionValue)
 {
-	UGroundedParkourComponent* GroundedParkourComponent = GetPawn()->FindComponentByClass<UGroundedParkourComponent>();
-	if(!GroundedParkourComponent)
+	UParkourSystemComponent* ParkourSystemComponent = GetPawn()->FindComponentByClass<UParkourSystemComponent>();
+	if(!ParkourSystemComponent)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Grounded Parkour Component is NULL"));
+		UE_LOG(LogTemp, Warning, TEXT("Parkour Component is NULL"));
 	}
-	GroundedParkourComponent->ParkourInputPressedVault();
+	ParkourSystemComponent->ParkourInputPressedVault();
 }
 
 void AFTAPlayerController::HandleVaultActionReleased(const FInputActionValue& InputActionValue)

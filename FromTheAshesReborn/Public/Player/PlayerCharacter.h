@@ -5,7 +5,7 @@
 #include "Interfaces/PlayerComboManagerInterface.h"
 #include "PlayerCharacter.generated.h"
 
-class UGroundedParkourComponent;
+class UParkourSystemComponent;
 class UPlayerComboManagerComponent;
 class UGroundedMeleeComboComponent;
 class UGameplayEffect;
@@ -18,13 +18,14 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter, public IPl
 
 protected:
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerComboManager")
 	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManagerComponent;
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UGroundedParkourComponent> GroundedParkourComponent;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Targeting")
+	TObjectPtr<UTargetSystemComponent> TargetSystemComponent;
 
-	
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "ParkourSystem")
+	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseTurnRate;
@@ -40,8 +41,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* CameraComp;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Targeting")
-	TObjectPtr<UTargetSystemComponent> TargetSystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "GameplayEffect | Death")
 	TSubclassOf<UGameplayEffect> DeathEffect;

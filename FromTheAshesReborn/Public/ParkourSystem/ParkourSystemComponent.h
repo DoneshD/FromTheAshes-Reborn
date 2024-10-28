@@ -1,15 +1,17 @@
-﻿#pragma once
+﻿// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
 
 #include "CoreMinimal.h"
+#include "ParkourInterface.h"
 #include "Components/ActorComponent.h"
-#include "ParkourSystem/ParkourInterface.h"
-#include "GroundedParkourComponent.generated.h"
+#include "ParkourSystemComponent.generated.h"
 
 
 class UCharacterMovementComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class FROMTHEASHESREBORN_API UGroundedParkourComponent : public UActorComponent, public IParkourInterface
+class FROMTHEASHESREBORN_API UParkourSystemComponent : public UActorComponent, public IParkourInterface
 {
 	GENERATED_BODY()
 
@@ -32,7 +34,7 @@ protected:
 	float JumpZVelocity;
 
 public:
-	UGroundedParkourComponent();
+	UParkourSystemComponent();
 	
 	virtual void BeginPlay() override;
 	

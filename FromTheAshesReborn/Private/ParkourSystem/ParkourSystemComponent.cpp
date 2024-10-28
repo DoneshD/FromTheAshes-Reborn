@@ -1,17 +1,16 @@
-﻿#include "Movement/GroundedParkourComponent.h"
-
+﻿#include "ParkourSystem/ParkourSystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UGroundedParkourComponent::UGroundedParkourComponent()
+UParkourSystemComponent::UParkourSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
 }
 
 
-void UGroundedParkourComponent::BeginPlay()
+void UParkourSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -38,18 +37,18 @@ void UGroundedParkourComponent::BeginPlay()
 }
 
 
-void UGroundedParkourComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UParkourSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
 
-void UGroundedParkourComponent::ParkourInputPressedVault()
+void UParkourSystemComponent::ParkourInputPressedVault()
 {
 	
 }
 
-bool UGroundedParkourComponent::SetIntializeReference(ACharacter* Character, USpringArmComponent* CameraBoom,
+bool UParkourSystemComponent::SetIntializeReference(ACharacter* Character, USpringArmComponent* CameraBoom,
 	UCameraComponent* Camera, UMotionWarpingComponent* MotionWarping)
 {
 

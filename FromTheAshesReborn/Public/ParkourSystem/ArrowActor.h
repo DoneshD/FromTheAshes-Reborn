@@ -4,14 +4,16 @@
 #include "GameFramework/Actor.h"
 #include "ArrowActor.generated.h"
 
+class UArrowComponent;
+
 UCLASS()
 class FROMTHEASHESREBORN_API AArrowActor : public AActor
 {
 	GENERATED_BODY()
 
-public:
-
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parkour System|Arrow")
+	TObjectPtr<UArrowComponent> ArrowComponent;
 
 public:
 	AArrowActor();
