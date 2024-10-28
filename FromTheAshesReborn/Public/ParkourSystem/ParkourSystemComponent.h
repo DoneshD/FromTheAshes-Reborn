@@ -1,12 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "ParkourInterface.h"
 #include "Components/ActorComponent.h"
 #include "ParkourSystemComponent.generated.h"
-
 
 class UCapsuleComponent;
 class UCharacterMovementComponent;
@@ -62,16 +60,11 @@ protected:
 	float FirstTargetArmLength;
 	FVector FirstArmRelativeLocation;
 
-	UPROPERTY()
-	float CapsuleRadius;
+	FGameplayTag ParkourActionTag = FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction");
 
-	UPROPERTY()
-	float CapsuleHalfHeight;
-	
-	UPROPERTY()
-	float JumpZVelocity;
-
-	
+	bool CanManualClimb = false;
+	bool CanAutoClimb = true;
+	bool AutoClimb = true;
 
 public:
 	UParkourSystemComponent();
@@ -84,6 +77,14 @@ public:
 
 	virtual bool SetIntializeReference(ACharacter* Character, USpringArmComponent* CameraBoom, UCameraComponent* Camera,
 		UMotionWarpingComponent* MotionWarping) override;
+	
+	bool SelectClimb(bool InCanManualClimb, bool InCanAutoClimb, bool InAutoClimb);
+
+	void ParkourAction(bool InAutoClimb);
+
+	void ParkourCheckWallShape();
+
+	
 
 
 };
