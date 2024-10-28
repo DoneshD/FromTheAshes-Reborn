@@ -7,6 +7,7 @@
 #include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
+#include "MotionWarpingComponent.h"
 
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -45,7 +46,8 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
 	this->AddOwnedComponent(ParkourSystemComponent);
 
-	// Parkours
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+	this->AddOwnedComponent(MotionWarpingComponent);
 
 }
 
@@ -53,7 +55,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// GroundedParkourComponent->SetIntializeReference(this, SpringArmComp, CameraComp)
+	ParkourSystemComponent->SetIntializeReference(this, SpringArmComp, CameraComp, MotionWarpingComponent);
 	
 }
 

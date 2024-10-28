@@ -5,6 +5,7 @@
 #include "Interfaces/PlayerComboManagerInterface.h"
 #include "PlayerCharacter.generated.h"
 
+class UMotionWarpingComponent;
 class UParkourSystemComponent;
 class UPlayerComboManagerComponent;
 class UGroundedMeleeComboComponent;
@@ -26,6 +27,10 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "ParkourSystem")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "MotionWarping")
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseTurnRate;

@@ -8,6 +8,7 @@
 #include "ParkourSystemComponent.generated.h"
 
 
+class UCapsuleComponent;
 class UCharacterMovementComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -18,11 +19,48 @@ class FROMTHEASHESREBORN_API UParkourSystemComponent : public UActorComponent, p
 
 protected:
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|Character")
 	TObjectPtr<ACharacter> OwnerCharacter;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|CharacterMovement")
 	TObjectPtr<UCharacterMovementComponent> CharacterMovementComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|SkeletalMesh")
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|AnimInstance")
+	TObjectPtr<UAnimInstance> AnimInstance;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|CapsuleComponent")
+	TObjectPtr<UCapsuleComponent> CapsuleComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|CameraBoomComponent")
+	TObjectPtr<USpringArmComponent> CameraBoomComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|CameraComponent")
+	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|MotionWarpingComponent")
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AWidgetActor> WidgetActorClass;
+
+	//UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class AWidgetActor> WidgetActor;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<class AArrowActor> ArrowActorClass;
+
+	//UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<class AArrowActor> ArrowActor;
+
+	float ArrowLocationX;
+	float CharacterHeightDiff;
+	float ArrowLocationZ = 195;
+
+	float FirstTargetArmLength;
+	FVector FirstArmRelativeLocation;
 
 	UPROPERTY()
 	float CapsuleRadius;
@@ -32,6 +70,8 @@ protected:
 	
 	UPROPERTY()
 	float JumpZVelocity;
+
+	
 
 public:
 	UParkourSystemComponent();
