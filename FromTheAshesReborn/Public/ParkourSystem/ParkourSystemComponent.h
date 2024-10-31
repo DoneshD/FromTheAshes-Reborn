@@ -65,12 +65,10 @@ protected:
 
 	bool CanManualClimb = false;
 	bool CanAutoClimb = true;
-	bool AutoClimb = true;
+	bool MemberAutoClimb = true;
 
 
-	// TArray<FHitResult> HopHitResult;
-
-	//from plugin
+	//Location and Shape
 
 	TArray<FHitResult> WallHitTraces;
 	
@@ -102,6 +100,20 @@ protected:
 
 	FVector WarpVaultLocation;
 
+	UPROPERTY(EditAnywhere, Category = "Trace|Hit Results")
+	bool ShowHitResult = false;
+
+	//Size
+
+	float WallHeight = 0.0f;
+	float WallDepth = 0.0f;
+	float VaultHeight = 0.0f;
+	float DistanceFromLedgeXY = 9999.0f;
+
+	//Parkour Type
+
+	bool InGround = true;
+
 public:
 	UParkourSystemComponent();
 	
@@ -120,11 +132,22 @@ public:
 
 	void FindParkourLocationAndShape();
 
+	void FindSizeParkourObjects();
+
+	void FindParkourType(bool AutoClimb);
+
+	void SetParkourAction(FGameplayTag InNewParourAction);
+
 	void GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
 
 	float GetVerticalWallDetectStartHeight();
 
 	void FindEdgeofWall();
 
+	bool CheckMantleSurface();
+
+	void ShowHitResults();
+
+	
 
 };

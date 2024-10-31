@@ -2,6 +2,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -170,9 +171,14 @@ void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
 {
 	if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction")))
 	{
-		if(SelectClimb(CanManualClimb, CanAutoClimb, AutoClimb))
+		if(SelectClimb(CanManualClimb, CanAutoClimb, MemberAutoClimb))
 		{
 			FindParkourLocationAndShape();
+			ShowHitResults();
+			FindSizeParkourObjects();
+			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+			FindParkourType(MemberAutoClimb);
+
 		}
 	}
 }
@@ -189,7 +195,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 	
 	GetFirstCapsuleTraceSettings(CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight);
 	bool bFirstCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight, TraceTypeQuery1, false,
-		ActorsToIgnore, EDrawDebugTrace::ForDuration, FirstCapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+		ActorsToIgnore, EDrawDebugTrace::None, FirstCapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 	if(FirstCapsuleTraceOutHitResult.bBlockingHit)
 	{
@@ -275,7 +281,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				TArray<AActor*> ActorsToIgnoreSphere;
 
 				bool bSphereTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), SphereTraceStartLocation, SphereTraceEndLocation, 10.5f, TraceTypeQuery1,
-					false, ActorsToIgnore, EDrawDebugTrace::ForDuration, FSphereTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+					false, ActorsToIgnore, EDrawDebugTrace::None, FSphereTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 				if(m == 0)
 				{
@@ -305,8 +311,135 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 	}
 }
 
+void UParkourSystemComponent::FindSizeParkourObjects()
+{
+	if(WallHitResult.bBlockingHit)
+	{
+		if(WallTopResult.bBlockingHit)
+		{
+			if(OwnerCharacter->GetMesh())
+			{
+				WallHeight = WallTopResult.ImpactPoint.Z - OwnerCharacter->GetMesh()->GetSocketLocation(FName("root")).Z;
+				UE_LOG(LogTemp, Warning, TEXT("WallHeight: %f"), WallHeight);
+			}
+		}
+		else
+		{
+			WallHeight = 0.0f;
+		}
+
+		if(WallTopResult.bBlockingHit && WallDepthResult.bBlockingHit)
+		{
+			WallDepth = FVector::Dist(WallTopResult.ImpactPoint, WallDepthResult.ImpactPoint);
+			UE_LOG(LogTemp, Warning, TEXT("WallDepth: %f"), WallDepth);
+
+		}
+		else
+		{
+			WallDepth = 0.0f;
+		}
+
+		if(WallDepthResult.bBlockingHit && WallVaultResult.bBlockingHit)
+		{
+			VaultHeight = WallDepthResult.ImpactPoint.Z - WallVaultResult.ImpactPoint.Z;
+			UE_LOG(LogTemp, Warning, TEXT("VaultHeight: %f"), VaultHeight);
+
+		}
+		else
+		{
+			VaultHeight = 999.0f;
+		}
+
+		if(WallTopResult.bBlockingHit)
+		{
+			DistanceFromLedgeXY = FVector::Dist(OwnerCharacter->GetActorLocation(), WallTopResult.ImpactPoint);
+		}
+		else
+		{
+			DistanceFromLedgeXY = 9999.0f;
+		}
+	}
+	else
+	{
+		WallHeight = 0.0f;
+		WallDepth = 0.0f;
+		VaultHeight = 0.0f;
+		DistanceFromLedgeXY = 9999.0f;
+	}
+}
+
+void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
+{
+	if(WallTopResult.bBlockingHit)
+	{
+		if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy")))
+		{
+			if(InGround)
+			{
+				if(UKismetMathLibrary::InRange_FloatFloat(WallHeight, 90.0f, 120.0f, false, true))
+				{
+					if(CheckMantleSurface())
+					{
+						if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 120.0f, true, true))
+						{
+							if(UKismetMathLibrary::InRange_FloatFloat(VaultHeight, 60.0f, 120.0f, true, true))
+							{
+								if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 30.0f, true, true))
+								{
+									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.ThinVault"));
+								}
+								else
+								{
+									if(CharacterMovementComponent->Velocity.Length() > 20.0f)
+									{
+										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Vault"));
+									}
+									else
+									{
+										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle"));
+
+									}
+								}
+							}
+							else
+							{
+								SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+							}
+						}
+						else
+						{
+							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+						}
+					}
+					else
+					{
+						SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+					}
+				}
+			}
+		}
+		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")))
+		{
+			
+		}
+	}
+	else
+	{
+		SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+		if(!InAutoClimb)
+		{
+			OwnerCharacter->Jump();
+		}
+	}
+}
+
+void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParourAction)
+{
+	
+}
+
 void UParkourSystemComponent::GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& OutRadius,
-	float& OutHalfHeight)
+                                                           float& OutHalfHeight)
 {
 	static FGameplayTag NotBusyTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.NotBusy"));
 	static FGameplayTag ClimbTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.Direction.Climb"));
@@ -371,7 +504,7 @@ void UParkourSystemComponent::FindEdgeofWall()
 		TArray<AActor*> ActorsToIgnoreWallEdge;
 		
 		bool bWallEdgeTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), WallEdgeStartLocation, WallEdgeEndLocation, 10.0f, TraceTypeQuery1,
-					false, ActorsToIgnoreWallEdge, EDrawDebugTrace::ForDuration, FWallEdgeOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+					false, ActorsToIgnoreWallEdge, EDrawDebugTrace::None, FWallEdgeOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 		if(bWallEdgeTraceOutHit)
 		{
@@ -385,13 +518,46 @@ void UParkourSystemComponent::FindEdgeofWall()
 			TArray<AActor*> ActorsToIgnoreWallGround;
 		
 			bool bWallGroundTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), WallGroundStartLocation, WallGroundEndLocation, 30.0f, TraceTypeQuery1,
-						false, ActorsToIgnoreWallGround, EDrawDebugTrace::ForDuration, FWallGroundOutHitResult, true, FLinearColor::Blue, FLinearColor::Yellow, 5.0f);
+						false, ActorsToIgnoreWallGround, EDrawDebugTrace::None, FWallGroundOutHitResult, true, FLinearColor::Blue, FLinearColor::Yellow, 5.0f);
 
 			if(bWallGroundTraceOutHit)
 			{
 				WallVaultResult = FWallGroundOutHitResult;
 				WarpVaultLocation = WallVaultResult.ImpactPoint;
 			}
+		}
+	}
+}
+
+bool UParkourSystemComponent::CheckMantleSurface()
+{
+	//WallTopResult.ImpactPoint
+	FHitResult CapsuleTraceOutHitResult;
+	TArray<AActor*> ActorsToIgnore; 
+	FVector CapsuleStartLocation = WarpTopPoint + FVector(0.0f, 0.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() + 8.0f);
+	FVector CapsuleEndLocation = WarpTopPoint + FVector(0.0f, 0.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() + 8.0f);
+
+	bool bCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, 25.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() - 8.0f, TraceTypeQuery1, false,
+	ActorsToIgnore, EDrawDebugTrace::ForDuration, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+
+	return !bCapsuleTraceOutHit;
+}
+
+void UParkourSystemComponent::ShowHitResults()
+{
+	if(ShowHitResult)
+	{
+		if(WallTopResult.bBlockingHit)
+		{
+			DrawDebugSphere(GetWorld(), WallTopResult.ImpactPoint, 10.0f, 12, FColor::Blue, false, 5.0f);
+		}
+		if(WallDepthResult.bBlockingHit)
+		{
+			DrawDebugSphere(GetWorld(), WallDepthResult.ImpactPoint, 10.0f, 12, FColor::Orange, false, 5.0f);
+		}
+		if(WallVaultResult.bBlockingHit)
+		{
+			DrawDebugSphere(GetWorld(), WallVaultResult.ImpactPoint, 10.0f, 12, FColor::Yellow, false, 5.0f);
 		}
 	}
 }
