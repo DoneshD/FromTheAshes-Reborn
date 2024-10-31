@@ -94,7 +94,13 @@ protected:
 
 	float VerticalWallDetectTraceRange = 8.0f;
 
+	FHitResult WallDepthResult;
 
+	FVector WarpDepth;
+
+	FHitResult WallVaultResult;
+
+	FVector WarpVaultLocation;
 
 public:
 	UParkourSystemComponent();

@@ -363,7 +363,36 @@ void UParkourSystemComponent::FindEdgeofWall()
 {
 	if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) || ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("FindEdgeofWall"))
+		
+		FVector WallEdgeStartLocation = TopHits.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * 30.0f);
+		FVector WallEdgeEndLocation = TopHits.ImpactPoint;
+		
+		FHitResult FWallEdgeOutHitResult;
+		TArray<AActor*> ActorsToIgnoreWallEdge;
+		
+		bool bWallEdgeTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), WallEdgeStartLocation, WallEdgeEndLocation, 10.0f, TraceTypeQuery1,
+					false, ActorsToIgnoreWallEdge, EDrawDebugTrace::ForDuration, FWallEdgeOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+
+		if(bWallEdgeTraceOutHit)
+		{
+			WallDepthResult = FWallEdgeOutHitResult;
+			WarpDepth = WallDepthResult.ImpactPoint;
+
+			FVector WallGroundStartLocation = WallDepthResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * 70.0f);
+			FVector WallGroundEndLocation = WallGroundStartLocation - FVector(0.0f, 0.0f, 400.0f);
+		
+			FHitResult FWallGroundOutHitResult;
+			TArray<AActor*> ActorsToIgnoreWallGround;
+		
+			bool bWallGroundTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), WallGroundStartLocation, WallGroundEndLocation, 30.0f, TraceTypeQuery1,
+						false, ActorsToIgnoreWallGround, EDrawDebugTrace::ForDuration, FWallGroundOutHitResult, true, FLinearColor::Blue, FLinearColor::Yellow, 5.0f);
+
+			if(bWallGroundTraceOutHit)
+			{
+				WallVaultResult = FWallGroundOutHitResult;
+				WarpVaultLocation = WallVaultResult.ImpactPoint;
+			}
+		}
 	}
 }
 
