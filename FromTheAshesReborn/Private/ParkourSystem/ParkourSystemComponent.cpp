@@ -1,6 +1,7 @@
 ﻿#include "ParkourSystem/ParkourSystemComponent.h"
 
 #include "Camera/CameraComponent.h"
+#include "Components/ArrowComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -171,7 +172,7 @@ void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
 	{
 		if(SelectClimb(CanManualClimb, CanAutoClimb, AutoClimb))
 		{
-			ParkourCheckWallShape();
+			FindParkourLocationAndShape();
 		}
 	}
 }
@@ -210,7 +211,6 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 			if(OutHitResult.bBlockingHit && !OutHitResult.bStartPenetrating)
 			{
 				WallHitTraces.Empty();
-				
 				float ParkourStateFloat = UParkourFunctionLibrary::SelectParkourStateFloat(4.0f, 0.0f, 0.0f, 2.0f, ParkourStateTag);
 				for(int j = 0; j <= UKismetMathLibrary::FTrunc(ParkourStateFloat); j++)
 				{
@@ -218,7 +218,6 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 					
 					FRotator ReverseRotationZ = UParkourFunctionLibrary::NormalReverseRotationZ(OutHitResult.ImpactNormal);
 					FVector LastVector = ReverseRotationZ.Vector().RightVector * FVector((j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat); 
-					
 					
 					float FirstZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) ? 0 : -60.0;
 					float SecondZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) ? OutHitResult.ImpactPoint.Z : OwnerCharacter->GetActorLocation().Z;
@@ -243,7 +242,6 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 					for (int m = 0; m <= UKismetMathLibrary::FTrunc(SelectParkourStateFloat); m++)
 					{
 						FHitResult OutHitLineResultSecond;
-						UE_LOG(LogTemp, Warning, TEXT("HELLLLOO!!"))
 						// Calculate the start and end locations for the line trace
 						FVector StartLocationLineSecond = FVector(0.0f, 0.0f, m * 8) + OutHitLineResult.TraceStart;
 						FVector EndLocationLineSecond = FVector(0.0f, 0.0f, m * 8) + OutHitLineResult.TraceEnd;
@@ -270,5 +268,101 @@ void UParkourSystemComponent::ParkourCheckWallShape()
 		}
 		break;
 	}
+}
+
+void UParkourSystemComponent::FindParkourLocationAndShape()
+{
+	FVector CapsuleStartLocation;
+	FVector CapsuleEndLocation;
+	float CapsuleRadius;
+	float CapsuleHalfHeight;
+	const TArray<AActor*> ActorsToIgnore;
+	FHitResult FirstCapsuleTraceOutHitResult;
+	
+	GetFirstCapsuleTraceSettings(CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight);
+	bool bFirstCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight, TraceTypeQuery1, false,
+		ActorsToIgnore, EDrawDebugTrace::ForDuration, FirstCapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+
+	if(FirstCapsuleTraceOutHitResult.bBlockingHit)
+	{
+		WallHitTraces.Empty();
+		for(int32 i = 0; i <= HorizontalWallDetectTraceHalfQuantity * 2; i++)
+		{
+			
+			HopHitTraces.Empty();
+			for(int32 j = 0; j <= VerticalWallDetectTraceQuantity/ (CharacterMovementComponent->IsFalling() ? 2 : 1); j++)
+			{
+				//example for adding two floats to make a vector
+				FVector Vector1 = FVector(i * HorizontalWallDetectTraceRange + HorizontalWallDetectTraceRange * HorizontalWallDetectTraceHalfQuantity * -1.0f);
+				FRotator NormalizeCapusleRotation = UParkourFunctionLibrary::NormalReverseRotationZ(FirstCapsuleTraceOutHitResult.ImpactNormal);
+				FVector Vector2 = Vector1 * NormalizeCapusleRotation.Vector().RightVector;
+				FVector Vector3 = FVector(FirstCapsuleTraceOutHitResult.ImpactPoint.X, FirstCapsuleTraceOutHitResult.ImpactPoint.Y, GetVerticalWallDetectStartHeight());
+				FVector TripleVector = FVector(0.0f, 0.0f, j * VerticalWallDetectTraceRange) + Vector2 + Vector3;
+
+				//HopHit Traces
+				FVector StartHopHitTracesLocation = TripleVector + (NormalizeCapusleRotation.Vector().ForwardVector * -40.0f);
+				FVector EndHopHitTracesLocation =  TripleVector + (NormalizeCapusleRotation.Vector().ForwardVector * 30.0f);
+				FHitResult HopHitOutHitResult;
+				// FCollisionParameters
+				GetWorld()->LineTraceSingleByChannel(HopHitOutHitResult, StartHopHitTracesLocation, EndHopHitTracesLocation, ECC_Visibility,  );
+				HopHitTraces.Add(HopHitOutHitResult);
+				
+			}
+		}
+	}
+}
+
+void UParkourSystemComponent::GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& OutRadius,
+	float& OutHalfHeight)
+{
+	static FGameplayTag NotBusyTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.NotBusy"));
+	static FGameplayTag ClimbTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.Direction.Climb"));
+
+	if(ParkourStateTag.MatchesTag(NotBusyTag))
+	{
+		
+	}
+	else if(ParkourStateTag.MatchesTag(ClimbTag))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Parkour state"));
+	}
+
+	FVector TempStart = OwnerCharacter->GetActorLocation() + FVector(
+		0.0f, 0.0f, CharacterMovementComponent->IsFalling() ? 15.0f : 75.0f);
+
+	FVector Velocity = CharacterMovementComponent->Velocity.GetSafeNormal2D(0.0001);
+	float OutRangeA = CharacterMovementComponent->IsFalling() ? 25.0f : 50.0f;
+	float OutRangeB = CharacterMovementComponent->IsFalling() ? 100.0f : 200.0f;
+
+	float ClampedRange = UKismetMathLibrary::MapRangeClamped(Velocity.Length(), 0.0f, 500.0f, OutRangeA, OutRangeB);
+
+	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
+
+	OutStart = TempStart;
+	OutEnd = TempEnd;
+	OutRadius = 40.0f;
+	OutHalfHeight = CharacterMovementComponent->IsFalling() ? 70.0f : 120.0f;
+}
+
+float UParkourSystemComponent::GetVerticalWallDetectStartHeight()
+{
+	static FGameplayTag NotBusyTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.NotBusy"));
+	static FGameplayTag ClimbTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.Climb"));
+
+	if(ParkourStateTag.MatchesTag(NotBusyTag))
+	{
+		return OwnerCharacter->GetActorLocation().Z - (CharacterMovementComponent->IsFalling() ? 40.0f : 70.0f);
+	}
+	else if(ParkourStateTag.MatchesTag(ClimbTag))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UParkourSystemComponent::GetVerticalWallDetectStartHeight should not be here"))
+		return 0.0f;
+		if(!ArrowActor)
+		{
+			UE_LOG(LogTemp, Error, TEXT("ArrowActor is NULL"))
+			return 0.0f;
+		}
+	}
+	return 0.0f;
 }
 

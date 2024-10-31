@@ -12,10 +12,12 @@ class FROMTHEASHESREBORN_API AArrowActor : public AActor
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parkour System|Arrow")
-	TObjectPtr<UArrowComponent> ArrowComponent;
 
 public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parkour System|Arrow")
+	TObjectPtr<UArrowComponent> ArrowComponent;
+	
 	AArrowActor();
 	
 	virtual void BeginPlay() override;

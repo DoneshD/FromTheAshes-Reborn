@@ -1,12 +1,14 @@
 ﻿#include "ParkourSystem/ParkourFunctionLibrary.h"
 #include "GameplayTagContainer.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 FRotator UParkourFunctionLibrary::NormalReverseRotationZ(FVector NormalVector)
 {
-	FRotator RotationFromX = UKismetMathLibrary::NormalizedDeltaRotator(FRotationMatrix::MakeFromX(NormalVector).Rotator(), FRotator(0, 180.0f, 0));
-	return FRotator(0, RotationFromX.Yaw, 0);
-
+	FRotator RotationFromX = UKismetMathLibrary::MakeRotFromX(NormalVector);
+	FRotator NormalizeRotation = UKismetMathLibrary::NormalizedDeltaRotator(RotationFromX, FRotator(0, 180.0f, 0));
+	
+	return FRotator(0, NormalizeRotation.Yaw, 0);
 }
 
 FRotator UParkourFunctionLibrary::ReverseRotation(FRotator Rotation)
@@ -28,6 +30,7 @@ float UParkourFunctionLibrary::SelectClimbStyleFloat(float Braced, float FreeHan
 	{
 		return FreeHang;
 	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("No climb style tags match"));
 	return 0.0f; 
 }

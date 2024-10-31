@@ -67,9 +67,24 @@ protected:
 	bool CanAutoClimb = true;
 	bool AutoClimb = true;
 
-	TArray<FHitResult> WallHitTraces;
 
 	TArray<FHitResult> HopHitResult;
+
+	//from plugin
+
+	TArray<FHitResult> WallHitTraces;
+
+	TArray<FHitResult> HopHitTraces;
+
+	int32 HorizontalWallDetectTraceHalfQuantity = 2;
+
+	float HorizontalWallDetectTraceRange = 20.0f;
+
+	int32 VerticalWallDetectTraceQuantity = 30;
+
+	float VerticalWallDetectTraceRange = 8.0f;
+
+
 
 public:
 	UParkourSystemComponent();
@@ -89,7 +104,11 @@ public:
 
 	void ParkourCheckWallShape();
 
-	
+	void FindParkourLocationAndShape();
+
+	void GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
+
+	float GetVerticalWallDetectStartHeight();
 
 
 };
