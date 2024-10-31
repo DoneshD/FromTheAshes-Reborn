@@ -177,98 +177,6 @@ void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
 	}
 }
 
-void UParkourSystemComponent::ParkourCheckWallShape()
-{
-	bool bIsFalling = CharacterMovementComponent->IsFalling();
-
-	int32 Index = bIsFalling ? 8 : 15;
-
-	for (int32 i = 0; i <= Index; i++)
-	{
-		for(int32 k = 0; k <= 11; k++)
-		{
-			FVector ZLocation = FVector(0.0f, 0.0f, i * 16) + FVector(0.0f, 0.0f, -60.0f) + OwnerCharacter->GetActorLocation();
-			FVector ForwardInverseVector = OwnerCharacter->GetActorForwardVector() * -20.0f;
-			
-			FVector StartLocation = ZLocation + ForwardInverseVector;
-			FVector EndLocation = ZLocation + (OwnerCharacter->GetActorForwardVector() * (10.0f + (k * 10.0f)));
-			
-			FCollisionShape SphereShape = FCollisionShape::MakeSphere(10.0f);
-			FHitResult OutHitResult;
-			
-			bool bHit = GetWorld()->SweepSingleByChannel(OutHitResult, StartLocation, EndLocation, FQuat::Identity, ECC_Visibility, SphereShape);
-
-			DrawDebugSphere(GetWorld(), StartLocation, 10.0f, 4, FColor::Green, true, 5.0f);
-			DrawDebugSphere(GetWorld(), EndLocation, 10.0f, 4, FColor::Red, true, 5.0f);
-
-			DrawDebugLine(GetWorld(), StartLocation, EndLocation, FColor::Blue, true, 5.0f, 0, 2.0f);
-
-			if (bHit)
-			{
-				DrawDebugSphere(GetWorld(), OutHitResult.Location, 10.0f * 0.5f, 12, FColor::Yellow, true, 5.0f);
-			}
-
-			if(OutHitResult.bBlockingHit && !OutHitResult.bStartPenetrating)
-			{
-				WallHitTraces.Empty();
-				float ParkourStateFloat = UParkourFunctionLibrary::SelectParkourStateFloat(4.0f, 0.0f, 0.0f, 2.0f, ParkourStateTag);
-				for(int j = 0; j <= UKismetMathLibrary::FTrunc(ParkourStateFloat); j++)
-				{
-					float IndexStateFloat = UParkourFunctionLibrary::SelectParkourStateFloat(-40.0f, 0.0f, 0.0f, -20.0f, ParkourStateTag);
-					
-					FRotator ReverseRotationZ = UParkourFunctionLibrary::NormalReverseRotationZ(OutHitResult.ImpactNormal);
-					FVector LastVector = ReverseRotationZ.Vector().RightVector * FVector((j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat, (j * 20) + IndexStateFloat); 
-					
-					float FirstZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) ? 0 : -60.0;
-					float SecondZValue = ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) ? OutHitResult.ImpactPoint.Z : OwnerCharacter->GetActorLocation().Z;
-
-					FVector FirstVector = FVector(0.0f, 0.0f, FirstZValue) + FVector(OutHitResult.ImpactPoint.X, OutHitResult.ImpactPoint.Y, SecondZValue) + LastVector;
-					FVector StartLocationLine = FirstVector + ReverseRotationZ.Vector().ForwardVector * -40.0f;
-					FVector EndLocationLine = FirstVector + ReverseRotationZ.Vector().ForwardVector * 30.0f;
-
-					FHitResult OutHitLineResult;
-					bool bHitLine = GetWorld()->LineTraceSingleByChannel(OutHitLineResult, StartLocationLine, EndLocationLine, ECC_Visibility);
-
-					DrawDebugSphere(GetWorld(), FirstVector, 10.0f, 4, FColor::Yellow, false, 5.0f);
-    
-					// Draw debug point where the line trace hits, if bHitLine is true
-					if (bHitLine)
-					{
-						DrawDebugPoint(GetWorld(), OutHitLineResult.ImpactPoint, 10.0f, FColor::Red, false, 5.0f);
-					}
-
-					HopHitResult.Empty();
-					float SelectParkourStateFloat = UParkourFunctionLibrary::SelectParkourStateFloat(30.0f, 0.0f, 0.0f, 7.0f, ParkourStateTag);
-					for (int m = 0; m <= UKismetMathLibrary::FTrunc(SelectParkourStateFloat); m++)
-					{
-						FHitResult OutHitLineResultSecond;
-						// Calculate the start and end locations for the line trace
-						FVector StartLocationLineSecond = FVector(0.0f, 0.0f, m * 8) + OutHitLineResult.TraceStart;
-						FVector EndLocationLineSecond = FVector(0.0f, 0.0f, m * 8) + OutHitLineResult.TraceEnd;
-
-						// Perform the line trace
-						bool bHitLineSecond = GetWorld()->LineTraceSingleByChannel(OutHitLineResultSecond, StartLocationLineSecond, EndLocationLineSecond, ECC_Visibility);
-						HopHitResult.Add(OutHitLineResultSecond);
-
-						// Draw the debug line for visualization
-						DrawDebugLine(GetWorld(), StartLocationLineSecond, EndLocationLineSecond, FColor::Green, true, 2.0f, 0, 1.0f);
-
-						// If a hit is detected, draw a debug point at the hit location
-						if (bHitLineSecond)
-						{
-							DrawDebugPoint(GetWorld(), OutHitLineResultSecond.ImpactPoint, 20.0f, FColor::Red, true, 2.0f);
-						}
-					}
-
-
-				}
-				
-				break;
-			}
-		}
-		break;
-	}
-}
 
 void UParkourSystemComponent::FindParkourLocationAndShape()
 {
@@ -295,19 +203,57 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				//example for adding two floats to make a vector
 				FVector Vector1 = FVector(i * HorizontalWallDetectTraceRange + HorizontalWallDetectTraceRange * HorizontalWallDetectTraceHalfQuantity * -1.0f);
 				FRotator NormalizeCapusleRotation = UParkourFunctionLibrary::NormalReverseRotationZ(FirstCapsuleTraceOutHitResult.ImpactNormal);
-				FVector Vector2 = Vector1 * NormalizeCapusleRotation.Vector().RightVector;
+				FVector Vector2 = Vector1 * UKismetMathLibrary::GetRightVector(NormalizeCapusleRotation);
 				FVector Vector3 = FVector(FirstCapsuleTraceOutHitResult.ImpactPoint.X, FirstCapsuleTraceOutHitResult.ImpactPoint.Y, GetVerticalWallDetectStartHeight());
 				FVector TripleVector = FVector(0.0f, 0.0f, j * VerticalWallDetectTraceRange) + Vector2 + Vector3;
 
 				//HopHit Traces
-				FVector StartHopHitTracesLocation = TripleVector + (NormalizeCapusleRotation.Vector().ForwardVector * -40.0f);
-				FVector EndHopHitTracesLocation =  TripleVector + (NormalizeCapusleRotation.Vector().ForwardVector * 30.0f);
+				FVector StartHopHitTracesLocation = TripleVector + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * -40.0f);
+				FVector EndHopHitTracesLocation = TripleVector + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * 30.0f);
 				FHitResult HopHitOutHitResult;
-				// FCollisionParameters
-				GetWorld()->LineTraceSingleByChannel(HopHitOutHitResult, StartHopHitTracesLocation, EndHopHitTracesLocation, ECC_Visibility,  );
+				FCollisionQueryParams test;
+				bool HopHitOutHit =  GetWorld()->LineTraceSingleByChannel(HopHitOutHitResult, StartHopHitTracesLocation, EndHopHitTracesLocation, ECC_Visibility);
 				HopHitTraces.Add(HopHitOutHitResult);
-				
 			}
+			int32 k = 0;
+			for (FHitResult OutHopHitResult : HopHitTraces)
+			{
+				if(k != 0)
+				{
+					float HitDistance1 = FVector::Dist(OutHopHitResult.TraceStart, OutHopHitResult.TraceEnd);
+					float SelectFloat1 = OutHopHitResult.bBlockingHit ? OutHopHitResult.Distance : HitDistance1;
+
+					float HitDistance2 = FVector::Dist(HopHitTraces[k - 1].TraceStart, HopHitTraces[k - 1].TraceEnd);
+					float SelectFloat2 = HopHitTraces[k - 1].bBlockingHit ? HopHitTraces[k - 1].Distance : HitDistance2;
+
+					if(SelectFloat1 - SelectFloat2 > 5.0f)
+					{
+						WallHitTraces.Add(HopHitTraces[k - 1]);
+					}
+				}
+				k++;
+			}
+		}
+		int32 l = 0;
+		for (FHitResult OutWallHitResult : WallHitTraces)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hello"));
+			if(l == 0)
+			{
+				WallHitResult = OutWallHitResult;
+			}
+			else
+			{
+				if(FVector::Dist(OutWallHitResult.ImpactPoint, OwnerCharacter->GetActorLocation()) <= FVector::Dist(WallHitResult.ImpactPoint, OwnerCharacter->GetActorLocation()))
+				{
+					WallHitResult = OutWallHitResult;
+				}
+				else
+				{
+					WallHitResult = WallHitResult;
+				}
+			}
+			l++;
 		}
 	}
 }

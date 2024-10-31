@@ -68,13 +68,14 @@ protected:
 	bool AutoClimb = true;
 
 
-	TArray<FHitResult> HopHitResult;
+	// TArray<FHitResult> HopHitResult;
 
 	//from plugin
 
 	TArray<FHitResult> WallHitTraces;
 
 	TArray<FHitResult> HopHitTraces;
+	FHitResult WallHitResult;
 
 	int32 HorizontalWallDetectTraceHalfQuantity = 2;
 
@@ -101,8 +102,6 @@ public:
 	bool SelectClimb(bool InCanManualClimb, bool InCanAutoClimb, bool InAutoClimb);
 
 	void ParkourAction(bool InAutoClimb);
-
-	void ParkourCheckWallShape();
 
 	void FindParkourLocationAndShape();
 
