@@ -237,7 +237,6 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 		int32 l = 0;
 		for (FHitResult OutWallHitResult : WallHitTraces)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hello"));
 			if(l == 0)
 			{
 				WallHitResult = OutWallHitResult;
@@ -254,6 +253,54 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				}
 			}
 			l++;
+		}
+		if(WallHitResult.bBlockingHit && !WallHitResult.bStartPenetrating)
+		{
+			if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")))
+			{
+				
+			}
+			else
+			{
+				WallRotation = UParkourFunctionLibrary::NormalReverseRotationZ(WallHitResult.ImpactNormal);
+			}
+			for(int32 m = 0; m <= 8; m++)
+			{
+
+				FVector ImpactPointForwardVector = WallHitResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * (m * 30)) + (UKismetMathLibrary::GetForwardVector(WallRotation) * 2.0f);
+				FVector SphereTraceStartLocation = ImpactPointForwardVector + FVector(0.0f, 0.0f, 7.0f);
+				FVector SphereTraceEndLocation = SphereTraceStartLocation - FVector(0.0f, 0.0f, 7.0f);
+
+				FHitResult FSphereTraceOutHitResult;
+				TArray<AActor*> ActorsToIgnoreSphere;
+
+				bool bSphereTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), SphereTraceStartLocation, SphereTraceEndLocation, 10.5f, TraceTypeQuery1,
+					false, ActorsToIgnore, EDrawDebugTrace::ForDuration, FSphereTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+
+				if(m == 0)
+				{
+					if(bSphereTraceOutHit)
+					{
+						WallTopResult = FSphereTraceOutHitResult;
+						WarpTopPoint = FSphereTraceOutHitResult.ImpactPoint;
+					}
+				}
+				
+				if(bSphereTraceOutHit)
+				{
+					TopHits = FSphereTraceOutHitResult;
+					if(m == 8)
+					{
+						FindEdgeofWall();
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+			
+			FindEdgeofWall();
 		}
 	}
 }
@@ -310,5 +357,13 @@ float UParkourSystemComponent::GetVerticalWallDetectStartHeight()
 		}
 	}
 	return 0.0f;
+}
+
+void UParkourSystemComponent::FindEdgeofWall()
+{
+	if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) || ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FindEdgeofWall"))
+	}
 }
 

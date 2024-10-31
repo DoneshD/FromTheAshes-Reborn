@@ -73,10 +73,19 @@ protected:
 	//from plugin
 
 	TArray<FHitResult> WallHitTraces;
-
-	TArray<FHitResult> HopHitTraces;
+	
 	FHitResult WallHitResult;
 
+	TArray<FHitResult> HopHitTraces;
+	
+	FRotator WallRotation;
+	
+	FHitResult TopHits;
+
+	FHitResult WallTopResult;
+
+	FVector WarpTopPoint;
+	
 	int32 HorizontalWallDetectTraceHalfQuantity = 2;
 
 	float HorizontalWallDetectTraceRange = 20.0f;
@@ -108,6 +117,8 @@ public:
 	void GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
 
 	float GetVerticalWallDetectStartHeight();
+
+	void FindEdgeofWall();
 
 
 };
