@@ -4,7 +4,7 @@
 #include "UObject/Interface.h"
 #include "ParkourStatsInterface.generated.h"
 
-UINTERFACE(meta = (CannotImplementInterfaceInBlueprint))
+UINTERFACE()
 class UParkourStatsInterface : public UInterface
 {
 	GENERATED_BODY()
@@ -16,13 +16,10 @@ class FROMTHEASHESREBORN_API IParkourStatsInterface
 
 public:
 
-	UFUNCTION(BlueprintCallable)
 	virtual bool SetParkourState(FText ParkourState) = 0;
 
-	UFUNCTION(BlueprintCallable)
 	virtual bool SetParkourAction(FText ParkourAction) = 0;
 
-	UFUNCTION(BlueprintCallable)
 	virtual bool SetClimbStyle(FText ClimbStyle) = 0;
 
 };

@@ -25,3 +25,8 @@ void AWidgetActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+// bool AWidgetActor::SetParkourAction(FText ParkourAction)
+// {
+// 	return false;
+// }
+//

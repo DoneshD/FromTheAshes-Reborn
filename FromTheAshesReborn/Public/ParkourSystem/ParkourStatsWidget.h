@@ -23,11 +23,14 @@ protected:
 	FText ClimbStyleText;
 
 public:
-	
+
+	UFUNCTION()
 	virtual bool SetParkourState(FText ParkourState) override;
 
+	UFUNCTION()
 	virtual bool SetParkourAction(FText ParkourAction) override;
-
+	
+	UFUNCTION()
 	virtual bool SetClimbStyle(FText ClimbStyle) override;
 
 };

@@ -6,7 +6,7 @@
 
 struct FGameplayTag;
 
-UINTERFACE()
+UINTERFACE(meta = (CannotImplementInterfaceInBlueprint))
 class UParkourABP_Interface : public UInterface
 {
 	GENERATED_BODY()

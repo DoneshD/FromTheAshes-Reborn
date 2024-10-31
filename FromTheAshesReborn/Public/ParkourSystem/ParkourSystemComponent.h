@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ParkourSystemComponent.generated.h"
 
+class UParkourVariableDataAsset;
 class UCapsuleComponent;
 class UCharacterMovementComponent;
 
@@ -114,6 +115,12 @@ protected:
 
 	bool InGround = true;
 
+	UPROPERTY(EditAnywhere)
+	TArray<TObjectPtr<UParkourVariableDataAsset>> ParkourVariablesArray;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UParkourVariableDataAsset> CurrentParkourVariables;
+
 public:
 	UParkourSystemComponent();
 	
@@ -136,6 +143,8 @@ public:
 
 	void FindParkourType(bool AutoClimb);
 
+	void PlayParkourMontage();
+	
 	void SetParkourAction(FGameplayTag InNewParourAction);
 
 	void GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
@@ -146,8 +155,12 @@ public:
 
 	bool CheckMantleSurface();
 
+	bool CheckVaultSurface();
+
 	void ShowHitResults();
 
-	
+	void SetParkourState(FGameplayTag InNewParkourState);
+
+	void ParkourStateSettings();
 
 };

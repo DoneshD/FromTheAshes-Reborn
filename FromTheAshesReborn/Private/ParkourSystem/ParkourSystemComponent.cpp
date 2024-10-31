@@ -1,8 +1,11 @@
 ﻿#include "ParkourSystem/ParkourSystemComponent.h"
 
+#include "GameplayTagsManager.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "ParkourSystem/ParkourVariableDataAsset.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -378,42 +381,158 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 			{
 				if(UKismetMathLibrary::InRange_FloatFloat(WallHeight, 90.0f, 120.0f, false, true))
 				{
-					if(CheckMantleSurface())
+					if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 120.0f, true, true))
 					{
-						if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 120.0f, true, true))
+						if(UKismetMathLibrary::InRange_FloatFloat(VaultHeight, 60.0f, 120.0f, true, true))
 						{
-							if(UKismetMathLibrary::InRange_FloatFloat(VaultHeight, 60.0f, 120.0f, true, true))
+							if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 30.0f, true, true))
 							{
-								if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 30.0f, true, true))
+								if(CheckVaultSurface())
 								{
 									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.ThinVault"));
 								}
 								else
 								{
-									if(CharacterMovementComponent->Velocity.Length() > 20.0f)
+									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+								}
+							}
+							else
+							{
+								if(CharacterMovementComponent->Velocity.Length() > 20.0f)
+								{
+									if(CheckVaultSurface())
 									{
 										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Vault"));
 									}
 									else
 									{
+										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+									}
+								}
+								else
+								{
+									if(CheckVaultSurface())
+									{
 										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle"));
+									}
+									else
+									{
+										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+									}
 
+								}
+							}
+						}
+						else
+						{
+							if(CheckMantleSurface())
+							{
+								SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+							}
+							else
+							{
+								SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+							}
+						}
+					}
+					else
+					{
+						if(CheckMantleSurface())
+						{
+							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+						}
+						else
+						{
+							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+						}
+					}
+				}
+				else
+				{
+					if(UKismetMathLibrary::InRange_FloatFloat(WallHeight, 44.0f, 90.0f, false, true))
+					{
+						if(CheckMantleSurface())
+						{
+							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.LowMantle"));
+						}
+						else
+						{
+							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+						}
+					}
+					else
+					{
+						if(UKismetMathLibrary::InRange_FloatFloat(WallHeight, 120.0f, 160.0f, false, true))
+						{
+							if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 120.0f, false, true))
+							{
+								if(UKismetMathLibrary::InRange_FloatFloat(VaultHeight, 60.0f, 120.0f, true, true))
+								{
+									if(CharacterMovementComponent->Velocity.Length() > 20.0f)
+									{
+										if(CheckVaultSurface())
+										{
+											SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.HighVault"));
+										}
+										else
+										{
+											SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+										}
+									}
+									else
+									{
+										if(CheckMantleSurface())
+										{
+											SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+										}
+										else
+										{
+											SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+										}
+									}
+								}
+								else
+								{
+									if(CheckMantleSurface())
+									{
+										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+									}
+									else
+									{
+										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
 									}
 								}
 							}
 							else
 							{
-								SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+								if(CheckMantleSurface())
+								{
+									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+								}
+								else
+								{
+									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+								}
 							}
 						}
 						else
 						{
-							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+							if(UKismetMathLibrary::InRange_FloatFloat(WallHeight, 0.0f, 44.0f, false, true))
+							{
+								SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+							}
+							else
+							{
+								if(WallHeight < 250.0f)
+								{
+									
+								}
+								else
+								{
+									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+								}
+							}
 						}
-					}
-					else
-					{
-						SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
 					}
 				}
 			}
@@ -433,9 +552,57 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 	}
 }
 
-void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParourAction)
+void UParkourSystemComponent::PlayParkourMontage()
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("Success"))
+	SetParkourState();
+}
+
+void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParkourAction)
+{
+	if(!InNewParkourAction.MatchesTag(ParkourActionTag))
+	{
+		ParkourActionTag = InNewParkourAction;
+		//IParkourABP_Interface* ParkourABP_Interface = Cast<IParkourABP_Interface>(AnimInstance);
+		//ParkourABP_Interface->SetParkourAction(InNewParkourAction)
+		// IParkourStatsInterface* ParkourStatsInterface = Cast<IParkourStatsInterface>(WidgetActor);
+		// if(ParkourStatsInterface)
+		// {
+		// 	ParkourStatsInterface->SetParkourAction(FText::FromName(InNewParkourAction.GetTagName()));
+			if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction")))
+			{
+			}
+			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.ThinVault")))
+			{
+				CurrentParkourVariables = ParkourVariablesArray[0];
+			}
+			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.HighVault")))
+			{
+				CurrentParkourVariables = ParkourVariablesArray[1];
+			}
+			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Vault")))
+			{
+				CurrentParkourVariables = ParkourVariablesArray[2];
+			}
+			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle")))
+			{
+				CurrentParkourVariables = ParkourVariablesArray[3];
+			}
+			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.LowMantle")))
+			{
+				CurrentParkourVariables = ParkourVariablesArray[4];
+			}
+			if(CurrentParkourVariables)
+			{
+				PlayParkourMontage();
+			}
+		}
+		// else
+		// {
+		// 	UE_LOG(LogTemp, Warning, TEXT("Incorrect"))
+		// }
+		
+	// }
 }
 
 void UParkourSystemComponent::GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& OutRadius,
@@ -543,6 +710,23 @@ bool UParkourSystemComponent::CheckMantleSurface()
 	return !bCapsuleTraceOutHit;
 }
 
+bool UParkourSystemComponent::CheckVaultSurface()
+{
+	//WallTopResult.ImpactPoint
+	FHitResult CapsuleTraceOutHitResult;
+	TArray<AActor*> ActorsToIgnore;
+	
+	FVector CapsuleStartLocation = WarpTopPoint + FVector(0.0f, 0.0f,(CapsuleComponent->GetScaledCapsuleHalfHeight() / 2) + 18.0f);
+	FVector CapsuleEndLocation = WarpTopPoint + FVector(0.0f, 0.0f, (CapsuleComponent->GetScaledCapsuleHalfHeight() / 2) + 18.0f);
+	
+	float HalfHeight = (CapsuleComponent->GetScaledCapsuleHalfHeight() / 2) + 5.0f;
+
+	bool bCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, 25.0f, HalfHeight, TraceTypeQuery1, false,
+	ActorsToIgnore, EDrawDebugTrace::ForDuration, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+
+	return !bCapsuleTraceOutHit;
+}
+
 void UParkourSystemComponent::ShowHitResults()
 {
 	if(ShowHitResult)
@@ -561,4 +745,59 @@ void UParkourSystemComponent::ShowHitResults()
 		}
 	}
 }
+
+void UParkourSystemComponent::SetParkourState(FGameplayTag InNewParkourState)
+{
+	if(!ParkourStateTag.MatchesTag(InNewParkourState))
+	{
+		ParkourStateTag = InNewParkourState;
+		//IParkourABP_Interface* ParkourABP_Interface = Cast<IParkourABP_Interface>(AnimInstance);
+		//ParkourABP_Interface->SetParkourState(InNewParkourAction)
+		// IParkourStatsInterface* ParkourStatsInterface = Cast<IParkourStatsInterface>(WidgetActor);
+		// if(ParkourStatsInterface)
+		// {
+		// 	ParkourStatsInterface->SetParkourState(FText::FromName(InNewParkourAction.GetTagName()));
+		if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")))
+		{
+		}
+		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle")))
+		{
+			CurrentParkourVariables = ParkourVariablesArray[0];
+		}
+		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Vault")))
+		{
+			CurrentParkourVariables = ParkourVariablesArray[1];
+		}
+		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy")))
+		{
+			CurrentParkourVariables = ParkourVariablesArray[2];
+		}
+		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.ReachLedgee")))
+		{
+			CurrentParkourVariables = ParkourVariablesArray[3];
+		}
+		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.LowMantle")))
+		{
+			CurrentParkourVariables = ParkourVariablesArray[4];
+		}
+		if(CurrentParkourVariables)
+		{
+			PlayParkourMontage();
+		}
+	}
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Incorrect"))
+	// }
+		
+	// }
+	}
+
+void UParkourSystemComponent::ParkourStateSettings()
+{
+}
+
+}
+
+
 
