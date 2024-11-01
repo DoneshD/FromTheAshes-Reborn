@@ -196,7 +196,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 	
 	GetFirstCapsuleTraceSettings(CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight);
 	bool bFirstCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight, TraceTypeQuery1, false,
-		ActorsToIgnore, EDrawDebugTrace::None, FirstCapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+		ActorsToIgnore, EDrawDebugTrace::ForDuration, FirstCapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 	if(FirstCapsuleTraceOutHitResult.bBlockingHit)
 	{
@@ -221,6 +221,8 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				FCollisionQueryParams test;
 				bool HopHitOutHit =  GetWorld()->LineTraceSingleByChannel(HopHitOutHitResult, StartHopHitTracesLocation, EndHopHitTracesLocation, ECC_Visibility);
 				HopHitTraces.Add(HopHitOutHitResult);
+
+				
 			}
 			int32 k = 0;
 			for (FHitResult OutHopHitResult : HopHitTraces)
@@ -321,7 +323,6 @@ void UParkourSystemComponent::FindSizeParkourObjects()
 			if(OwnerCharacter->GetMesh())
 			{
 				WallHeight = WallTopResult.ImpactPoint.Z - OwnerCharacter->GetMesh()->GetSocketLocation(FName("root")).Z;
-				UE_LOG(LogTemp, Warning, TEXT("WallHeight: %f"), WallHeight);
 			}
 		}
 		else
@@ -332,7 +333,6 @@ void UParkourSystemComponent::FindSizeParkourObjects()
 		if(WallTopResult.bBlockingHit && WallDepthResult.bBlockingHit)
 		{
 			WallDepth = FVector::Dist(WallTopResult.ImpactPoint, WallDepthResult.ImpactPoint);
-			UE_LOG(LogTemp, Warning, TEXT("WallDepth: %f"), WallDepth);
 
 		}
 		else
@@ -343,7 +343,6 @@ void UParkourSystemComponent::FindSizeParkourObjects()
 		if(WallDepthResult.bBlockingHit && WallVaultResult.bBlockingHit)
 		{
 			VaultHeight = WallDepthResult.ImpactPoint.Z - WallVaultResult.ImpactPoint.Z;
-			UE_LOG(LogTemp, Warning, TEXT("VaultHeight: %f"), VaultHeight);
 
 		}
 		else
@@ -552,11 +551,10 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 
 void UParkourSystemComponent::PlayParkourMontage()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Success"))
 	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.Vault"));
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour1"), FindWarp1Location(-70, -60), WallRotation);
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour2"), FindWarp2Location(-30, -45), WallRotation);
-	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour3"), FindWarp3Location(0, 3), WallRotation);
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour3"), FindWarp3Location(0, 20), WallRotation);
 	OwnerCharacter->PlayAnimMontage(CurrentParkourMontage);
 	// AnimInstance->Montage_Play(CurrentParkourMontage);
 	//
@@ -599,30 +597,38 @@ void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParkourAction)
 			if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction")))
 			{
 				CurrentParkourVariables = nullptr;
+				ResetParkourResult();
+
 			}
 			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.ThinVault")))
 			{
 				CurrentParkourVariables = ParkourVariablesArray[0];
+
 			}
 			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.HighVault")))
 			{
 				CurrentParkourVariables = ParkourVariablesArray[1];
+
 			}
 			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Vault")))
 			{
 				CurrentParkourVariables = ParkourVariablesArray[2];
+
 			}
 			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle")))
 			{
 				CurrentParkourVariables = ParkourVariablesArray[3];
+
 			}
 			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.LowMantle")))
 			{
 				CurrentParkourVariables = ParkourVariablesArray[4];
+
 			}
 			if(CurrentParkourVariables)
 			{
 				PlayParkourMontage();
+
 			}
 		}
 		// else
@@ -657,7 +663,9 @@ void UParkourSystemComponent::GetFirstCapsuleTraceSettings(FVector& OutStart, FV
 
 	float ClampedRange = UKismetMathLibrary::MapRangeClamped(Velocity.Length(), 0.0f, 500.0f, OutRangeA, OutRangeB);
 
-	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
+	//FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
+	//For now
+	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * 150.0f);
 
 	OutStart = TempStart;
 	OutEnd = TempEnd;
@@ -854,4 +862,17 @@ void UParkourSystemComponent::StopParkourMontage()
 {
 	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy"));
 	SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+}
+
+void UParkourSystemComponent::ResetParkourResult()
+{
+	HopHitTraces.Empty();
+	WallHitTraces.Empty();
+	WallHitResult.Reset(false, false);
+	WallTopResult.Reset(false, false);
+	TopHits.Reset(false, false);
+	WallDepthResult.Reset(false, false);
+	WallVaultResult.Reset(false, false);
+
+
 }

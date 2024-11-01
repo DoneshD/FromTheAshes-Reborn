@@ -176,4 +176,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void StopParkourMontage();
 
+	void ResetParkourResult();
+
 };
