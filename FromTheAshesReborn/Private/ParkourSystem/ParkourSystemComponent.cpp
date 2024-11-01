@@ -1,6 +1,7 @@
 ﻿#include "ParkourSystem/ParkourSystemComponent.h"
 
 #include "GameplayTagsManager.h"
+#include "MotionWarpingComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -9,6 +10,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GeometryCollection/GeometryCollectionSimulationTypes.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "ParkourSystem/ParkourFunctionLibrary.h"
@@ -555,11 +557,40 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 void UParkourSystemComponent::PlayParkourMontage()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Success"))
-	SetParkourState();
+	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.Vault"));
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour1"), FindWarp1Location(-70, -60), WallRotation);
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour2"), FindWarp2Location(-30, -45), WallRotation);
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour3"), FindWarp3Location(0, 3), WallRotation);
+	OwnerCharacter->PlayAnimMontage(CurrentParkourMontage);
+	// AnimInstance->Montage_Play(CurrentParkourMontage);
+	//
+	// // Bind the OnMontageBlendingOut delegate to a custom function
+	// FOnMontageBlendingOutStarted BlendingOutDelegate;
+	// BlendingOutDelegate.BindUObject(this, &UParkourSystemComponent::OnMontageBlendingOut);
+	// AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutDelegate, CurrentParkourMontage);
+
+}
+
+// Define the callback function for OnBlendOut
+void UParkourSystemComponent::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted)
+{
+	if (bInterrupted)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Montage interrupted during blend out"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Montage blend out complete"));
+		SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy"));
+		SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+
+	}
+
 }
 
 void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParkourAction)
 {
+	
 	if(!InNewParkourAction.MatchesTag(ParkourActionTag))
 	{
 		ParkourActionTag = InNewParkourAction;
@@ -571,6 +602,7 @@ void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParkourAction)
 		// 	ParkourStatsInterface->SetParkourAction(FText::FromName(InNewParkourAction.GetTagName()));
 			if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction")))
 			{
+				CurrentParkourVariables = nullptr;
 			}
 			else if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.ThinVault")))
 			{
@@ -759,30 +791,32 @@ void UParkourSystemComponent::SetParkourState(FGameplayTag InNewParkourState)
 		// 	ParkourStatsInterface->SetParkourState(FText::FromName(InNewParkourAction.GetTagName()));
 		if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")))
 		{
+			ParkourStateSettings(ECollisionEnabled::NoCollision, MOVE_Flying, FRotator(0.0f, 0.0f, 0.0f),true, true);
 		}
 		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle")))
 		{
-			CurrentParkourVariables = ParkourVariablesArray[0];
+			ParkourStateSettings(ECollisionEnabled::NoCollision, MOVE_Flying, FRotator(0.0f, 500.0f, 0.0f),true, false);
 		}
 		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Vault")))
 		{
-			CurrentParkourVariables = ParkourVariablesArray[1];
+			ParkourStateSettings(ECollisionEnabled::NoCollision, MOVE_Flying, FRotator(0.0f, 500.0f, 0.0f),true, false);
 		}
 		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy")))
 		{
-			CurrentParkourVariables = ParkourVariablesArray[2];
+			ParkourStateSettings(ECollisionEnabled::QueryAndPhysics, MOVE_Walking, FRotator(0.0f, 500.0f, 0.0f),true, false);
 		}
 		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.ReachLedgee")))
 		{
-			CurrentParkourVariables = ParkourVariablesArray[3];
+			ParkourStateSettings(ECollisionEnabled::NoCollision, MOVE_Flying, FRotator(0.0f, 500.0f, 0.0f),true, false);
+
 		}
 		else if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.LowMantle")))
 		{
-			CurrentParkourVariables = ParkourVariablesArray[4];
+			
 		}
 		if(CurrentParkourVariables)
 		{
-			PlayParkourMontage();
+			
 		}
 	}
 	// else
@@ -793,11 +827,35 @@ void UParkourSystemComponent::SetParkourState(FGameplayTag InNewParkourState)
 	// }
 	}
 
-void UParkourSystemComponent::ParkourStateSettings()
+void UParkourSystemComponent::ParkourStateSettings(ECollisionEnabled::Type InCollisionType, EMovementMode InMode, FRotator InRotationRate, bool bDoCollisionTest, bool bStopMovementImmediately)
 {
+	CapsuleComponent->SetCollisionEnabled(InCollisionType);
+	CharacterMovementComponent->SetMovementMode(InMode);
+	CharacterMovementComponent->RotationRate = InRotationRate;
+	CameraBoomComponent->bDoCollisionTest = bDoCollisionTest;
+	if(bStopMovementImmediately)
+	{
+		CharacterMovementComponent->StopMovementImmediately();
+	}
 }
 
+FVector UParkourSystemComponent::FindWarp1Location(float InWarp1XOffset, float InWarp1ZOffset)
+{
+	return WallTopResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * InWarp1XOffset)  + FVector(0.0f, 0.0f, InWarp1ZOffset);
 }
 
+FVector UParkourSystemComponent::FindWarp2Location(float InWarp2XOffset, float InWarp2ZOffset)
+{
+	return WallDepthResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * InWarp2XOffset) + FVector(0.0f, 0.0f, InWarp2ZOffset);
+}
 
+FVector UParkourSystemComponent::FindWarp3Location(float InWarp3XOffset, float InWarp3ZOffset)
+{
+	return WallVaultResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * InWarp3XOffset) + FVector(0.0f, 0.0f, InWarp3ZOffset);
+}
 
+void UParkourSystemComponent::StopParkourMontage()
+{
+	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy"));
+	SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+}

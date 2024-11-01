@@ -121,6 +121,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UParkourVariableDataAsset> CurrentParkourVariables;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> CurrentParkourMontage;
+
 public:
 	UParkourSystemComponent();
 	
@@ -144,7 +147,8 @@ public:
 	void FindParkourType(bool AutoClimb);
 
 	void PlayParkourMontage();
-	
+	void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
+
 	void SetParkourAction(FGameplayTag InNewParourAction);
 
 	void GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
@@ -161,6 +165,15 @@ public:
 
 	void SetParkourState(FGameplayTag InNewParkourState);
 
-	void ParkourStateSettings();
+	void ParkourStateSettings(ECollisionEnabled::Type InCollisionType, EMovementMode InMode, FRotator InRotationRate, bool bDoCollisionTest, bool bStopMovementImmediately);
+
+	FVector FindWarp1Location(float InWarp1XOffset, float InWarp1ZOffset);
+
+	FVector FindWarp2Location(float InWarp2XOffset, float InWarp2ZOffset);
+
+	FVector FindWarp3Location(float InWarp3XOffset, float InWarp3ZOffset);
+
+	UFUNCTION(BlueprintCallable)
+	void StopParkourMontage();
 
 };
