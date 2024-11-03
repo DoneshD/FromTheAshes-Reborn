@@ -70,11 +70,11 @@ protected:
 	
 	//Location and Shape
 
-	TArray<FHitResult> WallHitTraces;
+	TArray<FHitResult> WallHeightTraces;
 	
 	FHitResult WallHitResult;
 
-	TArray<FHitResult> HopHitTraces;
+	TArray<FHitResult> PotentialWallHeightTraces;
 	
 	FRotator WallRotation;
 	

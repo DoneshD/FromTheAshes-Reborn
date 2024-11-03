@@ -215,17 +215,17 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 
 	if(InitialCapsuleTraceOutHitResult.bBlockingHit)
 	{
-		WallHitTraces.Empty();
+		WallHeightTraces.Empty();
 		for(int32 i = 0; i <= HorizontalWallDetectTraceHalfQuantity * 2; i++)
 		{
 			
-			HopHitTraces.Empty();
+			PotentialWallHeightTraces.Empty();
 			for(int32 j = 0; j <= VerticalWallDetectTraceQuantity/ (CharacterMovementComponent->IsFalling() ? 2 : 1); j++)
 			{
 				FVector Vector1 = FVector(i * HorizontalWallDetectTraceRange + HorizontalWallDetectTraceRange * HorizontalWallDetectTraceHalfQuantity * -1.0f);
 				FRotator NormalizeCapusleRotation = UParkourFunctionLibrary::NormalReverseRotationZ(InitialCapsuleTraceOutHitResult.ImpactNormal);
 
-				DrawDebugRotationLines(NormalizeCapusleRotation);
+				// DrawDebugRotationLines(NormalizeCapusleRotation);
 				
 				FVector Vector2 = Vector1 * UKismetMathLibrary::GetRightVector(NormalizeCapusleRotation);
 				FVector InitialWallHitLocation = FVector(InitialCapsuleTraceOutHitResult.ImpactPoint.X, InitialCapsuleTraceOutHitResult.ImpactPoint.Y, GetVerticalWallDetectStartHeight());
@@ -236,40 +236,37 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				FVector StartWallHitTraceLocation = WallTraceLocation + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * -40.0f);
 				FVector EndWallHitTraceLocation = WallTraceLocation + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * 30.0f);
 
-				FHitResult HopHitOutHitResult;
-				bool HopHitOutHit =  GetWorld()->LineTraceSingleByChannel(HopHitOutHitResult, StartWallHitTraceLocation, EndWallHitTraceLocation, ECC_Visibility);
+				FHitResult PotentialWallHeightHitOutResult;
+				bool HopHitOutHit =  GetWorld()->LineTraceSingleByChannel(PotentialWallHeightHitOutResult, StartWallHitTraceLocation, EndWallHitTraceLocation, ECC_Visibility);
 
-				if (HopHitOutHit)
-				{
-					// Draw a green line if the trace hit something
-					DrawDebugLine(GetWorld(), StartWallHitTraceLocation, HopHitOutHitResult.Location, FColor::Green, false, 1.0f, 0, 2.0f);
-					DrawDebugPoint(GetWorld(), HopHitOutHitResult.Location, 10.0f, FColor::Red, false, 1.0f);
-				}
-				else
-				{
-					// Draw a red line if the trace did not hit anything
-					DrawDebugLine(GetWorld(), StartWallHitTraceLocation, EndWallHitTraceLocation, FColor::Red, false, 1.0f, 0, 2.0f);
-				}
+				// if (HopHitOutHit)
+				// {
+				// 	DrawDebugLine(GetWorld(), StartWallHitTraceLocation, PotentialWallHeightHitOutResult.Location, FColor::Green, false, 1.0f, 0, 2.0f);
+					// DrawDebugPoint(GetWorld(), PotentialWallHeightHitOutResult.Location, 10.0f, FColor::Red, false, 1.0f);
+				// }
+				// else
+				// {
+				// 	DrawDebugLine(GetWorld(), StartWallHitTraceLocation, EndWallHitTraceLocation, FColor::Red, false, 1.0f, 0, 2.0f);
+				// }
 
-				HopHitTraces.Add(HopHitOutHitResult);
+				PotentialWallHeightTraces.Add(PotentialWallHeightHitOutResult);
 				
 			}
 			int32 k = 0;
-			for (FHitResult OutHopHitResult : HopHitTraces)
+			for (FHitResult PotentialHeightHit : PotentialWallHeightTraces)
 			{
+
 				if(k != 0)
 				{
-					float HitDistance1 = FVector::Dist(OutHopHitResult.TraceStart, OutHopHitResult.TraceEnd);
-					float SelectFloat1 = OutHopHitResult.bBlockingHit ? OutHopHitResult.Distance : HitDistance1;
+					float CurrentTraceDistance = FVector::Dist(PotentialHeightHit.TraceStart, PotentialHeightHit.TraceEnd);
+					float SelectCurrentTraceDistance = PotentialHeightHit.bBlockingHit ? PotentialHeightHit.Distance : CurrentTraceDistance;
 
-					float HitDistance2 = FVector::Dist(HopHitTraces[k - 1].TraceStart, HopHitTraces[k - 1].TraceEnd);
-					float SelectFloat2 = HopHitTraces[k - 1].bBlockingHit ? HopHitTraces[k - 1].Distance : HitDistance2;
+					float PrevouisTraceDistance = FVector::Dist(PotentialWallHeightTraces[k - 1].TraceStart, PotentialWallHeightTraces[k - 1].TraceEnd);
+					float SelectPrevouisTraceDistance = PotentialWallHeightTraces[k - 1].bBlockingHit ? PotentialWallHeightTraces[k - 1].Distance : PrevouisTraceDistance;
 
-					if(SelectFloat1 - SelectFloat2 > 5.0f)
+					if(SelectCurrentTraceDistance - SelectPrevouisTraceDistance > 5.0f)
 					{
-						DrawDebugPoint(GetWorld(), HopHitTraces[k - 1].ImpactPoint, 20.0f, FColor::Red, false, 3.0f);
-
-						WallHitTraces.Add(HopHitTraces[k - 1]);
+						WallHeightTraces.Add(PotentialWallHeightTraces[k - 1]);
 					}
 				}
 				k++;
@@ -277,7 +274,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 		}
 		
 		int32 l = 0;
-		for (FHitResult OutWallHitResult : WallHitTraces)
+		for (FHitResult OutWallHitResult : WallHeightTraces)
 		{
 			if(l == 0)
 			{
@@ -291,7 +288,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				}
 				else
 				{
-					WallHitResult = WallHitResult;
+					// WallHitResult = WallHitResult;
 				}
 			}
 			l++;
@@ -309,8 +306,10 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 			}
 			for(int32 m = 0; m <= 8; m++)
 			{
-
-				FVector ImpactPointForwardVector = WallHitResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * (m * 30)) + (UKismetMathLibrary::GetForwardVector(WallRotation) * 2.0f);
+				FVector StartingPosition = UKismetMathLibrary::GetForwardVector(WallRotation) * 10.0f;
+				FVector ForwardDistance = UKismetMathLibrary::GetForwardVector(WallRotation) * (m * 30);
+				FVector ImpactPointForwardVector = WallHitResult.ImpactPoint + ForwardDistance + StartingPosition;
+				
 				FVector SphereTraceStartLocation = ImpactPointForwardVector + FVector(0.0f, 0.0f, 7.0f);
 				FVector SphereTraceEndLocation = SphereTraceStartLocation - FVector(0.0f, 0.0f, 7.0f);
 
@@ -318,7 +317,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				TArray<AActor*> ActorsToIgnoreSphere;
 
 				bool bSphereTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), SphereTraceStartLocation, SphereTraceEndLocation, 10.5f, TraceTypeQuery1,
-					false, ActorsToIgnore, EDrawDebugTrace::None, FSphereTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+					false, ActorsToIgnore, EDrawDebugTrace::ForDuration, FSphereTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 				if(m == 0)
 				{
@@ -898,8 +897,8 @@ void UParkourSystemComponent::StopParkourMontage()
 
 void UParkourSystemComponent::ResetParkourResult()
 {
-	HopHitTraces.Empty();
-	WallHitTraces.Empty();
+	PotentialWallHeightTraces.Empty();
+	WallHeightTraces.Empty();
 	WallHitResult.Reset(false, false);
 	WallTopResult.Reset(false, false);
 	TopHits.Reset(false, false);
