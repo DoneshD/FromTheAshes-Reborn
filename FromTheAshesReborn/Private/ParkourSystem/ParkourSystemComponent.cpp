@@ -1,5 +1,4 @@
 ﻿#include "ParkourSystem/ParkourSystemComponent.h"
-
 #include "GameplayTagsManager.h"
 #include "MotionWarpingComponent.h"
 #include "Camera/CameraComponent.h"
@@ -13,13 +12,30 @@
 #include "ParkourSystem/ArrowActor.h"
 #include "ParkourSystem/WidgetActor.h"
 
+void UParkourSystemComponent::DrawDebugRotationLines(FRotator InRotation)
+{
+	// Calculate direction vectors
+	FVector ForwardVector = InRotation.Vector();  // This is equivalent to `GetForwardVector()`
+	FVector RightVector = FRotationMatrix(InRotation).GetScaledAxis(EAxis::Y);  // Y axis
+	FVector UpVector = FRotationMatrix(InRotation).GetScaledAxis(EAxis::Z);  // Z axis
+
+	// Define line colors
+	FColor ForwardColor = FColor::Red;
+	FColor RightColor = FColor::Green;
+	FColor UpColor = FColor::Blue;
+
+	// Draw the lines
+	DrawDebugLine(GetWorld(), OwnerCharacter->GetActorLocation(), OwnerCharacter->GetActorLocation() + (ForwardVector * 100), ForwardColor, false, 5, 0, 1);
+	DrawDebugLine(GetWorld(), OwnerCharacter->GetActorLocation(), OwnerCharacter->GetActorLocation() + (RightVector * 100), RightColor, false, 5, 0, 1);
+	DrawDebugLine(GetWorld(), OwnerCharacter->GetActorLocation(), OwnerCharacter->GetActorLocation() + (UpVector * 100), UpColor, false, 5, 0, 1);
+}
+
 UParkourSystemComponent::UParkourSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
 
 }
-
 
 void UParkourSystemComponent::BeginPlay()
 {
@@ -41,7 +57,6 @@ void UParkourSystemComponent::BeginPlay()
 		return;
 	}
 }
-
 
 void UParkourSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -174,6 +189,7 @@ void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
 	{
 		if(SelectClimb(CanManualClimb, CanAutoClimb, MemberAutoClimb))
 		{
+			ResetParkourResult();
 			FindParkourLocationAndShape();
 			ShowHitResults();
 			FindSizeParkourObjects();
@@ -184,7 +200,6 @@ void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
 	}
 }
 
-
 void UParkourSystemComponent::FindParkourLocationAndShape()
 {
 	FVector CapsuleStartLocation;
@@ -192,13 +207,13 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 	float CapsuleRadius;
 	float CapsuleHalfHeight;
 	const TArray<AActor*> ActorsToIgnore;
-	FHitResult FirstCapsuleTraceOutHitResult;
+	FHitResult InitialCapsuleTraceOutHitResult;
 	
-	GetFirstCapsuleTraceSettings(CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight);
-	bool bFirstCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight, TraceTypeQuery1, false,
-		ActorsToIgnore, EDrawDebugTrace::ForDuration, FirstCapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+	GetInitialCapsuleTraceSettings(CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight);
+	bool bInitialCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, CapsuleRadius, CapsuleHalfHeight, TraceTypeQuery1, false,
+		ActorsToIgnore, EDrawDebugTrace::None, InitialCapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
-	if(FirstCapsuleTraceOutHitResult.bBlockingHit)
+	if(InitialCapsuleTraceOutHitResult.bBlockingHit)
 	{
 		WallHitTraces.Empty();
 		for(int32 i = 0; i <= HorizontalWallDetectTraceHalfQuantity * 2; i++)
@@ -207,21 +222,36 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 			HopHitTraces.Empty();
 			for(int32 j = 0; j <= VerticalWallDetectTraceQuantity/ (CharacterMovementComponent->IsFalling() ? 2 : 1); j++)
 			{
-				//example for adding two floats to make a vector
 				FVector Vector1 = FVector(i * HorizontalWallDetectTraceRange + HorizontalWallDetectTraceRange * HorizontalWallDetectTraceHalfQuantity * -1.0f);
-				FRotator NormalizeCapusleRotation = UParkourFunctionLibrary::NormalReverseRotationZ(FirstCapsuleTraceOutHitResult.ImpactNormal);
+				FRotator NormalizeCapusleRotation = UParkourFunctionLibrary::NormalReverseRotationZ(InitialCapsuleTraceOutHitResult.ImpactNormal);
+
+				DrawDebugRotationLines(NormalizeCapusleRotation);
+				
 				FVector Vector2 = Vector1 * UKismetMathLibrary::GetRightVector(NormalizeCapusleRotation);
-				FVector Vector3 = FVector(FirstCapsuleTraceOutHitResult.ImpactPoint.X, FirstCapsuleTraceOutHitResult.ImpactPoint.Y, GetVerticalWallDetectStartHeight());
-				FVector TripleVector = FVector(0.0f, 0.0f, j * VerticalWallDetectTraceRange) + Vector2 + Vector3;
+				FVector InitialWallHitLocation = FVector(InitialCapsuleTraceOutHitResult.ImpactPoint.X, InitialCapsuleTraceOutHitResult.ImpactPoint.Y, GetVerticalWallDetectStartHeight());
+
+				FVector WallTraceLocation = FVector(0.0f, 0.0f, j * VerticalWallDetectTraceRange) + Vector2 + InitialWallHitLocation;
 
 				//HopHit Traces
-				FVector StartHopHitTracesLocation = TripleVector + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * -40.0f);
-				FVector EndHopHitTracesLocation = TripleVector + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * 30.0f);
-				FHitResult HopHitOutHitResult;
-				FCollisionQueryParams test;
-				bool HopHitOutHit =  GetWorld()->LineTraceSingleByChannel(HopHitOutHitResult, StartHopHitTracesLocation, EndHopHitTracesLocation, ECC_Visibility);
-				HopHitTraces.Add(HopHitOutHitResult);
+				FVector StartWallHitTraceLocation = WallTraceLocation + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * -40.0f);
+				FVector EndWallHitTraceLocation = WallTraceLocation + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * 30.0f);
 
+				FHitResult HopHitOutHitResult;
+				bool HopHitOutHit =  GetWorld()->LineTraceSingleByChannel(HopHitOutHitResult, StartWallHitTraceLocation, EndWallHitTraceLocation, ECC_Visibility);
+
+				if (HopHitOutHit)
+				{
+					// Draw a green line if the trace hit something
+					DrawDebugLine(GetWorld(), StartWallHitTraceLocation, HopHitOutHitResult.Location, FColor::Green, false, 1.0f, 0, 2.0f);
+					DrawDebugPoint(GetWorld(), HopHitOutHitResult.Location, 10.0f, FColor::Red, false, 1.0f);
+				}
+				else
+				{
+					// Draw a red line if the trace did not hit anything
+					DrawDebugLine(GetWorld(), StartWallHitTraceLocation, EndWallHitTraceLocation, FColor::Red, false, 1.0f, 0, 2.0f);
+				}
+
+				HopHitTraces.Add(HopHitOutHitResult);
 				
 			}
 			int32 k = 0;
@@ -237,12 +267,15 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 
 					if(SelectFloat1 - SelectFloat2 > 5.0f)
 					{
+						DrawDebugPoint(GetWorld(), HopHitTraces[k - 1].ImpactPoint, 20.0f, FColor::Red, false, 3.0f);
+
 						WallHitTraces.Add(HopHitTraces[k - 1]);
 					}
 				}
 				k++;
 			}
 		}
+		
 		int32 l = 0;
 		for (FHitResult OutWallHitResult : WallHitTraces)
 		{
@@ -263,6 +296,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 			}
 			l++;
 		}
+		
 		if(WallHitResult.bBlockingHit && !WallHitResult.bStartPenetrating)
 		{
 			if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")))
@@ -553,7 +587,7 @@ void UParkourSystemComponent::PlayParkourMontage()
 {
 	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.Vault"));
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour1"), FindWarp1Location(-70, -60), WallRotation);
-	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour2"), FindWarp2Location(-30, -45), WallRotation);
+	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour2"), FindWarp2Location(-30, -60), WallRotation);
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour3"), FindWarp3Location(0, 20), WallRotation);
 	OwnerCharacter->PlayAnimMontage(CurrentParkourMontage);
 	// AnimInstance->Montage_Play(CurrentParkourMontage);
@@ -639,13 +673,11 @@ void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParkourAction)
 	// }
 }
 
-void UParkourSystemComponent::GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& OutRadius,
-                                                           float& OutHalfHeight)
+void UParkourSystemComponent::GetInitialCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& OutRadius, float& OutHalfHeight)
 {
-	static FGameplayTag NotBusyTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.NotBusy"));
 	static FGameplayTag ClimbTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.Direction.Climb"));
 
-	if(ParkourStateTag.MatchesTag(NotBusyTag))
+	if(ParkourStateTag.MatchesTag(StateNotBusyTag))
 	{
 		
 	}
@@ -657,16 +689,16 @@ void UParkourSystemComponent::GetFirstCapsuleTraceSettings(FVector& OutStart, FV
 	FVector TempStart = OwnerCharacter->GetActorLocation() + FVector(
 		0.0f, 0.0f, CharacterMovementComponent->IsFalling() ? 15.0f : 75.0f);
 
+	
 	FVector Velocity = CharacterMovementComponent->Velocity.GetSafeNormal2D(0.0001);
 	float OutRangeA = CharacterMovementComponent->IsFalling() ? 25.0f : 50.0f;
 	float OutRangeB = CharacterMovementComponent->IsFalling() ? 100.0f : 200.0f;
 
+	//I dont get the reason for this
 	float ClampedRange = UKismetMathLibrary::MapRangeClamped(Velocity.Length(), 0.0f, 500.0f, OutRangeA, OutRangeB);
 
-	//FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
-	//For now
-	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * 150.0f);
-
+	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
+	
 	OutStart = TempStart;
 	OutEnd = TempEnd;
 	OutRadius = 40.0f;
@@ -741,7 +773,7 @@ bool UParkourSystemComponent::CheckMantleSurface()
 	FVector CapsuleEndLocation = WarpTopPoint + FVector(0.0f, 0.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() + 8.0f);
 
 	bool bCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, 25.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() - 8.0f, TraceTypeQuery1, false,
-	ActorsToIgnore, EDrawDebugTrace::ForDuration, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+	ActorsToIgnore, EDrawDebugTrace::None, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 	return !bCapsuleTraceOutHit;
 }
@@ -758,7 +790,7 @@ bool UParkourSystemComponent::CheckVaultSurface()
 	float HalfHeight = (CapsuleComponent->GetScaledCapsuleHalfHeight() / 2) + 5.0f;
 
 	bool bCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, 25.0f, HalfHeight, TraceTypeQuery1, false,
-	ActorsToIgnore, EDrawDebugTrace::ForDuration, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+	ActorsToIgnore, EDrawDebugTrace::None, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 	return !bCapsuleTraceOutHit;
 }

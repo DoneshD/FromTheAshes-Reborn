@@ -7,7 +7,7 @@ FRotator UParkourFunctionLibrary::NormalReverseRotationZ(FVector NormalVector)
 {
 	FRotator RotationFromX = UKismetMathLibrary::MakeRotFromX(NormalVector);
 	FRotator NormalizeRotation = UKismetMathLibrary::NormalizedDeltaRotator(RotationFromX, FRotator(0, 180.0f, 0.0));
-	
+
 	return FRotator(0, NormalizeRotation.Yaw, 0);
 }
 

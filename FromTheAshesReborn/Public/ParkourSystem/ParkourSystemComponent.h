@@ -67,8 +67,7 @@ protected:
 	bool CanManualClimb = false;
 	bool CanAutoClimb = true;
 	bool MemberAutoClimb = true;
-
-
+	
 	//Location and Shape
 
 	TArray<FHitResult> WallHitTraces;
@@ -84,13 +83,17 @@ protected:
 	FHitResult WallTopResult;
 
 	FVector WarpTopPoint;
-	
+
+	//Determines the number of units of horizontal traces i.e, 2 traces left, 2 traces right
 	int32 HorizontalWallDetectTraceHalfQuantity = 2;
 
+	//Determines the distance between each horizontal trace
 	float HorizontalWallDetectTraceRange = 20.0f;
 
+	//Determines the number of units of vertical traces go upwards
 	int32 VerticalWallDetectTraceQuantity = 30;
 
+	//Determines the distance between each vertical trace
 	float VerticalWallDetectTraceRange = 8.0f;
 
 	FHitResult WallDepthResult;
@@ -124,7 +127,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> CurrentParkourMontage;
 
+	//Tags
+	FGameplayTag StateNotBusyTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.NotBusy"));
+
 public:
+	//debug lines
+	void DrawDebugRotationLines(FRotator InRotation);
+
+	//-------
+	
 	UParkourSystemComponent();
 	
 	virtual void BeginPlay() override;
@@ -151,7 +162,7 @@ public:
 
 	void SetParkourAction(FGameplayTag InNewParourAction);
 
-	void GetFirstCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
+	void GetInitialCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
 
 	float GetVerticalWallDetectStartHeight();
 
