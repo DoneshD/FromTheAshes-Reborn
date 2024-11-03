@@ -193,7 +193,7 @@ void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
 			FindParkourLocationAndShape();
 			ShowHitResults();
 			FindSizeParkourObjects();
-			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
+			// SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
 			FindParkourType(MemberAutoClimb);
 
 		}
@@ -218,7 +218,6 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 		WallHeightTraces.Empty();
 		for(int32 i = 0; i <= HorizontalWallDetectTraceHalfQuantity * 2; i++)
 		{
-			
 			PotentialWallHeightTraces.Empty();
 			for(int32 j = 0; j <= VerticalWallDetectTraceQuantity/ (CharacterMovementComponent->IsFalling() ? 2 : 1); j++)
 			{
@@ -237,9 +236,9 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				FVector EndWallHitTraceLocation = WallTraceLocation + (UKismetMathLibrary::GetForwardVector(NormalizeCapusleRotation) * 30.0f);
 
 				FHitResult PotentialWallHeightHitOutResult;
-				bool HopHitOutHit =  GetWorld()->LineTraceSingleByChannel(PotentialWallHeightHitOutResult, StartWallHitTraceLocation, EndWallHitTraceLocation, ECC_Visibility);
+				bool bPotentialWallHeightHitOut =  GetWorld()->LineTraceSingleByChannel(PotentialWallHeightHitOutResult, StartWallHitTraceLocation, EndWallHitTraceLocation, ECC_Visibility);
 
-				// if (HopHitOutHit)
+				// if (bPotentialWallHeightHitOut)
 				// {
 				// 	DrawDebugLine(GetWorld(), StartWallHitTraceLocation, PotentialWallHeightHitOutResult.Location, FColor::Green, false, 1.0f, 0, 2.0f);
 					// DrawDebugPoint(GetWorld(), PotentialWallHeightHitOutResult.Location, 10.0f, FColor::Red, false, 1.0f);
@@ -255,7 +254,6 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 			int32 k = 0;
 			for (FHitResult PotentialHeightHit : PotentialWallHeightTraces)
 			{
-
 				if(k != 0)
 				{
 					float CurrentTraceDistance = FVector::Dist(PotentialHeightHit.TraceStart, PotentialHeightHit.TraceEnd);
@@ -304,36 +302,36 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 			{
 				WallRotation = UParkourFunctionLibrary::NormalReverseRotationZ(WallHitResult.ImpactNormal);
 			}
-			for(int32 m = 0; m <= 8; m++)
+			for(int32 m = 0; m <= ForwardDistanceTraceQuantity; m++)
 			{
-				FVector StartingPosition = UKismetMathLibrary::GetForwardVector(WallRotation) * 10.0f;
-				FVector ForwardDistance = UKismetMathLibrary::GetForwardVector(WallRotation) * (m * 30);
-				FVector ImpactPointForwardVector = WallHitResult.ImpactPoint + ForwardDistance + StartingPosition;
+				FVector StartingPositionOffset = UKismetMathLibrary::GetForwardVector(WallRotation) * 10.0f;
+				FVector ForwardDistance = UKismetMathLibrary::GetForwardVector(WallRotation) * (m * ForwardDistanceTraceBetweenSpace);
+				FVector ImpactPointForwardVector = WallHitResult.ImpactPoint + ForwardDistance + StartingPositionOffset;
 				
 				FVector SphereTraceStartLocation = ImpactPointForwardVector + FVector(0.0f, 0.0f, 7.0f);
 				FVector SphereTraceEndLocation = SphereTraceStartLocation - FVector(0.0f, 0.0f, 7.0f);
 
-				FHitResult FSphereTraceOutHitResult;
+				FHitResult FWallDepthOutHitResult;
 				TArray<AActor*> ActorsToIgnoreSphere;
 
-				bool bSphereTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), SphereTraceStartLocation, SphereTraceEndLocation, 10.5f, TraceTypeQuery1,
-					false, ActorsToIgnore, EDrawDebugTrace::ForDuration, FSphereTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+				bool bWallDepthTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), SphereTraceStartLocation, SphereTraceEndLocation, 10.5f, TraceTypeQuery1,
+					false, ActorsToIgnore, EDrawDebugTrace::None, FWallDepthOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 				if(m == 0)
 				{
-					if(bSphereTraceOutHit)
+					if(bWallDepthTraceOutHit)
 					{
-						WallTopResult = FSphereTraceOutHitResult;
-						WarpTopPoint = FSphereTraceOutHitResult.ImpactPoint;
+						WallTopResult = FWallDepthOutHitResult;
+						WarpTopPoint = FWallDepthOutHitResult.ImpactPoint;
 					}
 				}
 				
-				if(bSphereTraceOutHit)
+				if(bWallDepthTraceOutHit)
 				{
-					TopHits = FSphereTraceOutHitResult;
-					if(m == 8)
+					WallTopHit = FWallDepthOutHitResult;
+					if(m == ForwardDistanceTraceQuantity)
 					{
-						FindEdgeofWall();
+						FindWallDepth();
 					}
 				}
 				else
@@ -341,8 +339,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 					break;
 				}
 			}
-			
-			FindEdgeofWall();
+			FindWallDepth();
 		}
 	}
 }
@@ -366,7 +363,6 @@ void UParkourSystemComponent::FindSizeParkourObjects()
 		if(WallTopResult.bBlockingHit && WallDepthResult.bBlockingHit)
 		{
 			WallDepth = FVector::Dist(WallTopResult.ImpactPoint, WallDepthResult.ImpactPoint);
-
 		}
 		else
 		{
@@ -375,8 +371,8 @@ void UParkourSystemComponent::FindSizeParkourObjects()
 
 		if(WallDepthResult.bBlockingHit && WallVaultResult.bBlockingHit)
 		{
+			//Other side
 			VaultHeight = WallDepthResult.ImpactPoint.Z - WallVaultResult.ImpactPoint.Z;
-
 		}
 		else
 		{
@@ -417,6 +413,7 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 						{
 							if(UKismetMathLibrary::InRange_FloatFloat(WallDepth, 0.0f, 30.0f, true, true))
 							{
+								//check if anything blocking
 								if(CheckVaultSurface())
 								{
 									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.ThinVault"));
@@ -589,30 +586,22 @@ void UParkourSystemComponent::PlayParkourMontage()
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour2"), FindWarp2Location(-30, -60), WallRotation);
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour3"), FindWarp3Location(0, 20), WallRotation);
 	OwnerCharacter->PlayAnimMontage(CurrentParkourMontage);
-	// AnimInstance->Montage_Play(CurrentParkourMontage);
-	//
-	// // Bind the OnMontageBlendingOut delegate to a custom function
-	// FOnMontageBlendingOutStarted BlendingOutDelegate;
-	// BlendingOutDelegate.BindUObject(this, &UParkourSystemComponent::OnMontageBlendingOut);
-	// AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutDelegate, CurrentParkourMontage);
+	AnimInstance->Montage_Play(CurrentParkourMontage);
+	
+	// Bind the OnMontageBlendingOut delegate to a custom function
+	FOnMontageBlendingOutStarted BlendingOutDelegate;
+	BlendingOutDelegate.BindUObject(this, &UParkourSystemComponent::OnMontageBlendingOut);
+	AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutDelegate, CurrentParkourMontage);
 
 }
 
 // Define the callback function for OnBlendOut
 void UParkourSystemComponent::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted)
 {
-	if (bInterrupted)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Montage interrupted during blend out"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Montage blend out complete"));
-		SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy"));
-		SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
-
-	}
-
+	
+	UE_LOG(LogTemp, Warning, TEXT("Montage blend out complete"));
+	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy"));
+	SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
 }
 
 void UParkourSystemComponent::SetParkourAction(FGameplayTag InNewParkourAction)
@@ -687,7 +676,6 @@ void UParkourSystemComponent::GetInitialCapsuleTraceSettings(FVector& OutStart, 
 
 	FVector TempStart = OwnerCharacter->GetActorLocation() + FVector(
 		0.0f, 0.0f, CharacterMovementComponent->IsFalling() ? 15.0f : 75.0f);
-
 	
 	FVector Velocity = CharacterMovementComponent->Velocity.GetSafeNormal2D(0.0001);
 	float OutRangeA = CharacterMovementComponent->IsFalling() ? 25.0f : 50.0f;
@@ -696,7 +684,9 @@ void UParkourSystemComponent::GetInitialCapsuleTraceSettings(FVector& OutStart, 
 	//I dont get the reason for this
 	float ClampedRange = UKismetMathLibrary::MapRangeClamped(Velocity.Length(), 0.0f, 500.0f, OutRangeA, OutRangeB);
 
-	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
+	// FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
+
+	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * InitialCapsuleTraceDistance);
 	
 	OutStart = TempStart;
 	OutEnd = TempEnd;
@@ -726,26 +716,25 @@ float UParkourSystemComponent::GetVerticalWallDetectStartHeight()
 	return 0.0f;
 }
 
-void UParkourSystemComponent::FindEdgeofWall()
+void UParkourSystemComponent::FindWallDepth()
 {
 	if(ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.Climb")) || ParkourStateTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy")))
 	{
-		
-		FVector WallEdgeStartLocation = TopHits.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * 30.0f);
-		FVector WallEdgeEndLocation = TopHits.ImpactPoint;
+		FVector WallEdgeStartLocation = WallTopHit.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * 30.0f);
+		FVector WallEdgeEndLocation = WallTopHit.ImpactPoint;
 		
 		FHitResult FWallEdgeOutHitResult;
 		TArray<AActor*> ActorsToIgnoreWallEdge;
 		
 		bool bWallEdgeTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), WallEdgeStartLocation, WallEdgeEndLocation, 10.0f, TraceTypeQuery1,
-					false, ActorsToIgnoreWallEdge, EDrawDebugTrace::None, FWallEdgeOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+					false, ActorsToIgnoreWallEdge, EDrawDebugTrace::None, FWallEdgeOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 30.0f);
 
 		if(bWallEdgeTraceOutHit)
 		{
 			WallDepthResult = FWallEdgeOutHitResult;
 			WarpDepth = WallDepthResult.ImpactPoint;
 
-			FVector WallGroundStartLocation = WallDepthResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * 70.0f);
+			FVector WallGroundStartLocation = WallDepthResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * FindFowardGroundDistanceTrace);
 			FVector WallGroundEndLocation = WallGroundStartLocation - FVector(0.0f, 0.0f, 400.0f);
 		
 			FHitResult FWallGroundOutHitResult;
@@ -765,7 +754,6 @@ void UParkourSystemComponent::FindEdgeofWall()
 
 bool UParkourSystemComponent::CheckMantleSurface()
 {
-	//WallTopResult.ImpactPoint
 	FHitResult CapsuleTraceOutHitResult;
 	TArray<AActor*> ActorsToIgnore; 
 	FVector CapsuleStartLocation = WarpTopPoint + FVector(0.0f, 0.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() + 8.0f);
@@ -779,7 +767,6 @@ bool UParkourSystemComponent::CheckMantleSurface()
 
 bool UParkourSystemComponent::CheckVaultSurface()
 {
-	//WallTopResult.ImpactPoint
 	FHitResult CapsuleTraceOutHitResult;
 	TArray<AActor*> ActorsToIgnore;
 	
@@ -798,6 +785,10 @@ void UParkourSystemComponent::ShowHitResults()
 {
 	if(ShowHitResult)
 	{
+		if(WallTopHit.bBlockingHit)
+		{
+			DrawDebugSphere(GetWorld(), WallTopHit.ImpactPoint, 10.0f, 12, FColor::Green, false, 5.0f);
+		}
 		if(WallTopResult.bBlockingHit)
 		{
 			DrawDebugSphere(GetWorld(), WallTopResult.ImpactPoint, 10.0f, 12, FColor::Blue, false, 5.0f);
@@ -901,9 +892,7 @@ void UParkourSystemComponent::ResetParkourResult()
 	WallHeightTraces.Empty();
 	WallHitResult.Reset(false, false);
 	WallTopResult.Reset(false, false);
-	TopHits.Reset(false, false);
+	WallTopHit.Reset(false, false);
 	WallDepthResult.Reset(false, false);
 	WallVaultResult.Reset(false, false);
-
-
 }

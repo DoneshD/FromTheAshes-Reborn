@@ -78,23 +78,11 @@ protected:
 	
 	FRotator WallRotation;
 	
-	FHitResult TopHits;
+	FHitResult WallTopHit;
 
 	FHitResult WallTopResult;
 
 	FVector WarpTopPoint;
-
-	//Determines the number of units of horizontal traces i.e, 2 traces left, 2 traces right
-	int32 HorizontalWallDetectTraceHalfQuantity = 2;
-
-	//Determines the distance between each horizontal trace
-	float HorizontalWallDetectTraceRange = 20.0f;
-
-	//Determines the number of units of vertical traces go upwards
-	int32 VerticalWallDetectTraceQuantity = 30;
-
-	//Determines the distance between each vertical trace
-	float VerticalWallDetectTraceRange = 8.0f;
 
 	FHitResult WallDepthResult;
 
@@ -130,6 +118,42 @@ protected:
 	//Tags
 	FGameplayTag StateNotBusyTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.NotBusy"));
 
+	//-----------------Final variables-------------//
+
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Detect Wall Trace")
+	float InitialCapsuleTraceDistance = 150.0f;
+
+	//Determines the number of units of horizontal traces i.e, 2 traces left, 2 traces right
+
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Detect Wall Trace")
+	int32 HorizontalWallDetectTraceHalfQuantity = 2;
+
+	//Determines the distance between each horizontal trace
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Detect Wall Trace")
+	float HorizontalWallDetectTraceRange = 20.0f;
+
+	//Determines the number of units of vertical traces go upwards
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Detect Wall Trace")
+	int32 VerticalWallDetectTraceQuantity = 30;
+
+	//Determines the distance between each vertical trace
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Detect Wall Trace")
+	float VerticalWallDetectTraceRange = 8.0f;
+
+	//Determines the distance between each vertical trace
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Forward Distance Trace")
+	int32 ForwardDistanceTraceQuantity = 8;
+
+	//Determines the distance between each vertical trace
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Forward Distance Trace")
+	int32 ForwardDistanceTraceBetweenSpace = 30;
+
+	//Determines the distance between each vertical trace
+	UPROPERTY(EditDefaultsOnly, Category = "Vault | Find Ground Distance Trace")
+	int32 FindFowardGroundDistanceTrace = 70;
+
+	
+
 public:
 	//debug lines
 	void DrawDebugRotationLines(FRotator InRotation);
@@ -158,6 +182,7 @@ public:
 	void FindParkourType(bool AutoClimb);
 
 	void PlayParkourMontage();
+	
 	void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
 
 	void SetParkourAction(FGameplayTag InNewParourAction);
@@ -166,7 +191,7 @@ public:
 
 	float GetVerticalWallDetectStartHeight();
 
-	void FindEdgeofWall();
+	void FindWallDepth();
 
 	bool CheckMantleSurface();
 
