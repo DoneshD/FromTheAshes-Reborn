@@ -67,33 +67,7 @@ protected:
 	bool CanManualClimb = false;
 	bool CanAutoClimb = true;
 	bool MemberAutoClimb = true;
-	
-	//Location and Shape
 
-	TArray<FHitResult> WallHeightTraces;
-	
-	FHitResult WallHitResult;
-
-	TArray<FHitResult> PotentialWallHeightTraces;
-	
-	FRotator WallRotation;
-	
-	FHitResult WallTopHit;
-
-	FHitResult WallTopResult;
-
-	FVector WarpTopPoint;
-
-	FHitResult WallDepthResult;
-
-	FVector WarpDepth;
-
-	FHitResult WallVaultResult;
-
-	FVector WarpVaultLocation;
-
-	UPROPERTY(EditAnywhere, Category = "Trace|Hit Results")
-	bool ShowHitResult = false;
 
 	//Size
 
@@ -150,7 +124,34 @@ protected:
 
 	//Determines the distance between each vertical trace
 	UPROPERTY(EditDefaultsOnly, Category = "Vault | Find Ground Distance Trace")
-	int32 FindFowardGroundDistanceTrace = 70;
+	int32 FindForwardGroundDistanceTrace = 70;
+
+	//Location and Shape
+
+	TArray<FHitResult> WallHeightTraces;
+	
+	FHitResult WallHitResult;
+
+	TArray<FHitResult> PotentialWallHeightTraces;
+	
+	FRotator WallRotation;
+	
+	FHitResult WallTopHit;
+
+	FHitResult WallTopResult;
+
+	FVector WarpTopPoint;
+
+	FHitResult WallDepthResult;
+
+	FVector WarpDepth;
+
+	FHitResult WallVaultResult;
+
+	FVector WarpVaultLocation;
+
+	UPROPERTY(EditAnywhere, Category = "Trace|Hit Results")
+	bool ShowHitResult = false;
 
 	
 
@@ -213,5 +214,7 @@ public:
 	void StopParkourMontage();
 
 	void ResetParkourResult();
+
+	void FindVaultOrMantleType();
 
 };

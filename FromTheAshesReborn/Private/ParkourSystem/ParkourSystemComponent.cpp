@@ -454,7 +454,7 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 						{
 							if(CheckMantleSurface())
 							{
-								SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+								SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle"));
 							}
 							else
 							{
@@ -466,7 +466,7 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 					{
 						if(CheckMantleSurface())
 						{
-							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+							SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle"));
 						}
 						else
 						{
@@ -510,7 +510,7 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 									{
 										if(CheckMantleSurface())
 										{
-											SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+											SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle"));
 										}
 										else
 										{
@@ -522,7 +522,7 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 								{
 									if(CheckMantleSurface())
 									{
-										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+										SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle"));
 									}
 									else
 									{
@@ -534,7 +534,7 @@ void UParkourSystemComponent::FindParkourType(bool InAutoClimb)
 							{
 								if(CheckMantleSurface())
 								{
-									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.State.Mantle"));
+									SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.Mantle"));
 								}
 								else
 								{
@@ -684,8 +684,6 @@ void UParkourSystemComponent::GetInitialCapsuleTraceSettings(FVector& OutStart, 
 	//I dont get the reason for this
 	float ClampedRange = UKismetMathLibrary::MapRangeClamped(Velocity.Length(), 0.0f, 500.0f, OutRangeA, OutRangeB);
 
-	// FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * ClampedRange);
-
 	FVector TempEnd = TempStart + (FVector(Velocity.X, Velocity.Y, 0.0f) * InitialCapsuleTraceDistance);
 	
 	OutStart = TempStart;
@@ -734,7 +732,7 @@ void UParkourSystemComponent::FindWallDepth()
 			WallDepthResult = FWallEdgeOutHitResult;
 			WarpDepth = WallDepthResult.ImpactPoint;
 
-			FVector WallGroundStartLocation = WallDepthResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * FindFowardGroundDistanceTrace);
+			FVector WallGroundStartLocation = WallDepthResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * FindForwardGroundDistanceTrace);
 			FVector WallGroundEndLocation = WallGroundStartLocation - FVector(0.0f, 0.0f, 400.0f);
 		
 			FHitResult FWallGroundOutHitResult;
@@ -760,7 +758,7 @@ bool UParkourSystemComponent::CheckMantleSurface()
 	FVector CapsuleEndLocation = WarpTopPoint + FVector(0.0f, 0.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() + 8.0f);
 
 	bool bCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, 25.0f, CapsuleComponent->GetScaledCapsuleHalfHeight() - 8.0f, TraceTypeQuery1, false,
-	ActorsToIgnore, EDrawDebugTrace::None, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+	ActorsToIgnore, EDrawDebugTrace::ForDuration, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
 
 	return !bCapsuleTraceOutHit;
 }
@@ -776,7 +774,7 @@ bool UParkourSystemComponent::CheckVaultSurface()
 	float HalfHeight = (CapsuleComponent->GetScaledCapsuleHalfHeight() / 2) + 5.0f;
 
 	bool bCapsuleTraceOutHit = UKismetSystemLibrary::CapsuleTraceSingle(GetWorld(), CapsuleStartLocation, CapsuleEndLocation, 25.0f, HalfHeight, TraceTypeQuery1, false,
-	ActorsToIgnore, EDrawDebugTrace::None, CapsuleTraceOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 5.0f);
+	ActorsToIgnore, EDrawDebugTrace::ForDuration, CapsuleTraceOutHitResult, true, FLinearColor::Blue, FLinearColor::Yellow, 5.0f);
 
 	return !bCapsuleTraceOutHit;
 }
