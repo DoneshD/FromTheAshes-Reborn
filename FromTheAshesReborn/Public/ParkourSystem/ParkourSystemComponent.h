@@ -80,8 +80,6 @@ protected:
 
 	bool InGround = true;
 
-	UPROPERTY(EditAnywhere)
-	TArray<TObjectPtr<UParkourVariableDataAsset>> ParkourVariablesArray;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UParkourVariableDataAsset> CurrentParkourVariables;
@@ -153,7 +151,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Trace|Hit Results")
 	bool ShowHitResult = false;
 
-	
+	FGameplayTag CurrentVaultHeightTag;
+
+	FGameplayTag CurrentVaultDepthTag;
+
+	UPROPERTY(EditAnywhere)
+	TArray<TObjectPtr<UParkourVariableDataAsset>> ParkourVariablesArray;
 
 public:
 	//debug lines
@@ -216,5 +219,7 @@ public:
 	void ResetParkourResult();
 
 	void FindVaultOrMantleType();
+
+	void PrintVaultHeightandDepth();
 
 };

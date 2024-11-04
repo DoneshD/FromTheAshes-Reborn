@@ -14,6 +14,12 @@ class FROMTHEASHESREBORN_API UParkourVariableDataAsset : public UPrimaryDataAsse
 public:
 
 	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag VaultDepthTag;
+
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag VaultHeightTag;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAnimMontage> ParkourMontage;
 
 	UPROPERTY(EditDefaultsOnly)
