@@ -22,6 +22,8 @@ public class FromTheAshesReborn : ModuleRules
 			"MotionWarping", 
 			"Niagara",
 			"TargetSystem",
-			"DidItHit"});
+			"DidItHit",
+			"UMG"
+		});
 	}
 }

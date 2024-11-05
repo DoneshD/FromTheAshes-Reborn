@@ -9,6 +9,7 @@
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "Kismet/GameplayStatics.h"
+#include "ParkourSystem/ParkourSystemComponent.h"
 
 void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
 {
@@ -148,6 +149,9 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 
 	EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLockOnActionPressed);
 	EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLockOnActionReleased);
+
+	EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Started, this, &AFTAPlayerController::HandleVaultActionPressed);
+	EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleVaultActionReleased);
 
 	//Debug purposes
 	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
@@ -325,4 +329,19 @@ void AFTAPlayerController::HandleLockOnActionPressed(const FInputActionValue& In
 void AFTAPlayerController::HandleLockOnActionReleased(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(false, EAbilityInputID::LockOn);
+}
+
+void AFTAPlayerController::HandleVaultActionPressed(const FInputActionValue& InputActionValue)
+{
+	UParkourSystemComponent* ParkourSystemComponent = GetPawn()->FindComponentByClass<UParkourSystemComponent>();
+	if(!ParkourSystemComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Parkour Component is NULL"));
+	}
+	ParkourSystemComponent->ParkourInputPressedVault();
+}
+
+void AFTAPlayerController::HandleVaultActionReleased(const FInputActionValue& InputActionValue)
+{
+	
 }

@@ -6,6 +6,8 @@
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
+#include "ParkourSystem/ParkourSystemComponent.h"
+#include "MotionWarpingComponent.h"
 
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -41,11 +43,19 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
 	this->AddOwnedComponent(PlayerComboManagerComponent);
 
+	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
+	this->AddOwnedComponent(ParkourSystemComponent);
+
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+	this->AddOwnedComponent(MotionWarpingComponent);
+
 }
 
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ParkourSystemComponent->SetIntializeReference(this, SpringArmComp, CameraComp, MotionWarpingComponent);
 	
 }
 
@@ -113,4 +123,3 @@ void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
 {
 	PlayerComboManagerComponent->SetCurrentComboIndex(ComboIndex);
 }
-
