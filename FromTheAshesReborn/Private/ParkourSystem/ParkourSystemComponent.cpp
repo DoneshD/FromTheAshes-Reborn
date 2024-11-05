@@ -908,8 +908,10 @@ void UParkourSystemComponent::FindVaultOrMantleType()
 	{
 		CurrentVaultHeightTag = FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low");
 	}
-
-	if (WallDepth > 200)
+	
+	//Add a if condition to check if > 250 then mantle
+	
+	if (WallDepth > 200 && WallDepth <= 250)
 	{
 		CurrentVaultDepthTag = FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long");
 	}
@@ -922,75 +924,80 @@ void UParkourSystemComponent::FindVaultOrMantleType()
 		CurrentVaultDepthTag = FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short");
 	}
 
-	//-------------Big,Big------
-if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Long"));
-	CurrentParkourVariables = ParkourVariablesArray[0];
-}
+	if(CheckVaultSurface())
+	{
+		//-------------Big,Big------
+		if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Long"));
+			CurrentParkourVariables = ParkourVariablesArray[0];
+		}
 
-//-------------Big,Average------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Average"));
-	CurrentParkourVariables = ParkourVariablesArray[1];
-}
+		//-------------Big,Average------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Average"));
+			CurrentParkourVariables = ParkourVariablesArray[1];
+		}
 
-//-------------Big,Small------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Short"));
-	CurrentParkourVariables = ParkourVariablesArray[2];
-}
+		//-------------Big,Small------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Short"));
+			CurrentParkourVariables = ParkourVariablesArray[2];
+		}
 
-//-------------Average,Big------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Long"));
-	CurrentParkourVariables = ParkourVariablesArray[3];
-}
+		//-------------Average,Big------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Long"));
+			CurrentParkourVariables = ParkourVariablesArray[3];
+		}
 
-//-------------Average,Average------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Average"));
-	CurrentParkourVariables = ParkourVariablesArray[4];
-}
+		//-------------Average,Average------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Average"));
+			CurrentParkourVariables = ParkourVariablesArray[4];
+		}
 
-//-------------Average,Small------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Short"));
-	CurrentParkourVariables = ParkourVariablesArray[5];
-}
+		//-------------Average,Small------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Short"));
+			CurrentParkourVariables = ParkourVariablesArray[5];
+		}
 
-//-------------Low,Big------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Long"));
-	CurrentParkourVariables = ParkourVariablesArray[6];
-}
+		//-------------Low,Big------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Long"));
+			CurrentParkourVariables = ParkourVariablesArray[6];
+		}
 
-//-------------Low,Average------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Average"));
-	CurrentParkourVariables = ParkourVariablesArray[7];
-}
+		//-------------Low,Average------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Average"));
+			CurrentParkourVariables = ParkourVariablesArray[7];
+		}
 
-//-------------Low,Small------
-else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
-{
-	UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Short"));
-	CurrentParkourVariables = ParkourVariablesArray[8];
-}
-
-
-
-	// if(CurrentParkourVariables)
-	// {
-	// 	PlayParkourMontage();
-	// }
+		//-------------Low,Small------
+		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Short"));
+			CurrentParkourVariables = ParkourVariablesArray[8];
+		}
+		
+		// if(CurrentParkourVariables)
+		// {
+		// 	PlayParkourMontage();
+		// }
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Vault surfaced blocked"))
+	}
 }
 
 void UParkourSystemComponent::PrintVaultHeightandDepth()
