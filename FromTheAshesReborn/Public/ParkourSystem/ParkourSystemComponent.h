@@ -15,7 +15,6 @@ class FROMTHEASHESREBORN_API UParkourSystemComponent : public UActorComponent, p
 {
 	GENERATED_BODY()
 
-
 protected:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Character Ref|Character")
@@ -44,8 +43,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AArrowActor> ArrowActorClass;
-
-	//UPROPERTY(EditDefaultsOnly)
+	
 	TObjectPtr<class AArrowActor> ArrowActor;
 
 	float ArrowLocationX;
@@ -57,29 +55,17 @@ protected:
 
 	FGameplayTag ParkourActionTag = FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction");
 	FGameplayTag ParkourStateTag = FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy");
-
+	
+	//Auto Climb
 	bool CanManualClimb = false;
 	bool CanAutoClimb = true;
 	bool MemberAutoClimb = true;
 
-
-	//Size
-
+	//Distance results
 	float WallHeight = 0.0f;
 	float WallDepth = 0.0f;
 	float VaultHeight = 0.0f;
 	float DistanceFromLedgeXY = 9999.0f;
-
-	//Parkour Type
-
-	bool InGround = true;
-
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UParkourVariableDataAsset> CurrentParkourVariables;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAnimMontage> CurrentParkourMontage;
 
 	//Tags
 	FGameplayTag StateNotBusyTag = FGameplayTag::RequestGameplayTag(TEXT("Parkour.State.NotBusy"));
@@ -121,42 +107,36 @@ protected:
 	//Location and Shape
 
 	TArray<FHitResult> WallHeightTraces;
-	
-	FHitResult WallHitResult;
-
 	TArray<FHitResult> PotentialWallHeightTraces;
 	
 	FRotator WallRotation;
 	
+	FHitResult WallHitResult;
 	FHitResult WallTopHit;
-
-	FHitResult WallTopResult;
-
-	FVector WarpTopPoint;
-
 	FHitResult WallDepthResult;
-
-	FVector WarpDepth;
-
+	FHitResult WallTopResult;
 	FHitResult WallVaultResult;
 
+	FVector WarpTopPoint;
+	FVector WarpDepth;
 	FVector WarpVaultLocation;
 
 	UPROPERTY(EditAnywhere, Category = "Trace|Hit Results")
 	bool ShowHitResult = false;
 
 	FGameplayTag CurrentVaultHeightTag;
-
 	FGameplayTag CurrentVaultDepthTag;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<UParkourVariableDataAsset>> ParkourVariablesArray;
 
-public:
-	//debug lines
-	void DrawDebugRotationLines(FRotator InRotation);
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UParkourVariableDataAsset> CurrentParkourVariables;
 
-	//-------
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> CurrentParkourMontage;
+
+public:
 	
 	UParkourSystemComponent();
 	
@@ -164,56 +144,82 @@ public:
 	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION()
 	void ParkourInputPressedVault();
 
+	UFUNCTION()
 	virtual bool SetIntializeReference(ACharacter* Character, USpringArmComponent* CameraBoom, UCameraComponent* Camera,
 		UMotionWarpingComponent* MotionWarping) override;
-	
+
+	UFUNCTION()
 	bool SelectClimb(bool InCanManualClimb, bool InCanAutoClimb, bool InAutoClimb);
 
-	void ParkourAction(bool InAutoClimb);
-
-	void FindParkourLocationAndShape();
-
-	void FindSizeParkourObjects();
-
-	void FindParkourType(bool AutoClimb);
-
-	void PlayParkourMontage();
-	
-	void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
-
-	void SetParkourAction(FGameplayTag InNewParourAction);
-
+	UFUNCTION()
 	void GetInitialCapsuleTraceSettings(FVector& OutStart, FVector& OutEnd, float& Radius, float& OutHalfHeight);
 
+	UFUNCTION()
 	float GetVerticalWallDetectStartHeight();
 
-	void FindWallDepth();
+	UFUNCTION()
+	void SelectParkourAction(bool InAutoClimb);
 
+	UFUNCTION()
+	void FindParkourLocationAndShape();
+
+	UFUNCTION()
+	void FindWallDepth();
+	
+	UFUNCTION()
+	void FindSizeParkourObjects();
+
+	UFUNCTION()
+	void FindParkourType(bool AutoClimb);
+
+	UFUNCTION()
+	void FindVaultOrMantleType();
+	
+	UFUNCTION()
 	bool CheckMantleSurface();
 
+	UFUNCTION()
 	bool CheckVaultSurface();
 
-	void ShowHitResults();
+	UFUNCTION()
+	void SetParkourAction(FGameplayTag InNewParourAction);
+	
+	UFUNCTION()
+	void PlayParkourMontage();
 
+	UFUNCTION()
+	void OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted);
+
+	UFUNCTION()
 	void SetParkourState(FGameplayTag InNewParkourState);
 
+	UFUNCTION()
 	void ParkourStateSettings(ECollisionEnabled::Type InCollisionType, EMovementMode InMode, FRotator InRotationRate, bool bDoCollisionTest, bool bStopMovementImmediately);
 
+	UFUNCTION()
 	FVector FindWarp1Location(float InWarp1XOffset, float InWarp1ZOffset);
-
+	
+	UFUNCTION()
 	FVector FindWarp2Location(float InWarp2XOffset, float InWarp2ZOffset);
-
+	
+	UFUNCTION()
 	FVector FindWarp3Location(float InWarp3XOffset, float InWarp3ZOffset);
 
-	UFUNCTION(BlueprintCallable)
-	void StopParkourMontage();
-
+	//---------Reset----------
+	
+	UFUNCTION()
 	void ResetParkourResult();
 
-	void FindVaultOrMantleType();
-
+	//----------------------Show results-----------------//
+	
+	UFUNCTION()
+	void ShowHitResults();
+	
+	UFUNCTION()
 	void PrintVaultHeightandDepth();
 
+	void DrawDebugRotationLines(FRotator InRotation);
 };

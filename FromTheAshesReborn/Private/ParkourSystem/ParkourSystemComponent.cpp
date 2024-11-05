@@ -66,7 +66,7 @@ void UParkourSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 void UParkourSystemComponent::ParkourInputPressedVault()
 {
-	ParkourAction(false);
+	SelectParkourAction(false);
 }
 
 bool UParkourSystemComponent::SetIntializeReference(ACharacter* Character, USpringArmComponent* CameraBoom,
@@ -172,7 +172,7 @@ bool UParkourSystemComponent::SelectClimb(bool InCanManualClimb, bool InCanAutoC
 	return InAutoClimb ? InCanAutoClimb : InCanManualClimb;
 }
 
-void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
+void UParkourSystemComponent::SelectParkourAction(bool InAutoClimb)
 {
 	if(ParkourActionTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction")))
 	{
@@ -182,7 +182,6 @@ void UParkourSystemComponent::ParkourAction(bool InAutoClimb)
 			FindParkourLocationAndShape();
 			ShowHitResults();
 			FindSizeParkourObjects();
-			PrintVaultHeightandDepth();
 			FindParkourType(MemberAutoClimb);
 
 		}
@@ -412,6 +411,7 @@ void UParkourSystemComponent::PlayParkourMontage()
 	//TODO: Change later
 	CurrentParkourVariables->ParkourMontage = CurrentParkourMontage;
 	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.Vault"));
+	
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour1"), FindWarp1Location(-70, -60), WallRotation);
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour2"), FindWarp2Location(-30, -60), WallRotation);
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(FName("Parkour3"), FindWarp3Location(0, 0), WallRotation);
@@ -421,7 +421,6 @@ void UParkourSystemComponent::PlayParkourMontage()
 	FOnMontageBlendingOutStarted BlendingOutDelegate;
 	BlendingOutDelegate.BindUObject(this, &UParkourSystemComponent::OnMontageBlendingOut);
 	AnimInstance->Montage_SetBlendingOutDelegate(BlendingOutDelegate, CurrentParkourVariables->ParkourMontage);
-
 }
 
 // Define the callback function for OnBlendOut
@@ -703,12 +702,6 @@ FVector UParkourSystemComponent::FindWarp3Location(float InWarp3XOffset, float I
 	return WallVaultResult.ImpactPoint + (UKismetMathLibrary::GetForwardVector(WallRotation) * InWarp3XOffset) + FVector(0.0f, 0.0f, InWarp3ZOffset);
 }
 
-void UParkourSystemComponent::StopParkourMontage()
-{
-	SetParkourState(FGameplayTag::RequestGameplayTag("Parkour.State.NotBusy"));
-	SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
-}
-
 void UParkourSystemComponent::ResetParkourResult()
 {
 	PotentialWallHeightTraces.Empty();
@@ -760,63 +753,54 @@ void UParkourSystemComponent::FindVaultOrMantleType()
 		//-------------Big,Big------
 		if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Long"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.HighLongVault"));
 		}
 
 		//-------------Big,Average------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Average"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.HighAverageVault"));
 		}
 
 		//-------------Big,Small------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: High, Depth: Short"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.HighShortVault"));
 		}
 
 		//-------------Average,Big------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Long"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.AverageLongVault"));
 		}
 
 		//-------------Average,Average------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Average"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.AverageAverageVault"));
 		}
 
 		//-------------Average,Small------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Average")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: Average, Depth: Short"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.AverageShortVault"));
 		}
 
 		//-------------Low,Big------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Long"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.LowLongVault"));
 		}
 
 		//-------------Low,Average------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Average"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.LowAverageVault"));
 		}
 
 		//-------------Low,Small------
 		else if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.Low")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Short")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Height: Low, Depth: Short"));
 			SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.LowShortVault"));
 		}
 	}
