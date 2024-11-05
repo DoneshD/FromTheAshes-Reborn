@@ -43,12 +43,6 @@ protected:
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class AWidgetActor> WidgetActorClass;
-
-	//UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<class AWidgetActor> WidgetActor;
-
-	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class AArrowActor> ArrowActorClass;
 
 	//UPROPERTY(EditDefaultsOnly)
