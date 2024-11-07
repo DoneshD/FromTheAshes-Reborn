@@ -16,5 +16,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FRotator NormalReverseRotationZ(FVector NormalVector);
-	
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FRotator ReverseRotation(FRotator Rotation);
+
 };
