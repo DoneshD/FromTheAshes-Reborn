@@ -3,6 +3,7 @@
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedDash.h"
+#include "ParkourSystem/ParkourFunctionLibrary.h"
 
 #include "Player/FTAPlayerController.h"
 

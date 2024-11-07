@@ -14,12 +14,10 @@
 
 void UParkourSystemComponent::DrawDebugRotationLines(FRotator InRotation)
 {
-	// Calculate direction vectors
-	FVector ForwardVector = InRotation.Vector();  // This is equivalent to `GetForwardVector()`
-	FVector RightVector = FRotationMatrix(InRotation).GetScaledAxis(EAxis::Y);  // Y axis
-	FVector UpVector = FRotationMatrix(InRotation).GetScaledAxis(EAxis::Z);  // Z axis
+	FVector ForwardVector = InRotation.Vector();  
+	FVector RightVector = FRotationMatrix(InRotation).GetScaledAxis(EAxis::Y);  
+	FVector UpVector = FRotationMatrix(InRotation).GetScaledAxis(EAxis::Z);  
 
-	// Define line colors
 	FColor ForwardColor = FColor::Red;
 	FColor RightColor = FColor::Green;
 	FColor UpColor = FColor::Blue;
