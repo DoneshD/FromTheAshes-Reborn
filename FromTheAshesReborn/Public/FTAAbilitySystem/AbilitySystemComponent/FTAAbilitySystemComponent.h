@@ -9,6 +9,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbil
 
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;
+class AActor;
+
 
 USTRUCT()
 struct FROMTHEASHESREBORN_API FGameplayAbilityAnimMontageForMesh
