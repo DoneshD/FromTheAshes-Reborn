@@ -70,6 +70,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
 	EFTAAbilityActivationGroup ActivationGroup;
 
+	// UPROPERTY(EditDefaultsOnly, Instanced, Category = Costs)
+	// TArray<TObjectPtr<UFTAAbilityCost>> AdditionalCosts;
+
 //functions
 public:
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
