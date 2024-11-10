@@ -61,8 +61,14 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 	friend class UFTAAbilitySystemComponent;
 
-	
+//variables
+protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
+	EFTAAbilityActivationPolicy ActivationPolicy;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
+	EFTAAbilityActivationGroup ActivationGroup;
 
 //functions
 public:
@@ -77,14 +83,46 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
 	AController* GetControllerFromActorInfo() const;
 
-	UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
 	AFTACharacter* GetFTACharacterFromActorInfo() const;
+
+	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
+	EFTAAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
+
+	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
+
+	//Set up camera mode later
+	
+	// UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	// void SetCameraMode(TSubclassOf<UFTACameraMode> CameraMode);
+
+	
+	// Clears the ability's camera mode.  Automatically called if needed when the ability ends.
+	
+	// UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
+	// void ClearCameraMode();
+
+	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	virtual bool IsInputPressed() const;
+
+	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
+	virtual void SetCanBeCanceled(bool bCanBeCanceled) override;
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
+	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
+	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability|Combo")
 	FAbilityComboDataStruct AbilityComboDataStruct;
-
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
@@ -96,57 +134,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool bActivateOnInput;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	bool bSourceObjectMustEqualCurrentWeaponToActivate;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	bool bCannotActivateWhileInteracting;
-
-	// Map of gameplay tags to gameplay effect containers
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GameplayEffects")
-	TMap<FGameplayTag, FFTAGameplayEffectContainer> EffectContainerMap;
-
-	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	FGameplayAbilityTargetDataHandle MakeGameplayAbilityTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
-
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	FGameplayAbilityTargetDataHandle MakeGameplayAbilityTargetDataHandleFromHitResults(const TArray<FHitResult> HitResults);
-
-	UFUNCTION(BlueprintCallable, Category = Ability, meta = (AutoCreateRefTerm = "EventData"))
-	virtual FFTAGameplayEffectContainerSpec MakeEffectContainerSpecFromContainer(const FFTAGameplayEffectContainer& Container, const FGameplayEventData& EventData, int32 OverrideGameplayLevel = -1);
-
-	UFUNCTION(BlueprintCallable, Category = Ability, meta = (AutoCreateRefTerm = "EventData"))
-	virtual FFTAGameplayEffectContainerSpec MakeEffectContainerSpec(FGameplayTag ContainerTag, const FGameplayEventData& EventData, int32 OverrideGameplayLevel = -1);
-
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	virtual TArray<FActiveGameplayEffectHandle> ApplyEffectContainerSpec(const FFTAGameplayEffectContainerSpec& ContainerSpec);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ability", meta = (DisplayName = "Get Source Object"))
-	UObject* K2_GetSourceObject(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
-
-	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
-
-	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Ability")
-	bool FTACheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
-	
-	virtual bool FTACheckCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Ability")
-	void FTAApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
-	
-	virtual void FTAApplyCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const {};
-
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	virtual bool IsInputPressed() const;
 	
 
-
-protected:
-
+	
 };

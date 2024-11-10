@@ -70,6 +70,35 @@ AFTACharacter* UFTAGameplayAbility::GetFTACharacterFromActorInfo() const
 	return (CurrentActorInfo ? Cast<AFTACharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr);
 }
 
+void UFTAGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const
+{
+	// Try to activate if activation policy is on spawn.
+	if (ActorInfo && !Spec.IsActive() && ActivationPolicy == EFTAAbilityActivationPolicy::OnSpawn)
+	{
+		//Might cause problems if ASC is already a raw pointer
+		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+		const AActor* AvatarActor = ActorInfo->AvatarActor.Get();
+
+		if(!ASC)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ASC is null"));
+			return;
+		}
+
+		if(!AvatarActor)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::AvatarActor is null"));
+			return;
+		}
+
+		// If avatar actor is torn off or about to die, don't try to activate until we get the new one.
+		if (ASC && AvatarActor)
+		{
+			ASC->TryActivateAbility(Spec.Handle);
+		}
+	}
+}
+
 void UFTAGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
 	Super::OnAvatarSet(ActorInfo, Spec);
@@ -80,128 +109,84 @@ void UFTAGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo
 	}
 }
 
-FGameplayAbilityTargetDataHandle UFTAGameplayAbility::MakeGameplayAbilityTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors)
+bool UFTAGameplayAbility::IsInputPressed() const
 {
-	if (TargetActors.Num() > 0)
-	{
-		FGameplayAbilityTargetData_ActorArray* NewData = new FGameplayAbilityTargetData_ActorArray();
-		NewData->TargetActorArray.Append(TargetActors);
-		return FGameplayAbilityTargetDataHandle(NewData);
-	}
-
-	return FGameplayAbilityTargetDataHandle();
+	FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
+	return Spec && Spec->InputPressed;
 }
 
-FGameplayAbilityTargetDataHandle UFTAGameplayAbility::MakeGameplayAbilityTargetDataHandleFromHitResults(const TArray<FHitResult> HitResults)
+bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	FGameplayAbilityTargetDataHandle TargetData;
-
-	for (const FHitResult& HitResult : HitResults)
+	if (!ActorInfo || !ActorInfo->AbilitySystemComponent.IsValid())
 	{
-		FGameplayAbilityTargetData_SingleTargetHit* NewData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
-		TargetData.Add(NewData);
+		return false;
 	}
-
-	return TargetData;
-}
-
-FFTAGameplayEffectContainerSpec UFTAGameplayAbility::MakeEffectContainerSpecFromContainer(const FFTAGameplayEffectContainer& Container, const FGameplayEventData& EventData, int32 OverrideGameplayLevel)
-{
-	// First figure out our actor info
-	FFTAGameplayEffectContainerSpec ReturnSpec;
-	AActor* OwningActor = GetOwningActorFromActorInfo();
-	AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	AFTACharacter* AvatarCharacter = Cast<AFTACharacter>(AvatarActor);
-	UFTAAbilitySystemComponent* OwningASC = UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
-
-	if (OwningASC)
-	{
-		// If we have a target type, run the targeting logic. This is optional, targets can be added later
-		if (Container.TargetType.Get())
-		{
-			TArray<FHitResult> HitResults;
-			TArray<AActor*> TargetActors;
-			TArray<FGameplayAbilityTargetDataHandle> TargetData;
-			const UFTATargetType* TargetTypeCDO = Container.TargetType.GetDefaultObject();
-			TargetTypeCDO->GetTargets(AvatarCharacter, AvatarActor, EventData, TargetData, HitResults, TargetActors);
-			ReturnSpec.AddTargets(TargetData, HitResults, TargetActors);
-		}
-
-		// If we don't have an override level, use the ability level
-		if (OverrideGameplayLevel == INDEX_NONE)
-		{
-			//OverrideGameplayLevel = OwningASC->GetDefaultAbilityLevel();
-			OverrideGameplayLevel = GetAbilityLevel();
-		}
-
-		// Build GameplayEffectSpecs for each applied effect
-		for (const TSubclassOf<UGameplayEffect>& EffectClass : Container.TargetGameplayEffectClasses)
-		{
-			ReturnSpec.TargetGameplayEffectSpecs.Add(MakeOutgoingGameplayEffectSpec(EffectClass, OverrideGameplayLevel));
-		}
-	}
-	return ReturnSpec;
-}
-
-
-
-FFTAGameplayEffectContainerSpec UFTAGameplayAbility::MakeEffectContainerSpec(FGameplayTag ContainerTag, const FGameplayEventData& EventData, int32 OverrideGameplayLevel)
-{
 	
-	// FFTAGameplayEffectContainerSpec* FoundContainer = EffectContainerMap.Find(ContainerTag);
-	//
-	// if (FoundContainer)
-	// {
-	// 	return MakeEffectContainerSpecFromContainer(*FoundContainer, EventData, OverrideGameplayLevel);
-	// }
-	//
-	return FFTAGameplayEffectContainerSpec();
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	{
+		return false;
+	}
 	
 }
 
-TArray<FActiveGameplayEffectHandle> UFTAGameplayAbility::ApplyEffectContainerSpec(const FFTAGameplayEffectContainerSpec& ContainerSpec)
+void UFTAGameplayAbility::SetCanBeCanceled(bool bCanBeCanceled)
 {
-	TArray<FActiveGameplayEffectHandle> AllEffects;
-
-	// Iterate list of effect specs and apply them to their target data
-	for (const FGameplayEffectSpecHandle& SpecHandle : ContainerSpec.TargetGameplayEffectSpecs)
-	{
-		AllEffects.Append(K2_ApplyGameplayEffectSpecToTarget(SpecHandle, ContainerSpec.TargetData));
-	}
-	return AllEffects;
+	Super::SetCanBeCanceled(bCanBeCanceled);
 }
 
-UObject* UFTAGameplayAbility::K2_GetSourceObject(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const
+void UFTAGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	return GetSourceObject(Handle, &ActorInfo);
+	Super::OnGiveAbility(ActorInfo, Spec);
 }
 
-bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
+void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+	Super::OnRemoveAbility(ActorInfo, Spec);
+	Super::OnRemoveAbility(ActorInfo, Spec);
+}
+
+void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
+void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
 bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	FGameplayTagContainer* OptionalRelevantTags) const
 {
-	return Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags) && FTACheckCost(Handle, *ActorInfo);
+	return Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags);
 }
 
-
-bool UFTAGameplayAbility::FTACheckCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const
+void UFTAGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayAbilityActivationInfo ActivationInfo) const
 {
-	return true;
-}
-
-void UFTAGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
-{
-	FTAApplyCost(Handle, *ActorInfo, ActivationInfo);
 	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
 }
 
-
-bool UFTAGameplayAbility::IsInputPressed() const
+FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo) const
 {
-	FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
-	return Spec && Spec->InputPressed;
+	return Super::MakeEffectContext(Handle, ActorInfo);
+}
+
+void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec,
+	FGameplayAbilitySpec* AbilitySpec) const
+{
+	Super::ApplyAbilityTagsToGameplayEffectSpec(Spec, AbilitySpec);
+}
+
+bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent,
+	const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags,
+	FGameplayTagContainer* OptionalRelevantTags) const
+{
+	return Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, SourceTags, TargetTags,
+	                                                OptionalRelevantTags);
 }
