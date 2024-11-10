@@ -2,27 +2,72 @@
 #include "AbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
+#include "AnimNodes/AnimNode_RandomPlayer.h"
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
+#include "Player/FTAPlayerController.h"
 
 
-UFTAGameplayAbility::UFTAGameplayAbility()
+UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Default to Instance Per Actor
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	bActivateAbilityOnGranted = false;
 	bActivateOnInput = true;
-	bSourceObjectMustEqualCurrentWeaponToActivate = false;
-	bCannotActivateWhileInteracting = true;
 
-	/* Implement later */
-	// UGSAbilitySystemGlobals hasn't initialized tags yet to set ActivationBlockedTags
+	// ActivationPolicy = ELyraAbilityActivationPolicy::OnInputTriggered;
+	// ActivationGroup = ELyraAbilityActivationGroup::Independent;
 	
-	// ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("Condition.Health.Dead"));
+}
+
+UFTAAbilitySystemComponent* UFTAGameplayAbility::GetFTAAbilitySystemComponentFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<UFTAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get()) : nullptr);
+}
+
+AFTAPlayerController* UFTAGameplayAbility::GetFTAPlayerControllerFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<AFTAPlayerController>(CurrentActorInfo->PlayerController.Get()) : nullptr);
+}
+
+AController* UFTAGameplayAbility::GetControllerFromActorInfo() const
+{
+	if(!CurrentActorInfo)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::CurrentActorInfo is null"));
+		return nullptr;
+	}
+
+	if(AController* PC = CurrentActorInfo->PlayerController.Get())
+	{
+		return PC;
+	}
 	
+	// Look for a player controller or pawn in the owner chain.
+	AActor* TestActor = CurrentActorInfo->OwnerActor.Get();
+	while (TestActor)
+	{
+		if (AController* Controller = Cast<AController>(TestActor))
+		{
+			return Controller;
+		}
+
+		if (APawn* Pawn = Cast<APawn>(TestActor))
+		{
+			return Pawn->GetController();
+		}
+
+		TestActor = TestActor->GetOwner();
+	}
+	return nullptr;
+}
+
+AFTACharacter* UFTAGameplayAbility::GetFTACharacterFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<AFTACharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr);
 }
 
 void UFTAGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -133,15 +178,6 @@ UObject* UFTAGameplayAbility::K2_GetSourceObject(FGameplayAbilitySpecHandle Hand
 
 bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
 {
-	// if (bCannotActivateWhileInteracting)
-	// {
-	// 	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
-	// 	if (ASC->GetTagCount(InteractingTag) > ASC->GetTagCount(InteractingRemovalTag))
-	// 	{
-	// 		return false;
-	// 	}
-	// }
-
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
 
@@ -168,95 +204,4 @@ bool UFTAGameplayAbility::IsInputPressed() const
 {
 	FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
 	return Spec && Spec->InputPressed;
-}
-
-UAnimMontage* UFTAGameplayAbility::GetCurrentMontageForMesh(USkeletalMeshComponent* InMesh)
-{
-	FAbilityMeshMontage AbilityMeshMontage;
-	if (FindAbillityMeshMontage(InMesh, AbilityMeshMontage))
-	{
-		return AbilityMeshMontage.Montage;
-	}
-	
-	return nullptr;
-}
-
-void UFTAGameplayAbility::SetCurrentMontageForMesh(USkeletalMeshComponent* InMesh, UAnimMontage* InCurrentMontage)
-{
-	ensure(IsInstantiated());
-
-	FAbilityMeshMontage AbilityMeshMontage;
-	if (FindAbillityMeshMontage(InMesh, AbilityMeshMontage))
-	{
-		AbilityMeshMontage.Montage = InCurrentMontage;
-	}
-	else
-	{
-		CurrentAbilityMeshMontages.Add(FAbilityMeshMontage(InMesh, InCurrentMontage));
-	}
-}
-
-bool UFTAGameplayAbility::FindAbillityMeshMontage(USkeletalMeshComponent* InMesh, FAbilityMeshMontage& InAbilityMeshMontage)
-{
-	for (FAbilityMeshMontage& MeshMontage : CurrentAbilityMeshMontages)
-	{
-		if (MeshMontage.Mesh == InMesh)
-		{
-			InAbilityMeshMontage = MeshMontage;
-			return true;
-		}
-	}
-
-	return false;
-}
-
-void UFTAGameplayAbility::MontageJumpToSectionForMesh(USkeletalMeshComponent* InMesh, FName SectionName)
-{
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo_Checked());
-	if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-	{
-		AbilitySystemComponent->CurrentMontageJumpToSectionForMesh(InMesh, SectionName);
-	}
-}
-
-void UFTAGameplayAbility::MontageSetNextSectionNameForMesh(USkeletalMeshComponent* InMesh, FName FromSectionName, FName ToSectionName)
-{
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo_Checked());
-	if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-	{
-		AbilitySystemComponent->CurrentMontageSetNextSectionNameForMesh(InMesh, FromSectionName, ToSectionName);
-	}
-}
-
-void UFTAGameplayAbility::MontageStopForMesh(USkeletalMeshComponent* InMesh, float OverrideBlendOutTime)
-{
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get());
-	if (AbilitySystemComponent != nullptr)
-	{
-		// We should only stop the current montage if we are the animating ability
-		if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-		{
-			AbilitySystemComponent->CurrentMontageStopForMesh(InMesh, OverrideBlendOutTime);
-		}
-	}
-}
-
-void UFTAGameplayAbility::MontageStopForAllMeshes(float OverrideBlendOutTime)
-{
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get());
-	if (AbilitySystemComponent != nullptr)
-	{
-		if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-		{
-			AbilitySystemComponent->StopAllCurrentMontages(OverrideBlendOutTime);
-		}
-	}
 }
