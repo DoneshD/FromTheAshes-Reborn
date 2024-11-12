@@ -34,6 +34,9 @@ public:
 	virtual void SpawnEquipmentActors(const TArray<FFTAEquipmentActorToSpawn>& ActorsToSpawn);
 	virtual void DestroyEquipmentActors();
 
+	virtual void OnEquipped();
+	virtual void OnUnequipped();
+
 private:
 	TObjectPtr<UObject> Instigator;
 

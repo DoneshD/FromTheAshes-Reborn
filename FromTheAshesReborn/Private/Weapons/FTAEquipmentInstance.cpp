@@ -58,3 +58,13 @@ void UFTAEquipmentInstance::DestroyEquipmentActors()
 		}
 	}
 }
+
+void UFTAEquipmentInstance::OnEquipped()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Need to implement UFTAEquipmentInstance::OnEquipped()"));
+}
+
+void UFTAEquipmentInstance::OnUnequipped()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Need to implement UFTAEquipmentInstance::OnUnequipped()"));
+}

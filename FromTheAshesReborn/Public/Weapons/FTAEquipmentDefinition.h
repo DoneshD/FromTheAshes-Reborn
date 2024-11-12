@@ -26,7 +26,7 @@ struct FFTAEquipmentActorToSpawn
 	FTransform AttachTransform;
 };
 
-UCLASS()
+UCLASS(Blueprintable, Const, Abstract, BlueprintType)
 class FROMTHEASHESREBORN_API UFTAEquipmentDefinition : public UObject
 {
 	GENERATED_BODY()

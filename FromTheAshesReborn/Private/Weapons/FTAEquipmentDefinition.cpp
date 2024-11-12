@@ -1,8 +1,9 @@
 ﻿
 #include "Weapons/FTAEquipmentDefinition.h"
+#include "Weapons/FTAEquipmentInstance.h"
 
 UFTAEquipmentDefinition::UFTAEquipmentDefinition(const FObjectInitializer& ObjectInitializer)
 {
-	InstanceType = UFTAEquipmentDefinition::StaticClass();
+	InstanceType = UFTAEquipmentInstance::StaticClass();
 
 }
