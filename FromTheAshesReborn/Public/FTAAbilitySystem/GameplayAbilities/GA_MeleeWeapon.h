@@ -8,4 +8,4 @@ UCLASS()
 class FROMTHEASHESREBORN_API UGA_MeleeWeapon : public UGA_FromEquipment
 {
 	GENERATED_BODY()
-};
+ };
