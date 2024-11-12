@@ -5,7 +5,7 @@
 #include "FTACharacterData.generated.h"
 
 class UFTAAbilitySet;
-
+class UFTAAbilityTagRelationshipMapping;
 
 UCLASS(BlueprintType, Const, Meta = (DisplayName = "FTA Character Data"))
 class FROMTHEASHESREBORN_API UFTACharacterData : public UPrimaryDataAsset
@@ -26,8 +26,8 @@ public:
 	TArray<TObjectPtr<UFTAAbilitySet>> AbilitySets;
 
 	// What mapping of ability tags to use for actions taking by this pawn
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Abilities")
-	// TObjectPtr<ULyraAbilityTagRelationshipMapping> TagRelationshipMapping;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Abilities")
+	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 
 	// Input configuration used by player controlled pawns to create input mappings and bind input actions.
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Input")
