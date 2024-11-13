@@ -17,6 +17,5 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
 	UFTAEquipmentInstance* GetAssociatedEquipment() const;
-
 	
 };

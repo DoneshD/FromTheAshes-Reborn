@@ -13,6 +13,5 @@ UFTAEquipmentInstance* UGA_FromEquipment::GetAssociatedEquipment() const
 		return Cast<UFTAEquipmentInstance>(Spec->SourceObject.Get());
 		
 	}
-
 	return nullptr;
 }

@@ -10,6 +10,15 @@ class FROMTHEASHESREBORN_API UFTAMeleeWeaponInstance : public UFTAWeaponInstance
 	GENERATED_BODY()
 
 public:
+	
+	UFTAMeleeWeaponInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Weapon Config")
-	int32 DamagePerSwing = 1;
+	float MaxDamage = 100.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Config")
+	FRuntimeFloatCurve DistanceDamageFalloff;
+
+	virtual void OnEquipped() override;
+	virtual void OnUnequipped() override;
 };
