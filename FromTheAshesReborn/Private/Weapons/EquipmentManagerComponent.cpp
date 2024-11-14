@@ -57,7 +57,7 @@ UFTAEquipmentInstance* FFTAEquipmentList::AddEntry(TSubclassOf<UFTAEquipmentDefi
 	{
 		for (TObjectPtr<const UFTAAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsToGrant)
 		{
-			// AbilitySet->GiveToAbilitySystem(ASC, /*inout*/ &NewEntry.GrantedHandles, Result);
+			AbilitySet->GiveToAbilitySystem(ASC, /*inout*/ &NewEntry.GrantedHandles, Result);
 		}
 	}
 	else
@@ -72,8 +72,22 @@ UFTAEquipmentInstance* FFTAEquipmentList::AddEntry(TSubclassOf<UFTAEquipmentDefi
 
 void FFTAEquipmentList::RemoveEntry(UFTAEquipmentInstance* Instance)
 {
-	
+	for (auto EntryIt = Entries.CreateIterator(); EntryIt; ++EntryIt)
+	{
+		FFTAAppliedEquipmentEntry& Entry = *EntryIt;
+		if (Entry.Instance == Instance)
+		{
+			if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+			{
+				Entry.GrantedHandles.TakeFromAbilitySystem(ASC);
+			}
+
+			Instance->DestroyEquipmentActors();
+			EntryIt.RemoveCurrent();
+		}
+	}
 }
+
 
 UFTAAbilitySystemComponent* FFTAEquipmentList::GetAbilitySystemComponent() const
 {

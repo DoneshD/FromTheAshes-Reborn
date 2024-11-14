@@ -111,6 +111,8 @@ class FROMTHEASHESREBORN_API UFTAAbilitySet : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
+public:
+
 	UFTAAbilitySet(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 	// Grants the ability set to the specified ability system component.

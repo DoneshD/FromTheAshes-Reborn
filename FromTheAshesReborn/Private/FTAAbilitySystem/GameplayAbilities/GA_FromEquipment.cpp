@@ -2,6 +2,7 @@
 #include "Weapons/FTAEquipmentInstance.h"
 
 UGA_FromEquipment::UGA_FromEquipment(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	
 }
