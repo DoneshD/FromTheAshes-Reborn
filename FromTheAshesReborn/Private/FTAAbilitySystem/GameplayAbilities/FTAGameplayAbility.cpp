@@ -18,8 +18,8 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 	bActivateAbilityOnGranted = false;
 	bActivateOnInput = true;
 
-	// ActivationPolicy = ELyraAbilityActivationPolicy::OnInputTriggered;
-	// ActivationGroup = ELyraAbilityActivationGroup::Independent;
+	ActivationPolicy = EFTAAbilityActivationPolicy::OnInputTriggered;
+	ActivationGroup = EFTAAbilityActivationGroup::Independent;
 	
 }
 

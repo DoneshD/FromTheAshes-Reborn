@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTAAbilitySystemComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbilitySystemComponent*, SourceASC, float,
@@ -9,6 +10,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbil
 
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;
+class UFTAAbilityTagRelationshipMapping;
 
 
 UCLASS()
@@ -16,10 +18,13 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 {
 	GENERATED_BODY()
 
-//protected member variabes
 public:
+	
 	bool IsCharacterAbilitiesGiven = false;
 	bool IsStartupEffectsApplied = false;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 
 	// Handles to abilities that had their input pressed this frame.
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
@@ -29,10 +34,12 @@ public:
 
 	// Handles to abilities that have their input held.
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
+
+	// Number of abilities running in each activation group.
+	int32 ActivationGroupCounts[(uint8)EFTAAbilityActivationGroup::MAX];
 	
 	FReceivedDamageDelegate ReceivedDamage;
 	
-//public functions
 public:
 	
 	UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
@@ -41,38 +48,16 @@ public:
 
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 
-	// Exposes GetTagCount to Blueprint
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Abilities | Gameplaytags", Meta = (DisplayName = "GetTagCount", ScriptName = "GetTagCount"))
-	int32 K2_GetTagCount(FGameplayTag TagToCheck) const;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Abilities")
-	FGameplayAbilitySpecHandle FindAbilitySpecHandleForClass(TSubclassOf<UGameplayAbility> AbilityClass, UObject* OptionalSourceObject=nullptr);
-
-	// Exposes AddLooseGameplayTag to Blueprint. This tag is *not* replicated.
-	UFUNCTION(BlueprintCallable, Category = "Abilities", Meta = (DisplayName = "AddLooseGameplayTag"))
-	void K2_AddLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count = 1);
-
-	// Exposes AddLooseGameplayTags to Blueprint. These tags are *not* replicated.
-	UFUNCTION(BlueprintCallable, Category = "Abilities", Meta = (DisplayName = "AddLooseGameplayTags"))
-	void K2_AddLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count = 1);
-
-	// Exposes RemoveLooseGameplayTag to Blueprint. This tag is *not* replicated.
-	UFUNCTION(BlueprintCallable, Category = "Abilities", Meta = (DisplayName = "RemoveLooseGameplayTag"))
-	void K2_RemoveLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count = 1);
-
-	// Exposes RemoveLooseGameplayTags to Blueprint. These tags are *not* replicated.
-	UFUNCTION(BlueprintCallable, Category = "Abilities", Meta = (DisplayName = "RemoveLooseGameplayTags"))
-	void K2_RemoveLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count = 1);
+	typedef TFunctionRef<bool(const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
+	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility);
 	
-	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
-	void ExecuteGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+	void CancelInputActivatedAbilities();
 
-	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
-	void AddGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
+	void AbilityInputTagPressed(const FGameplayTag& InputTag);
+	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 
-	UFUNCTION(BlueprintCallable, Category = "GameplayCue", Meta = (AutoCreateRefTerm = "GameplayCueParameters", GameplayTagFilter = "GameplayCue"))
-	void RemoveGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters);
-	
+	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
+	void ClearAbilityInput();
 	
 	// Called from FTADamageExecCalculation. Broadcasts on ReceivedDamage whenever this ASC receives damage.
 	virtual void ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);

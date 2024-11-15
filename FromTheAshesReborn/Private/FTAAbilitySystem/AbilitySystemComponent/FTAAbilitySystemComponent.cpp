@@ -20,12 +20,105 @@ void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
-	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
-
 	FGameplayAbilityActorInfo* ActorInfo = AbilityActorInfo.Get();
 	check(ActorInfo);
 	check(InOwnerActor);
 
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+}
+
+void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc, bool bReplicateCancelAbility)
+{
+	ABILITYLIST_SCOPE_LOCK();
+	for(const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		if(!AbilitySpec.IsActive())
+		{
+			continue;
+		}
+		//Getting the Class Default Object of GA
+		UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec.Ability);
+
+		//Make sure we do have an instanced ability per actor or execution so we do not operate on the CDO
+		if(FTAAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+		{
+			//Get all instances of the ability (includes per execution)
+			TArray<UGameplayAbility*> AllInstances = AbilitySpec.GetAbilityInstances();
+
+			for(UGameplayAbility* AbilityInstance : AllInstances)
+			{
+				UFTAGameplayAbility* FTAAbilityInstance = CastChecked<UFTAGameplayAbility>(AbilityInstance);
+
+				// ----??-----
+				if(ShouldCancelFunc(FTAAbilityInstance, AbilitySpec.Handle))
+				{
+					if(FTAAbilityInstance->CanBeCanceled())
+					{
+						/**
+						*Cancels the instance of the ability:
+						*Note: AbilitySpec.Handle is info shared across all instances, like a common description of it
+						* FTAAbilityInstance->GetCurrentActivationInfo() is info from this specific instance
+						*/
+						FTAAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FTAAbilityInstance->GetCurrentActivationInfo(), false);
+					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false."), *FTAAbilityInstance->GetName());
+					}
+				}
+			}
+		}
+		else
+		{
+			// Cancel the non-instanced ability CDO.
+			if (ShouldCancelFunc(FTAAbilityCDO, AbilitySpec.Handle))
+			{
+				// Non-instanced abilities can always be canceled.
+				check(FTAAbilityCDO->CanBeCanceled());
+				FTAAbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), bReplicateCancelAbility);
+			}
+		}
+	}
+}
+
+void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
+{
+	auto ShouldCancelFunc = [this](const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpec Handle)
+	{
+		const EFTAAbilityActivationPolicy ActivationPolicy = FTAAbility->GetActivationPolicy();
+		return((ActivationPolicy == EFTAAbilityActivationPolicy::OnInputTriggered || ActivationPolicy == EFTAAbilityActivationPolicy::WhileInputActive));
+	};
+}
+
+void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
+{
+	if(InputTag.IsValid())
+	{
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		{
+			if(AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
+			{
+				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
+				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+
+			}
+		}
+	}
+}
+
+void UFTAAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
+{
+	
+}
+
+void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)
+{
+	
+}
+
+void UFTAAbilitySystemComponent::ClearAbilityInput()
+{
+	
 }
 
 UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent)
@@ -85,66 +178,6 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 		}
 	}
 }
-
-int32 UFTAAbilitySystemComponent::K2_GetTagCount(FGameplayTag TagToCheck) const
-{
-	return GetTagCount(TagToCheck);
-}
-
-FGameplayAbilitySpecHandle UFTAAbilitySystemComponent::FindAbilitySpecHandleForClass(TSubclassOf<UGameplayAbility> AbilityClass, UObject* OptionalSourceObject)
-{
-	ABILITYLIST_SCOPE_LOCK();
-	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
-	{
-		TSubclassOf<UGameplayAbility> SpecAbilityClass = Spec.Ability->GetClass();
-		if (SpecAbilityClass == AbilityClass)
-		{
-			if (!OptionalSourceObject || (OptionalSourceObject && Spec.SourceObject == OptionalSourceObject))
-			{
-				return Spec.Handle;
-			}
-		}
-	}
-
-	return FGameplayAbilitySpecHandle();
-}
-
-void UFTAAbilitySystemComponent::K2_AddLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count)
-{
-	AddLooseGameplayTag(GameplayTag, Count);
-}
-
-void UFTAAbilitySystemComponent::K2_AddLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count)
-{
-	AddLooseGameplayTags(GameplayTags, Count);
-}
-
-void UFTAAbilitySystemComponent::K2_RemoveLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count)
-{
-	RemoveLooseGameplayTag(GameplayTag, Count);
-}
-
-void UFTAAbilitySystemComponent::K2_RemoveLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count)
-{
-	RemoveLooseGameplayTags(GameplayTags, Count);
-}
-
-void UFTAAbilitySystemComponent::ExecuteGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
-{
-	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Executed, GameplayCueParameters);
-}
-
-void UFTAAbilitySystemComponent::AddGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
-{
-	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::OnActive, GameplayCueParameters);
-	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::WhileActive, GameplayCueParameters);
-}
-
-void UFTAAbilitySystemComponent::RemoveGameplayCue(const FGameplayTag GameplayCueTag, const FGameplayCueParameters& GameplayCueParameters)
-{
-	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Removed, GameplayCueParameters);
-}
-
 
 float UFTAAbilitySystemComponent::PlayMontageForMesh(UGameplayAbility* InAnimatingAbility, USkeletalMeshComponent* InMesh, FGameplayAbilityActivationInfo ActivationInfo, UAnimMontage* NewAnimMontage, float InPlayRate, FName StartSectionName, bool bReplicateMontage)
 {

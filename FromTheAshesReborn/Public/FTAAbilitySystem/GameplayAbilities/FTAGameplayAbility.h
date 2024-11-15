@@ -50,9 +50,10 @@ enum class EFTAAbilityActivationGroup : uint8
 	Exclusive_Replaceable,
 
 	// Ability blocks all other exclusive abilities from activating.
-	Exclusive_Blocking
-
+	Exclusive_Blocking,
+	
 	//MAX	UMETA(Hidden)
+	MAX	UMETA(Hidden)
 };
 
 UCLASS()
