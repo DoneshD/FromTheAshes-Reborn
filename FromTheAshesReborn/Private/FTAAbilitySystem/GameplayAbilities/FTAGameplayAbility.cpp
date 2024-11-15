@@ -2,27 +2,101 @@
 #include "AbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
+#include "AnimNodes/AnimNode_RandomPlayer.h"
 #include "Components/Combat/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
+#include "Player/FTAPlayerController.h"
 
 
-UFTAGameplayAbility::UFTAGameplayAbility()
+UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	// Default to Instance Per Actor
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	bActivateAbilityOnGranted = false;
 	bActivateOnInput = true;
-	bSourceObjectMustEqualCurrentWeaponToActivate = false;
-	bCannotActivateWhileInteracting = true;
 
-	/* Implement later */
-	// UGSAbilitySystemGlobals hasn't initialized tags yet to set ActivationBlockedTags
+	// ActivationPolicy = ELyraAbilityActivationPolicy::OnInputTriggered;
+	// ActivationGroup = ELyraAbilityActivationGroup::Independent;
 	
-	// ActivationBlockedTags.AddTag(FGameplayTag::RequestGameplayTag("Condition.Health.Dead"));
+}
+
+UFTAAbilitySystemComponent* UFTAGameplayAbility::GetFTAAbilitySystemComponentFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<UFTAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get()) : nullptr);
+}
+
+AFTAPlayerController* UFTAGameplayAbility::GetFTAPlayerControllerFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<AFTAPlayerController>(CurrentActorInfo->PlayerController.Get()) : nullptr);
+}
+
+AController* UFTAGameplayAbility::GetControllerFromActorInfo() const
+{
+	if(!CurrentActorInfo)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::CurrentActorInfo is null"));
+		return nullptr;
+	}
+
+	if(AController* PC = CurrentActorInfo->PlayerController.Get())
+	{
+		return PC;
+	}
 	
+	// Look for a player controller or pawn in the owner chain.
+	AActor* TestActor = CurrentActorInfo->OwnerActor.Get();
+	while (TestActor)
+	{
+		if (AController* Controller = Cast<AController>(TestActor))
+		{
+			return Controller;
+		}
+
+		if (APawn* Pawn = Cast<APawn>(TestActor))
+		{
+			return Pawn->GetController();
+		}
+
+		TestActor = TestActor->GetOwner();
+	}
+	return nullptr;
+}
+
+AFTACharacter* UFTAGameplayAbility::GetFTACharacterFromActorInfo() const
+{
+	return (CurrentActorInfo ? Cast<AFTACharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr);
+}
+
+void UFTAGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const
+{
+	// Try to activate if activation policy is on spawn.
+	if (ActorInfo && !Spec.IsActive() && ActivationPolicy == EFTAAbilityActivationPolicy::OnSpawn)
+	{
+		//Might cause problems if ASC is already a raw pointer
+		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+		const AActor* AvatarActor = ActorInfo->AvatarActor.Get();
+
+		if(!ASC)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ASC is null"));
+			return;
+		}
+
+		if(!AvatarActor)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::AvatarActor is null"));
+			return;
+		}
+
+		// If avatar actor is torn off or about to die, don't try to activate until we get the new one.
+		if (ASC && AvatarActor)
+		{
+			ASC->TryActivateAbility(Spec.Handle);
+		}
+	}
 }
 
 void UFTAGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
@@ -35,228 +109,89 @@ void UFTAGameplayAbility::OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo
 	}
 }
 
-FGameplayAbilityTargetDataHandle UFTAGameplayAbility::MakeGameplayAbilityTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors)
-{
-	if (TargetActors.Num() > 0)
-	{
-		FGameplayAbilityTargetData_ActorArray* NewData = new FGameplayAbilityTargetData_ActorArray();
-		NewData->TargetActorArray.Append(TargetActors);
-		return FGameplayAbilityTargetDataHandle(NewData);
-	}
-
-	return FGameplayAbilityTargetDataHandle();
-}
-
-FGameplayAbilityTargetDataHandle UFTAGameplayAbility::MakeGameplayAbilityTargetDataHandleFromHitResults(const TArray<FHitResult> HitResults)
-{
-	FGameplayAbilityTargetDataHandle TargetData;
-
-	for (const FHitResult& HitResult : HitResults)
-	{
-		FGameplayAbilityTargetData_SingleTargetHit* NewData = new FGameplayAbilityTargetData_SingleTargetHit(HitResult);
-		TargetData.Add(NewData);
-	}
-
-	return TargetData;
-}
-
-FFTAGameplayEffectContainerSpec UFTAGameplayAbility::MakeEffectContainerSpecFromContainer(const FFTAGameplayEffectContainer& Container, const FGameplayEventData& EventData, int32 OverrideGameplayLevel)
-{
-	// First figure out our actor info
-	FFTAGameplayEffectContainerSpec ReturnSpec;
-	AActor* OwningActor = GetOwningActorFromActorInfo();
-	AActor* AvatarActor = GetAvatarActorFromActorInfo();
-	AFTACharacter* AvatarCharacter = Cast<AFTACharacter>(AvatarActor);
-	UFTAAbilitySystemComponent* OwningASC = UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(OwningActor);
-
-	if (OwningASC)
-	{
-		// If we have a target type, run the targeting logic. This is optional, targets can be added later
-		if (Container.TargetType.Get())
-		{
-			TArray<FHitResult> HitResults;
-			TArray<AActor*> TargetActors;
-			TArray<FGameplayAbilityTargetDataHandle> TargetData;
-			const UFTATargetType* TargetTypeCDO = Container.TargetType.GetDefaultObject();
-			TargetTypeCDO->GetTargets(AvatarCharacter, AvatarActor, EventData, TargetData, HitResults, TargetActors);
-			ReturnSpec.AddTargets(TargetData, HitResults, TargetActors);
-		}
-
-		// If we don't have an override level, use the ability level
-		if (OverrideGameplayLevel == INDEX_NONE)
-		{
-			//OverrideGameplayLevel = OwningASC->GetDefaultAbilityLevel();
-			OverrideGameplayLevel = GetAbilityLevel();
-		}
-
-		// Build GameplayEffectSpecs for each applied effect
-		for (const TSubclassOf<UGameplayEffect>& EffectClass : Container.TargetGameplayEffectClasses)
-		{
-			ReturnSpec.TargetGameplayEffectSpecs.Add(MakeOutgoingGameplayEffectSpec(EffectClass, OverrideGameplayLevel));
-		}
-	}
-	return ReturnSpec;
-}
-
-
-
-FFTAGameplayEffectContainerSpec UFTAGameplayAbility::MakeEffectContainerSpec(FGameplayTag ContainerTag, const FGameplayEventData& EventData, int32 OverrideGameplayLevel)
-{
-	
-	// FFTAGameplayEffectContainerSpec* FoundContainer = EffectContainerMap.Find(ContainerTag);
-	//
-	// if (FoundContainer)
-	// {
-	// 	return MakeEffectContainerSpecFromContainer(*FoundContainer, EventData, OverrideGameplayLevel);
-	// }
-	//
-	return FFTAGameplayEffectContainerSpec();
-	
-}
-
-TArray<FActiveGameplayEffectHandle> UFTAGameplayAbility::ApplyEffectContainerSpec(const FFTAGameplayEffectContainerSpec& ContainerSpec)
-{
-	TArray<FActiveGameplayEffectHandle> AllEffects;
-
-	// Iterate list of effect specs and apply them to their target data
-	for (const FGameplayEffectSpecHandle& SpecHandle : ContainerSpec.TargetGameplayEffectSpecs)
-	{
-		AllEffects.Append(K2_ApplyGameplayEffectSpecToTarget(SpecHandle, ContainerSpec.TargetData));
-	}
-	return AllEffects;
-}
-
-UObject* UFTAGameplayAbility::K2_GetSourceObject(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const
-{
-	return GetSourceObject(Handle, &ActorInfo);
-}
-
-bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const
-{
-	// if (bCannotActivateWhileInteracting)
-	// {
-	// 	UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
-	// 	if (ASC->GetTagCount(InteractingTag) > ASC->GetTagCount(InteractingRemovalTag))
-	// 	{
-	// 		return false;
-	// 	}
-	// }
-
-	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
-}
-
-bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-	FGameplayTagContainer* OptionalRelevantTags) const
-{
-	return Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags) && FTACheckCost(Handle, *ActorInfo);
-}
-
-
-bool UFTAGameplayAbility::FTACheckCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const
-{
-	return true;
-}
-
-void UFTAGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
-{
-	FTAApplyCost(Handle, *ActorInfo, ActivationInfo);
-	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
-}
-
-
 bool UFTAGameplayAbility::IsInputPressed() const
 {
 	FGameplayAbilitySpec* Spec = GetCurrentAbilitySpec();
 	return Spec && Spec->InputPressed;
 }
 
-UAnimMontage* UFTAGameplayAbility::GetCurrentMontageForMesh(USkeletalMeshComponent* InMesh)
+bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	FAbilityMeshMontage AbilityMeshMontage;
-	if (FindAbillityMeshMontage(InMesh, AbilityMeshMontage))
+	if (!ActorInfo || !ActorInfo->AbilitySystemComponent.IsValid())
 	{
-		return AbilityMeshMontage.Montage;
+		return false;
 	}
 	
-	return nullptr;
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	{
+		return false;
+	}
+	return true;
+	
 }
 
-void UFTAGameplayAbility::SetCurrentMontageForMesh(USkeletalMeshComponent* InMesh, UAnimMontage* InCurrentMontage)
+void UFTAGameplayAbility::SetCanBeCanceled(bool bCanBeCanceled)
 {
-	ensure(IsInstantiated());
-
-	FAbilityMeshMontage AbilityMeshMontage;
-	if (FindAbillityMeshMontage(InMesh, AbilityMeshMontage))
+	// The ability can not block canceling if it's replaceable.
+	if (!bCanBeCanceled && (ActivationGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable))
 	{
-		AbilityMeshMontage.Montage = InCurrentMontage;
+		UE_LOG(LogTemp, Error, TEXT("SetCanBeCanceled: Ability [%s] can not block canceling because its activation group is replaceable."), *GetName());
+		return;
 	}
-	else
-	{
-		CurrentAbilityMeshMontages.Add(FAbilityMeshMontage(InMesh, InCurrentMontage));
-	}
+	
+	Super::SetCanBeCanceled(bCanBeCanceled);
 }
 
-bool UFTAGameplayAbility::FindAbillityMeshMontage(USkeletalMeshComponent* InMesh, FAbilityMeshMontage& InAbilityMeshMontage)
+void UFTAGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	for (FAbilityMeshMontage& MeshMontage : CurrentAbilityMeshMontages)
-	{
-		if (MeshMontage.Mesh == InMesh)
-		{
-			InAbilityMeshMontage = MeshMontage;
-			return true;
-		}
-	}
+	Super::OnGiveAbility(ActorInfo, Spec);
+	
+	TryActivateAbilityOnSpawn(ActorInfo, Spec);
 
-	return false;
 }
 
-void UFTAGameplayAbility::MontageJumpToSectionForMesh(USkeletalMeshComponent* InMesh, FName SectionName)
+void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
 {
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo_Checked());
-	if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-	{
-		AbilitySystemComponent->CurrentMontageJumpToSectionForMesh(InMesh, SectionName);
-	}
+	Super::OnRemoveAbility(ActorInfo, Spec);
 }
 
-void UFTAGameplayAbility::MontageSetNextSectionNameForMesh(USkeletalMeshComponent* InMesh, FName FromSectionName, FName ToSectionName)
+void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(GetAbilitySystemComponentFromActorInfo_Checked());
-	if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-	{
-		AbilitySystemComponent->CurrentMontageSetNextSectionNameForMesh(InMesh, FromSectionName, ToSectionName);
-	}
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
-void UFTAGameplayAbility::MontageStopForMesh(USkeletalMeshComponent* InMesh, float OverrideBlendOutTime)
+void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get());
-	if (AbilitySystemComponent != nullptr)
-	{
-		// We should only stop the current montage if we are the animating ability
-		if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-		{
-			AbilitySystemComponent->CurrentMontageStopForMesh(InMesh, OverrideBlendOutTime);
-		}
-	}
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UFTAGameplayAbility::MontageStopForAllMeshes(float OverrideBlendOutTime)
+bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	check(CurrentActorInfo);
-
-	UFTAAbilitySystemComponent* const AbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get());
-	if (AbilitySystemComponent != nullptr)
+	if (!Super::CheckCost(Handle, ActorInfo, OptionalRelevantTags) || !ActorInfo)
 	{
-		if (AbilitySystemComponent->IsAnimatingAbilityForAnyMesh(this))
-		{
-			AbilitySystemComponent->StopAllCurrentMontages(OverrideBlendOutTime);
-		}
+		return false;
 	}
+
+	return true;
+}
+
+void UFTAGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const
+{
+	Super::ApplyCost(Handle, ActorInfo, ActivationInfo);
+	
+}
+
+FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const
+{
+	return Super::MakeEffectContext(Handle, ActorInfo);
+}
+
+void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const
+{
+	Super::ApplyAbilityTagsToGameplayEffectSpec(Spec, AbilitySpec);
+}
+
+bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+{
+	return Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, SourceTags, TargetTags, OptionalRelevantTags);
 }

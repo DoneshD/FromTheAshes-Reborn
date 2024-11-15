@@ -6,6 +6,8 @@
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
 #include "FTAGameplayAbility.generated.h"
 
+class AFTACharacter;
+class AFTAPlayerController;
 class UPlayerComboManagerComponent;
 class USkeletalMeshComponent;
 
@@ -24,158 +26,118 @@ struct FAbilityComboDataStruct
 	FGameplayTag ComboWindowTag;
 };
 
-USTRUCT()
-struct FROMTHEASHESREBORN_API FAbilityMeshMontage
+
+UENUM(BlueprintType)
+enum class EFTAAbilityActivationPolicy : uint8
 {
-	GENERATED_BODY()
+	// Try to activate the ability when the input is triggered.
+	OnInputTriggered,
 
-public:
-	UPROPERTY()
-	class USkeletalMeshComponent* Mesh;
+	// Continually try to activate the ability while the input is active.
+	WhileInputActive,
 
-	UPROPERTY()
-	class UAnimMontage* Montage;
+	// Try to activate the ability when an avatar is assigned.
+	OnSpawn
+};
 
-	FAbilityMeshMontage() : Mesh(nullptr), Montage(nullptr)
-	{
-	}
+UENUM(BlueprintType)
+enum class EFTAAbilityActivationGroup : uint8
+{
+	// Ability runs independently of all other abilities.
+	Independent,
 
-	FAbilityMeshMontage(class USkeletalMeshComponent* InMesh, class UAnimMontage* InMontage) 
-		: Mesh(InMesh), Montage(InMontage)
-	{
-	}
+	// Ability is canceled and replaced by other exclusive abilities.
+	Exclusive_Replaceable,
+
+	// Ability blocks all other exclusive abilities from activating.
+	Exclusive_Blocking
+
+	//MAX	UMETA(Hidden)
 };
 
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
+	friend class UFTAAbilitySystemComponent;
+
+//variables
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
+	EFTAAbilityActivationPolicy ActivationPolicy;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
+	EFTAAbilityActivationGroup ActivationGroup;
+
+	// UPROPERTY(EditDefaultsOnly, Instanced, Category = Costs)
+	// TArray<TObjectPtr<UFTAAbilityCost>> AdditionalCosts;
+
+//functions
+public:
+	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponentFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	AFTAPlayerController* GetFTAPlayerControllerFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	AController* GetControllerFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	AFTACharacter* GetFTACharacterFromActorInfo() const;
+
+	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
+	EFTAAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
+
+	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
+
+	//Set up camera mode later
+	
+	// UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	// void SetCameraMode(TSubclassOf<UFTACameraMode> CameraMode);
+
+	
+	// Clears the ability's camera mode.  Automatically called if needed when the ability ends.
+	
+	// UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
+	// void ClearCameraMode();
+
+	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	
+	UFUNCTION(BlueprintCallable, Category = "Ability")
+	virtual bool IsInputPressed() const;
+
+	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
+	virtual void SetCanBeCanceled(bool bCanBeCanceled) override;
+	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	virtual void OnRemoveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
+	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
+	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
+	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability|Combo")
 	FAbilityComboDataStruct AbilityComboDataStruct;
-	
-	UFTAGameplayAbility();
 
-	// Abilities with this set will automatically activate when the input is pressed
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 
-	// Value to associate an ability with an slot without tying it to an automatically activated input.
-	// Passive abilities won't be tied to an input so we need a way to generically associate abilities with slots.
-	//TODO: Need to fix this
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAbilityInputID AbilityID = EAbilityInputID::None;
 
-	// Tells an ability to activate immediately when its granted. Used for passive abilities and abilites forced on others.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool bActivateAbilityOnGranted;
 
-	// If true, this ability will activate when its bound input is pressed. Disable if you want to bind an ability to an
-	// input but not have it activate when pressed.
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool bActivateOnInput;
-
-	// If true, only activate this ability if the weapon that granted it is the currently equipped weapon.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	bool bSourceObjectMustEqualCurrentWeaponToActivate;
-
-	// If true, only activate this ability if not interacting with something via GA_Interact.
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	bool bCannotActivateWhileInteracting;
-
-	// Map of gameplay tags to gameplay effect containers
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "GameplayEffects")
-	TMap<FGameplayTag, FFTAGameplayEffectContainer> EffectContainerMap;
-
-	// If an ability is marked as 'ActivateAbilityOnGranted', activate them immediately when given here
-	// Epic's comment: Projects may want to initiate passives or do other "BeginPlay" type of logic here.
-	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
-
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	FGameplayAbilityTargetDataHandle MakeGameplayAbilityTargetDataHandleFromActorArray(const TArray<AActor*> TargetActors);
-
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	FGameplayAbilityTargetDataHandle MakeGameplayAbilityTargetDataHandleFromHitResults(const TArray<FHitResult> HitResults);
-
-	// Make gameplay effect container spec to be applied later, using the passed in container
-	UFUNCTION(BlueprintCallable, Category = Ability, meta = (AutoCreateRefTerm = "EventData"))
-	virtual FFTAGameplayEffectContainerSpec MakeEffectContainerSpecFromContainer(const FFTAGameplayEffectContainer& Container, const FGameplayEventData& EventData, int32 OverrideGameplayLevel = -1);
-
-	// Search for and make a gameplay effect container spec to be applied later, from the EffectContainerMap
-	UFUNCTION(BlueprintCallable, Category = Ability, meta = (AutoCreateRefTerm = "EventData"))
-	virtual FFTAGameplayEffectContainerSpec MakeEffectContainerSpec(FGameplayTag ContainerTag, const FGameplayEventData& EventData, int32 OverrideGameplayLevel = -1);
-
-	// Applies a gameplay effect container spec that was previously created
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	virtual TArray<FActiveGameplayEffectHandle> ApplyEffectContainerSpec(const FFTAGameplayEffectContainerSpec& ContainerSpec);
-
-	// Expose GetSourceObject to Blueprint. Retrieves the SourceObject associated with this ability. Callable on non instanced abilities.
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Ability", meta = (DisplayName = "Get Source Object"))
-	UObject* K2_GetSourceObject(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
-
-	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
-
-	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
-	virtual bool CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
-
-	// Allows C++ and Blueprint abilities to override how cost is checked in case they don't use a GE like weapon ammo
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Ability")
-	bool FTACheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
 	
-	virtual bool FTACheckCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo) const;
 
-	// Allows C++ and Blueprint abilities to override how cost is applied in case they don't use a GE like weapon ammo
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Ability")
-	void FTAApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const;
 	
-	virtual void FTAApplyCost_Implementation(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo& ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const {};
-
-	// Is the player's input currently pressed? Only works if the ability is bound to input.
-	UFUNCTION(BlueprintCallable, Category = "Ability")
-	virtual bool IsInputPressed() const;
-	
-	// ----------------------------------------------------------------------------------------------------------------
-	//	Animation Support for multiple USkeletalMeshComponents on the AvatarActor
-	// ----------------------------------------------------------------------------------------------------------------
-
-	/** Returns the currently playing montage for this ability, if any */
-	UFUNCTION(BlueprintCallable, Category = Animation)
-	UAnimMontage* GetCurrentMontageForMesh(USkeletalMeshComponent* InMesh);
-
-	/** Call to set/get the current montage from a montage task. Set to allow hooking up montage events to ability events */
-	virtual void SetCurrentMontageForMesh(USkeletalMeshComponent* InMesh, class UAnimMontage* InCurrentMontage);
-
-
-protected:
-	FGameplayTag InteractingTag;
-	FGameplayTag InteractingRemovalTag;
-
-	// ----------------------------------------------------------------------------------------------------------------
-	//	Animation Support for multiple USkeletalMeshComponents on the AvatarActor
-	// ----------------------------------------------------------------------------------------------------------------
-
-	/** Active montages being played by this ability */
-	UPROPERTY()
-	TArray<FAbilityMeshMontage> CurrentAbilityMeshMontages;
-
-	bool FindAbillityMeshMontage(USkeletalMeshComponent* InMesh, FAbilityMeshMontage& InAbilityMontage);
-
-	/** Immediately jumps the active montage to a section */
-	UFUNCTION(BlueprintCallable, Category = "Ability|Animation")
-	void MontageJumpToSectionForMesh(USkeletalMeshComponent* InMesh, FName SectionName);
-
-	/** Sets pending section on active montage */
-	UFUNCTION(BlueprintCallable, Category = "Ability|Animation")
-	void MontageSetNextSectionNameForMesh(USkeletalMeshComponent* InMesh, FName FromSectionName, FName ToSectionName);
-
-	//Stops the current animation montage.
-	UFUNCTION(BlueprintCallable, Category = "Ability|Animation", Meta = (AdvancedDisplay = "OverrideBlendOutTime"))
-	void MontageStopForMesh(USkeletalMeshComponent* InMesh, float OverrideBlendOutTime = -1.0f);
-
-	//Stops all currently animating montages
-	UFUNCTION(BlueprintCallable, Category = "Ability|Animation", Meta = (AdvancedDisplay = "OverrideBlendOutTime"))
-	void MontageStopForAllMeshes(float OverrideBlendOutTime = -1.0f);
-
 };
