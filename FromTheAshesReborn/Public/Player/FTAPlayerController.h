@@ -132,4 +132,9 @@ public:
 	UAbilitySystemComponent* ASC;
 	
 	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
+
+
+protected:
+	
+	void InitializePlayerInput(UInputComponent* PlayerInputComponent);
 };
