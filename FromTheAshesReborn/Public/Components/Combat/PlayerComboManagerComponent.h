@@ -29,7 +29,6 @@ protected:
 	
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
-
 	
 
 	UPlayerComboManagerComponent();

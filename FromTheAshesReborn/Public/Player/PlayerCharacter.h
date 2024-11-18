@@ -52,7 +52,7 @@ protected:
 
 	APlayerCharacter(const class FObjectInitializer& ObjectInitializer);
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	virtual void PossessedBy(AController* NewController) override;
 

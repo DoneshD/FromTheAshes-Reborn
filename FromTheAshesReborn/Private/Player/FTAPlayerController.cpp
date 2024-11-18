@@ -8,7 +8,10 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
+#include "Input/FTAInputComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameplayTagContainer.h"
+#include "Input/FTAInputComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
 
 void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
@@ -108,64 +111,68 @@ void AFTAPlayerController::Tick(float DeltaSeconds)
 void AFTAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-
-	PlayerCharacter = Cast<APlayerCharacter>(InPawn);
-	if(!PlayerCharacter) { return; }
-
-	AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
-	if (PS)
+	if (InPawn->InputComponent != nullptr)
 	{
-		// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
-		ASC = PS->GetAbilitySystemComponent();
-		ASC->InitAbilityActorInfo(PS, InPawn);
+		InitializePlayerInput(InPawn->InputComponent);
 	}
+
+	// PlayerCharacter = Cast<APlayerCharacter>(InPawn);
+	// if(!PlayerCharacter) { return; }
+	//
+	// AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
+	// if (PS)
+	// {
+	// 	// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
+	// 	ASC = PS->GetAbilitySystemComponent();
+	// 	ASC->InitAbilityActorInfo(PS, InPawn);
+	// }
+	//
+	// EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
+	// if(!EnhancedInputComponent) { return; }
+	//
+	// UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	// if(!InputSubsystem) { return; }
+	// check(InputSubsystem);
+	//
+	// InputSubsystem->ClearAllMappings();
+	// InputSubsystem->AddMappingContext(DefaultInputMappingContext, 0);
+	//
+	// EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
+	// EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleMoveActionReleased);
+	//
+	// EnhancedInputComponent->BindAction(Input_LookMouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
+	//
+	// EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLightAttackActionPressed);
+	// EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLightAttackActionReleased);
+	//
+	// EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleHeavyAttackActionPressed);
+	// EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleHeavyAttackActionReleased);
+	//
+	// EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Started, this, &AFTAPlayerController::HandleJumpActionPressed);
+	// EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleJumpActionReleased);
+	//
+	// EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Started, this, &AFTAPlayerController::HandleDashActionPressed);
+	// EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleDashActionReleased);
+	//
+	// EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLockOnActionPressed);
+	// EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLockOnActionReleased);
+	//
+	// EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Started, this, &AFTAPlayerController::HandleVaultActionPressed);
+	// EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleVaultActionReleased);
+	//
+	// //Debug purposes
+	// EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
+	//
+	// PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
 	
-	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	if(!EnhancedInputComponent) { return; }
-	
-	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	if(!InputSubsystem) { return; }
-	check(InputSubsystem);
-
-	InputSubsystem->ClearAllMappings();
-	InputSubsystem->AddMappingContext(DefaultInputMappingContext, 0);
-	
-	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
-	EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleMoveActionReleased);
-	
-	EnhancedInputComponent->BindAction(Input_LookMouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
-	
-	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLightAttackActionPressed);
-	EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLightAttackActionReleased);
-
-	EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleHeavyAttackActionPressed);
-	EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleHeavyAttackActionReleased);
-
-	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Started, this, &AFTAPlayerController::HandleJumpActionPressed);
-	EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleJumpActionReleased);
-
-	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Started, this, &AFTAPlayerController::HandleDashActionPressed);
-	EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleDashActionReleased);
-
-	EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLockOnActionPressed);
-	EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLockOnActionReleased);
-
-	EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Started, this, &AFTAPlayerController::HandleVaultActionPressed);
-	EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleVaultActionReleased);
-
-	//Debug purposes
-	EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
-
-	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
-	
-	if (PlayerComboManager)
-	{
-		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("PlayerComboManager NOT FOUND"));
-	}
+	// if (PlayerComboManager)
+	// {
+	// 	OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("PlayerComboManager NOT FOUND"));
+	// }
 }
 
 void AFTAPlayerController::OnUnPossess()
@@ -319,6 +326,69 @@ void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionVal
 		IsTimeSlowed = true;
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), .1);
 	}
+}
+
+void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputComponent)
+{
+	check(PlayerInputComponent);
+	
+	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
+	if(!PlayerCharacter) { return; }
+
+	AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
+	if (PS)
+	{
+		// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
+		ASC = PS->GetAbilitySystemComponent();
+		ASC->InitAbilityActorInfo(PS, GetPawn());
+	}
+
+	// Use custom input component instead
+	
+	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
+	if(!EnhancedInputComponent) { return; }
+	
+	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
+	if(!InputSubsystem) { return; }
+	check(InputSubsystem);
+
+	InputSubsystem->ClearAllMappings();
+	InputSubsystem->AddMappingContext(DefaultInputMappingContext, 0);
+	
+	// this->PushInputComponent(FTAInputComponent);
+	// UFTAInputComponent* FTAInputComponenttest = NewObject<UFTAInputComponent>(PlayerInputComponent);
+	// UFTAInputComponent* FTAInputComponent = Cast<UFTAInputComponent>(FTAInputComponenttest);
+
+	UFTAInputComponent* FTAInputComponent = NewObject<UFTAInputComponent>(PlayerInputComponent);
+
+	if(!FTAInputComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("FTAInputComponent is NULL"));
+		return;
+	}
+	
+	// FTAInputComponent->BindAbilityAction(FTAInputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ BindHandles);
+	FTAInputComponent->BindNativeAction(FTAInputConfig, FGameplayTag::RequestGameplayTag("Event"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
+	UE_LOG(LogTemp, Warning, TEXT("Nice"));
+
+	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
+	
+	if (PlayerComboManager)
+	{
+		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("PlayerComboManager NOT FOUND"));
+	}
+}
+
+void AFTAPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
+{
+}
+
+void AFTAPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
+{
 }
 
 void AFTAPlayerController::HandleLockOnActionPressed(const FInputActionValue& InputActionValue)

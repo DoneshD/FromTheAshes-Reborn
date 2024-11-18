@@ -11,12 +11,15 @@
 #include "FTAPlayerController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FAbilityComboDataStruct, AbilityComboData);
+class UFTAInputComponent;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FAbilityComboDataStruct, AbilityComboData)
+;
 
 class UPlayerComboManagerComponent;
 class UAbilitySystemComponent;
 class UEnhancedInputComponent;
 class UInputMappingContext;
+class UFTAInputConfig;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTAPlayerController : public APlayerController
@@ -54,8 +57,14 @@ protected:
 
 	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
 	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
+
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
+	// TObjectPtr<UFTAInputComponent> FTAInputComponent;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
+	TObjectPtr<UFTAInputConfig> FTAInputConfig;
 
 	TObjectPtr<ACharacter> PlayerCharacter;
 	
@@ -136,5 +145,8 @@ public:
 
 protected:
 	
-	void InitializePlayerInput(UInputComponent* PlayerInputComponent);
+	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
+
+	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
+	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 };
