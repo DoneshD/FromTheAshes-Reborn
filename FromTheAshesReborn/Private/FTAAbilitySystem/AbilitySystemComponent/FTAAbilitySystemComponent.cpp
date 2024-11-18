@@ -341,7 +341,6 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 					{
 						ServerSetInputPressed(Spec.Handle);
 					}
-
 					AbilitySpecInputPressed(Spec);
 
 					// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
