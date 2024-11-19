@@ -300,14 +300,14 @@ void AFTAPlayerController::HandleHeavyAttackActionReleased(const FInputActionVal
 
 void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
 {
-	if(IsInInputQueueWindow)
-	{
-		AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
-	}
-	else
-	{
-		SendLocalInputToASC(true, EAbilityInputID::Dash);
-	}
+	// if(IsInInputQueueWindow)
+	// {
+	// 	AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
+	// }
+	// else
+	// {
+	// 	SendLocalInputToASC(true, EAbilityInputID::Dash);
+	// }
 }
 
 void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& InputActionValue)
@@ -327,6 +327,17 @@ void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionVal
 		IsTimeSlowed = true;
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), .1);
 	}
+}
+
+void AFTAPlayerController::PostProcessInput(const float DeltaTime, const bool bGamePaused)
+{
+	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
+	if(!FTAPlayerState) { return; }
+	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
+	
+	AbilitySystemComponent->ProcessAbilityInput(DeltaTime, bGamePaused);
+	
+	Super::PostProcessInput(DeltaTime, bGamePaused);
 }
 
 void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputComponent)
@@ -383,10 +394,24 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 
 void AFTAPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 {
+	// TempAbilitySystemComponent->AbilityInputTagPressed(InputTag);
+	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
+	
+	if(!FTAPlayerState) { return; }
+	
+	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
+	AbilitySystemComponent->AbilityInputTagPressed(InputTag);
 }
 
 void AFTAPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
 {
+	// TempAbilitySystemComponent->AbilityInputTagReleased(InputTag);
+	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
+	
+	if(!FTAPlayerState) { return; }
+	
+	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
+	AbilitySystemComponent->AbilityInputTagReleased(InputTag);
 }
 
 void AFTAPlayerController::HandleLockOnActionPressed(const FInputActionValue& InputActionValue)

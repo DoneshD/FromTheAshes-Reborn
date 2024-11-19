@@ -92,14 +92,23 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
-	if(InputTag.IsValid())
+	if (InputTag.IsValid())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Input Tag Pressed: %s"), *InputTag.ToString());
+
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
-			if(AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
+			if (AbilitySpec.Ability)
 			{
-				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
-				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+				UE_LOG(LogTemp, Warning, TEXT("Checking Ability: %s"), *AbilitySpec.Ability->GetClass()->GetName());
+
+				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Matched Ability: %s"), *AbilitySpec.Ability->GetClass()->GetName());
+
+					InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
+					InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+				}
 			}
 		}
 	}
@@ -128,7 +137,6 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 		return;
 	}
 	
-
 	// Clear all abilities in array not being pressed
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
@@ -145,6 +153,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 				{
 					AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 				}
+				
 			}
 		}
 	}
@@ -171,6 +180,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 					{
 						AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 					}
+					
 				}
 			}
 		}
@@ -406,15 +416,10 @@ float UFTAAbilitySystemComponent::PlayMontageForMesh(UGameplayAbility* InAnimati
 
 		}
 	}
-
 	return Duration;
 }
 
-
-
-
-void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage,
-                                               float MitigatedDamage)
+void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage)
 {
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
 }

@@ -8,6 +8,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UFTACharacterData;
 class UWeaponManagerComponent;
 struct FGameplayEffectSpec;
 class UFTAAbilitySystemComponent;
@@ -121,5 +122,8 @@ public:
 	FName WeaponAttachPoint;
 	
 	FName GetWeaponAttachPoint();
+
+	UPROPERTY(EditAnywhere, Category = "Character | Abilities")
+	TObjectPtr<UFTACharacterData> FTACharacterData;
 	
 };

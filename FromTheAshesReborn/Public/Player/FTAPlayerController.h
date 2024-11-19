@@ -137,11 +137,14 @@ protected:
 	void InputSlowTime(const FInputActionValue& InputActionValue);
 
 public:
-	
 	UAbilitySystemComponent* ASC;
+
+	TObjectPtr<UFTAAbilitySystemComponent> TempAbilitySystemComponent;
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const { return TempAbilitySystemComponent; }
 	
 	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 
+	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
 
 protected:
 	
