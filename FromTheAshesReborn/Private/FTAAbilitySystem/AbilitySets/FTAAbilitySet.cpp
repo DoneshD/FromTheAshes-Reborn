@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/AbilitySets/FTAAbilitySet.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 
 void FFTAAbilitySet_GrantedHandles::AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle)
 {
@@ -18,7 +19,7 @@ void FFTAAbilitySet_GrantedHandles::AddGameplayEffectHandle(const FActiveGamepla
 	}
 }
 
-void FFTAAbilitySet_GrantedHandles::AddAttributeSet(UAttributeSet* Set)
+void FFTAAbilitySet_GrantedHandles::AddAttributeSet(UFTAAttributeSet* Set)
 {
 	GrantedAttributeSets.Add(Set);
 }
@@ -64,17 +65,9 @@ UFTAAbilitySet::UFTAAbilitySet(const FObjectInitializer& ObjectInitializer)
 	
 }
 
-void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFTAAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject) const
+void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTA_ASC, FFTAAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject) const
 {
-	// check(FTAASC);
-
-	if(!FTAASC)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("NAHH"))
-	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Yes"))
-
+	check(FTA_ASC);
 	
 	// Grant the gameplay abilities.
 	for (int32 AbilityIndex = 0; AbilityIndex < GrantedGameplayAbilities.Num(); ++AbilityIndex)
@@ -93,7 +86,7 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 		AbilitySpec.SourceObject = SourceObject;
 		AbilitySpec.DynamicAbilityTags.AddTag(AbilityToGrant.InputTag);
 	
-		const FGameplayAbilitySpecHandle AbilitySpecHandle = FTAASC->GiveAbility(AbilitySpec);
+		const FGameplayAbilitySpecHandle AbilitySpecHandle = FTA_ASC->GiveAbility(AbilitySpec);
 	
 		if (OutGrantedHandles)
 		{
@@ -113,7 +106,7 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 		}
 	
 		const UGameplayEffect* GameplayEffect = EffectToGrant.GameplayEffect->GetDefaultObject<UGameplayEffect>();
-		const FActiveGameplayEffectHandle GameplayEffectHandle = FTAASC->ApplyGameplayEffectToSelf(GameplayEffect, EffectToGrant.EffectLevel, FTAASC->MakeEffectContext());
+		const FActiveGameplayEffectHandle GameplayEffectHandle = FTA_ASC->ApplyGameplayEffectToSelf(GameplayEffect, EffectToGrant.EffectLevel, FTA_ASC->MakeEffectContext());
 	
 		if (OutGrantedHandles)
 		{
@@ -132,8 +125,8 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 			continue;
 		}
 	
-		UAttributeSet* NewSet = NewObject<UAttributeSet>(FTAASC->GetOwner(), SetToGrant.AttributeSet);
-		FTAASC->AddAttributeSetSubobject(NewSet);
+		UFTAAttributeSet* NewSet = NewObject<UFTAAttributeSet>(FTA_ASC->GetOwner(), SetToGrant.AttributeSet);
+		FTA_ASC->AddAttributeSetSubobject(NewSet);
 	
 		if (OutGrantedHandles)
 		{

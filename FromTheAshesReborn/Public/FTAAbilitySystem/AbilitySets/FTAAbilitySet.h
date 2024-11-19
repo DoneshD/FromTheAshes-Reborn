@@ -7,12 +7,10 @@
 
 struct FActiveGameplayEffectHandle;
 struct FGameplayAbilitySpecHandle;
-class UAttributeSet;
+class UFTAAttributeSet;
 class UGameplayEffect;
 class UFTAAbilitySystemComponent;
 class UFTAGameplayAbility;
-class UObject;
-
 
 /*
  *	Data used by the ability set to grant gameplay abilities.
@@ -25,12 +23,10 @@ struct FFTAAbilitySet_GameplayAbility
 
 public:
 
-	// Gameplay ability to grant.
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "Ability"))
 	TSubclassOf<UFTAGameplayAbility> Ability = nullptr;
 
-	// Level of ability to grant.
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "AbilityLevel")
 	int32 AbilityLevel = 1;
 
 	// Tag used to process input for the ability.
@@ -42,6 +38,7 @@ public:
 /*
  *	Data used by the ability set to grant gameplay effects.
  */
+
 USTRUCT(BlueprintType)
 struct FFTAAbilitySet_GameplayEffect
 {
@@ -49,11 +46,9 @@ struct FFTAAbilitySet_GameplayEffect
 
 public:
 
-	// Gameplay effect to grant.
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UGameplayEffect> GameplayEffect = nullptr;
 
-	// Level of gameplay effect to grant.
 	UPROPERTY(EditDefaultsOnly)
 	float EffectLevel = 1.0f;
 };
@@ -68,9 +63,8 @@ struct FFTAAbilitySet_AttributeSet
 	GENERATED_BODY()
 
 public:
-	// Gameplay effect to grant.
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UAttributeSet> AttributeSet;
+	TSubclassOf<UFTAAttributeSet> AttributeSet;
 
 };
 
@@ -87,7 +81,7 @@ public:
 
 	void AddAbilitySpecHandle(const FGameplayAbilitySpecHandle& Handle);
 	void AddGameplayEffectHandle(const FActiveGameplayEffectHandle& Handle);
-	void AddAttributeSet(UAttributeSet* Set);
+	void AddAttributeSet(UFTAAttributeSet* Set);
 
 	void TakeFromAbilitySystem(UFTAAbilitySystemComponent* FTAASC);
 
@@ -103,7 +97,7 @@ protected:
 
 	// Pointers to the granted attribute sets
 	UPROPERTY()
-	TArray<TObjectPtr<UAttributeSet>> GrantedAttributeSets;
+	TArray<TObjectPtr<UFTAAttributeSet>> GrantedAttributeSets;
 };
 
 UCLASS()
@@ -117,7 +111,7 @@ public:
 
 	// Grants the ability set to the specified ability system component.
 	// The returned handles can be used later to take away anything that was granted.
-	void GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFTAAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject = nullptr) const;
+	void GiveToAbilitySystem(UFTAAbilitySystemComponent* FTA_ASC, FFTAAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject = nullptr) const;
 
 protected:
 
