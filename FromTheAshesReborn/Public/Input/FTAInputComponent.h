@@ -37,17 +37,18 @@ public:
 	template <class UserClass, typename FuncType>
 	void UFTAInputComponent::BindNativeAction(const UFTAInputConfig* InputConfig, const FGameplayTag& InputTag, ETriggerEvent TriggerEvent, UserClass* Object, FuncType Func)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OK"))
-		// check(InputConfig);
-		// if(const UInputAction* InputAction = InputConfig->FindNativeInputActionForTag(InputTag))
-		// {
-		// 	BindAction(InputAction, TriggerEvent, Object, Func);
-		// }
+		check(InputConfig);
+		
+		if(const UInputAction* InputAction = InputConfig->FindNativeInputActionForTag(InputTag))
+		{
+			BindAction(InputAction, TriggerEvent, Object, Func);
+		}
 	}
 
 	template <class UserClass, typename PressedFuncType, typename ReleasedFuncType>
 	void UFTAInputComponent::BindAbilityAction(const UFTAInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Here1"))
 		check(InputConfig);
 
 		//Maybe use UFTAInputConfig::FindAbilityInputActionForTag(const FGameplayTag& InputTag) const;
@@ -58,7 +59,8 @@ public:
 			{
 				if(PressedFunc)
 				{
-					BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle());
+					BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Triggered, Object, PressedFunc, Action.InputTag).GetHandle();
+
 				}
 				if(ReleasedFunc)
 				{

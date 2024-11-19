@@ -11,6 +11,7 @@
 #include "Input/FTAInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameplayTagContainer.h"
+#include "GameplayTags/FTAGameplayTags.h"
 #include "Input/FTAInputComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
 
@@ -354,10 +355,6 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 
 	InputSubsystem->ClearAllMappings();
 	InputSubsystem->AddMappingContext(DefaultInputMappingContext, 0);
-	
-	// this->PushInputComponent(FTAInputComponent);
-	// UFTAInputComponent* FTAInputComponenttest = NewObject<UFTAInputComponent>(PlayerInputComponent);
-	// UFTAInputComponent* FTAInputComponent = Cast<UFTAInputComponent>(FTAInputComponenttest);
 
 	UFTAInputComponent* FTAInputComponent = NewObject<UFTAInputComponent>(PlayerInputComponent);
 
@@ -366,10 +363,11 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 		UE_LOG(LogTemp, Error, TEXT("FTAInputComponent is NULL"));
 		return;
 	}
+	TArray<uint32> BindHandles;
+	FTAInputComponent->BindAbilityAction(FTAInputConfig, this, &AFTAPlayerController::Input_AbilityInputTagPressed, &AFTAPlayerController::Input_AbilityInputTagReleased, /*out*/ BindHandles);
 	
-	// FTAInputComponent->BindAbilityAction(FTAInputConfig, this, &ThisClass::Input_AbilityInputTagPressed, &ThisClass::Input_AbilityInputTagReleased, /*out*/ BindHandles);
-	FTAInputComponent->BindNativeAction(FTAInputConfig, FGameplayTag::RequestGameplayTag("Event"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
-	UE_LOG(LogTemp, Warning, TEXT("Nice"));
+	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
+	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
 
 	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
 	
