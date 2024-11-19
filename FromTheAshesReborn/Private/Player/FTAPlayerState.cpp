@@ -7,7 +7,7 @@
 #include "FTAAbilitySystem/Globals/FTAAbilitySystemGlobals.h"
 #include "Player/PlayerCharacter.h"
 
-AFTAPlayerState::AFTAPlayerState()
+AFTAPlayerState::AFTAPlayerState(const FObjectInitializer& ObjectInitializer)
 {
 	AbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AbilitySystemComponent->SetIsReplicated(true);
@@ -15,7 +15,23 @@ AFTAPlayerState::AFTAPlayerState()
 	AttributeSet = CreateDefaultSubobject<UFTAAttributeSet>(TEXT("AttributeSet"));
 
 	NetUpdateFrequency = 100.0f;
+}
 
+UAbilitySystemComponent* AFTAPlayerState::GetAbilitySystemComponent() const
+{
+	return GetFTAAbilitySystemComponent();
+}
+
+void AFTAPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AddAbilitiesToPlayerASC();
+
+	if (AbilitySystemComponent)
+	{
+		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetCurrentHealthAttribute()).AddUObject(this, &AFTAPlayerState::HealthChanged);
+	}
 }
 
 void AFTAPlayerState::AddAbilitiesToPlayerASC()
@@ -29,11 +45,6 @@ void AFTAPlayerState::AddAbilitiesToPlayerASC()
 			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
 		}
 	}
-}
-
-UAbilitySystemComponent* AFTAPlayerState::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
 }
 
 UFTAAttributeSet* AFTAPlayerState::GetAttributeSet() const
@@ -59,18 +70,6 @@ float AFTAPlayerState::GetMaxHealth() const
 float AFTAPlayerState::GetMoveSpeed() const
 {
 	return AttributeSet->GetMoveSpeed();
-}
-
-void AFTAPlayerState::BeginPlay()
-{
-	Super::BeginPlay();
-
-	AddAbilitiesToPlayerASC();
-
-	if (AbilitySystemComponent)
-	{
-		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetCurrentHealthAttribute()).AddUObject(this, &AFTAPlayerState::HealthChanged);
-	}
 }
 
 void AFTAPlayerState::HealthChanged(const FOnAttributeChangeData& Data)

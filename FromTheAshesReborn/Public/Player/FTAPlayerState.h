@@ -8,6 +8,7 @@
 
 class UFTAAbilitySystemComponent;
 class UFTAAttributeSet;
+class AFTAPlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FFTAOnGameplayAttributeValueChangedDelegate, FGameplayAttribute, Attribute, float, NewValue, float, OldValue);
 
@@ -15,20 +16,31 @@ UCLASS()
 class FROMTHEASHESREBORN_API AFTAPlayerState : public APlayerState, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
+
+private:
+	UPROPERTY(VisibleAnywhere, Category = "PlayerState|ASComponent")
+	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "PlayerState|AttributeSet")
+	TObjectPtr<UFTAAttributeSet> AttributeSet;
+
+	UFUNCTION()
+	void AddAbilitiesToPlayerASC();
 	
 public:
+	AFTAPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerState|ASComponent")
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const { return AbilitySystemComponent; }
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	UFUNCTION(BlueprintCallable, Category = "PlayerState|ASComponent")
+	UFTAAttributeSet* GetAttributeSet() const;
 	
-	class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
-	class UFTAAttributeSet* GetAttributeSet() const;
-
 	UFUNCTION(BlueprintCallable, Category = "PlayerState")
 	bool IsAlive() const;
 	
-	/**
-	* Getters for attributes from GDAttributeSetBase. Returns Current Value unless otherwise specified.
-	*/
-
 	UFUNCTION(BlueprintCallable, Category = "PlayerState | Attributes")
 	float GetCurrentHealth() const;
 
@@ -38,22 +50,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "PlayerState | Attributes")
 	float GetMoveSpeed() const;
 
-protected:
 	FGameplayTag DeadTag;
-
-	UPROPERTY()
-	class UFTAAbilitySystemComponent* AbilitySystemComponent;
-
-	UPROPERTY()
-	class UFTAAttributeSet* AttributeSet;
-
 	FDelegateHandle HealthChangedDelegateHandle;
-
-	AFTAPlayerState();
-
-	void AddAbilitiesToPlayerASC();
-	virtual void BeginPlay() override;
-
 	virtual void HealthChanged(const FOnAttributeChangeData& Data);
 
 };

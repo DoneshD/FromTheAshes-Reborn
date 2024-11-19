@@ -94,18 +94,12 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 {
 	if (InputTag.IsValid())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Input Tag Pressed: %s"), *InputTag.ToString());
-
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
 			if (AbilitySpec.Ability)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Checking Ability: %s"), *AbilitySpec.Ability->GetClass()->GetName());
-
 				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Matched Ability: %s"), *AbilitySpec.Ability->GetClass()->GetName());
-
 					InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
 					InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
 				}
