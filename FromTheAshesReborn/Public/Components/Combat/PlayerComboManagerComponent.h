@@ -5,6 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "PlayerComboManagerComponent.generated.h"
 
+class UFTAAbilitySystemComponent;
 class UGameplayAbility;
 class UFTAGameplayAbility;
 class UGA_GroundedDash;
@@ -21,7 +22,7 @@ class FROMTHEASHESREBORN_API UPlayerComboManagerComponent : public UActorCompone
 
 protected:
 	
-	UAbilitySystemComponent* ASComponent;
+	UFTAAbilitySystemComponent* ASComponent;
 	AFTAPlayerController* PC;
 	
 	FGameplayTagContainer CurrentComboTagContainer;

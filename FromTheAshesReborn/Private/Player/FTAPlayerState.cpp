@@ -22,10 +22,23 @@ UAbilitySystemComponent* AFTAPlayerState::GetAbilitySystemComponent() const
 	return GetFTAAbilitySystemComponent();
 }
 
+void AFTAPlayerState::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+}
+
+void AFTAPlayerState::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	check(AbilitySystemComponent);
+	AbilitySystemComponent->InitAbilityActorInfo(this, GetPawn());
+}
+
 void AFTAPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
 	AddAbilitiesToPlayerASC();
 
 	if (AbilitySystemComponent)

@@ -1,5 +1,6 @@
 ﻿#include "Components/Combat/PlayerComboManagerComponent.h"
 #include "AbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedDash.h"
@@ -29,14 +30,14 @@ void UPlayerComboManagerComponent::BeginPlay()
 		return;
 	}
 
-	if (!PC->ASC)
+	if (!PC->GetFTAAbilitySystemComponent())
 	{
 		UE_LOG(LogTemp, Error, TEXT("UPlayerComboManagerComponent: No ASC in player controller found"));
 		return;
 	}
 	
 
-	ASComponent = PC->ASC;
+	ASComponent = PC->GetFTAAbilitySystemComponent();
 	if(!ASComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UPlayerComboManagerComponent: No ASComponent found"));

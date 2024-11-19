@@ -35,6 +35,10 @@ public:
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const { return AbilitySystemComponent; }
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
+	// AActor Interface
+	virtual void PreInitializeComponents() override;
+	virtual void PostInitializeComponents() override;
+
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|ASComponent")
 	UFTAAttributeSet* GetAttributeSet() const;
 	

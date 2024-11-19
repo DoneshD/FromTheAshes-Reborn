@@ -11,10 +11,9 @@
 #include "FTAPlayerController.generated.h"
 
 
-class UFTAInputComponent;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FAbilityComboDataStruct, AbilityComboData)
-;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FAbilityComboDataStruct, AbilityComboData);
 
+class UFTAInputComponent;
 class UPlayerComboManagerComponent;
 class UAbilitySystemComponent;
 class UEnhancedInputComponent;
@@ -25,11 +24,47 @@ UCLASS()
 class FROMTHEASHESREBORN_API AFTAPlayerController : public APlayerController
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
+	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
+	TObjectPtr<UFTAInputConfig> FTAInputConfig;
+
+	UPROPERTY(VisibleDefaultsOnly)
+	TObjectPtr<ACharacter> PlayerCharacter;
+
+public:
+	
+	AFTAPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void OnPossess(APawn* InPawn) override;
+	virtual void OnUnPossess() override;
+
+	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|ASComponent")
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const;
+	
+	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
+	void InputAbilityInputTagPressed(FGameplayTag InputTag);
+	void InputAbilityInputTagReleased(FGameplayTag InputTag);
+
 protected:
 
-	//-------------------------INPUT QUEUE------------------------------//
+	//-----------------------------For debugging--------------------------//
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UInputAction> Input_SlowTime;
 
+	bool IsTimeSlowed = false;
+
+	//-------------------------INPUT QUEUE------------------------------//
 	
 	UPROPERTY(EditAnywhere)
 	TArray<EAllowedInputs> CurrentAllowedInputs;
@@ -46,68 +81,12 @@ protected:
 	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
 	
 	UGameplayAbility* GetAbilityForInput(EAllowedInputs InputType);
-
 	void ProcessAbilityComboData(UGameplayAbility* Ability);
-	
 	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
 
 	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
 
-	//--------------------------------------------------------------------------//
-
-	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
-	TObjectPtr<UInputMappingContext> DefaultInputMappingContext;
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
-	// TObjectPtr<UFTAInputComponent> FTAInputComponent;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
-	TObjectPtr<UFTAInputConfig> FTAInputConfig;
-
-	TObjectPtr<ACharacter> PlayerCharacter;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Move;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_LookMouse;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Jump;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_LightAttack;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_HeavyAttack;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Dash;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_LockOn;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_Vault;
-	
-	//-----------------------------For debugging--------------------------//
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_SlowTime;
-
-	bool IsTimeSlowed = false;
-	
-	//------------------------------------------------------------------/
-	
-	AFTAPlayerController();
-
-	virtual  void Tick(float DeltaSeconds) override;
-
-	virtual void OnPossess(APawn* InPawn) override;
-
-	virtual void OnUnPossess() override;
+	//---------Remove later--------//
 
 	void SendLocalInputToASC(bool, EAbilityInputID);
 
@@ -137,19 +116,5 @@ protected:
 	void InputSlowTime(const FInputActionValue& InputActionValue);
 
 public:
-	UAbilitySystemComponent* ASC;
-
-	TObjectPtr<UFTAAbilitySystemComponent> TempAbilitySystemComponent;
-	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const { return TempAbilitySystemComponent; }
-	
 	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
-
-	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
-
-protected:
-	
-	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
-
-	void Input_AbilityInputTagPressed(FGameplayTag InputTag);
-	void Input_AbilityInputTagReleased(FGameplayTag InputTag);
 };

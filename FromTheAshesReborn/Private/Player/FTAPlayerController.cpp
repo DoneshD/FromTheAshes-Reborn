@@ -13,6 +13,7 @@
 #include "GameplayTagContainer.h"
 #include "GameplayTags/FTAGameplayTags.h"
 #include "Input/FTAInputComponent.h"
+#include "Player/FTAPlayerState.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
 
 void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
@@ -27,7 +28,7 @@ void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
 
 UGameplayAbility* AFTAPlayerController::GetAbilityForInput(EAllowedInputs InputType)
 {
-	for (FGameplayAbilitySpec& Spec : ASC->GetActivatableAbilities())
+	for (FGameplayAbilitySpec& Spec : GetFTAAbilitySystemComponent()->GetActivatableAbilities())
 	{
 		switch (InputType)
 		{
@@ -53,6 +54,19 @@ UGameplayAbility* AFTAPlayerController::GetAbilityForInput(EAllowedInputs InputT
 		}
 	}
 	return nullptr;
+}
+
+AFTAPlayerController::AFTAPlayerController(const FObjectInitializer& ObjectInitializer)
+{
+	
+}
+
+UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent() const
+{
+	AFTAPlayerState* FTAPlayerState = CastChecked<AFTAPlayerState>(PlayerState);
+	check(FTAPlayerState)
+
+	return FTAPlayerState->GetFTAAbilitySystemComponent();
 }
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
@@ -89,18 +103,12 @@ void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGamepla
 		
 		if(CurrentAllowedInputs.Contains(InputToQueue))
 		{
-			if(!ASC->HasMatchingGameplayTag(SavedInputTag))
+			if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(SavedInputTag))
 			{
 				LastInputSavedTag = SavedInputTag;
 			}
 		}
 	}
-}
-
-
-AFTAPlayerController::AFTAPlayerController()
-{
-	
 }
 
 void AFTAPlayerController::Tick(float DeltaSeconds)
@@ -346,15 +354,7 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	
 	PlayerCharacter = Cast<APlayerCharacter>(GetPawn());
 	if(!PlayerCharacter) { return; }
-
-	AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
-	if (PS)
-	{
-		// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
-		ASC = PS->GetAbilitySystemComponent();
-		ASC->InitAbilityActorInfo(PS, GetPawn());
-	}
-
+	
 	// Use custom input component instead
 	
 	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
@@ -375,7 +375,7 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 		return;
 	}
 	TArray<uint32> BindHandles;
-	FTAInputComponent->BindAbilityAction(FTAInputConfig, this, &AFTAPlayerController::Input_AbilityInputTagPressed, &AFTAPlayerController::Input_AbilityInputTagReleased, /*out*/ BindHandles);
+	FTAInputComponent->BindAbilityAction(FTAInputConfig, this, &AFTAPlayerController::InputAbilityInputTagPressed, &AFTAPlayerController::InputAbilityInputTagReleased, /*out*/ BindHandles);
 	
 	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
 	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
@@ -392,7 +392,7 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	}
 }
 
-void AFTAPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
+void AFTAPlayerController::InputAbilityInputTagPressed(FGameplayTag InputTag)
 {
 	// TempAbilitySystemComponent->AbilityInputTagPressed(InputTag);
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
@@ -403,7 +403,7 @@ void AFTAPlayerController::Input_AbilityInputTagPressed(FGameplayTag InputTag)
 	AbilitySystemComponent->AbilityInputTagPressed(InputTag);
 }
 
-void AFTAPlayerController::Input_AbilityInputTagReleased(FGameplayTag InputTag)
+void AFTAPlayerController::InputAbilityInputTagReleased(FGameplayTag InputTag)
 {
 	// TempAbilitySystemComponent->AbilityInputTagReleased(InputTag);
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
