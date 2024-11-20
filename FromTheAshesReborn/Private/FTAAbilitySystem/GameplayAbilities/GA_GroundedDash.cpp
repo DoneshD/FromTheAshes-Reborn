@@ -2,7 +2,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "DataAsset/DashDataAsset.h"
-#include "Interfaces/PlayerComboManagerInterface.h"
+#include "Player/PlayerComboManagerInterface.h"
 #include "Player/FTAPlayerController.h"
 
 UGA_GroundedDash::UGA_GroundedDash()

@@ -3,7 +3,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Components/Combat/PlayerComboManagerComponent.h"
+#include "Player/PlayerComboManagerComponent.h"
 #include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
@@ -77,22 +77,6 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
 	
-}
-
-
-USkeletalMeshComponent* APlayerCharacter::GetSkeletalMesh() const
-{
-	return GetMesh();
-}
-
-void APlayerCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
-{
-	Super::EndPlay(EndPlayReason);
-}
-
-void APlayerCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
 }
 
 void APlayerCharacter::PossessedBy(AController* NewController)

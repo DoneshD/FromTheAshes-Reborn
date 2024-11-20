@@ -19,9 +19,6 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 	GENERATED_BODY()
 
 public:
-	
-	bool IsCharacterAbilitiesGiven = false;
-	bool IsStartupEffectsApplied = false;
 
 	UPROPERTY()
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;

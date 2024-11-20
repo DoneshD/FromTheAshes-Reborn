@@ -4,7 +4,6 @@
 #include "FTAAbilitySystem/AbilitySets/FTAAbilitySet.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/Globals/FTAAbilitySystemGlobals.h"
 #include "Player/PlayerCharacter.h"
 
 AFTAPlayerState::AFTAPlayerState(const FObjectInitializer& ObjectInitializer)

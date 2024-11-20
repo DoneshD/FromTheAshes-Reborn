@@ -4,7 +4,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "TargetSystemComponent.h"
-#include "Components/Combat/PlayerComboManagerComponent.h"
+#include "Player/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
@@ -12,8 +12,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTags/FTAGameplayTags.h"
-#include "Input/FTAInputComponent.h"
-#include "Player/FTAPlayerState.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
 
 void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)

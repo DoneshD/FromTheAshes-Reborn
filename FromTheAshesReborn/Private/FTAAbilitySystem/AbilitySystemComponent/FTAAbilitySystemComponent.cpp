@@ -5,6 +5,7 @@
 #include "GameplayCueManager.h"
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
+#include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -300,12 +301,15 @@ void UFTAAbilitySystemComponent::GetAbilityTargetData(const FGameplayAbilitySpec
 
 void UFTAAbilitySystemComponent::SetTagRelationshipMapping(UFTAAbilityTagRelationshipMapping* NewMapping)
 {
-	
+	TagRelationshipMapping = NewMapping;
 }
 
 void UFTAAbilitySystemComponent::GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const
 {
-	
+	if (TagRelationshipMapping)
+	{
+		TagRelationshipMapping->GetRequiredAndBlockedActivationTags(AbilityTags, &OutActivationRequired, &OutActivationBlocked);
+	}
 }
 
 UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent)

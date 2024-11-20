@@ -130,9 +130,7 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
-
-	EAbilityInputID AbilityID = EAbilityInputID::None;
-
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool bActivateAbilityOnGranted;
 
