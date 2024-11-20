@@ -10,7 +10,6 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 
 	AbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>("AbilitySystemComponent");
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
-	AttributeSet = CreateDefaultSubobject<UFTAAttributeSet>("AttributeSet");
 	
 }
 
@@ -18,10 +17,6 @@ void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
-	//Implement later?
-	//GiveDefaultAbilities();
-	AddDefaultAbilities();
-	InitializeAttributes();
 }
 
 void AEnemyBaseCharacter::Tick(float DeltaTime)

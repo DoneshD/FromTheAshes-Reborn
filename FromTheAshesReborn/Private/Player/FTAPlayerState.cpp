@@ -38,13 +38,8 @@ void AFTAPlayerState::PostInitializeComponents()
 void AFTAPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-	
 	AddAbilitiesToPlayerASC();
 
-	if (AbilitySystemComponent)
-	{
-		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AttributeSet->GetCurrentHealthAttribute()).AddUObject(this, &AFTAPlayerState::HealthChanged);
-	}
 }
 
 void AFTAPlayerState::AddAbilitiesToPlayerASC()
@@ -56,43 +51,6 @@ void AFTAPlayerState::AddAbilitiesToPlayerASC()
 		if (AbilitySet)
 		{
 			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
-		}
-	}
-}
-
-UFTAAttributeSet* AFTAPlayerState::GetAttributeSet() const
-{
-	return AttributeSet;
-}
-
-bool AFTAPlayerState::IsAlive() const
-{
-	return GetCurrentHealth() > 0.0f;
-}
-
-float AFTAPlayerState::GetCurrentHealth() const
-{
-	return AttributeSet->GetCurrentHealth();
-}
-
-float AFTAPlayerState::GetMaxHealth() const
-{
-	return AttributeSet->GetMaxHealth();
-}
-
-float AFTAPlayerState::GetMoveSpeed() const
-{
-	return AttributeSet->GetMoveSpeed();
-}
-
-void AFTAPlayerState::HealthChanged(const FOnAttributeChangeData& Data)
-{
-	APlayerCharacter* PC = Cast<APlayerCharacter>(GetPawn());
-	if (IsValid(PC) && !IsAlive() && !AbilitySystemComponent->HasMatchingGameplayTag(DeadTag))
-	{
-		if (PC)
-		{
-			PC->FinishDying();
 		}
 	}
 }

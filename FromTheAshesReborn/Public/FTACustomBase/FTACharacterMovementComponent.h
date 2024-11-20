@@ -14,6 +14,4 @@ class FROMTHEASHESREBORN_API UFTACharacterMovementComponent : public UCharacterM
 public:
 	UFTACharacterMovementComponent();
 
-	virtual float GetMaxSpeed() const override;
-
 };

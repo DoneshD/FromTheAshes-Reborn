@@ -76,15 +76,9 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	
 	AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
-	AttributeSet = FTAPlayerState->GetAttributeSet();
 	
 }
 
-void APlayerCharacter::FinishDying()
-{
-	Super::FinishDying();
-	
-}
 
 USkeletalMeshComponent* APlayerCharacter::GetSkeletalMesh() const
 {
@@ -105,8 +99,6 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	InitAbilitySystemComponent();
-	AddDefaultAbilities();
-	InitializeAttributes();
 }
 
 FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()

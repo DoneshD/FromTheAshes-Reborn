@@ -12,11 +12,7 @@ UGA_GroundedDash::UGA_GroundedDash()
 
 void UGA_GroundedDash::ResetDash()
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("RESET DASH"));
-
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-	
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 

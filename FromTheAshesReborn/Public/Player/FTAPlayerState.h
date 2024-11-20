@@ -39,23 +39,4 @@ public:
 	virtual void PreInitializeComponents() override;
 	virtual void PostInitializeComponents() override;
 
-	UFUNCTION(BlueprintCallable, Category = "PlayerState|ASComponent")
-	UFTAAttributeSet* GetAttributeSet() const;
-	
-	UFUNCTION(BlueprintCallable, Category = "PlayerState")
-	bool IsAlive() const;
-	
-	UFUNCTION(BlueprintCallable, Category = "PlayerState | Attributes")
-	float GetCurrentHealth() const;
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerState | Attributes")
-	float GetMaxHealth() const;
-
-	UFUNCTION(BlueprintCallable, Category = "PlayerState | Attributes")
-	float GetMoveSpeed() const;
-
-	FGameplayTag DeadTag;
-	FDelegateHandle HealthChangedDelegateHandle;
-	virtual void HealthChanged(const FOnAttributeChangeData& Data);
-
 };

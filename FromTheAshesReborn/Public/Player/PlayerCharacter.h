@@ -76,8 +76,4 @@ protected:
 
 	virtual void SetCurrentComboIndex(int ComboIndex) override;
 
-public:
-	
-	virtual void FinishDying() override;
-
 };
