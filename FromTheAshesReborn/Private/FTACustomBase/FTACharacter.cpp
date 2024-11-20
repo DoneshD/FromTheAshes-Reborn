@@ -10,7 +10,7 @@
 #include "Sound/SoundCue.h"
 #include "Weapons/WeaponManagerComponent.h"
 
-AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) :
+AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = false;
@@ -24,9 +24,113 @@ AFTACharacter::AFTACharacter(const class FObjectInitializer& ObjectInitializer) 
 	WeaponManagerComponent = CreateDefaultSubobject<UWeaponManagerComponent>("WeaponManagerComponent");
 }
 
+void AFTACharacter::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;
+}
+
+void AFTACharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	if (const UFTAAbilitySystemComponent* FTA_ASC = GetFTAAbilitySystemComponent())
+	{
+		FTA_ASC->GetOwnedGameplayTags(TagContainer);
+	}
+}
+
+bool AFTACharacter::HasMatchingGameplayTag(FGameplayTag TagToCheck) const
+{
+	if (const UFTAAbilitySystemComponent* FTA_ASC = GetFTAAbilitySystemComponent())
+	{
+		return FTA_ASC->HasMatchingGameplayTag(TagToCheck);
+	}
+	return false;
+}
+
+bool AFTACharacter::HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	if (const UFTAAbilitySystemComponent* FTA_ASC = GetFTAAbilitySystemComponent())
+	{
+		return FTA_ASC->HasAllMatchingGameplayTags(TagContainer);
+	}
+	return false;
+}
+
+bool AFTACharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const
+{
+	if (const UFTAAbilitySystemComponent* FTA_ASC = GetFTAAbilitySystemComponent())
+	{
+		return FTA_ASC->HasAnyMatchingGameplayTags(TagContainer);
+	}
+	return false;
+}
+
+void AFTACharacter::AddDefaultAbilities()
+{
+	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->IsCharacterAbilitiesGiven)
+	{
+		return;
+	}
+
+	for (TSubclassOf<UFTAGameplayAbility>& StartupAbility : DefaultAbilities)
+	{
+		AbilitySystemComponent->GiveAbility(
+			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
+	}
+
+	AbilitySystemComponent->IsCharacterAbilitiesGiven = true;
+}
+
+void AFTACharacter::InitializeAttributes()
+{
+	if (!IsValid(AbilitySystemComponent))
+	{
+		return;
+	}
+
+	if (!DefaultAttributes)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
+		return;
+	}
+
+	// Can run on Server and Client
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, GetCharacterLevel(), EffectContext);
+	if (NewHandle.IsValid())
+	{
+		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*NewHandle.Data.Get());
+	}
+
+}
+
+void AFTACharacter::AddStartupEffects()
+{
+	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->IsStartupEffectsApplied)
+	{
+		return;
+	}
+
+	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
+	EffectContext.AddSourceObject(this);
+
+	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
+	{
+		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
+		if (NewHandle.IsValid())
+		{
+			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
+		}
+	}
+
+	AbilitySystemComponent->IsStartupEffectsApplied = true;
 }
 
 bool AFTACharacter::IsAlive() const
@@ -154,73 +258,6 @@ FName AFTACharacter::GetWeaponAttachPoint()
 	return WeaponAttachPoint;
 }
 
-void AFTACharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void AFTACharacter::AddDefaultAbilities()
-{
-	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->IsCharacterAbilitiesGiven)
-	{
-		return;
-	}
-
-	for (TSubclassOf<UFTAGameplayAbility>& StartupAbility : DefaultAbilities)
-	{
-		AbilitySystemComponent->GiveAbility(
-			FGameplayAbilitySpec(StartupAbility, GetAbilityLevel(StartupAbility.GetDefaultObject()->AbilityID), static_cast<int32>(StartupAbility.GetDefaultObject()->AbilityInputID), this));
-	}
-
-	AbilitySystemComponent->IsCharacterAbilitiesGiven = true;
-}
-
-void AFTACharacter::InitializeAttributes()
-{
-	if (!IsValid(AbilitySystemComponent))
-	{
-		return;
-	}
-
-	if (!DefaultAttributes)
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s() Missing DefaultAttributes for %s. Please fill in the character's Blueprint."), *FString(__FUNCTION__), *GetName());
-		return;
-	}
-
-	// Can run on Server and Client
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-	EffectContext.AddSourceObject(this);
-
-	FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(DefaultAttributes, GetCharacterLevel(), EffectContext);
-	if (NewHandle.IsValid())
-	{
-		FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*NewHandle.Data.Get());
-	}
-
-}
-
-void AFTACharacter::AddStartupEffects()
-{
-	if (GetLocalRole() != ROLE_Authority || !IsValid(AbilitySystemComponent) || AbilitySystemComponent->IsStartupEffectsApplied)
-	{
-		return;
-	}
-
-	FGameplayEffectContextHandle EffectContext = AbilitySystemComponent->MakeEffectContext();
-	EffectContext.AddSourceObject(this);
-
-	for (TSubclassOf<UGameplayEffect> GameplayEffect : StartupEffects)
-	{
-		FGameplayEffectSpecHandle NewHandle = AbilitySystemComponent->MakeOutgoingSpec(GameplayEffect, GetCharacterLevel(), EffectContext);
-		if (NewHandle.IsValid())
-		{
-			FActiveGameplayEffectHandle ActiveGEHandle = AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*NewHandle.Data.Get(), AbilitySystemComponent);
-		}
-	}
-
-	AbilitySystemComponent->IsStartupEffectsApplied = true;
-}
 
 void AFTACharacter::SetCurrentHealth(float Health)
 {

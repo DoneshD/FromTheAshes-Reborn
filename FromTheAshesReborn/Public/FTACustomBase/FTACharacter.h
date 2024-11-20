@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "FTAEnums.h"
+#include "GameplayTagAssetInterface.h"
 #include "Weapons/FTAWeapon.h"
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
@@ -20,18 +21,41 @@ class UDidItHitActorComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCharacterDiedDelegate, AFTACharacter*, Character);
 
 UCLASS()
-class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface
+class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
 protected:
+
+	UPROPERTY()
+	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
+	
+public:
+	
+	AFTACharacter(const FObjectInitializer& ObjectInitializer);
+	virtual void BeginPlay() override;
+
+	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const  { return AbilitySystemComponent; };
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;
+	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+
+	virtual void AddDefaultAbilities();
+	virtual void InitializeAttributes();
+	virtual void AddStartupEffects();
+
+	
+
+//----------------------------Delete below----------------------//
+	
+protected:
 	FGameplayTag DeadTag;
 	
 	FGameplayTag EffectRemoveOnDeathTag;
-	
-	// Reference to the ASC. It will live on the PlayerState or here if the character doesn't have a PlayerState.
-	UPROPERTY()
-	class UFTAAbilitySystemComponent* AbilitySystemComponent;
 
 	// Reference to the AttributeSetBase. It will live on the PlayerState or here if the character doesn't have a PlayerState.
 	UPROPERTY()
@@ -58,23 +82,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Collision")
 	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
 
-	AFTACharacter(const class FObjectInitializer& ObjectInitializer);
-
-	virtual void BeginPlay() override;
-
-	virtual void AddDefaultAbilities();
-
-	virtual void InitializeAttributes();
-
-	virtual void AddStartupEffects();
-	
-	virtual void SetCurrentHealth(float Health);
-
-	//-----------------------------Weapons----------------------//
-
-	
-
-public:
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character")
+	FName WeaponAttachPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TObjectPtr<UWeaponManagerComponent> WeaponManagerComponent;
@@ -82,7 +91,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Character")
 	FCharacterDiedDelegate OnCharacterDied;
 
-	virtual class UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+public:
+
+	UPROPERTY(EditAnywhere, Category = "Character | Abilities")
+	TObjectPtr<UFTACharacterData> FTACharacterData;
 
 	UFUNCTION(BlueprintCallable, Category = "Character")
 	virtual bool IsAlive() const;
@@ -104,6 +117,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	int32 GetCharacterLevel() const;
 
+	virtual void SetCurrentHealth(float Health);
+
 	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	float GetCurrentHealth() const;
 
@@ -118,12 +133,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character | Attributes")
 	float GetMoveSpeedBaseValue() const;
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Character")
-	FName WeaponAttachPoint;
-	
 	FName GetWeaponAttachPoint();
-
-	UPROPERTY(EditAnywhere, Category = "Character | Abilities")
-	TObjectPtr<UFTACharacterData> FTACharacterData;
 	
 };

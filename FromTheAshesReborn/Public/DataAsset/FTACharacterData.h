@@ -28,12 +28,4 @@ public:
 	// What mapping of ability tags to use for actions taking by this pawn
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Abilities")
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
-
-	// Input configuration used by player controlled pawns to create input mappings and bind input actions.
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Lyra|Input")
-	// TObjectPtr<ULyraInputConfig> InputConfig;
-	//
-	// // Default camera mode used by player controlled pawns.
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Camera")
-	// TSubclassOf<UFTACameraMode> DefaultCameraMode;
 };
