@@ -95,17 +95,6 @@ public:
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 
-	//Set up camera mode later
-	
-	// UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
-	// void SetCameraMode(TSubclassOf<UFTACameraMode> CameraMode);
-
-	
-	// Clears the ability's camera mode.  Automatically called if needed when the ability ends.
-	
-	// UFUNCTION(BlueprintCallable, Category = "Lyra|Ability")
-	// void ClearCameraMode();
-
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "Ability")
@@ -136,7 +125,4 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool bActivateOnInput;
-	
-
-	
 };

@@ -8,6 +8,7 @@
 
 class UFTAEquipmentInstance;
 class UFTAEquipmentDefinition;
+
 USTRUCT(BlueprintType)
 struct FFTAAppliedEquipmentEntry
 {

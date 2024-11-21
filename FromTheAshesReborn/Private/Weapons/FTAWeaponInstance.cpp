@@ -21,11 +21,12 @@ void UFTAWeaponInstance::OnUnequipped()
 	Super::OnUnequipped();
 }
 
-// TSubclassOf<UAnimInstance> UFTAWeaponInstance::PickBestAnimLayer(bool bEquipped,
-// 	const FGameplayTagContainer& CosmeticTags) const
-// {
-// }
-
-void UFTAWeaponInstance::OnDeathStarted(AActor* OwningActor)
+TSubclassOf<UAnimInstance> UFTAWeaponInstance::PickBestAnimLayer(bool bEquipped,
+	const FGameplayTagContainer& CosmeticTags) const
 {
+	const FFTAAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnEquippedAnimSet);
+	return SetToQuery.SelectBestLayer(CosmeticTags);
 }
+
+
+

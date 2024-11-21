@@ -50,7 +50,7 @@ UFTAEquipmentInstance* FFTAEquipmentList::AddEntry(TSubclassOf<UFTAEquipmentDefi
 	
 	FFTAAppliedEquipmentEntry& NewEntry = Entries.AddDefaulted_GetRef();
 	NewEntry.EquipmentDefinition = EquipmentDefinition;
-	NewEntry.Instance = NewObject<UFTAEquipmentInstance>(OwnerComponent->GetOwner(), InstanceType);  //@TODO: Using the actor instead of component as the outer due to UE-127172
+	NewEntry.Instance = NewObject<UFTAEquipmentInstance>(OwnerComponent->GetOwner(), InstanceType);
 	Result = NewEntry.Instance;
 
 	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())

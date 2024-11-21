@@ -23,17 +23,14 @@ public:
 	virtual void OnUnequipped() override;
 
 protected:
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
 	FFTAAnimLayerSelectionSet EquippedAnimSet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
 	FFTAAnimLayerSelectionSet UnEquippedAnimSet;
 
-	// UFUNCTION(BlueprintCallable, BlueprintPure=false, Category=Animation)
-	// TSubclassOf<UAnimInstance> PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const;
-
-	/** Callback for when the owning pawn of this weapon dies. Removes all spawned device properties. */
-	UFUNCTION()
-	void OnDeathStarted(AActor* OwningActor);
+	UFUNCTION(BlueprintCallable, BlueprintPure=false, Category=Animation)
+	TSubclassOf<UAnimInstance> PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const;
 	
 };

@@ -38,6 +38,8 @@ public:
 	virtual void OnUnequipped();
 
 private:
+
+	UPROPERTY()
 	TObjectPtr<UObject> Instigator;
 
 	UPROPERTY()
