@@ -17,20 +17,20 @@ bool UGA_MeleeWeapon::CanActivateAbility(const FGameplayAbilitySpecHandle Handle
 {
 	bool bResult = Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 
-	if(bResult)
-	{
-		if(GetWeaponInstance() == nullptr)
-		{
-			if (GetWeaponInstance()== nullptr)
-			{
-				UE_LOG(LogTemp, Error, TEXT("Weapon ability %s cannot be activated because there is no associated ranged weapon (equipment instance=%s but needs to be derived from %s)"),
-					*GetPathName(),
-					*GetPathNameSafe(GetAssociatedEquipment()),
-					*UFTAEquipmentInstance::StaticClass()->GetName());
-				bResult = false;
-			}
-		}
-	}
+	// if(bResult)
+	// {
+	// 	if(GetWeaponInstance() == nullptr)
+	// 	{
+	// 		if (GetWeaponInstance()== nullptr)
+	// 		{
+	// 			UE_LOG(LogTemp, Error, TEXT("Weapon ability %s cannot be activated because there is no associated ranged weapon (equipment instance=%s but needs to be derived from %s)"),
+	// 				*GetPathName(),
+	// 				*GetPathNameSafe(GetAssociatedEquipment()),
+	// 				*UFTAEquipmentInstance::StaticClass()->GetName());
+	// 			bResult = false;
+	// 		}
+	// 	}
+	// }
 	return bResult;
 }
 

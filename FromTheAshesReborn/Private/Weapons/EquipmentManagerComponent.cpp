@@ -32,13 +32,13 @@ FString FFTAAppliedEquipmentEntry::GetDebugString() const
 	return FString::Printf(TEXT("%s of %s"), *GetNameSafe(Instance), *GetNameSafe(EquipmentDefinition.Get()));
 }
 
-UFTAEquipmentInstance* FFTAEquipmentList::AddEntry(TSubclassOf<UFTAEquipmentDefinition> EquipmentDefinition)
+UFTAEquipmentInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UFTAEquipmentDefinition> EquipmentDefinition)
 {
 	UFTAEquipmentInstance* Result = nullptr;
 
 	check(EquipmentDefinition != nullptr);
-	check(OwnerComponent);
-	check(OwnerComponent->GetOwner()->HasAuthority());
+	// check(OwnerComponent);
+	// check(OwnerComponent->GetOwner()->HasAuthority());
 	
 	const UFTAEquipmentDefinition* EquipmentCDO = GetDefault<UFTAEquipmentDefinition>(EquipmentDefinition);
 
@@ -50,7 +50,7 @@ UFTAEquipmentInstance* FFTAEquipmentList::AddEntry(TSubclassOf<UFTAEquipmentDefi
 	
 	FFTAAppliedEquipmentEntry& NewEntry = Entries.AddDefaulted_GetRef();
 	NewEntry.EquipmentDefinition = EquipmentDefinition;
-	NewEntry.Instance = NewObject<UFTAEquipmentInstance>(OwnerComponent->GetOwner(), InstanceType);
+	NewEntry.Instance = NewObject<UFTAEquipmentInstance>(GetOwner(), InstanceType);
 	Result = NewEntry.Instance;
 
 	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
@@ -70,7 +70,7 @@ UFTAEquipmentInstance* FFTAEquipmentList::AddEntry(TSubclassOf<UFTAEquipmentDefi
 	return Result;
 }
 
-void FFTAEquipmentList::RemoveEntry(UFTAEquipmentInstance* Instance)
+void UEquipmentManagerComponent::RemoveEntry(UFTAEquipmentInstance* Instance)
 {
 	for (auto EntryIt = Entries.CreateIterator(); EntryIt; ++EntryIt)
 	{
@@ -89,9 +89,9 @@ void FFTAEquipmentList::RemoveEntry(UFTAEquipmentInstance* Instance)
 }
 
 
-UFTAAbilitySystemComponent* FFTAEquipmentList::GetAbilitySystemComponent() const
+UFTAAbilitySystemComponent* UEquipmentManagerComponent::GetAbilitySystemComponent() const
 {
-	check(OwnerComponent);
-	AActor* OwningActor = OwnerComponent->GetOwner();
-	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwningActor));
+	// check(OwnerComponent);
+	// AActor* OwningActor = OwnerComponent->GetOwner();
+	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()));
 }

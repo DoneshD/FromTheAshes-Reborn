@@ -8,6 +8,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UEquipmentManagerComponent;
 class UFTACharacterData;
 class UWeaponManagerComponent;
 struct FGameplayEffectSpec;
@@ -33,6 +34,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Character | Abilities")
 	TObjectPtr<UFTACharacterData> FTACharacterData;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Character | Abilities")
+	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
 	
 public:
 	
