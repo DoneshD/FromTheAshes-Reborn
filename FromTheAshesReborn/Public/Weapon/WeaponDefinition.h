@@ -26,7 +26,7 @@ struct FEquipmentActorToSpawn
 	FTransform AttachTransform;
 };
 
-UCLASS()
+UCLASS(Blueprintable, Const, Abstract, BlueprintType)
 class FROMTHEASHESREBORN_API UWeaponDefinition : public UObject
 {
 	GENERATED_BODY()

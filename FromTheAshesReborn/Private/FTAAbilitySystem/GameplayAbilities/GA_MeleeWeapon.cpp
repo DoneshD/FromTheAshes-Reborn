@@ -1,16 +1,16 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_MeleeWeapon.h"
 
 #include "AbilitySystemComponent.h"
-#include "Weapons/FTAMeleeWeaponInstance.h"
+#include "Weapon/MeleeWeaponInstance.h"
 
 UGA_MeleeWeapon::UGA_MeleeWeapon(const FObjectInitializer&)
 {
 	
 }
 
-UFTAMeleeWeaponInstance* UGA_MeleeWeapon::GetWeaponInstance() const
+UMeleeWeaponInstance* UGA_MeleeWeapon::GetMeleeWeaponInstance() const
 {
-	return Cast<UFTAMeleeWeaponInstance>(GetAssociatedEquipment());
+	return Cast<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
 }
 
 bool UGA_MeleeWeapon::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -31,6 +31,7 @@ bool UGA_MeleeWeapon::CanActivateAbility(const FGameplayAbilitySpecHandle Handle
 	// 		}
 	// 	}
 	// }
+	
 	return bResult;
 }
 

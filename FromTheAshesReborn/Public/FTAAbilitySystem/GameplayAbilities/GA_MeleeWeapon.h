@@ -4,7 +4,7 @@
 #include "GA_FromEquipment.h"
 #include "GA_MeleeWeapon.generated.h"
 
-class UFTAMeleeWeaponInstance;
+class UMeleeWeaponInstance;
 enum ECollisionChannel : int;
 
 UCLASS()
@@ -17,7 +17,7 @@ public:
 	UGA_MeleeWeapon(const FObjectInitializer& = FObjectInitializer::Get());
 
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
-	UFTAMeleeWeaponInstance* GetWeaponInstance() const;
+	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
 
 	//~UGameplayAbility interface
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;

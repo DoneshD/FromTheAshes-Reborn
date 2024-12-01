@@ -6,6 +6,8 @@
 #include "FTAAbilitySystem/AbilitySets/FTAAbilitySet.h"
 #include "EquipmentManagerComponent.generated.h"
 
+class UWeaponInstance;
+class UWeaponDefinition;
 class UFTAEquipmentInstance;
 class UFTAEquipmentDefinition;
 
@@ -24,10 +26,10 @@ private:
 
 	// The equipment class that got equipped
 	UPROPERTY()
-	TSubclassOf<UFTAEquipmentDefinition> EquipmentDefinition;
+	TSubclassOf<UWeaponDefinition> EquipmentDefinition;
 
 	UPROPERTY()
-	TObjectPtr<UFTAEquipmentInstance> Instance = nullptr;
+	TObjectPtr<UWeaponInstance> Instance = nullptr;
 
 	// Authority-only list of granted handles
 	FFTAAbilitySet_GrantedHandles GrantedHandles;
@@ -52,10 +54,10 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	UFTAEquipmentInstance* AddEntry(TSubclassOf<UFTAEquipmentDefinition> EquipmentDefinition);
+	UWeaponInstance* AddEntry(TSubclassOf<UWeaponDefinition> EquipmentDefinition);
 
 	UFUNCTION(BlueprintCallable)
-	void RemoveEntry(UFTAEquipmentInstance* Instance);
+	void RemoveEntry(UWeaponInstance* Instance);
 
 	UFTAAbilitySystemComponent* GetAbilitySystemComponent() const;
 };

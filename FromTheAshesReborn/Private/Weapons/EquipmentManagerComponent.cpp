@@ -2,8 +2,10 @@
 
 #include "AbilitySystemGlobals.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "Weapons/FTAEquipmentDefinition.h"
-#include "Weapons/FTAEquipmentInstance.h"
+#include "Weapon/WeaponDefinition.h"
+#include "Weapon/WeaponInstance.h"
+#include "Weapon/WeaponInstance.h"
+#include "Weapon/WeaponDefinition.h"
 
 
 UEquipmentManagerComponent::UEquipmentManagerComponent()
@@ -32,25 +34,25 @@ FString FFTAAppliedEquipmentEntry::GetDebugString() const
 	return FString::Printf(TEXT("%s of %s"), *GetNameSafe(Instance), *GetNameSafe(EquipmentDefinition.Get()));
 }
 
-UFTAEquipmentInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UFTAEquipmentDefinition> EquipmentDefinition)
+UWeaponInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UWeaponDefinition> EquipmentDefinition)
 {
-	UFTAEquipmentInstance* Result = nullptr;
+	UWeaponInstance* Result = nullptr;
 
 	check(EquipmentDefinition != nullptr);
 	// check(OwnerComponent);
 	// check(OwnerComponent->GetOwner()->HasAuthority());
 	
-	const UFTAEquipmentDefinition* EquipmentCDO = GetDefault<UFTAEquipmentDefinition>(EquipmentDefinition);
+	const UWeaponDefinition* EquipmentCDO = GetDefault<UWeaponDefinition>(EquipmentDefinition);
 
-	TSubclassOf<UFTAEquipmentInstance> InstanceType = EquipmentCDO->InstanceType;
+	TSubclassOf<UWeaponInstance> InstanceType = EquipmentCDO->InstanceType;
 	if (InstanceType == nullptr)
 	{
-		InstanceType = UFTAEquipmentInstance::StaticClass();
+		InstanceType = UWeaponInstance::StaticClass();
 	}
 	
 	FFTAAppliedEquipmentEntry& NewEntry = Entries.AddDefaulted_GetRef();
 	NewEntry.EquipmentDefinition = EquipmentDefinition;
-	NewEntry.Instance = NewObject<UFTAEquipmentInstance>(GetOwner(), InstanceType);
+	NewEntry.Instance = NewObject<UWeaponInstance>(GetOwner(), InstanceType);
 	Result = NewEntry.Instance;
 
 	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
@@ -70,7 +72,7 @@ UFTAEquipmentInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UFTAEqui
 	return Result;
 }
 
-void UEquipmentManagerComponent::RemoveEntry(UFTAEquipmentInstance* Instance)
+void UEquipmentManagerComponent::RemoveEntry(UWeaponInstance* Instance)
 {
 	for (auto EntryIt = Entries.CreateIterator(); EntryIt; ++EntryIt)
 	{
