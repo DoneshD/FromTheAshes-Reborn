@@ -1,20 +1,19 @@
-﻿#pragma once
+﻿
+#pragma once
 
 #include "CoreMinimal.h"
 #include "GA_FromEquipment.h"
-#include "GA_MeleeWeapon.generated.h"
+#include "GA_MeleeWeaponAttack.generated.h"
 
-class UMeleeWeaponInstance;
-enum ECollisionChannel : int;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeWeapon : public UGA_FromEquipment
+class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 {
 	GENERATED_BODY()
 
 public:
 
-	UGA_MeleeWeapon(const FObjectInitializer& = FObjectInitializer::Get());
+	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());
 
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
@@ -24,5 +23,4 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~End of UGameplayAbility interface
-	
- };
+};

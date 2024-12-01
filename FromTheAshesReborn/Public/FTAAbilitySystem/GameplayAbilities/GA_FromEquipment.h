@@ -17,5 +17,4 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
 	UWeaponInstance* GetAssociatedWeaponInstance() const;
-	
 };
