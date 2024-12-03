@@ -128,7 +128,6 @@ void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FAbilityComboDataStr
 	RemoveGameplayTagEvent(AbilityComboData.ComboWindowTag);
 	
 	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(AbilityComboData.ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UPlayerComboManagerComponent::ComboWindowTagChanged);
-	
 	TagDelegateHandles.Add(AbilityComboData.ComboWindowTag, Handle);
 }
 

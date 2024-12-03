@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FFTAPlayMontageAndWaitForEventDeleg
  * This is a good task to look at as an example when creating game-specific tasks
  * It is expected that each game will have a set of game-specific tasks to do what they want
  */
-UCLASS()
+UCLASS(Blueprintable)
 class FROMTHEASHESREBORN_API UFTAAT_PlayMontageAndWaitForEvent : public UAbilityTask
 {
 	GENERATED_BODY()

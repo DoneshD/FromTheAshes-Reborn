@@ -31,17 +31,12 @@ protected:
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
 	
-
 	UPlayerComboManagerComponent();
-
 	virtual void BeginPlay() override;
-	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
-	
 	void ComboWindowOpen(FGameplayTag ComboWindowTag);
-	
 	void ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityToActivateClass);
 	
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);

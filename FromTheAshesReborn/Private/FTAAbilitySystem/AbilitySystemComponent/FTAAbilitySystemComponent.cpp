@@ -126,11 +126,11 @@ void UFTAAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 
 void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)
 {
-	if(HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.AbilityInputBlocked")))
-	{
-		ClearAbilityInput();
-		return;
-	}
+	// if(HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.AbilityInputBlocked")))
+	// {
+	// 	ClearAbilityInput();
+	// 	return;
+	// }
 	
 	// Clear all abilities in array not being pressed
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;

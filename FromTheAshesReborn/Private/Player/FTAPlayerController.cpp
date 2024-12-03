@@ -122,64 +122,6 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 	{
 		InitializePlayerInput(InPawn->InputComponent);
 	}
-
-	// PlayerCharacter = Cast<APlayerCharacter>(InPawn);
-	// if(!PlayerCharacter) { return; }
-	//
-	// AFTAPlayerState* PS = GetPlayerState<AFTAPlayerState>();
-	// if (PS)
-	// {
-	// 	// Init ASC with PS (Owner) and our new Pawn (AvatarActor)
-	// 	ASC = PS->GetAbilitySystemComponent();
-	// 	ASC->InitAbilityActorInfo(PS, InPawn);
-	// }
-	//
-	// EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
-	// if(!EnhancedInputComponent) { return; }
-	//
-	// UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-	// if(!InputSubsystem) { return; }
-	// check(InputSubsystem);
-	//
-	// InputSubsystem->ClearAllMappings();
-	// InputSubsystem->AddMappingContext(DefaultInputMappingContext, 0);
-	//
-	// EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
-	// EnhancedInputComponent->BindAction(Input_Move, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleMoveActionReleased);
-	//
-	// EnhancedInputComponent->BindAction(Input_LookMouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
-	//
-	// EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLightAttackActionPressed);
-	// EnhancedInputComponent->BindAction(Input_LightAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLightAttackActionReleased);
-	//
-	// EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Started, this, &AFTAPlayerController::HandleHeavyAttackActionPressed);
-	// EnhancedInputComponent->BindAction(Input_HeavyAttack, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleHeavyAttackActionReleased);
-	//
-	// EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Started, this, &AFTAPlayerController::HandleJumpActionPressed);
-	// EnhancedInputComponent->BindAction(Input_Jump, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleJumpActionReleased);
-	//
-	// EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Started, this, &AFTAPlayerController::HandleDashActionPressed);
-	// EnhancedInputComponent->BindAction(Input_Dash, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleDashActionReleased);
-	//
-	// EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Started, this, &AFTAPlayerController::HandleLockOnActionPressed);
-	// EnhancedInputComponent->BindAction(Input_LockOn, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleLockOnActionReleased);
-	//
-	// EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Started, this, &AFTAPlayerController::HandleVaultActionPressed);
-	// EnhancedInputComponent->BindAction(Input_Vault, ETriggerEvent::Completed, this, &AFTAPlayerController::HandleVaultActionReleased);
-	//
-	// //Debug purposes
-	// EnhancedInputComponent->BindAction(Input_SlowTime, ETriggerEvent::Started, this, &AFTAPlayerController::InputSlowTime);
-	//
-	// PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
-	
-	// if (PlayerComboManager)
-	// {
-	// 	OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("PlayerComboManager NOT FOUND"));
-	// }
 }
 
 void AFTAPlayerController::OnUnPossess()
