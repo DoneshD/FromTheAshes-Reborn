@@ -25,7 +25,7 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("AFTACharacter Name: %d"), AbilitySystemComponent->GetUniqueID());
+	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 

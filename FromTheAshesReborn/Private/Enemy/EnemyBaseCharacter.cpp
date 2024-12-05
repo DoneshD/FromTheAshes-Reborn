@@ -7,16 +7,12 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	AbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>("AbilitySystemComponent");
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
 	
 }
 
 void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 void AEnemyBaseCharacter::Tick(float DeltaTime)

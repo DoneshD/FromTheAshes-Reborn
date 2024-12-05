@@ -18,7 +18,7 @@ struct FEquipmentActorToSpawn
 	{}
 
 	UPROPERTY(EditAnywhere, Category=Equipment)
-	TSubclassOf<AWeaponActorBase> ActorToSpawn;
+	TSubclassOf<AActor> ActorToSpawn;
 
 	UPROPERTY(EditAnywhere, Category=Equipment)
 	FName AttachSocket;

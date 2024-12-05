@@ -55,6 +55,9 @@ protected:
 	
 	UFUNCTION(BlueprintCallable)
 	void StartMeleeWeaponTargeting();
+
+	UFUNCTION(BlueprintCallable)
+	void EndMeleeWeaponTargeting();
 	
 	// Called when target data is ready
 	UFUNCTION(BlueprintImplementableEvent)

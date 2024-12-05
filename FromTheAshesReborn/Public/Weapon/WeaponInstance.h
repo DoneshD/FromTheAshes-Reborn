@@ -5,6 +5,7 @@
 #include "Weapons/FTACosmeticAnimationTypes.h"
 #include "WeaponInstance.generated.h"
 
+class AWeaponActorBase;
 class AActor;
 class APawn;
 struct FEquipmentActorToSpawn;
@@ -45,7 +46,7 @@ public:
 
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> SpawnedActors;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
 	FFTAAnimLayerSelectionSet EquippedAnimSet;
 

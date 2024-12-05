@@ -3,6 +3,7 @@
 #include "AbilitySystemGlobals.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"
 #include "Weapon/WeaponDefinition.h"
 #include "Weapon/WeaponInstance.h"
@@ -59,7 +60,6 @@ UWeaponInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UWeaponDefinit
 
 	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("EMC Name: %d"), ASC->GetUniqueID());
 
 		for (TObjectPtr<const UFTAAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsToGrant)
 		{
@@ -100,6 +100,7 @@ void UEquipmentManagerComponent::RemoveEntry(UWeaponInstance* Instance)
 
 UFTAAbilitySystemComponent* UEquipmentManagerComponent::GetAbilitySystemComponent() const
 {
-	AFTACharacter* Character = Cast<AFTACharacter>(GetOwner());
-	return Character->GetFTAAbilitySystemComponent();
+	//TODO: NEED TO FIND A WAY ON HOW TO IVE SAME ASC TO PLAYER STATE AND CHARACTER!!!!!
+	AFTAPlayerController* PC = Cast<AFTAPlayerController>(GetOwner()->GetInstigatorController());
+	return PC->GetFTAAbilitySystemComponent();
 }

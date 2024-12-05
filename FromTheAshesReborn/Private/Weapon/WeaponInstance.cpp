@@ -37,11 +37,11 @@ void UWeaponInstance::SpawnEquipmentActors(const TArray<FEquipmentActorToSpawn>&
 
 		for (const FEquipmentActorToSpawn& SpawnInfo : ActorsToSpawn)
 		{
-			AWeaponActorBase* NewActor = GetWorld()->SpawnActorDeferred<AWeaponActorBase>(SpawnInfo.ActorToSpawn, FTransform::Identity, OwningPawn);
+			AActor* NewActor = GetWorld()->SpawnActorDeferred<AActor>(SpawnInfo.ActorToSpawn, FTransform::Identity, OwningPawn);
 			NewActor->FinishSpawning(FTransform::Identity, /*bIsDefaultTransform=*/ true);
 			NewActor->SetActorRelativeTransform(SpawnInfo.AttachTransform);
 			NewActor->AttachToComponent(AttachTarget, FAttachmentTransformRules::KeepRelativeTransform, SpawnInfo.AttachSocket);
-
+			
 			SpawnedActors.Add(NewActor);
 		}
 	}
