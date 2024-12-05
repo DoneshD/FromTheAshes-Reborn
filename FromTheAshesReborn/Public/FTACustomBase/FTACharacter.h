@@ -27,7 +27,7 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilityS
 
 protected:
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
 	
 public:

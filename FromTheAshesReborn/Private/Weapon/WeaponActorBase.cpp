@@ -8,6 +8,9 @@ AWeaponActorBase::AWeaponActorBase()
 
 	DidItHitActorComponent = CreateDefaultSubobject<UDidItHitActorComponent>("DidItHitActorComponent");
 	this->AddOwnedComponent(DidItHitActorComponent);
+
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("SkeletalMeshComponent");
+	this->AddOwnedComponent(SkeletalMesh);
 	
 }
 

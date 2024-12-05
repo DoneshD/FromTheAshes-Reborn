@@ -1,5 +1,6 @@
 ﻿#include "Weapon/WeaponInstance.h"
 #include "GameFramework/Character.h"
+#include "Weapon/WeaponActorBase.h"
 #include "Weapon/WeaponDefinition.h"
 
 UWeaponInstance::UWeaponInstance(const FObjectInitializer& ObjectInitializer)
@@ -36,7 +37,7 @@ void UWeaponInstance::SpawnEquipmentActors(const TArray<FEquipmentActorToSpawn>&
 
 		for (const FEquipmentActorToSpawn& SpawnInfo : ActorsToSpawn)
 		{
-			AActor* NewActor = GetWorld()->SpawnActorDeferred<AActor>(SpawnInfo.ActorToSpawn, FTransform::Identity, OwningPawn);
+			AWeaponActorBase* NewActor = GetWorld()->SpawnActorDeferred<AWeaponActorBase>(SpawnInfo.ActorToSpawn, FTransform::Identity, OwningPawn);
 			NewActor->FinishSpawning(FTransform::Identity, /*bIsDefaultTransform=*/ true);
 			NewActor->SetActorRelativeTransform(SpawnInfo.AttachTransform);
 			NewActor->AttachToComponent(AttachTarget, FAttachmentTransformRules::KeepRelativeTransform, SpawnInfo.AttachSocket);

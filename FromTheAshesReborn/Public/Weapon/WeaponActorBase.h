@@ -12,12 +12,14 @@ UCLASS()
 class FROMTHEASHESREBORN_API AWeaponActorBase : public AActor
 {
 	GENERATED_BODY()
-
-
+	
 public:
 
-	UPROPERTY(BlueprintReadWrite, Category = "Tracing")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tracing")
 	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
 
 public:
 	

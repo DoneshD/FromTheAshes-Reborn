@@ -2,6 +2,8 @@
 
 #include "AbilitySystemGlobals.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTACustomBase/FTACharacter.h"
+#include "Player/FTAPlayerState.h"
 #include "Weapon/WeaponDefinition.h"
 #include "Weapon/WeaponInstance.h"
 #include "Weapon/WeaponInstance.h"
@@ -57,9 +59,14 @@ UWeaponInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UWeaponDefinit
 
 	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("EMC Name: %d"), ASC->GetUniqueID());
+
 		for (TObjectPtr<const UFTAAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsToGrant)
 		{
-			AbilitySet->GiveToAbilitySystem(ASC, /*inout*/ &NewEntry.GrantedHandles, Result);
+			if (AbilitySet)
+			{
+				AbilitySet->GiveToAbilitySystem(ASC, /*inout*/ &NewEntry.GrantedHandles, Result);
+			}
 		}
 	}
 	else
@@ -93,7 +100,6 @@ void UEquipmentManagerComponent::RemoveEntry(UWeaponInstance* Instance)
 
 UFTAAbilitySystemComponent* UEquipmentManagerComponent::GetAbilitySystemComponent() const
 {
-	// check(OwnerComponent);
-	// AActor* OwningActor = OwnerComponent->GetOwner();
-	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()));
+	AFTACharacter* Character = Cast<AFTACharacter>(GetOwner());
+	return Character->GetFTAAbilitySystemComponent();
 }

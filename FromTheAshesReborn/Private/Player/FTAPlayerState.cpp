@@ -44,6 +44,7 @@ void AFTAPlayerState::BeginPlay()
 void AFTAPlayerState::AddAbilitiesToPlayerASC()
 {
 	APlayerCharacter* PC = Cast<APlayerCharacter>(GetPawn());
+	UE_LOG(LogTemp, Warning, TEXT("AFTAPlayerState Name: %d"), AbilitySystemComponent->GetUniqueID());
 
 	for (const UFTAAbilitySet* AbilitySet : PC->FTACharacterData->AbilitySets)
 	{

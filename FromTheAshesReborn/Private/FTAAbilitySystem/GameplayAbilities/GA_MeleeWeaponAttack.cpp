@@ -32,6 +32,51 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
+void UGA_MeleeWeaponAttack::PerformLocalTargeting(TArray<FHitResult>& Array)
+{
+	APawn* const AvatarPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
+
+	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
+	if (AvatarPawn && WeaponData)
+	{
+		FMeleeWeaponTraceData TraceData;
+		TraceData.WeaponData = WeaponData;
+		
+		// TraceData.StartTrace = 
+
+		// InputData.EndAim = 
+		
+		// TraceBulletsInCartridge(TraceData, /*out*/ OutHits);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::PerformLocalTargeting - WeaponData is NULL"));
+	}
+}
+
+void UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting()
+{
+	check(CurrentActorInfo);
+	
+	TArray<FHitResult> FoundHits;
+	PerformLocalTargeting(/*out*/ FoundHits);
+
+	// Fill out the target data from the hit results
+	FGameplayAbilityTargetDataHandle TargetData;
+
+	if (FoundHits.Num() > 0)
+	{
+		for (const FHitResult& FoundHit : FoundHits)
+		{
+			FGameplayAbilityTargetData_SingleTargetHit* NewTargetData = new FGameplayAbilityTargetData_SingleTargetHit();
+			NewTargetData->HitResult = FoundHit;
+
+			TargetData.Add(NewTargetData);
+		}
+	}
+	OnTargetDataReadyCallback(TargetData, FGameplayTag());
+}
+
 void UGA_MeleeWeaponAttack::OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& InData, FGameplayTag ApplicationTag)
 {
 	

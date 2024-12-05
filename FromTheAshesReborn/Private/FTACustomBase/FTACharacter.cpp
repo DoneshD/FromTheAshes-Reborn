@@ -15,6 +15,8 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	bAlwaysRelevant = true;
 
+	AbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	
 	EquipmentManagerComponent = CreateDefaultSubobject<UEquipmentManagerComponent>("EquipmentManagerComponent");
 	this->AddOwnedComponent(EquipmentManagerComponent);
 
@@ -23,12 +25,13 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	UE_LOG(LogTemp, Warning, TEXT("AFTACharacter Name: %d"), AbilitySystemComponent->GetUniqueID());
 }
 
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 {
-	return AbilitySystemComponent;
+	return GetFTAAbilitySystemComponent();
 }
 
 void AFTACharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const

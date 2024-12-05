@@ -17,8 +17,8 @@ class FROMTHEASHESREBORN_API AFTAPlayerState : public APlayerState, public IAbil
 {
 	GENERATED_BODY()
 
-private:
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState|ASComponent")
+protected:
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerState|ASComponent")
 	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "PlayerState|AttributeSet")

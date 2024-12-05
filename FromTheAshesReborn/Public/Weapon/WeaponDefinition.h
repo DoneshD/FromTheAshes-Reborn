@@ -4,6 +4,7 @@
 #include "UObject/Object.h"
 #include "WeaponDefinition.generated.h"
 
+class AWeaponActorBase;
 class AActor;
 class UFTAAbilitySet;
 class UWeaponInstance;
@@ -17,7 +18,7 @@ struct FEquipmentActorToSpawn
 	{}
 
 	UPROPERTY(EditAnywhere, Category=Equipment)
-	TSubclassOf<AActor> ActorToSpawn;
+	TSubclassOf<AWeaponActorBase> ActorToSpawn;
 
 	UPROPERTY(EditAnywhere, Category=Equipment)
 	FName AttachSocket;

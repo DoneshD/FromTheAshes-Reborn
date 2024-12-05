@@ -17,4 +17,5 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Config")
 	FRuntimeFloatCurve DistanceDamageFalloff;
+	
 };
