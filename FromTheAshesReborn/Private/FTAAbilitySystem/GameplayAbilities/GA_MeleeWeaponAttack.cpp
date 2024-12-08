@@ -27,33 +27,55 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	// OnTargetDataReadyCallbackDelegateHandle = ASC->AbilityTargetDataSetDelegate(CurrentSpecHandle, CurrentActivationInfo.GetActivationPredictionKey()).AddUObject(this, &ThisClass::OnTargetDataReadyCallback);
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
+	
+	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
+	{
+		//Using interface to call toggle function
+		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
+		if(WeaponActor)
+		{
+			WeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+			return;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
+		}
+	}
+	
 }
 
 void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
 
-void UGA_MeleeWeaponAttack::PerformLocalTargeting(TArray<FHitResult>& Array)
-{
-	// APawn* const AvatarPawn = Cast<APawn>(GetAvatarActorFromActorInfo());
-	
 	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
-	// if (AvatarPawn && WeaponData)
-	// {
-	// 	FMeleeWeaponTraceData TraceData;
-	// 	TraceData.WeaponData = WeaponData;
-	// 	WeaponData->GetSpawnedActors()
-	// 	// TraceData.StartTrace = 
-	//
-	// 	// InputData.EndAim = 
-	// 	
-	// 	// TraceBulletsInCartridge(TraceData, /*out*/ OutHits);
-	// }
-
-
+	
 	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
 	{
+		//Using interface to call toggle function
+		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
+		if(WeaponActor)
+		{
+			WeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
+			return;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
+		}
+	}
+}
+
+void UGA_MeleeWeaponAttack::PerformLocalTargeting(TArray<FHitResult>& OutHits)
+{
+	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
+	
+	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
+	{
+		//Using interface to call toggle function
 		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
 		if(WeaponActor)
 		{
@@ -63,7 +85,6 @@ void UGA_MeleeWeaponAttack::PerformLocalTargeting(TArray<FHitResult>& Array)
 		else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
-
 		}
 	}
 }
@@ -73,23 +94,24 @@ void UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting()
 {
 	check(CurrentActorInfo);
 	
-	TArray<FHitResult> FoundHits;
-	PerformLocalTargeting(/*out*/ FoundHits);
-
-	// Fill out the target data from the hit results
-	FGameplayAbilityTargetDataHandle TargetData;
-
-	// if (FoundHits.Num() > 0)
-	// {
-	// 	for (const FHitResult& FoundHit : FoundHits)
-	// 	{
-	// 		FGameplayAbilityTargetData_SingleTargetHit* NewTargetData = new FGameplayAbilityTargetData_SingleTargetHit();
-	// 		NewTargetData->HitResult = FoundHit;
-	//
-	// 		TargetData.Add(NewTargetData);
-	// 	}
-	// }
-	// OnTargetDataReadyCallback(TargetData, FGameplayTag());
+	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
+	
+	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
+	{
+		//Using interface to call toggle function
+		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
+		if(WeaponActor)
+		{
+			// WeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+			WeaponActor->DidItHitActorComponent->ToggleTraceCheck(true);
+			return;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
+		}
+	}
+	
 }
 
 void UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting()
@@ -100,7 +122,15 @@ void UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting()
 		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
 		if(WeaponActor)
 		{
+			TArray<FHitResult> DIHArray = WeaponActor->DidItHitActorComponent->HitArray;
+
+			for (FHitResult Element : DIHArray)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("HitResult Name: %s"), *Element.HitObjectHandle.GetName())
+			}
+			
 			WeaponActor->DidItHitActorComponent->ToggleTraceCheck(false);
+			WeaponActor->DidItHitActorComponent->ClearHitArray();
 			return;
 		}
 		else
@@ -111,7 +141,13 @@ void UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting()
 	}
 }
 
-void UGA_MeleeWeaponAttack::OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& InData, FGameplayTag ApplicationTag)
+void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("HIT"));
+
+	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
+	FGameplayAbilityTargetDataHandle TargetDataHandle;
+	TargetDataHandle.Add(TargetData);
+
+	OnMeleeWeaponTargetDataReady(TargetDataHandle);
 }

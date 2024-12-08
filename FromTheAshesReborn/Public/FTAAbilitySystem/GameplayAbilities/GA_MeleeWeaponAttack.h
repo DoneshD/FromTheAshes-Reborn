@@ -6,6 +6,7 @@
 #include "GA_MeleeWeaponAttack.generated.h"
 
 
+class UMeleeWeaponInstance;
 class UFTAAT_PlayMontageAndWaitForEvent;
 
 UCLASS()
@@ -30,7 +31,6 @@ public:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~End of UGameplayAbility interface
 
-protected:
 
 protected:
 	struct FMeleeWeaponTraceData
@@ -58,12 +58,12 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void EndMeleeWeaponTargeting();
-	
+
 	// Called when target data is ready
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnRangedWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
-
-	void OnTargetDataReadyCallback(const FGameplayAbilityTargetDataHandle& InData, FGameplayTag ApplicationTag);
-
+	void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
+	
+	UFUNCTION()
+	void OnHitAdded(FHitResult LastItem);
 
 };
