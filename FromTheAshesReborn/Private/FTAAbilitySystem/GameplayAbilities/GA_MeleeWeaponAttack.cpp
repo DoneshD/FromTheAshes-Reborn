@@ -36,7 +36,9 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
 		if(WeaponActor)
 		{
-			WeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+			MeleeWeaponActor = WeaponActor;
+			//Need to try to bind with a function that takes a ref
+			MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 			return;
 		}
 		else
@@ -50,43 +52,8 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
 	
-	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
-	{
-		//Using interface to call toggle function
-		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
-		if(WeaponActor)
-		{
-			WeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
-			return;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
-		}
-	}
-}
-
-void UGA_MeleeWeaponAttack::PerformLocalTargeting(TArray<FHitResult>& OutHits)
-{
-	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
-	
-	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
-	{
-		//Using interface to call toggle function
-		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
-		if(WeaponActor)
-		{
-			WeaponActor->DidItHitActorComponent->ToggleTraceCheck(true);
-			return;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
-		}
-	}
+	MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
 }
 
 
@@ -94,57 +61,17 @@ void UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting()
 {
 	check(CurrentActorInfo);
 	
-	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
-	
-	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
-	{
-		//Using interface to call toggle function
-		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
-		if(WeaponActor)
-		{
-			// WeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
-			WeaponActor->DidItHitActorComponent->ToggleTraceCheck(true);
-			return;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
-		}
-	}
-	
+	MeleeWeaponActor->DidItHitActorComponent->ToggleTraceCheck(true);
 }
 
 void UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting()
 {
-	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
-	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
-	{
-		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
-		if(WeaponActor)
-		{
-			TArray<FHitResult> DIHArray = WeaponActor->DidItHitActorComponent->HitArray;
-
-			for (FHitResult Element : DIHArray)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("HitResult Name: %s"), *Element.HitObjectHandle.GetName())
-			}
-			
-			WeaponActor->DidItHitActorComponent->ToggleTraceCheck(false);
-			WeaponActor->DidItHitActorComponent->ClearHitArray();
-			return;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
-
-		}
-	}
+	MeleeWeaponActor->DidItHitActorComponent->ToggleTraceCheck(false);
+	MeleeWeaponActor->DidItHitActorComponent->ClearHitArray();
 }
 
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 {
-	UE_LOG(LogTemp, Warning, TEXT("HIT"));
-
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
 	TargetDataHandle.Add(TargetData);

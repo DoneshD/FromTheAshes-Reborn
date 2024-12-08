@@ -6,6 +6,7 @@
 #include "GA_MeleeWeaponAttack.generated.h"
 
 
+class AWeaponActorBase;
 class UMeleeWeaponInstance;
 class UFTAAT_PlayMontageAndWaitForEvent;
 
@@ -17,6 +18,8 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 protected:
 	UPROPERTY()
 	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> Task;
+
+	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
 public:
 
