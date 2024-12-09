@@ -11,6 +11,12 @@ FFTAGameplayEffectContext* FFTAGameplayEffectContext::ExtractEffectContext(struc
 	return nullptr;
 }
 
+void FFTAGameplayEffectContext::SetAbilitySource(const IFTAAbilitySourceInterface* InObject, float InSourceLevel)
+{
+	AbilitySourceObject = MakeWeakObjectPtr(Cast<const UObject>(InObject));
+	//SourceLevel = InSourceLevel;
+}
+
 // FTAGameplayEffectContext::FTAGameplayEffectContext()
 // {
 // }

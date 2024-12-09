@@ -2,7 +2,9 @@
 #include "AbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
+#include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
 
@@ -181,7 +183,27 @@ void UFTAGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, con
 
 FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const
 {
-	return Super::MakeEffectContext(Handle, ActorInfo);
+	FGameplayEffectContextHandle ContextHandle = Super::MakeEffectContext(Handle, ActorInfo);
+
+	FFTAGameplayEffectContext* EffectContext = FFTAGameplayEffectContext::ExtractEffectContext(ContextHandle);
+	check(EffectContext);
+
+	check(ActorInfo);
+
+	AActor* EffectCauser = nullptr;
+	const IFTAAbilitySourceInterface* AbilitySource = nullptr;
+	float SourceLevel = 0.0f;
+	GetAbilitySource(Handle, ActorInfo, /*out*/ SourceLevel, /*out*/ AbilitySource, /*out*/ EffectCauser);
+
+	UObject* SourceObject = GetSourceObject(Handle, ActorInfo);
+
+	AActor* Instigator = ActorInfo ? ActorInfo->OwnerActor.Get() : nullptr;
+
+	EffectContext->SetAbilitySource(AbilitySource, SourceLevel);
+	EffectContext->AddInstigator(Instigator, EffectCauser);
+	EffectContext->AddSourceObject(SourceObject);
+
+	return ContextHandle;
 }
 
 void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const
@@ -192,4 +214,18 @@ void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSp
 bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	return Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, SourceTags, TargetTags, OptionalRelevantTags);
+}
+
+void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const
+{
+	OutSourceLevel = 0.0f;
+	OutAbilitySource = nullptr;
+	OutEffectCauser = nullptr;
+
+	OutEffectCauser = ActorInfo->AvatarActor.Get();
+
+	// If we were added by something that's an ability info source, use it
+	UObject* SourceObject = GetSourceObject(Handle, ActorInfo);
+
+	OutAbilitySource = Cast<IFTAAbilitySourceInterface>(SourceObject);
 }
