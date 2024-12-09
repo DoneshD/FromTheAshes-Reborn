@@ -54,8 +54,6 @@ protected:
 		}
 	};
 	
-	void PerformLocalTargeting(TArray<FHitResult>& Array);
-	
 	UFUNCTION(BlueprintCallable)
 	void StartMeleeWeaponTargeting();
 
