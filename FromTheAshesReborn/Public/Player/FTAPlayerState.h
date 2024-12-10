@@ -21,8 +21,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerState|ASComponent")
 	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "PlayerState|AttributeSet")
-	TObjectPtr<UFTAAttributeSet> AttributeSet;
+	// UPROPERTY(VisibleAnywhere, Category = "PlayerState|AttributeSet")
+	// TObjectPtr<UFTAAttributeSet> AttributeSet;
 
 	UFUNCTION()
 	void AddAbilitiesToPlayerASC();

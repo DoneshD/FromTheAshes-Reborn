@@ -27,7 +27,6 @@ struct FFTAGameplayEffectContext : public FGameplayEffectContext
 
 	virtual UScriptStruct* GetScriptStruct() const override
 	{
-		UE_LOG(LogTemp, Error, TEXT("???"));
 		return FFTAGameplayEffectContext::StaticStruct();
 	}
 
@@ -36,10 +35,3 @@ protected:
 	UPROPERTY()
 	TWeakObjectPtr<const UObject> AbilitySourceObject;
 };
-
-// class FROMTHEASHESREBORN_API FTAGameplayEffectContext
-// {
-// public:
-// 	FTAGameplayEffectContext();
-// 	~FTAGameplayEffectContext();
-// };

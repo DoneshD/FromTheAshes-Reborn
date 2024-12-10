@@ -4,16 +4,7 @@
 FFTAGameplayEffectContext* FFTAGameplayEffectContext::ExtractEffectContext(struct FGameplayEffectContextHandle Handle)
 {
 	FGameplayEffectContext* BaseEffectContext = Handle.Get();
-
-	if(!BaseEffectContext)
-	{
-		UE_LOG(LogTemp, Error, TEXT("WTF"));
-	}
-
-	if(!BaseEffectContext->GetScriptStruct())
-	{
-		UE_LOG(LogTemp, Error, TEXT("ERROR"));
-	}
+	
 	if((BaseEffectContext != nullptr) && BaseEffectContext->GetScriptStruct())
 	{
 		return (FFTAGameplayEffectContext*)BaseEffectContext;
@@ -30,11 +21,3 @@ const IFTAAbilitySourceInterface* FFTAGameplayEffectContext::GetAbilitySource() 
 {
 	return Cast<IFTAAbilitySourceInterface>(AbilitySourceObject.Get());
 }
-
-// FTAGameplayEffectContext::FTAGameplayEffectContext()
-// {
-// }
-//
-// FTAGameplayEffectContext::~FTAGameplayEffectContext()
-// {
-// }
