@@ -11,6 +11,12 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName) 
 
+
+class UFTAAbilitySystemComponent;
+DECLARE_MULTICAST_DELEGATE_FourParams(FLyraAttributeEvent, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/,
+                                      const FGameplayEffectSpec& /*EffectSpec*/, float /*EffectMagnitude*/);
+
+
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAAttributeSet : public UAttributeSet
 {
@@ -18,13 +24,6 @@ class FROMTHEASHESREBORN_API UFTAAttributeSet : public UAttributeSet
 
 public:
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Ability System | Attributes")
-	FGameplayAttributeData CurrentHealth;
-	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, CurrentHealth);
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability System | Attributes")
-	FGameplayAttributeData MaxHealth;
-	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, MaxHealth);
 
 	UPROPERTY(BlueprintReadOnly, Category = "Ability System | Attributes")
 	FGameplayAttributeData MoveSpeed;
@@ -37,6 +36,8 @@ public:
 protected:
 	
 	UFTAAttributeSet();
+
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent();
 
 	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
 	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;

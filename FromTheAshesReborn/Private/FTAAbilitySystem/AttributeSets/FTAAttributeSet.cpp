@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "GameplayEffectExtension.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 
 UFTAAttributeSet::UFTAAttributeSet()
@@ -10,6 +11,10 @@ UFTAAttributeSet::UFTAAttributeSet()
 	InitBaseDamage(10.0f);
 	InitMoveSpeed(600.0f);
 
+}
+UFTAAbilitySystemComponent* UFTAAttributeSet::GetFTAAbilitySystemComponent()
+{
+	return Cast<UFTAAbilitySystemComponent>(GetOwningAbilitySystemComponent());
 }
 
 void UFTAAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
