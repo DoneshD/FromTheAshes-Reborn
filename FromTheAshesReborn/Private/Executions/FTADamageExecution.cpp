@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include "Executions/FTADamageExecution.h"
+
+#include "FTAAbilitySystem/AttributeSets/DamageAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
+#include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 
 struct FDamageStatics
@@ -9,7 +12,7 @@ struct FDamageStatics
 
 	FDamageStatics()
 	{
-		BaseDamageDef = FGameplayEffectAttributeCaptureDefinition(UFTAAttributeSet::GetBaseDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+		BaseDamageDef = FGameplayEffectAttributeCaptureDefinition(UDamageAttributeSet::GetBaseDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
 };
 
@@ -25,7 +28,7 @@ struct FHealthStatics
 
 	FHealthStatics()
 	{
-		HealthDef = FGameplayEffectAttributeCaptureDefinition(UFTAAttributeSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+		HealthDef = FGameplayEffectAttributeCaptureDefinition(UHealthAttributeSet::GetCurrentHealthAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
 };
 
@@ -68,6 +71,6 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	// {
 		UE_LOG(LogTemp, Warning, TEXT("OutExecutionOutput"));
 		// Apply a damage modifier, this gets turned into - health on the target
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UFTAAttributeSet::GetCurrentHealthAttribute(), EGameplayModOp::Additive, -BaseDamage));
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UHealthAttributeSet::GetCurrentHealthAttribute(), EGameplayModOp::Additive, -BaseDamage));
 	// }
 }

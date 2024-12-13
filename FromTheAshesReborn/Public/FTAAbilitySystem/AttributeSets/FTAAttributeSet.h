@@ -21,27 +21,11 @@ UCLASS()
 class FROMTHEASHESREBORN_API UFTAAttributeSet : public UAttributeSet
 {
 	GENERATED_BODY()
-
+	
 public:
-	
-
-	UPROPERTY(BlueprintReadOnly, Category = "Ability System | Attributes")
-	FGameplayAttributeData MoveSpeed;
-	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, MoveSpeed);
-	
-	UPROPERTY(BlueprintReadOnly, Category = "Ability System | Attributes")
-	FGameplayAttributeData BaseDamage;
-	ATTRIBUTE_ACCESSORS(UFTAAttributeSet, BaseDamage);
-	
-protected:
 	
 	UFTAAttributeSet();
 
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent();
-
-	virtual void PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue) override;
-	virtual void PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data) override;
-
-	void AdjustAttributeForMaxChange(FGameplayAttributeData& AffectedAttribute, const FGameplayAttributeData& MaxAttribute, float NewMaxValue, const FGameplayAttribute& AffectedAttributeProperty);
 	
 };
