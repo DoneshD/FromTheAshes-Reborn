@@ -1,6 +1,6 @@
 ﻿#include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
-
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "GameplayEffectExtension.h"
 
 UHealthAttributeSet::UHealthAttributeSet()
 	: CurrentHealth(100.0f)
@@ -46,7 +46,39 @@ void UHealthAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCall
 {
 	Super::PostGameplayEffectExecute(Data);
 
+	float MinimumHealth = 0.0f;
 	
+	if(Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+	{
+		if(Data.EvaluatedData.Magnitude > 0.0f)
+		{
+			SetCurrentHealth(FMath::Clamp(GetCurrentHealth() - GetIncomingDamage(), MinimumHealth, GetMaxHealth()));
+			SetIncomingDamage(0.0f);
+		}
+	}
+	else if (Data.EvaluatedData.Attribute == GetIncomingHealAttribute())
+	{
+		SetCurrentHealth(FMath::Clamp(GetCurrentHealth() + GetIncomingHeal(), MinimumHealth, GetMaxHealth()));
+		SetIncomingHeal(0.0f);
+	}
+	else if (Data.EvaluatedData.Attribute == GetCurrentHealthAttribute())
+	{
+		SetCurrentHealth(FMath::Clamp(GetCurrentHealth(), MinimumHealth, GetMaxHealth()));
+	}
+	
+	if((GetCurrentHealth() <= 0.0) && !bOutOfHealth)
+	{
+		if(OnOutOfHealth.IsBound())
+		{
+			const FGameplayEffectContextHandle EffectContext = Data.EffectSpec.GetEffectContext();
+			AActor* Instigator = EffectContext.GetOriginalInstigator();
+			AActor* Causer = EffectContext.GetEffectCauser();
+
+			OnOutOfHealth.Broadcast(Instigator, Causer, Data.EffectSpec, Data.EvaluatedData.Magnitude);
+		}
+	}
+
+	bOutOfHealth = GetCurrentHealth() <= 0.0f;
 }
 
 void UHealthAttributeSet::PreAttributeBaseChange(const FGameplayAttribute& Attribute, float& NewValue) const

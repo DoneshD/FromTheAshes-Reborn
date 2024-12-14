@@ -71,6 +71,6 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	// {
 		UE_LOG(LogTemp, Warning, TEXT("OutExecutionOutput"));
 		// Apply a damage modifier, this gets turned into - health on the target
-		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UHealthAttributeSet::GetCurrentHealthAttribute(), EGameplayModOp::Additive, -BaseDamage));
+		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UHealthAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, BaseDamage));
 	// }
 }
