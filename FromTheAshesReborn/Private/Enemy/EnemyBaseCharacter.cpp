@@ -1,7 +1,8 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
-#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "DataAsset/FTACharacterData.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
-#include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
+#include "FTAAbilitySystem/AbilitySets/FTAAbilitySet.h"
+
 
 AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -13,6 +14,7 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	AddAbilities();
 }
 
 void AEnemyBaseCharacter::Tick(float DeltaTime)
@@ -25,4 +27,14 @@ void AEnemyBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+void AEnemyBaseCharacter::AddAbilities()
+{
+	for (const UFTAAbilitySet* AbilitySet : FTACharacterData->AbilitySets)
+	{
+		if (AbilitySet)
+		{
+			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
+		}
+	}
+}
 
