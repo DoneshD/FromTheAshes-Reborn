@@ -1,14 +1,8 @@
 ﻿#include "Weapons/EquipmentManagerComponent.h"
-
-#include "AbilitySystemGlobals.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
-#include "Player/FTAPlayerState.h"
 #include "Weapon/WeaponDefinition.h"
 #include "Weapon/WeaponInstance.h"
-#include "Weapon/WeaponInstance.h"
-#include "Weapon/WeaponDefinition.h"
 
 
 UEquipmentManagerComponent::UEquipmentManagerComponent()
@@ -32,12 +26,12 @@ void UEquipmentManagerComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 
 
-FString FFTAAppliedEquipmentEntry::GetDebugString() const
+FString FFTAAppliedEquipmentItem::GetDebugString() const
 {
 	return FString::Printf(TEXT("%s of %s"), *GetNameSafe(Instance), *GetNameSafe(EquipmentDefinition.Get()));
 }
 
-UWeaponInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UWeaponDefinition> EquipmentDefinition)
+UWeaponInstance* UEquipmentManagerComponent::AddEquipmentItem(TSubclassOf<UWeaponDefinition> EquipmentDefinition)
 {
 	UWeaponInstance* Result = nullptr;
 
@@ -53,14 +47,13 @@ UWeaponInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UWeaponDefinit
 		InstanceType = UWeaponInstance::StaticClass();
 	}
 	
-	FFTAAppliedEquipmentEntry& NewEntry = Entries.AddDefaulted_GetRef();
+	FFTAAppliedEquipmentItem& NewEntry = Entries.AddDefaulted_GetRef();
 	NewEntry.EquipmentDefinition = EquipmentDefinition;
 	NewEntry.Instance = NewObject<UWeaponInstance>(GetOwner(), InstanceType);
 	Result = NewEntry.Instance;
 
 	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{
-
 		for (TObjectPtr<const UFTAAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsToGrant)
 		{
 			if (AbilitySet)
@@ -79,11 +72,11 @@ UWeaponInstance* UEquipmentManagerComponent::AddEntry(TSubclassOf<UWeaponDefinit
 	return Result;
 }
 
-void UEquipmentManagerComponent::RemoveEntry(UWeaponInstance* Instance)
+void UEquipmentManagerComponent::RemoveEquipmentItem(UWeaponInstance* Instance)
 {
 	for (auto EntryIt = Entries.CreateIterator(); EntryIt; ++EntryIt)
 	{
-		FFTAAppliedEquipmentEntry& Entry = *EntryIt;
+		FFTAAppliedEquipmentItem& Entry = *EntryIt;
 		if (Entry.Instance == Instance)
 		{
 			if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())

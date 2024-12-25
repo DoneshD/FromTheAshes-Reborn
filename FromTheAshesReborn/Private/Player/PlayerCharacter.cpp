@@ -74,8 +74,8 @@ void APlayerCharacter::InitAbilitySystemComponent()
 		return;
 	}
 	
-	AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
-	AbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
+	FTAAbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
+	FTAAbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
 	
 }
 

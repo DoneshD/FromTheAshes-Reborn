@@ -23,9 +23,9 @@ public:
 
 	// Ability sets to grant to this pawn's ability system.
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Abilities")
-	TArray<TObjectPtr<UFTAAbilitySet>> AbilitySets;
+	TArray<TObjectPtr<UFTAAbilitySet>> CharacterAbilitySets;
 
 	// What mapping of ability tags to use for actions taking by this pawn
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Abilities")
-	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
+	TObjectPtr<UFTAAbilityTagRelationshipMapping> CharacterTagRelationshipMapping;
 };

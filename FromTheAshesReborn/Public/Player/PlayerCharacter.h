@@ -36,7 +36,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseLookUpRate;
-	
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	class USpringArmComponent* SpringArmComp;

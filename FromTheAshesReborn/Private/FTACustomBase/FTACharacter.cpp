@@ -3,6 +3,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "Components/CapsuleComponent.h"
+#include "DataAsset/FTACharacterData.h"
 #include "Weapons/EquipmentManagerComponent.h"
 
 AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
@@ -15,7 +16,7 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	bAlwaysRelevant = true;
 
-	AbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	FTAAbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	
 	EquipmentManagerComponent = CreateDefaultSubobject<UEquipmentManagerComponent>("EquipmentManagerComponent");
 	this->AddOwnedComponent(EquipmentManagerComponent);
@@ -25,7 +26,8 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	AbilitySystemComponent->InitAbilityActorInfo(this, this);
+	FTAAbilitySystemComponent->InitAbilityActorInfo(this, this);
+	AddCharacterBaseAbilities();
 }
 
 
@@ -67,5 +69,16 @@ bool AFTACharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagC
 		return FTA_ASC->HasAnyMatchingGameplayTags(TagContainer);
 	}
 	return false;
+}
+
+void AFTACharacter::AddCharacterBaseAbilities()
+{
+	for (const UFTAAbilitySet* AbilitySet : CharacterAbilitySetData->CharacterAbilitySets)
+	{
+		if (AbilitySet)
+		{
+			AbilitySet->GiveToAbilitySystem(FTAAbilitySystemComponent, nullptr);
+		}
+	}
 }
 

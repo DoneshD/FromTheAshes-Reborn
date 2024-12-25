@@ -34,7 +34,6 @@ public:
 	FGameplayTag InputTag;
 };
 
-
 /*
  *	Data used by the ability set to grant gameplay effects.
  */

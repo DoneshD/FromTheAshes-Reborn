@@ -14,7 +14,6 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	AddAbilities();
 }
 
 void AEnemyBaseCharacter::Tick(float DeltaTime)
@@ -26,15 +25,3 @@ void AEnemyBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
-
-void AEnemyBaseCharacter::AddAbilities()
-{
-	for (const UFTAAbilitySet* AbilitySet : FTACharacterData->AbilitySets)
-	{
-		if (AbilitySet)
-		{
-			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
-		}
-	}
-}
-

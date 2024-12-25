@@ -184,9 +184,9 @@ void UFTAGameplayAbility::ApplyCost(const FGameplayAbilitySpecHandle Handle, con
 FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const
 {
 	FGameplayEffectContextHandle ContextHandle = Super::MakeEffectContext(Handle, ActorInfo);
-
+	
 	FFTAGameplayEffectContext* EffectContext = FFTAGameplayEffectContext::ExtractEffectContext(ContextHandle);
-
+	
 	check(EffectContext);
 	
 	check(ActorInfo);

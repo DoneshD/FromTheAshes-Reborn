@@ -37,19 +37,5 @@ void AFTAPlayerState::PostInitializeComponents()
 void AFTAPlayerState::BeginPlay()
 {
 	Super::BeginPlay();
-	AddAbilitiesToPlayerASC();
 
-}
-
-void AFTAPlayerState::AddAbilitiesToPlayerASC()
-{
-	APlayerCharacter* PC = Cast<APlayerCharacter>(GetPawn());
-
-	for (const UFTAAbilitySet* AbilitySet : PC->FTACharacterData->AbilitySets)
-	{
-		if (AbilitySet)
-		{
-			AbilitySet->GiveToAbilitySystem(AbilitySystemComponent, nullptr);
-		}
-	}
 }

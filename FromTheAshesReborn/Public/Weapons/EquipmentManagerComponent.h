@@ -12,11 +12,11 @@ class UFTAEquipmentInstance;
 class UFTAEquipmentDefinition;
 
 USTRUCT(BlueprintType)
-struct FFTAAppliedEquipmentEntry
+struct FFTAAppliedEquipmentItem
 {
 	GENERATED_BODY()
 
-	FFTAAppliedEquipmentEntry()
+	FFTAAppliedEquipmentItem()
 	{}
 
 	FString GetDebugString() const;
@@ -42,7 +42,7 @@ class FROMTHEASHESREBORN_API UEquipmentManagerComponent : public UActorComponent
 
 public:
 	UPROPERTY()
-	TArray<FFTAAppliedEquipmentEntry> Entries;
+	TArray<FFTAAppliedEquipmentItem> Entries;
 
 	UPROPERTY()
 	TObjectPtr<UActorComponent> OwnerComponent;
@@ -54,10 +54,10 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	UWeaponInstance* AddEntry(TSubclassOf<UWeaponDefinition> EquipmentDefinition);
+	UWeaponInstance* AddEquipmentItem(TSubclassOf<UWeaponDefinition> EquipmentDefinition);
 
 	UFUNCTION(BlueprintCallable)
-	void RemoveEntry(UWeaponInstance* Instance);
+	void RemoveEquipmentItem(UWeaponInstance* Instance);
 
 	UFTAAbilitySystemComponent* GetAbilitySystemComponent() const;
 };
