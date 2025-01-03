@@ -284,7 +284,7 @@ void AFTAPlayerController::PostProcessInput(const float DeltaTime, const bool bG
 	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	
 	AbilitySystemComponent->ProcessAbilityInput(DeltaTime, bGamePaused);
-	
+
 	Super::PostProcessInput(DeltaTime, bGamePaused);
 }
 
@@ -334,7 +334,6 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 
 void AFTAPlayerController::InputAbilityInputTagPressed(FGameplayTag InputTag)
 {
-	// TempAbilitySystemComponent->AbilityInputTagPressed(InputTag);
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
 	
 	if(!FTAPlayerState) { return; }
@@ -345,7 +344,6 @@ void AFTAPlayerController::InputAbilityInputTagPressed(FGameplayTag InputTag)
 
 void AFTAPlayerController::InputAbilityInputTagReleased(FGameplayTag InputTag)
 {
-	// TempAbilitySystemComponent->AbilityInputTagReleased(InputTag);
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
 	
 	if(!FTAPlayerState) { return; }

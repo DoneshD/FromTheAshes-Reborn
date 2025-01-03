@@ -133,6 +133,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 	// }
 	
 	// Clear all abilities in array not being pressed
+
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
 
@@ -202,6 +203,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 			}
 		}
 	}
+	
 	InputPressedSpecHandles.Reset();
 	InputReleasedSpecHandles.Reset();
 }
