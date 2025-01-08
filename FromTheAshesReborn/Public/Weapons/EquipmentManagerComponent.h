@@ -47,17 +47,22 @@ public:
 	UPROPERTY()
 	TObjectPtr<UActorComponent> OwnerComponent;
 
+	UWeaponInstance* CurrentlyEquippedWeaponInstance;
+
 public:
 	UEquipmentManagerComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
-
-	UFUNCTION(BlueprintCallable)
-	UWeaponInstance* AddEquipmentItem(TSubclassOf<UWeaponDefinition> EquipmentDefinition);
-
+	
 	UFUNCTION(BlueprintCallable)
 	void RemoveEquipmentItem(UWeaponInstance* Instance);
+	
+	UFUNCTION(BlueprintCallable)
+	UWeaponInstance* SetEquippedWeapon(TSubclassOf<UWeaponDefinition> EquipmentDefinition);
+
+	UFUNCTION(BlueprintCallable)
+	UWeaponInstance* GetEquippedWeaponInstance();
 
 	UFTAAbilitySystemComponent* GetAbilitySystemComponent() const;
 };

@@ -8,8 +8,23 @@ namespace FTAGameplayTags
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Look_Stick, "InputTag.Look.Stick", "Look Stick input.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Ability_Dash, "InputTag.Ability.Dash", "Dash input.");
 
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Ability_LightAttack, "InputTag.Ability.LightAttack", "Light Attack input.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(InputTag_Ability_HeavyAttack, "InputTag.Ability.HeavyAttack", "Heavy Attack input.");
+
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(AbilityTag_Weapon_Symmetry_Grounded_Light_Attack1, "AbilityTag.Weapon.Symmetry.Grounded.Light.Attack1", "Symmetry Grounded Light Attack1.");
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon_Symmetry_Grounded_Light_Attack2, "AbilityTag.Weapon.Symmetry.Grounded.Light.Attack2", "Symmetry Grounded Light Attack2.");
+
+	//Weapon attribute
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(AbilityTag_Weapon_Calamity_Grounded_Light_Attack1, "AbilityTag.Weapon.Calamity.Grounded.Light.Attack1", "Calamity Grounded Light Attack1.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon_Calamity_Grounded_Light_Attack2, "AbilityTag.Weapon.Calamity.Grounded.Light.Attack2", "Calamity Grounded Light Attack2.");
+
+	//Aerial attribute
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(AbilityTag_Weapon_Symmetry_Aerial_Light_Attack1, "AbilityTag.Weapon.Symmetry.Aerial.Light.Attack1", "Symmetry Aerial Light Attack1.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon_Symmetry_Aerial_Light_Attack2, "AbilityTag.Weapon.Symmetry.Aerial.Light.Attack2", "Symmetry Aerial Light Attack2.");
+
+	//Heavy attribute
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(AbilityTag_Weapon_Symmetry_Grounded_Heavy_Attack1, "AbilityTag.Weapon.Symmetry.Grounded.Heavy.Attack1", "Symmetry Grounded Heavy Attack1.");
+	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Weapon_Symmetry_Grounded_Heavy_Attack2, "AbilityTag.Weapon.Symmetry.Grounded.Heavy.Attack2", "Symmetry Grounded Heavy Attack2.");
 
 	UE_DEFINE_GAMEPLAY_TAG_COMMENT(Ability_Movement_Grounded_Dash, "AbilityTag.Movement.Grounded.Dash", "Grounded Dash");
 

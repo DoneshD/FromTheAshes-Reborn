@@ -31,47 +31,6 @@ FString FFTAAppliedEquipmentItem::GetDebugString() const
 	return FString::Printf(TEXT("%s of %s"), *GetNameSafe(Instance), *GetNameSafe(EquipmentDefinition.Get()));
 }
 
-UWeaponInstance* UEquipmentManagerComponent::AddEquipmentItem(TSubclassOf<UWeaponDefinition> EquipmentDefinition)
-{
-	UWeaponInstance* Result = nullptr;
-
-	check(EquipmentDefinition != nullptr);
-	// check(OwnerComponent);
-	// check(OwnerComponent->GetOwner()->HasAuthority());
-	
-	const UWeaponDefinition* EquipmentCDO = GetDefault<UWeaponDefinition>(EquipmentDefinition);
-
-	TSubclassOf<UWeaponInstance> InstanceType = EquipmentCDO->InstanceType;
-	if (InstanceType == nullptr)
-	{
-		InstanceType = UWeaponInstance::StaticClass();
-	}
-	
-	FFTAAppliedEquipmentItem& NewEntry = Entries.AddDefaulted_GetRef();
-	NewEntry.EquipmentDefinition = EquipmentDefinition;
-	NewEntry.Instance = NewObject<UWeaponInstance>(GetOwner(), InstanceType);
-	Result = NewEntry.Instance;
-
-	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
-	{
-		for (TObjectPtr<const UFTAAbilitySet> AbilitySet : EquipmentCDO->AbilitySetsToGrant)
-		{
-			if (AbilitySet)
-			{
-				AbilitySet->GiveToAbilitySystem(ASC, /*inout*/ &NewEntry.GrantedHandles, Result);
-			}
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("FFTAEquipmentList::AddEntry - ASC IS NULL"));
-	}
-
-	Result->SpawnEquipmentActors(EquipmentCDO->ActorsToSpawn);
-	
-	return Result;
-}
-
 void UEquipmentManagerComponent::RemoveEquipmentItem(UWeaponInstance* Instance)
 {
 	for (auto EntryIt = Entries.CreateIterator(); EntryIt; ++EntryIt)
@@ -88,6 +47,64 @@ void UEquipmentManagerComponent::RemoveEquipmentItem(UWeaponInstance* Instance)
 			EntryIt.RemoveCurrent();
 		}
 	}
+}
+
+UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeaponDefinition> WeaponDefinition)
+{
+	if(CurrentlyEquippedWeaponInstance)
+	{
+		RemoveEquipmentItem(CurrentlyEquippedWeaponInstance);
+	}
+	
+	UWeaponInstance* Result = nullptr;
+
+	check(WeaponDefinition != nullptr);
+	// check(OwnerComponent);
+	// check(OwnerComponent->GetOwner()->HasAuthority());
+	
+	const UWeaponDefinition* WeaponCDO = GetDefault<UWeaponDefinition>(WeaponDefinition);
+
+	TSubclassOf<UWeaponInstance> InstanceType = WeaponCDO->InstanceType;
+	if (InstanceType == nullptr)
+	{
+		InstanceType = UWeaponInstance::StaticClass();
+	}
+	
+	FFTAAppliedEquipmentItem& NewEntry = Entries.AddDefaulted_GetRef();
+	NewEntry.EquipmentDefinition = WeaponDefinition;
+	NewEntry.Instance = NewObject<UWeaponInstance>(GetOwner(), InstanceType);
+	Result = NewEntry.Instance;
+
+	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
+	{
+		for (TObjectPtr<const UFTAAbilitySet> AbilitySet : WeaponCDO->AbilitySetsToGrant)
+		{
+			if (AbilitySet)
+			{
+				AbilitySet->GiveToAbilitySystem(ASC, /*inout*/ &NewEntry.GrantedHandles, Result);
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("FFTAEquipmentList::AddEntry - ASC IS NULL"));
+	}
+
+	Result->SpawnEquipmentActors(WeaponCDO->ActorsToSpawn);
+
+	CurrentlyEquippedWeaponInstance = Result;
+	
+	return Result;
+}
+
+UWeaponInstance* UEquipmentManagerComponent::GetEquippedWeaponInstance()
+{
+	if(CurrentlyEquippedWeaponInstance)
+	{
+		return CurrentlyEquippedWeaponInstance;
+	}
+	UE_LOG(LogTemp, Error, TEXT("No currently equipped instance"));
+	return nullptr;
 }
 
 
