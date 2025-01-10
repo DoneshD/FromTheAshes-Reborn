@@ -126,6 +126,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 	{
 		return false;
 	}
+
 	return true;
 	
 }
