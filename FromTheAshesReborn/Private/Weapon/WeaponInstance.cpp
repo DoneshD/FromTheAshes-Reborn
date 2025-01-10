@@ -1,6 +1,5 @@
 ﻿#include "Weapon/WeaponInstance.h"
 #include "GameFramework/Character.h"
-#include "Weapon/WeaponActorBase.h"
 #include "Weapon/WeaponDefinition.h"
 
 UWeaponInstance::UWeaponInstance(const FObjectInitializer& ObjectInitializer)
@@ -49,6 +48,13 @@ void UWeaponInstance::SpawnEquipmentActors(const TArray<FEquipmentActorToSpawn>&
 
 void UWeaponInstance::DestroyEquipmentActors()
 {
+	for(AActor* Actor : SpawnedActors)
+	{
+		if(Actor)
+		{
+			Actor->Destroy();
+		}
+	}
 }
 
 void UWeaponInstance::OnEquipped()
