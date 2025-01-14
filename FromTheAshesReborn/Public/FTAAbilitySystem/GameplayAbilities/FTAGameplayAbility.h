@@ -72,8 +72,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
 	EFTAAbilityActivationGroup ActivationGroup;
 
-	// UPROPERTY(EditDefaultsOnly, Instanced, Category = Costs)
-	// TArray<TObjectPtr<UFTAAbilityCost>> AdditionalCosts;
 
 //functions
 public:
@@ -100,6 +98,8 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Ability")
 	virtual bool IsInputPressed() const;
+
+	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void SetCanBeCanceled(bool bCanBeCanceled) override;
