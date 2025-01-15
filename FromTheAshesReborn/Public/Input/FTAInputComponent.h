@@ -48,7 +48,6 @@ public:
 	template <class UserClass, typename PressedFuncType, typename ReleasedFuncType>
 	void UFTAInputComponent::BindAbilityAction(const UFTAInputConfig* InputConfig, UserClass* Object, PressedFuncType PressedFunc, ReleasedFuncType ReleasedFunc, TArray<uint32>& BindHandles)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Here1"))
 		check(InputConfig);
 
 		//Maybe use UFTAInputConfig::FindAbilityInputActionForTag(const FGameplayTag& InputTag) const;
@@ -63,7 +62,7 @@ public:
 				}
 				if(ReleasedFunc)
 				{
-					BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Completed, Object, PressedFunc, Action.InputTag).GetHandle());
+					BindHandles.Add(BindAction(Action.InputAction, ETriggerEvent::Completed, Object, ReleasedFunc, Action.InputTag).GetHandle());
 				}
 			}
 		}

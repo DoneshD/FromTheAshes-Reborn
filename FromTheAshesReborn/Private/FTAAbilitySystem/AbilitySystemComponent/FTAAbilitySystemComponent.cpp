@@ -139,7 +139,7 @@ void UFTAAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 void UFTAAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputReleased(Spec);
-	
+
 	// We don't support UGameplayAbility::bReplicateInputDirectly.
 	// Use replicated events instead so that the WaitInputRelease ability task works.
 	if (Spec.IsActive())
@@ -170,6 +170,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 			if(AbilitySpec->Ability && AbilitySpec->IsActive())
 			{
 				const UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec->Ability);
+				
 				if(FTAAbilityCDO->GetActivationPolicy() == EFTAAbilityActivationPolicy::WhileInputActive)
 				{
 					AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
@@ -200,7 +201,6 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 					{
 						AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 					}
-					
 				}
 			}
 		}

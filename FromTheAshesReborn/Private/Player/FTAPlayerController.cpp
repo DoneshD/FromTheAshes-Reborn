@@ -352,7 +352,6 @@ void AFTAPlayerController::InputAbilityInputTagReleased(FGameplayTag InputTag)
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
 	
 	if(!FTAPlayerState) { return; }
-	
 	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->AbilityInputTagReleased(InputTag);
 }
