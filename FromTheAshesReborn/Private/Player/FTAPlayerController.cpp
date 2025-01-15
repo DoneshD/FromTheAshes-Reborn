@@ -202,6 +202,7 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 
 void AFTAPlayerController::HandleJumpActionPressed(const FInputActionValue& InputActionValue)
 {
+	UE_LOG(LogTemp, Error, TEXT("NAHHHHH"))
 	SendLocalInputToASC(true, EAbilityInputID::Jump);
 }
 
@@ -212,20 +213,24 @@ void AFTAPlayerController::HandleJumpActionReleased(const FInputActionValue& Inp
 
 void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
 {
-	if(IsInInputQueueWindow)
-	{
-		
-		AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-	}
-	else
-	{
-		SendLocalInputToASC(true, EAbilityInputID::LightAttack);
-	}
+	UE_LOG(LogTemp, Warning, TEXT("IGNORE 1"))
+	// if(IsInInputQueueWindow)
+	// {
+	// 	
+	// 	AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
+	// }
+	// else
+	// {
+	// 	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
+	// }
 }
 
 void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
 {
-	SendLocalInputToASC(false, EAbilityInputID::LightAttack);
+	// SendLocalInputToASC(false, EAbilityInputID::LightAttack);
+
+	UE_LOG(LogTemp, Warning, TEXT("IGNORE 1"))
+
 }
 
 void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)

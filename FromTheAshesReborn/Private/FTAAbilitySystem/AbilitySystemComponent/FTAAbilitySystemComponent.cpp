@@ -37,6 +37,7 @@ void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc 
 		{
 			continue;
 		}
+		
 		//Getting the Class Default Object of GA
 		UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec.Ability);
 
@@ -127,9 +128,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 void UFTAAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputPressed(Spec);
-
-	// We don't support UGameplayAbility::bReplicateInputDirectly.
-	// Use replicated events instead so that the WaitInputPress ability task works.
+	
 	if (Spec.IsActive())
 	{
 		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
@@ -140,7 +139,7 @@ void UFTAAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 void UFTAAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& Spec)
 {
 	Super::AbilitySpecInputReleased(Spec);
-
+	
 	// We don't support UGameplayAbility::bReplicateInputDirectly.
 	// Use replicated events instead so that the WaitInputRelease ability task works.
 	if (Spec.IsActive())
@@ -175,7 +174,6 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 				{
 					AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 				}
-				
 			}
 		}
 	}
@@ -353,47 +351,11 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 		InputConfirm();
 		return;
 	}
-
+	
 	if (IsGenericCancelInputBound(InputID))
 	{
 		InputCancel();
 		return;
-	}
-
-	// ---------------------------------------------------------
-
-	ABILITYLIST_SCOPE_LOCK();
-	for (FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
-	{
-		if (Spec.InputID == InputID)
-		{
-			if (Spec.Ability)
-			{
-				Spec.InputPressed = true;
-				
-				if (Spec.IsActive())
-				{
-					if (Spec.Ability->bReplicateInputDirectly && IsOwnerActorAuthoritative() == false)
-					{
-						ServerSetInputPressed(Spec.Handle);
-					}
-					AbilitySpecInputPressed(Spec);
-
-					// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
-					InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
-				}
-				else
-				{
-					UFTAGameplayAbility* GA = Cast<UFTAGameplayAbility>(Spec.Ability);
-					if (GA && GA->bActivateOnInput)
-					{
-						// Ability is not active, so try to activate it
-						TryActivateAbility(Spec.Handle);
-					}
-				}
-				
-			}
-		}
 	}
 }
 
