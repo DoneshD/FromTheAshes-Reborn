@@ -1,4 +1,4 @@
-﻿#include "Weapons/FTACosmeticAnimationTypes.h"
+﻿#include "Animation/FTACosmeticAnimationTypes.h"
 
 TSubclassOf<UAnimInstance> FFTAAnimLayerSelectionSet::SelectBestLayer(const FGameplayTagContainer& CosmeticTags) const
 {

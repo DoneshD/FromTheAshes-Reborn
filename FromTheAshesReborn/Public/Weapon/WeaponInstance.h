@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "Weapons/FTACosmeticAnimationTypes.h"
+#include "Animation/FTACosmeticAnimationTypes.h"
 #include "WeaponInstance.generated.h"
 
 class AWeaponActorBase;

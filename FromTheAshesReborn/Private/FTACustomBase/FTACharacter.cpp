@@ -4,7 +4,7 @@
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "Components/CapsuleComponent.h"
 #include "DataAsset/FTACharacterData.h"
-#include "Weapons/EquipmentManagerComponent.h"
+#include "Weapon/EquipmentManagerComponent.h"
 
 AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))

@@ -1,4 +1,4 @@
-﻿#include "Weapons/EquipmentManagerComponent.h"
+﻿#include "Weapon/EquipmentManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "Player/FTAPlayerController.h"
 #include "Weapon/WeaponDefinition.h"
