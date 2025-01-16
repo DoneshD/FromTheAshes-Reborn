@@ -94,8 +94,45 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
+	FGameplayAbilitySpec AbilityToActivate;
+
+	//Get the ability from the input tag
 	if (InputTag.IsValid())
 	{
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		{
+			if (AbilitySpec.Ability)
+			{
+				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+				{
+					AbilityToActivate = AbilitySpec;
+				}
+			}
+		}
+
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		{
+			//If there is input during an active ability, check if it can be cancel current and activate
+			if(AbilitySpec.IsActive())
+			{
+				if(AbilitySpec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("AbilityTag.CanBeCanceled")))
+				{
+					UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
+					UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(AbilityToActivate.Ability);
+					
+					if(InputedFTAAbility)
+					{
+						if(CurrentFTAAbility->QueueableAbilities.HasAny(InputedFTAAbility->AbilityTags))
+						{
+							CancelAbility(CurrentFTAAbility);
+							InputPressedSpecHandles.AddUnique(InputedFTAAbility->CurrentSpecHandle);
+							InputHeldSpecHandles.AddUnique(InputedFTAAbility->CurrentSpecHandle);
+							return;
+						}
+					}
+				}
+			}
+		}
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
 			if (AbilitySpec.Ability)
