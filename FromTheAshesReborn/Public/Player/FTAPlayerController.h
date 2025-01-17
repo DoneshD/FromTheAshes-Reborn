@@ -55,6 +55,9 @@ public:
 	void InputAbilityInputTagPressed(FGameplayTag InputTag);
 	void InputAbilityInputTagReleased(FGameplayTag InputTag);
 
+	UPROPERTY(EditAnywhere)
+	bool IsInInputQueueWindow = false;
+	
 protected:
 
 	//-----------------------------For debugging--------------------------//
@@ -69,19 +72,18 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<EAllowedInputs> CurrentAllowedInputs;
 
-	UPROPERTY(EditAnywhere)
-	bool IsInInputQueueWindow = false;
 
 	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManager;
+
+	// UFTAAbilitySystemComponent* ASComponent;
 	
 	UFUNCTION(BlueprintCallable)
-	void InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs);
+	void InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses);
 
 	UFUNCTION(BlueprintCallable)
-	void InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs);
+	void InputQueueUpdateAllowedInputsEnd();
 	
-	UGameplayAbility* GetAbilityForInput(EAllowedInputs InputType);
-	void ProcessAbilityComboData(UGameplayAbility* Ability);
+	void ProcessAbilityComboData(UFTAGameplayAbility* Ability);
 	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
 
 	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;

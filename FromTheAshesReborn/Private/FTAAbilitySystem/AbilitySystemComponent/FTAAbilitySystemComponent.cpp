@@ -6,6 +6,7 @@
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
+#include "Player/FTAPlayerController.h"
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -24,6 +25,19 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 	FGameplayAbilityActorInfo* ActorInfo = AbilityActorInfo.Get();
 	check(ActorInfo);
 	check(InOwnerActor);
+
+	if (InOwnerActor)
+	{
+		// Check if the owner is a pawn and get its controller
+		if (APawn* OwnerPawn = Cast<APawn>(InOwnerActor))
+		{
+			PlayerController =  Cast<AFTAPlayerController>(OwnerPawn->GetController());
+			if(!PlayerController)
+			{
+				UE_LOG(LogTemp, Error, TEXT("PlayerController is NULL"));
+			}
+		}
+	}
 
 	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
 }
@@ -92,55 +106,77 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 	};
 }
 
-void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
+void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag){
 {
-	FGameplayAbilitySpec AbilityToActivate;
-
-	//Get the ability from the input tag
-	if (InputTag.IsValid())
-	{
-		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
-		{
-			if (AbilitySpec.Ability)
-			{
-				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
-				{
-					AbilityToActivate = AbilitySpec;
-				}
-			}
-		}
+	FGameplayAbilitySpec TryToQueueAbilitySpec;
+	// Get the ability from the input tag
+	 if (InputTag.IsValid())
+	 {
+	 	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	 	{
+	 		if (AbilitySpec.Ability)
+	 		{
+	 			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+	 			{
+	 				TryToQueueAbilitySpec = AbilitySpec;
+	 				if (TryToQueueAbilitySpec.Ability)
+	 				{
+	 					// Print the name of the ability
+	 					FString AbilityName = TryToQueueAbilitySpec.Ability->GetName();
+	 					UE_LOG(LogTemp, Warning, TEXT("TryToQueueAbilitySpec Ability Name: %s"), *AbilityName);
+	 				}
+	 			}
+	 		}
+	 	}
+	 }
 
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
 			//If there is input during an active ability, check if it can be cancel current and activate
-			if(AbilitySpec.IsActive())
+			
+			if(AbilitySpec.IsActive() && PlayerController->IsInInputQueueWindow == true)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("HERE 1"));
+
 				if(AbilitySpec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("AbilityTag.CanBeCanceled")))
 				{
+					UE_LOG(LogTemp, Warning, TEXT("HERE 2"));
+
 					UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
-					UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(AbilityToActivate.Ability);
-					
+					UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(TryToQueueAbilitySpec.Ability);
+			
 					if(InputedFTAAbility)
 					{
-						if(CurrentFTAAbility->QueueableAbilities.HasAny(InputedFTAAbility->AbilityTags))
+						UE_LOG(LogTemp, Warning, TEXT("HERE 3"));
+
+						if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->IdentifierTag))
 						{
-							CancelAbility(CurrentFTAAbility);
-							InputPressedSpecHandles.AddUnique(InputedFTAAbility->CurrentSpecHandle);
-							InputHeldSpecHandles.AddUnique(InputedFTAAbility->CurrentSpecHandle);
+							UE_LOG(LogTemp, Warning, TEXT("HERE 4"));
+							QueuedAbilitySpec = TryToQueueAbilitySpec;
+							if (QueuedAbilitySpec.Ability)
+							{
+								// Print the name of the ability
+								FString AbilityName = QueuedAbilitySpec.Ability->GetName();
+								UE_LOG(LogTemp, Warning, TEXT("Queued Ability Name: %s"), *AbilityName);
+							}
 							return;
 						}
 					}
 				}
 			}
+			
 		}
-		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		if (InputTag.IsValid())
 		{
-			if (AbilitySpec.Ability)
+			for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 			{
-				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+				if (AbilitySpec.Ability)
 				{
-					InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
-					InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+					if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+					{
+						InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
+						InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
+					}
 				}
 			}
 		}

@@ -38,6 +38,8 @@ protected:
 	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 	void ComboWindowOpen(FGameplayTag ComboWindowTag);
 	void ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityToActivateClass);
+
+	void TESTNextAbility(UFTAGameplayAbility* AbilityToActivateClass);
 	
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
 

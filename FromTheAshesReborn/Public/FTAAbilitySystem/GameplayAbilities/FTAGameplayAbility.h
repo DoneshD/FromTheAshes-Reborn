@@ -100,7 +100,6 @@ public:
 	virtual bool IsInputPressed() const;
 
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
-
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void SetCanBeCanceled(bool bCanBeCanceled) override;
 	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
@@ -112,7 +111,6 @@ public:
 	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
 	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
-
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 
 public:
@@ -130,6 +128,13 @@ public:
 	bool bActivateOnInput;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTagContainer QueueableAbilities; 
+	FGameplayTagContainer QueueableAbilitiesTags;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	FGameplayTag ComboWindowTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	FGameplayTag IdentifierTag;
+
 	
 };

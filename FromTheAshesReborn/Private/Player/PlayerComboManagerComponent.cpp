@@ -100,12 +100,25 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
 
-	for (const FAbilityComboDataStruct& AbilityComboData : AbilityComboDataArray)
+	// for (const FAbilityComboDataStruct& AbilityComboData : AbilityComboDataArray)
+	// {
+	// 	if (PC->LastInputSavedTag.MatchesTag(AbilityComboData.InputSavedTag) && ComboWindowTag.MatchesTag(AbilityComboData.ComboWindowTag))
+	// 	{
+	// 		ProceedToNextAbility(AbilityComboData.AbilityComboClass);
+	// 	}
+	// }
+	//Casting in tick!!!!!
+	UFTAGameplayAbility* QueuedAbility = Cast<UFTAGameplayAbility>(ASComponent->QueuedAbilitySpec.Ability);
+	if(!QueuedAbility)
 	{
-		if (PC->LastInputSavedTag.MatchesTag(AbilityComboData.InputSavedTag) && ComboWindowTag.MatchesTag(AbilityComboData.ComboWindowTag))
-		{
-			ProceedToNextAbility(AbilityComboData.AbilityComboClass);
-		}
+		UE_LOG(LogTemp, Error, TEXT("QueuedAbility NULL"));
+		return;
+	}
+	
+	if(ComboWindowTag.MatchesTag(QueuedAbility->ComboWindowTag))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Success"));
+		ProceedToNextAbility(QueuedAbility->GetClass());
 	}
 }
 
@@ -113,8 +126,21 @@ void UPlayerComboManagerComponent::ProceedToNextAbility(TSubclassOf<UGameplayAbi
 {
 	PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 	ASComponent->CancelAllAbilities();
+	ASComponent->QueuedAbilitySpec = nullptr;
 	
 	bool bActivateAbility = ASComponent->TryActivateAbilityByClass(AbilityClass);
+	
+	if(!bActivateAbility)
+	{
+		UE_LOG(LogTemp, Error, TEXT("ProceedToNextAbility: Ability did not activate"));
+	}
+}
+
+void UPlayerComboManagerComponent::TESTNextAbility(UFTAGameplayAbility* AbilityToActivateClass)
+{
+	ASComponent->CancelAllAbilities();
+	
+	bool bActivateAbility = ASComponent->TryActivateAbility(AbilityToActivateClass->GetCurrentAbilitySpecHandle());
 	
 	if(!bActivateAbility)
 	{

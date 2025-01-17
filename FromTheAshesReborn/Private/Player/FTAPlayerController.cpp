@@ -6,58 +6,25 @@
 #include "TargetSystemComponent.h"
 #include "Player/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
-#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
 #include "Input/FTAInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameplayTagContainer.h"
 #include "GameplayTags/FTAGameplayTags.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
 
-void AFTAPlayerController::ProcessAbilityComboData(UGameplayAbility* Ability)
-{
-	UFTAGameplayAbility* FTAGameplayAbility = Cast<UFTAGameplayAbility>(Ability);
-	if (FTAGameplayAbility && PlayerComboManager)
-	{
-		PlayerComboManager->AbilityComboDataArray.Add(FTAGameplayAbility->AbilityComboDataStruct);
-		OnRegisterWindowTagEventDelegate.Broadcast(FTAGameplayAbility->AbilityComboDataStruct);
-	}
-}
-
-UGameplayAbility* AFTAPlayerController::GetAbilityForInput(EAllowedInputs InputType)
-{
-	for (FGameplayAbilitySpec& Spec : GetFTAAbilitySystemComponent()->GetActivatableAbilities())
-	{
-		switch (InputType)
-		{
-		case EAllowedInputs::LightAttack:
-			if (Spec.Ability->IsA(UGA_GroundedLightMeleeAttack::StaticClass()))
-			{
-				return Spec.Ability;
-			}
-			
-		case EAllowedInputs::HeavyAttack:
-			if (Spec.Ability->IsA(UGA_GroundedHeavyMeleeAttack::StaticClass()))
-			{
-				return Spec.Ability;
-			}
-			
-		case EAllowedInputs::Dash:
-			if (Spec.InputID == 6)
-				return Spec.Ability;
-			break;
-
-		default:
-			break;
-		}
-	}
-	return nullptr;
-}
-
 AFTAPlayerController::AFTAPlayerController(const FObjectInitializer& ObjectInitializer)
 {
 	
 }
+void AFTAPlayerController::ProcessAbilityComboData(UFTAGameplayAbility* Ability)
+{
+	if (Ability && PlayerComboManager)
+	{
+		PlayerComboManager->AbilityComboDataArray.Add(Ability->AbilityComboDataStruct);
+		OnRegisterWindowTagEventDelegate.Broadcast(Ability->AbilityComboDataStruct);
+	}
+}
+
 
 UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent() const
 {
@@ -67,26 +34,26 @@ UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent()
 	return FTAPlayerState->GetFTAAbilitySystemComponent();
 }
 
-void AFTAPlayerController::InputQueueUpdateAllowedInputsBegin(TArray<EAllowedInputs> AllowedInputs)
+void AFTAPlayerController::InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses)
 {
-	CurrentAllowedInputs = AllowedInputs;
 	IsInInputQueueWindow = true;
-
-	for (const EAllowedInputs& AllowedInputElement : AllowedInputs)
+	for (TSubclassOf<UFTAGameplayAbility> AbilityClass : QueueableAbilityClasses)
 	{
-		UGameplayAbility* Ability = GetAbilityForInput(AllowedInputElement);
-		if (!Ability) continue;
-		
-		ProcessAbilityComboData(Ability);
+		if (AbilityClass)
+		{
+			ProcessAbilityComboData(AbilityClass.GetDefaultObject());
+		}
 	}
 }
 
-void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd(TArray<EAllowedInputs> AllowedInputs)
+
+void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd()
 {
+	UE_LOG(LogTemp, Warning, TEXT("TEST LOL!!!"))
 	IsInInputQueueWindow = false;
 	CurrentAllowedInputs.Empty();
 	LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
-	AllowedInputs.Empty();
+	GetFTAAbilitySystemComponent()->QueuedAbilitySpec = nullptr;
 }
 
 void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag)

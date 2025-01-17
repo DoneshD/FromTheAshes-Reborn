@@ -36,6 +36,10 @@ public:
 	int32 ActivationGroupCounts[(uint8)EFTAAbilityActivationGroup::MAX];
 	
 	FReceivedDamageDelegate ReceivedDamage;
+
+	FGameplayAbilitySpec QueuedAbilitySpec;
+
+	AFTAPlayerController* PlayerController;
 	
 public:
 	
