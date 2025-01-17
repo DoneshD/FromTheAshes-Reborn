@@ -16,15 +16,6 @@ AFTAPlayerController::AFTAPlayerController(const FObjectInitializer& ObjectIniti
 {
 	
 }
-void AFTAPlayerController::ProcessAbilityComboData(UFTAGameplayAbility* Ability)
-{
-	if (Ability && PlayerComboManager)
-	{
-		PlayerComboManager->AbilityComboDataArray.Add(Ability->AbilityComboDataStruct);
-		OnRegisterWindowTagEventDelegate.Broadcast(Ability->ComboWindowTag);
-	}
-}
-
 
 UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent() const
 {
@@ -41,7 +32,10 @@ void AFTAPlayerController::InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAG
 	{
 		if (AbilityClass)
 		{
-			ProcessAbilityComboData(AbilityClass.GetDefaultObject());
+			if (AbilityClass.GetDefaultObject())
+			{
+				OnRegisterWindowTagEventDelegate.Broadcast(AbilityClass.GetDefaultObject()->ComboWindowTag);
+			}
 		}
 	}
 }

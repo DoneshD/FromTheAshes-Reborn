@@ -69,7 +69,6 @@ protected:
 
 	//-------------------------INPUT QUEUE------------------------------//
 	
-	
 	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManager;
 
 	UFUNCTION(BlueprintCallable)
@@ -78,10 +77,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void InputQueueUpdateAllowedInputsEnd();
 	
-	void ProcessAbilityComboData(UFTAGameplayAbility* Ability);
-	
 	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
-
 
 	void SendLocalInputToASC(bool, EAbilityInputID);
 
