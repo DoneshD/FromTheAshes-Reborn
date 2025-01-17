@@ -21,7 +21,7 @@ void AFTAPlayerController::ProcessAbilityComboData(UFTAGameplayAbility* Ability)
 	if (Ability && PlayerComboManager)
 	{
 		PlayerComboManager->AbilityComboDataArray.Add(Ability->AbilityComboDataStruct);
-		OnRegisterWindowTagEventDelegate.Broadcast(Ability->AbilityComboDataStruct);
+		OnRegisterWindowTagEventDelegate.Broadcast(Ability->ComboWindowTag);
 	}
 }
 
@@ -49,31 +49,8 @@ void AFTAPlayerController::InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAG
 
 void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd()
 {
-	UE_LOG(LogTemp, Warning, TEXT("TEST LOL!!!"))
 	IsInInputQueueWindow = false;
-	CurrentAllowedInputs.Empty();
-	LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 	GetFTAAbilitySystemComponent()->QueuedAbilitySpec = nullptr;
-}
-
-void AFTAPlayerController::AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag)
-{
-	if(IsInInputQueueWindow)
-	{
-		if(CurrentAllowedInputs.IsEmpty())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("No CurrentAllowedInputs"));
-			return;
-		}
-		
-		if(CurrentAllowedInputs.Contains(InputToQueue))
-		{
-			if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(SavedInputTag))
-			{
-				LastInputSavedTag = SavedInputTag;
-			}
-		}
-	}
 }
 
 void AFTAPlayerController::Tick(float DeltaSeconds)
@@ -167,74 +144,6 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 	TargetSystemComponent->TargetActorWithAxisInput(LookAxisVector.X);
 }
 
-void AFTAPlayerController::HandleJumpActionPressed(const FInputActionValue& InputActionValue)
-{
-	UE_LOG(LogTemp, Error, TEXT("NAHHHHH"))
-	SendLocalInputToASC(true, EAbilityInputID::Jump);
-}
-
-void AFTAPlayerController::HandleJumpActionReleased(const FInputActionValue& InputActionValue)
-{
-	SendLocalInputToASC(false, EAbilityInputID::Jump);
-}
-
-void AFTAPlayerController::HandleLightAttackActionPressed(const FInputActionValue& InputActionValue)
-{
-	UE_LOG(LogTemp, Warning, TEXT("IGNORE 1"))
-	// if(IsInInputQueueWindow)
-	// {
-	// 	
-	// 	AddInputToQueue(EAllowedInputs::LightAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Light"));
-	// }
-	// else
-	// {
-	// 	SendLocalInputToASC(true, EAbilityInputID::LightAttack);
-	// }
-}
-
-void AFTAPlayerController::HandleLightAttackActionReleased(const FInputActionValue& InputActionValue)
-{
-	// SendLocalInputToASC(false, EAbilityInputID::LightAttack);
-
-	UE_LOG(LogTemp, Warning, TEXT("IGNORE 1"))
-
-}
-
-void AFTAPlayerController::HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue)
-{
-	if(IsInInputQueueWindow)
-	{
-		AddInputToQueue(EAllowedInputs::HeavyAttack, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Heavy"));
-	}
-	else
-	{
-		SendLocalInputToASC(true, EAbilityInputID::HeavyAttack);
-	}
-}
-
-void AFTAPlayerController::HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue)
-{
-	SendLocalInputToASC(false, EAbilityInputID::HeavyAttack);
-
-}
-
-void AFTAPlayerController::HandleDashActionPressed(const FInputActionValue& InputActionValue)
-{
-	// if(IsInInputQueueWindow)
-	// {
-	// 	AddInputToQueue(EAllowedInputs::Dash, FGameplayTag::RequestGameplayTag("Event.Input.Saved.Dash"));
-	// }
-	// else
-	// {
-	// 	SendLocalInputToASC(true, EAbilityInputID::Dash);
-	// }
-}
-
-void AFTAPlayerController::HandleDashActionReleased(const FInputActionValue& InputActionValue)
-{
-	SendLocalInputToASC(false, EAbilityInputID::Dash);
-}
-
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)
 {
 	if(IsTimeSlowed)
@@ -296,7 +205,7 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	
 	if (PlayerComboManager)
 	{
-		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
+		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEventTEST);
 	}
 	else
 	{
@@ -321,29 +230,4 @@ void AFTAPlayerController::InputAbilityInputTagReleased(FGameplayTag InputTag)
 	if(!FTAPlayerState) { return; }
 	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	AbilitySystemComponent->AbilityInputTagReleased(InputTag);
-}
-
-void AFTAPlayerController::HandleLockOnActionPressed(const FInputActionValue& InputActionValue)
-{
-	SendLocalInputToASC(true, EAbilityInputID::LockOn);
-}
-
-void AFTAPlayerController::HandleLockOnActionReleased(const FInputActionValue& InputActionValue)
-{
-	SendLocalInputToASC(false, EAbilityInputID::LockOn);
-}
-
-void AFTAPlayerController::HandleVaultActionPressed(const FInputActionValue& InputActionValue)
-{
-	UParkourSystemComponent* ParkourSystemComponent = GetPawn()->FindComponentByClass<UParkourSystemComponent>();
-	if(!ParkourSystemComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Parkour Component is NULL"));
-	}
-	ParkourSystemComponent->ParkourInputPressedVault();
-}
-
-void AFTAPlayerController::HandleVaultActionReleased(const FInputActionValue& InputActionValue)
-{
-	
 }

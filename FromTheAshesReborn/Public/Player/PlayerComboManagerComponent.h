@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "PlayerComboManagerComponent.generated.h"
 
 class UFTAAbilitySystemComponent;
@@ -38,8 +39,6 @@ protected:
 	virtual void ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount);
 	void ComboWindowOpen(FGameplayTag ComboWindowTag);
 	void ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityToActivateClass);
-
-	void TESTNextAbility(UFTAGameplayAbility* AbilityToActivateClass);
 	
 	void RemoveGameplayTagEvent(FGameplayTag ComboWindowTag);
 
@@ -57,5 +56,7 @@ public:
 
 	UFUNCTION()
 	void RegisterGameplayTagEvent(FAbilityComboDataStruct AbilityComboData);
-	
+
+	UFUNCTION()
+	void RegisterGameplayTagEventTEST(FGameplayTag ComboWindowTag);
 };

@@ -11,7 +11,7 @@
 #include "FTAPlayerController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FAbilityComboDataStruct, AbilityComboData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FGameplayTag, ComboWindowTag);
 
 class UFTAInputComponent;
 class UPlayerComboManagerComponent;
@@ -69,14 +69,9 @@ protected:
 
 	//-------------------------INPUT QUEUE------------------------------//
 	
-	UPROPERTY(EditAnywhere)
-	TArray<EAllowedInputs> CurrentAllowedInputs;
-
-
+	
 	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManager;
 
-	// UFTAAbilitySystemComponent* ASComponent;
-	
 	UFUNCTION(BlueprintCallable)
 	void InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses);
 
@@ -84,11 +79,9 @@ protected:
 	void InputQueueUpdateAllowedInputsEnd();
 	
 	void ProcessAbilityComboData(UFTAGameplayAbility* Ability);
-	void AddInputToQueue(EAllowedInputs InputToQueue, FGameplayTag SavedInputTag);
-
+	
 	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
 
-	//---------Remove later--------//
 
 	void SendLocalInputToASC(bool, EAbilityInputID);
 
@@ -96,27 +89,7 @@ protected:
 	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
-
-	void HandleJumpActionPressed(const FInputActionValue& InputActionValue);
-	void HandleJumpActionReleased(const FInputActionValue& InputActionValue);
-	
-	void HandleLightAttackActionPressed(const FInputActionValue& InputActionValue);
-	void HandleLightAttackActionReleased(const FInputActionValue& InputActionValue);
-
-	void HandleHeavyAttackActionPressed(const FInputActionValue& InputActionValue);
-	void HandleHeavyAttackActionReleased(const FInputActionValue& InputActionValue);
-	
-	void HandleDashActionPressed(const FInputActionValue& InputActionValue);
-	void HandleDashActionReleased(const FInputActionValue& InputActionValue);
-
-	void HandleLockOnActionPressed(const FInputActionValue& InputActionValue);
-	void HandleLockOnActionReleased(const FInputActionValue& InputActionValue);
-
-	void HandleVaultActionPressed(const FInputActionValue& InputActionValue);
-	void HandleVaultActionReleased(const FInputActionValue& InputActionValue);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
 
-public:
-	FGameplayTag LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 };

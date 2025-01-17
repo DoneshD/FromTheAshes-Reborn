@@ -1,10 +1,6 @@
 ﻿#include "Player/PlayerComboManagerComponent.h"
 #include "AbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedLightMeleeAttack.h"
-#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedHeavyMeleeAttack.h"
-#include "FTAAbilitySystem/GameplayAbilities/GA_GroundedDash.h"
-#include "ParkourSystem/ParkourFunctionLibrary.h"
 
 #include "Player/FTAPlayerController.h"
 
@@ -99,14 +95,7 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
-
-	// for (const FAbilityComboDataStruct& AbilityComboData : AbilityComboDataArray)
-	// {
-	// 	if (PC->LastInputSavedTag.MatchesTag(AbilityComboData.InputSavedTag) && ComboWindowTag.MatchesTag(AbilityComboData.ComboWindowTag))
-	// 	{
-	// 		ProceedToNextAbility(AbilityComboData.AbilityComboClass);
-	// 	}
-	// }
+	
 	//Casting in tick!!!!!
 	UFTAGameplayAbility* QueuedAbility = Cast<UFTAGameplayAbility>(ASComponent->QueuedAbilitySpec.Ability);
 	if(!QueuedAbility)
@@ -117,14 +106,12 @@ void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 	
 	if(ComboWindowTag.MatchesTag(QueuedAbility->ComboWindowTag))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Success"));
 		ProceedToNextAbility(QueuedAbility->GetClass());
 	}
 }
 
 void UPlayerComboManagerComponent::ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityClass)
 {
-	PC->LastInputSavedTag = FGameplayTag::RequestGameplayTag("Event.Input.Saved.None");
 	ASComponent->CancelAllAbilities();
 	ASComponent->QueuedAbilitySpec = nullptr;
 	
@@ -136,25 +123,20 @@ void UPlayerComboManagerComponent::ProceedToNextAbility(TSubclassOf<UGameplayAbi
 	}
 }
 
-void UPlayerComboManagerComponent::TESTNextAbility(UFTAGameplayAbility* AbilityToActivateClass)
-{
-	ASComponent->CancelAllAbilities();
-	
-	bool bActivateAbility = ASComponent->TryActivateAbility(AbilityToActivateClass->GetCurrentAbilitySpecHandle());
-	
-	if(!bActivateAbility)
-	{
-		UE_LOG(LogTemp, Error, TEXT("ProceedToNextAbility: Ability did not activate"));
-	}
-}
-
 void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FAbilityComboDataStruct AbilityComboData)
 {
-
 	RemoveGameplayTagEvent(AbilityComboData.ComboWindowTag);
 	
 	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(AbilityComboData.ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UPlayerComboManagerComponent::ComboWindowTagChanged);
 	TagDelegateHandles.Add(AbilityComboData.ComboWindowTag, Handle);
+}
+
+void UPlayerComboManagerComponent::RegisterGameplayTagEventTEST(FGameplayTag ComboWindowTag)
+{
+	RemoveGameplayTagEvent(ComboWindowTag);
+	
+	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UPlayerComboManagerComponent::ComboWindowTagChanged);
+	TagDelegateHandles.Add(ComboWindowTag, Handle);
 }
 
 

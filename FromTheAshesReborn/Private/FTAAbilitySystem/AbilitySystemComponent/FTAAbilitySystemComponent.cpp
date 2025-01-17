@@ -136,28 +136,20 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 			
 			if(AbilitySpec.IsActive() && PlayerController->IsInInputQueueWindow == true)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("HERE 1"));
-
 				if(AbilitySpec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("AbilityTag.CanBeCanceled")))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("HERE 2"));
-
 					UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
 					UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(TryToQueueAbilitySpec.Ability);
 			
 					if(InputedFTAAbility)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("HERE 3"));
-
 						if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->IdentifierTag))
 						{
-							UE_LOG(LogTemp, Warning, TEXT("HERE 4"));
 							QueuedAbilitySpec = TryToQueueAbilitySpec;
 							if (QueuedAbilitySpec.Ability)
 							{
 								// Print the name of the ability
 								FString AbilityName = QueuedAbilitySpec.Ability->GetName();
-								UE_LOG(LogTemp, Warning, TEXT("Queued Ability Name: %s"), *AbilityName);
 							}
 							return;
 						}
