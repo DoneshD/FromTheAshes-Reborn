@@ -133,8 +133,12 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
 			//If there is input during an active ability, check if it can be cancel current and activate
-			
-			if(AbilitySpec.IsActive() && PlayerController->IsInInputQueueWindow == true)
+			// Print AbilitySpec IsActive status
+			UE_LOG(LogTemp, Warning, TEXT("AbilitySpec IsActive: %s"), AbilitySpec.IsActive() ? TEXT("True") : TEXT("False"));
+
+			// Print PlayerController's IsInInputQueueWindow status
+			UE_LOG(LogTemp, Warning, TEXT("PlayerController->IsInInputQueueWindow: %s"), PlayerController->IsInInputQueueWindow ? TEXT("True") : TEXT("False"))
+			if(AbilitySpec.IsActive() && PlayerController->IsInInputQueueWindow)
 			{
 				if(AbilitySpec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("AbilityTag.CanBeCanceled")))
 				{
