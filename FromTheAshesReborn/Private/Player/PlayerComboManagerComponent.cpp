@@ -39,6 +39,8 @@ void UPlayerComboManagerComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("UPlayerComboManagerComponent: No ASComponent found"));
 		return;
 	}
+
+	OnRegisterWindowTagEventDelegate.AddUniqueDynamic(this, &UPlayerComboManagerComponent::RegisterGameplayTagEvent);
 	
 }
 
@@ -60,6 +62,28 @@ void UPlayerComboManagerComponent::PrintCurrentComboContainer()
 			UE_LOG(LogTemp, Error, TEXT("CurrentComboTagContainer Tag is NULL"));
 		}
 	}
+}
+
+void UPlayerComboManagerComponent::InputQueueAllowedInputsBegin(
+	TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses)
+{
+	IsInInputQueueWindow = true;
+	for (TSubclassOf<UFTAGameplayAbility> AbilityClass : QueueableAbilityClasses)
+	{
+		if (AbilityClass)
+		{
+			if (AbilityClass.GetDefaultObject())
+			{
+				OnRegisterWindowTagEventDelegate.Broadcast(AbilityClass.GetDefaultObject()->ComboWindowTag);
+			}
+		}
+	}
+}
+
+void UPlayerComboManagerComponent::InputQueueUpdateAllowedInputsEnd()
+{
+	IsInInputQueueWindow = false;
+	ASComponent->QueuedAbilitySpec = nullptr;
 }
 
 FGameplayTagContainer& UPlayerComboManagerComponent::GetCurrentComboContainer()
@@ -123,15 +147,7 @@ void UPlayerComboManagerComponent::ProceedToNextAbility(TSubclassOf<UGameplayAbi
 	}
 }
 
-void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FAbilityComboDataStruct AbilityComboData)
-{
-	RemoveGameplayTagEvent(AbilityComboData.ComboWindowTag);
-	
-	FDelegateHandle Handle = ASComponent->RegisterGameplayTagEvent(AbilityComboData.ComboWindowTag, EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UPlayerComboManagerComponent::ComboWindowTagChanged);
-	TagDelegateHandles.Add(AbilityComboData.ComboWindowTag, Handle);
-}
-
-void UPlayerComboManagerComponent::RegisterGameplayTagEventTEST(FGameplayTag ComboWindowTag)
+void UPlayerComboManagerComponent::RegisterGameplayTagEvent(FGameplayTag ComboWindowTag)
 {
 	RemoveGameplayTagEvent(ComboWindowTag);
 	

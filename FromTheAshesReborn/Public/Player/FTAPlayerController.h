@@ -11,7 +11,6 @@
 #include "FTAPlayerController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FGameplayTag, ComboWindowTag);
 
 class UFTAInputComponent;
 class UPlayerComboManagerComponent;
@@ -55,9 +54,7 @@ public:
 	void InputAbilityInputTagPressed(FGameplayTag InputTag);
 	void InputAbilityInputTagReleased(FGameplayTag InputTag);
 
-	UPROPERTY(EditAnywhere)
-	bool IsInInputQueueWindow = false;
-	
+
 protected:
 
 	//-----------------------------For debugging--------------------------//
@@ -69,19 +66,6 @@ protected:
 
 	//-------------------------INPUT QUEUE------------------------------//
 	
-	
-	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManager;
-
-	UFUNCTION(BlueprintCallable)
-	void InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses);
-
-	UFUNCTION(BlueprintCallable)
-	void InputQueueUpdateAllowedInputsEnd();
-	
-	void ProcessAbilityComboData(UFTAGameplayAbility* Ability);
-	
-	FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
-
 
 	void SendLocalInputToASC(bool, EAbilityInputID);
 

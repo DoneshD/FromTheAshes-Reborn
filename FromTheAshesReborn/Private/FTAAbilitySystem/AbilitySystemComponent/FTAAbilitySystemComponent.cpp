@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 #include "Player/FTAPlayerController.h"
+#include "Player/PlayerComboManagerComponent.h"
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -35,6 +36,12 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 			if(!PlayerController)
 			{
 				UE_LOG(LogTemp, Error, TEXT("PlayerController is NULL"));
+			}
+			PCM = OwnerPawn->FindComponentByClass<UPlayerComboManagerComponent>();
+
+			if(!PCM)
+			{
+				UE_LOG(LogTemp, Error, TEXT("PCM is NULL"));
 			}
 		}
 	}
@@ -133,12 +140,8 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
 			//If there is input during an active ability, check if it can be cancel current and activate
-			// Print AbilitySpec IsActive status
-			UE_LOG(LogTemp, Warning, TEXT("AbilitySpec IsActive: %s"), AbilitySpec.IsActive() ? TEXT("True") : TEXT("False"));
-
-			// Print PlayerController's IsInInputQueueWindow status
-			UE_LOG(LogTemp, Warning, TEXT("PlayerController->IsInInputQueueWindow: %s"), PlayerController->IsInInputQueueWindow ? TEXT("True") : TEXT("False"))
-			if(AbilitySpec.IsActive() && PlayerController->IsInInputQueueWindow)
+			
+			if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
 			{
 				if(AbilitySpec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("AbilityTag.CanBeCanceled")))
 				{

@@ -12,21 +12,6 @@ class AFTAPlayerController;
 class UPlayerComboManagerComponent;
 class USkeletalMeshComponent;
 
-USTRUCT(BlueprintType)
-struct FAbilityComboDataStruct
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<UGameplayAbility> AbilityComboClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTag InputSavedTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FGameplayTag ComboWindowTag;
-};
-
 
 UENUM(BlueprintType)
 enum class EFTAAbilityActivationPolicy : uint8
@@ -114,9 +99,6 @@ public:
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 
 public:
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ability|Combo")
-	FAbilityComboDataStruct AbilityComboDataStruct;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;

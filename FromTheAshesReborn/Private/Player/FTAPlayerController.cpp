@@ -16,16 +16,6 @@ AFTAPlayerController::AFTAPlayerController(const FObjectInitializer& ObjectIniti
 {
 	
 }
-void AFTAPlayerController::ProcessAbilityComboData(UFTAGameplayAbility* Ability)
-{
-	if (Ability && PlayerComboManager)
-	{
-		PlayerComboManager->AbilityComboDataArray.Add(Ability->AbilityComboDataStruct);
-		OnRegisterWindowTagEventDelegate.Broadcast(Ability->ComboWindowTag);
-		UE_LOG(LogTemp, Warning, TEXT("ProcessAbilityComboData"))
-	}
-}
-
 
 UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent() const
 {
@@ -35,24 +25,6 @@ UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent()
 	return FTAPlayerState->GetFTAAbilitySystemComponent();
 }
 
-void AFTAPlayerController::InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses)
-{
-	IsInInputQueueWindow = true;
-	for (TSubclassOf<UFTAGameplayAbility> AbilityClass : QueueableAbilityClasses)
-	{
-		if (AbilityClass)
-		{
-			ProcessAbilityComboData(AbilityClass.GetDefaultObject());
-		}
-	}
-}
-
-
-void AFTAPlayerController::InputQueueUpdateAllowedInputsEnd()
-{
-	IsInInputQueueWindow = false;
-	GetFTAAbilitySystemComponent()->QueuedAbilitySpec = nullptr;
-}
 
 void AFTAPlayerController::Tick(float DeltaSeconds)
 {
@@ -202,16 +174,7 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
 	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
 
-	PlayerComboManager = PlayerCharacter->FindComponentByClass<UPlayerComboManagerComponent>();
 	
-	if (PlayerComboManager)
-	{
-		OnRegisterWindowTagEventDelegate.AddUniqueDynamic(PlayerComboManager, &UPlayerComboManagerComponent::RegisterGameplayTagEventTEST);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("PlayerComboManager NOT FOUND"));
-	}
 }
 
 void AFTAPlayerController::InputAbilityInputTagPressed(FGameplayTag InputTag)

@@ -11,6 +11,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbil
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;
 class UFTAAbilityTagRelationshipMapping;
+class UPlayerComboManagerComponent;
 
 
 UCLASS()
@@ -40,6 +41,8 @@ public:
 	FGameplayAbilitySpec QueuedAbilitySpec;
 
 	AFTAPlayerController* PlayerController;
+
+	UPlayerComboManagerComponent* PCM;
 	
 public:
 	
