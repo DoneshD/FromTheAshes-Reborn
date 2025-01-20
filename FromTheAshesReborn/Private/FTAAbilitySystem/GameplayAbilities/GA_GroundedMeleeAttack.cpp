@@ -29,15 +29,10 @@ void UGA_GroundedMeleeAttack::PrintCurrentComboContainer()
 
 void UGA_GroundedMeleeAttack::ResetGroundedMeleeAttack()
 {
-
 	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
 	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
 	PlayerComboManagerInterface->SetCurrentComboIndex(0);
-
-	//UE_LOG(LogTemp, Warning, TEXT("Reset Attack"));
-
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
 }
 
 bool UGA_GroundedMeleeAttack::FindMatchingTagContainer(const TArray<TObjectPtr<UMeleeAttackDataAsset>>& GroundedAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)

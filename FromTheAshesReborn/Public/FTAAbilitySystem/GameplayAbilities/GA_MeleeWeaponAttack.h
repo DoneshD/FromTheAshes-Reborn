@@ -6,6 +6,7 @@
 #include "GA_MeleeWeaponAttack.generated.h"
 
 
+class UMeleeAttackDataAsset;
 class AWeaponActorBase;
 class UMeleeWeaponInstance;
 class UFTAAT_PlayMontageAndWaitForEvent;
@@ -31,9 +32,23 @@ public:
 	//~UGameplayAbility interface
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	//~End of UGameplayAbility interface
 
+	TObjectPtr<UAnimMontage> AttackMontageToPlay;
+
+	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
+	void ResetMeleeAttack();
+	
+	bool FindMatchingTagContainer(const TArray<UMeleeAttackDataAsset*>& MeleeAttackDataAssets,
+		TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset);
+	
+	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
+	void PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> MeleeAttackDataAssets);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayAttackMontage(UAnimMontage* AttackMontage);
 
 protected:
 	struct FMeleeWeaponTraceData
