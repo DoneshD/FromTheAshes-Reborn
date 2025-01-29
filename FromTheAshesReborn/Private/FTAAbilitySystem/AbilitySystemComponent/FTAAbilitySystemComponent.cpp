@@ -113,8 +113,9 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 	};
 }
 
-void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag){
+void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
+	UE_LOG(LogTemp, Warning, TEXT("gggg"))
 	FGameplayAbilitySpec TryToQueueAbilitySpec;
 	// Get the ability from the input tag
 	 if (InputTag.IsValid())
@@ -126,56 +127,52 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	 			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 	 			{
 	 				TryToQueueAbilitySpec = AbilitySpec;
-	 				if (TryToQueueAbilitySpec.Ability)
-	 				{
-	 					// Print the name of the ability
-	 					FString AbilityName = TryToQueueAbilitySpec.Ability->GetName();
-	 					UE_LOG(LogTemp, Warning, TEXT("TryToQueueAbilitySpec Ability Name: %s"), *AbilityName);
-	 				}
 	 			}
 	 		}
 	 	}
 	 }
+	
 
-		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		//If there is input during an active ability, check if it can be cancel current and activate
+		
+		if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
 		{
-			//If there is input during an active ability, check if it can be cancel current and activate
-			
-			if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
+			if(AbilitySpec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("AbilityTag.CanBeCanceled")))
 			{
-				if(AbilitySpec.Ability->AbilityTags.HasTag(FGameplayTag::RequestGameplayTag("AbilityTag.CanBeCanceled")))
+				UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
+				UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(TryToQueueAbilitySpec.Ability);
+		
+				if(InputedFTAAbility)
 				{
-					UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
-					UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(TryToQueueAbilitySpec.Ability);
-			
-					if(InputedFTAAbility)
+					if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->IdentifierTag))
 					{
-						if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->IdentifierTag))
+						QueuedAbilitySpec = TryToQueueAbilitySpec;
+						if (QueuedAbilitySpec.Ability)
 						{
-							QueuedAbilitySpec = TryToQueueAbilitySpec;
-							if (QueuedAbilitySpec.Ability)
-							{
-								// Print the name of the ability
-								FString AbilityName = QueuedAbilitySpec.Ability->GetName();
-							}
-							return;
+							// Print the name of the ability
+							FString AbilityName = QueuedAbilitySpec.Ability->GetName();
 						}
+						return;
 					}
 				}
 			}
-			
 		}
-		if (InputTag.IsValid())
+		
+	}
+	if (InputTag.IsValid())
+	{
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
-			for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+			if (AbilitySpec.Ability)
 			{
-				if (AbilitySpec.Ability)
+				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 				{
-					if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
-					{
-						InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
-						InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
-					}
+					UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
+					
+					InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
+					InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
 				}
 			}
 		}

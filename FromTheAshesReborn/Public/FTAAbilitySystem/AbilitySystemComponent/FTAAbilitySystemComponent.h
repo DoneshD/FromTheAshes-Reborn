@@ -58,6 +58,7 @@ public:
 	void CancelInputActivatedAbilities();
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
+	
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	
 	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;

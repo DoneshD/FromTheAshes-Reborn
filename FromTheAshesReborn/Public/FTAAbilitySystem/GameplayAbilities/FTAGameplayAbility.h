@@ -109,6 +109,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
 	bool bActivateOnInput;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+	int PriorityValue;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTagContainer QueueableAbilitiesTags;
 
@@ -117,6 +120,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTag IdentifierTag;
+
+	
 
 	
 };
