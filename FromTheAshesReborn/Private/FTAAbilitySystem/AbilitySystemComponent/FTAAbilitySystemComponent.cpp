@@ -115,7 +115,6 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("gggg"))
 	FGameplayAbilitySpec TryToQueueAbilitySpec;
 	// Get the ability from the input tag
 	 if (InputTag.IsValid())
@@ -169,8 +168,6 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 			{
 				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 				{
-					UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
-					
 					InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
 					InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
 				}
@@ -236,10 +233,9 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 	{
 		if(const FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
 		{
-			if(AbilitySpec->Ability && AbilitySpec->IsActive())
+			if(AbilitySpec->Ability)
 			{
 				const UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec->Ability);
-				
 				if(FTAAbilityCDO->GetActivationPolicy() == EFTAAbilityActivationPolicy::WhileInputActive)
 				{
 					AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
@@ -268,6 +264,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 					const UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec->Ability);
 					if(FTAAbilityCDO->GetActivationPolicy() == EFTAAbilityActivationPolicy::OnInputTriggered)
 					{
+						UE_LOG(LogTemp, Warning, TEXT("2"))
 						AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 					}
 				}

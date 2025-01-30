@@ -119,7 +119,6 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
-	
 	//Casting in tick!!!!!
 	UFTAGameplayAbility* QueuedAbility = Cast<UFTAGameplayAbility>(ASComponent->QueuedAbilitySpec.Ability);
 	if(!QueuedAbility)
@@ -130,6 +129,7 @@ void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 	
 	if(ComboWindowTag.MatchesTag(QueuedAbility->ComboWindowTag))
 	{
+		
 		ProceedToNextAbility(QueuedAbility->GetClass());
 	}
 }
