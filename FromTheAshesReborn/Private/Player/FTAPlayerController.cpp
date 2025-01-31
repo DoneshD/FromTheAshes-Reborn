@@ -4,7 +4,6 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "TargetSystemComponent.h"
-#include "Player/PlayerComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "Input/FTAInputComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -171,8 +170,8 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	TArray<uint32> BindHandles;
 	FTAInputComponent->BindAbilityAction(FTAInputConfig, this, &AFTAPlayerController::InputAbilityInputTagPressed, &AFTAPlayerController::InputAbilityInputTagReleased, /*out*/ BindHandles);
 	
-	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Move, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
-	FTAInputComponent->BindNativeAction(FTAInputConfig, FTAGameplayTags::InputTag_Look_Mouse, ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
+	FTAInputComponent->BindNativeAction(FTAInputConfig, FGameplayTag::RequestGameplayTag("InputTag.Pressed.Move"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
+	FTAInputComponent->BindNativeAction(FTAInputConfig,  FGameplayTag::RequestGameplayTag("InputTag.Pressed.Look.Mouse"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
 
 	
 }

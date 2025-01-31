@@ -21,6 +21,8 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 
 public:
 
+	AFTAPlayerController* PlayerController;
+	
 	UPROPERTY()
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 
@@ -39,9 +41,7 @@ public:
 	FReceivedDamageDelegate ReceivedDamage;
 
 	FGameplayAbilitySpec QueuedAbilitySpec;
-
-	AFTAPlayerController* PlayerController;
-
+	
 	UPlayerComboManagerComponent* PCM;
 	
 public:
@@ -57,8 +57,10 @@ public:
 	
 	void CancelInputActivatedAbilities();
 
+	// Input bound to an ability is pressed
+	virtual void AbilityLocalInputPressed(int32 InputID) override;
+
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
-	
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
 	
 	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
@@ -104,13 +106,8 @@ public:
 
 	// Plays a montage and handles replication and prediction based on passed in ability/activation info
 	virtual float PlayMontageForMesh(UGameplayAbility* AnimatingAbility, class USkeletalMeshComponent* InMesh, FGameplayAbilityActivationInfo ActivationInfo, UAnimMontage* Montage, float InPlayRate, FName StartSectionName = NAME_None, bool bReplicateMontage = true);
-	
-public:
 
 	// Version of function in AbilitySystemGlobals that returns correct type
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
-
-	// Input bound to an ability is pressed
-	virtual void AbilityLocalInputPressed(int32 InputID) override;
 	
 };
