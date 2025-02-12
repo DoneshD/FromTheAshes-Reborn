@@ -123,11 +123,5 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTagContainer QueueableAbilitiesTags;
-
-
-
-
-	
-
 	
 };

@@ -16,12 +16,16 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	{
 		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-
 	}
-
-	TargetSystemComponent->TargetActor();
-	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-
+	
+	if(IsTargeting)
+	{
+		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+	}
+	else
+	{
+		IsTargeting = TargetSystemComponent->TargetActor();
+	}
 }
 
 void UGA_LockOn::InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)

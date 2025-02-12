@@ -123,7 +123,7 @@ void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 	UFTAGameplayAbility* QueuedAbility = Cast<UFTAGameplayAbility>(ASComponent->QueuedAbilitySpec.Ability);
 	if(!QueuedAbility)
 	{
-		UE_LOG(LogTemp, Error, TEXT("QueuedAbility NULL"));
+		// UE_LOG(LogTemp, Error, TEXT("QueuedAbility NULL"));
 		return;
 	}
 	

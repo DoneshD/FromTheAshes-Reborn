@@ -172,7 +172,6 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	
 	FTAInputComponent->BindNativeAction(FTAInputConfig, FGameplayTag::RequestGameplayTag("InputTag.Pressed.Move"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
 	FTAInputComponent->BindNativeAction(FTAInputConfig,  FGameplayTag::RequestGameplayTag("InputTag.Pressed.Look.Mouse"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
-
 	
 }
 

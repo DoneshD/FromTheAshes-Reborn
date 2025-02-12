@@ -10,6 +10,10 @@ class FROMTHEASHESREBORN_API UGA_LockOn : public UFTAGameplayAbility
 	GENERATED_BODY()
 
 protected:
+
+	bool IsTargeting = false;
+
+protected:
 	
 	UGA_LockOn();
 	
