@@ -47,7 +47,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<UActorComponent> OwnerComponent;
 
-	UWeaponInstance* CurrentlyEquippedWeaponInstance;
+	UWeaponInstance* CurrentEquippedWeaponInstance;
 
 public:
 	UEquipmentManagerComponent();

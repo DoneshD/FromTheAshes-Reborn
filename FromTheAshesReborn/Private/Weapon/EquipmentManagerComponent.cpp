@@ -51,9 +51,9 @@ void UEquipmentManagerComponent::RemoveEquipmentItem(UWeaponInstance* Instance)
 
 UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeaponDefinition> WeaponDefinition)
 {
-	if(CurrentlyEquippedWeaponInstance)
+	if(CurrentEquippedWeaponInstance)
 	{
-		RemoveEquipmentItem(CurrentlyEquippedWeaponInstance);
+		RemoveEquipmentItem(CurrentEquippedWeaponInstance);
 	}
 	
 	UWeaponInstance* Result = nullptr;
@@ -91,17 +91,17 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 	}
 
 	Result->SpawnEquipmentActors(WeaponCDO->ActorsToSpawn);
-
-	CurrentlyEquippedWeaponInstance = Result;
+	Result->OnEquipped();
 	
+	CurrentEquippedWeaponInstance = Result;
 	return Result;
 }
 
 UWeaponInstance* UEquipmentManagerComponent::GetEquippedWeaponInstance()
 {
-	if(CurrentlyEquippedWeaponInstance)
+	if(CurrentEquippedWeaponInstance)
 	{
-		return CurrentlyEquippedWeaponInstance;
+		return CurrentEquippedWeaponInstance;
 	}
 	UE_LOG(LogTemp, Error, TEXT("No currently equipped instance"));
 	return nullptr;

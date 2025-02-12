@@ -59,15 +59,16 @@ void UWeaponInstance::DestroyEquipmentActors()
 
 void UWeaponInstance::OnEquipped()
 {
+	K2_OnEquipped();
 }
 
-void UWeaponInstance::OnUnequipped()
+void UWeaponInstance::OnUnEquipped()
 {
+	K2_OnUnEquipped();
 }
 
-TSubclassOf<UAnimInstance> UWeaponInstance::PickBestAnimLayer(bool bEquipped,
-	const FGameplayTagContainer& CosmeticTags) const
+TSubclassOf<UAnimInstance> UWeaponInstance::PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const
 {
-	const FFTAAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnEquippedAnimSet);
+	const FAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnEquippedAnimSet);
 	return SetToQuery.SelectBestLayer(CosmeticTags);
 }

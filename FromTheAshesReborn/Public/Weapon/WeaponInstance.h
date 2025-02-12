@@ -1,8 +1,8 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Animation/FTAAnimationLayersData.h"
 #include "UObject/Object.h"
-#include "Animation/FTACosmeticAnimationTypes.h"
 #include "WeaponInstance.generated.h"
 
 class AWeaponActorBase;
@@ -37,7 +37,15 @@ public:
 	virtual void DestroyEquipmentActors();
 
 	virtual void OnEquipped();
-	virtual void OnUnequipped();
+	virtual void OnUnEquipped();
+	
+protected:
+	
+	UFUNCTION(BlueprintImplementableEvent, Category=Equipment, meta=(DisplayName="OnEquipped"))
+	void K2_OnEquipped();
+
+	UFUNCTION(BlueprintImplementableEvent, Category=Equipment, meta=(DisplayName="OnUnEquipped"))
+	void K2_OnUnEquipped();
 
 public:
 
@@ -48,10 +56,10 @@ public:
 	TArray<TObjectPtr<AActor>> SpawnedActors;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
-	FFTAAnimLayerSelectionSet EquippedAnimSet;
+	FAnimLayerSelectionSet EquippedAnimSet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
-	FFTAAnimLayerSelectionSet UnEquippedAnimSet;
+	FAnimLayerSelectionSet UnEquippedAnimSet;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure=false, Category=Animation)
 	TSubclassOf<UAnimInstance> PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const;

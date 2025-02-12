@@ -2,14 +2,14 @@
 
 #include "GameplayTagContainer.h"
 #include "Templates/SubclassOf.h"
-#include "FTACosmeticAnimationTypes.generated.h"
+#include "FTAAnimationLayersData.generated.h"
 
 class UAnimInstance;
 class UPhysicsAsset;
 class USkeletalMesh;
 
 USTRUCT(BlueprintType)
-struct FFTAAnimLayerSelectionEntry
+struct FAnimLayerMatchingTags
 {
 	GENERATED_BODY()
 
@@ -23,13 +23,13 @@ struct FFTAAnimLayerSelectionEntry
 };
 
 USTRUCT(BlueprintType)
-struct FFTAAnimLayerSelectionSet
+struct FAnimLayerSelectionSet
 {
 	GENERATED_BODY()
 		
 	// List of layer rules to apply, first one that matches will be used
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty=Layer))
-	TArray<FFTAAnimLayerSelectionEntry> LayerRules;
+	TArray<FAnimLayerMatchingTags> LayerRules;
 
 	// The layer to use if none of the LayerRules matches
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -42,7 +42,7 @@ struct FFTAAnimLayerSelectionSet
 //////////////////////////////////////////////////////////////////////
 
 USTRUCT(BlueprintType)
-struct FFTAAnimBodyStyleSelectionEntry
+struct FAnimBodyStyleMatchingTags
 {
 	GENERATED_BODY()
 
@@ -56,13 +56,13 @@ struct FFTAAnimBodyStyleSelectionEntry
 };
 
 USTRUCT(BlueprintType)
-struct FFTAAnimBodyStyleSelectionSet
+struct FAnimBodyStyleSelectionSet
 {
 	GENERATED_BODY()
 		
 	// List of layer rules to apply, first one that matches will be used
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(TitleProperty=Mesh))
-	TArray<FFTAAnimBodyStyleSelectionEntry> MeshRules;
+	TArray<FAnimBodyStyleMatchingTags> MeshRules;
 
 	// The layer to use if none of the LayerRules matches
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
