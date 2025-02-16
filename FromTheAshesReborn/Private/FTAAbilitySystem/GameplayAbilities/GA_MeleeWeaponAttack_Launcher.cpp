@@ -13,7 +13,15 @@ bool UGA_MeleeWeaponAttack_Launcher::CanActivateAbility(const FGameplayAbilitySp
 		return false;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *ActorInfo->OwnerActor.Get()->GetName());
+	if(!ActorInfo->AvatarActor.Get())
+	{
+		UE_LOG(LogTemp, Error, TEXT("ActorInfo->AvatarActor.Get( NULL"));
+		return false;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("OwnerActor Name: %s"), *ActorInfo->OwnerActor.Get()->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("AvatarActor Name: %s"), *ActorInfo->AvatarActor.Get()->GetName());
+
 
 	// AFTAPlayerState* PS = Cast<AFTAPlayerState>(ActorInfo->OwnerActor);
 	// if(!PS)
@@ -33,9 +41,9 @@ bool UGA_MeleeWeaponAttack_Launcher::CanActivateAbility(const FGameplayAbilitySp
 	// 	return false;
 	// }
 
-	float AngleOfInput = ULockOnFunctionLibrary::AngleFromLockedTarget(ActorInfo->AvatarActor.Get(), GetFTAPlayerControllerFromActorInfo()->GetFTAPlayerState()->HardLockedTargetActor);
+	// float AngleOfInput = ULockOnFunctionLibrary::AngleFromLockedTarget(ActorInfo->AvatarActor.Get(), GetFTAPlayerControllerFromActorInfo()->GetFTAPlayerState()->HardLockedTargetActor);
 
-	UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack_Launcher value: %f"), AngleOfInput);
+	// UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack_Launcher value: %f"), AngleOfInput);
 	
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 	

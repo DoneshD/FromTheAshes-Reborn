@@ -135,7 +135,8 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	{
 		//If there is input during an active ability, check if it can be cancel current and activate
 		
-		if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
+		// if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
+		if(AbilitySpec.IsActive())
 		{
 			UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
 			

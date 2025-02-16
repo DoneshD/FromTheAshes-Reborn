@@ -26,7 +26,11 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	FTAAbilitySystemComponent->InitAbilityActorInfo(this, this);
+
+	// UE_LOG(LogTemp, Warning, TEXT("AFTACharacter InitAbilityActorInfo OwnerActor: %s"), *this->GetName())
+	// UE_LOG(LogTemp, Warning, TEXT("AFTACharacter InitAbilityActorInfo Avatar: %s"), *this->GetName())
+
+	// FTAAbilitySystemComponent->InitAbilityActorInfo(this, this);
 	AddCharacterBaseAbilities();
 }
 

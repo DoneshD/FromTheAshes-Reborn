@@ -1,10 +1,5 @@
 ﻿#include "Player/FTAPlayerState.h"
-
-#include "DataAsset/FTACharacterData.h"
-#include "FTAAbilitySystem/AbilitySets/FTAAbilitySet.h"
-#include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "Player/PlayerCharacter.h"
 
 AFTAPlayerState::AFTAPlayerState(const FObjectInitializer& ObjectInitializer)
 {
@@ -30,8 +25,10 @@ void AFTAPlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	check(AbilitySystemComponent);
-	AbilitySystemComponent->InitAbilityActorInfo(this, GetPawn());
+	// check(AbilitySystemComponent);
+	// UE_LOG(LogTemp, Warning, TEXT("AFTAPlayerState InitAbilityActorInfo OwnerActor: %s"), *this->GetName())
+	// UE_LOG(LogTemp, Warning, TEXT("AFTAPlayerState InitAbilityActorInfo Avatar: %s"), *GetPawn->GetName())
+	// GetFTAAbilitySystemComponent()->InitAbilityActorInfo(this, GetPawn());
 }
 
 void AFTAPlayerState::BeginPlay()
