@@ -59,6 +59,12 @@ void UWeaponInstance::DestroyEquipmentActors()
 
 void UWeaponInstance::OnEquipped()
 {
+	ACharacter* Character = Cast<ACharacter>(GetPawn());
+	if(!Character || !EquippedAnimSet.DefaultLayer)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Character is NULL"))
+	}
+	Character->GetMesh()->LinkAnimClassLayers(EquippedAnimSet.DefaultLayer);
 	K2_OnEquipped();
 }
 

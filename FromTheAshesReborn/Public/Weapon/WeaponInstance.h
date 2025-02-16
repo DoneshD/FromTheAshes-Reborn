@@ -61,6 +61,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
 	FAnimLayerSelectionSet UnEquippedAnimSet;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
+	TObjectPtr<UAnimMontage> EquipWeaponMontage;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
+	TObjectPtr<UAnimMontage> UnEquipWeaponMontage;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure=false, Category=Animation)
 	TSubclassOf<UAnimInstance> PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const;
 	

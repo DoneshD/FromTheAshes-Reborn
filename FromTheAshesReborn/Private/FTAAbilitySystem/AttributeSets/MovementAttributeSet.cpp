@@ -2,5 +2,5 @@
 
 UMovementAttributeSet::UMovementAttributeSet()
 {
-	InitGroundSpeed(600.0f);
+	InitGroundSpeed(1400.0f);
 }

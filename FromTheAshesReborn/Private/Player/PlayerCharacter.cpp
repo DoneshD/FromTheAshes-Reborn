@@ -33,7 +33,7 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	
 	//Walk and crouch
 	GetCharacterMovement()->SetCrouchedHalfHeight(48.f);
-	//GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	// GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;

@@ -258,7 +258,6 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 	//Activate all ability that were pressed or held
 	for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : AbilitiesToActivate)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OK"))
 		TryActivateAbility(AbilitySpecHandle);
 	}
 
