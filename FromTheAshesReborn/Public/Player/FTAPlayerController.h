@@ -11,7 +11,7 @@
 #include "FTAPlayerController.generated.h"
 
 
-
+class AFTAPlayerState;
 class UFTAInputComponent;
 class UPlayerComboManagerComponent;
 class UAbilitySystemComponent;
@@ -49,6 +49,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FTA|ASComponent")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const;
+
+	AFTAPlayerState* GetFTAPlayerState();
 	
 	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
 	void InputAbilityInputTagPressed(FGameplayTag InputTag);

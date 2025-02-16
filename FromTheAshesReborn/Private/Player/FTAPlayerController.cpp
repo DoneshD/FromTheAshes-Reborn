@@ -24,6 +24,12 @@ UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent()
 	return FTAPlayerState->GetFTAAbilitySystemComponent();
 }
 
+AFTAPlayerState* AFTAPlayerController::GetFTAPlayerState()
+{
+	AFTAPlayerState* FTAPlayerState = CastChecked<AFTAPlayerState>(PlayerState);
+	return FTAPlayerState;
+}
+
 
 void AFTAPlayerController::Tick(float DeltaSeconds)
 {

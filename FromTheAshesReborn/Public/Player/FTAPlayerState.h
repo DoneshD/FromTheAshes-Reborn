@@ -20,9 +20,14 @@ class FROMTHEASHESREBORN_API AFTAPlayerState : public APlayerState, public IAbil
 protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerState|ASComponent")
 	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
+
+public:
+	TObjectPtr<AActor> HardLockedTargetActor = nullptr;
 	
 public:
+	
 	AFTAPlayerState(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+	
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "PlayerState|ASComponent")
