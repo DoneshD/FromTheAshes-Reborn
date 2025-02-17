@@ -4,7 +4,7 @@
 #include "Kismet/KismetMathLibrary.h"
 
 
-float ULockOnFunctionLibrary::AngleFromLockedTarget(AActor* OwningActor, AActor* LockOnTarget)
+float ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget)
 {
 	FVector AttackTargetLocation = LockOnTarget->GetActorLocation();
 	FVector OwnerLocation = OwningActor->GetActorLocation();
@@ -38,4 +38,27 @@ float ULockOnFunctionLibrary::AngleFromLockedTarget(AActor* OwningActor, AActor*
 
 	AngleFromTarget = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
 	return AngleFromTarget;
+}
+
+ELockOnInputOrientationDirection ULockOnFunctionLibrary::OrientationOfInput(float Angle)
+{
+	if (Angle >= -25.0f && Angle < 25.0f)
+	{
+		return ELockOnInputOrientationDirection::Forward;
+	}
+	if (Angle > 25.0f && Angle < 135.0f)
+	{
+		return ELockOnInputOrientationDirection::Right;
+	}
+	if (Angle < -25.0f && Angle > -135.0f)
+	{
+		return ELockOnInputOrientationDirection::Left;
+	}
+	if (FMath::Abs(Angle) >= 135.0f)
+	{
+		return ELockOnInputOrientationDirection::Backward;
+	}
+
+	UE_LOG(LogTemp, Error, TEXT("OrientationOfInput None"));
+	return ELockOnInputOrientationDirection::None;
 }

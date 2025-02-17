@@ -23,6 +23,8 @@ void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 
 void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
 {
+	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+	
 	FGameplayAbilityActorInfo* ActorInfo = AbilityActorInfo.Get();
 	check(ActorInfo);
 	check(InOwnerActor);
@@ -45,8 +47,7 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 			}
 		}
 	}
-
-	Super::InitAbilityActorInfo(InOwnerActor, InAvatarActor);
+	
 }
 
 void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc)

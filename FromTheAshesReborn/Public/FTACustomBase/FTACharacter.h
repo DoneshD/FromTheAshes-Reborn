@@ -50,6 +50,8 @@ public:
 	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 
+	virtual void InitAbilitySystemComponent();
+
 	void AddCharacterBaseAbilities();
 	
 };

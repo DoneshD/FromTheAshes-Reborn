@@ -26,11 +26,8 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// UE_LOG(LogTemp, Warning, TEXT("AFTACharacter InitAbilityActorInfo OwnerActor: %s"), *this->GetName())
-	// UE_LOG(LogTemp, Warning, TEXT("AFTACharacter InitAbilityActorInfo Avatar: %s"), *this->GetName())
-
-	// FTAAbilitySystemComponent->InitAbilityActorInfo(this, this);
+	
+	InitAbilitySystemComponent();
 	AddCharacterBaseAbilities();
 }
 
@@ -73,6 +70,11 @@ bool AFTACharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagC
 		return FTA_ASC->HasAnyMatchingGameplayTags(TagContainer);
 	}
 	return false;
+}
+
+void AFTACharacter::InitAbilitySystemComponent()
+{
+	FTAAbilitySystemComponent->InitAbilityActorInfo(this, this);
 }
 
 void AFTACharacter::AddCharacterBaseAbilities()

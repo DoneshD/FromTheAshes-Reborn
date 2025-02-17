@@ -52,7 +52,7 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 
-	void InitAbilitySystemComponent();
+	virtual void InitAbilitySystemComponent() override;
 	
 	//---------------------------------------Combo Interface-----------------------------------//
 

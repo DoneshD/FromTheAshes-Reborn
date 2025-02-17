@@ -4,18 +4,27 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "LockOnFunctionLibrary.generated.h"
 
-
-class UCharacterMovementComponent;
+UENUM(BlueprintType)
+enum class ELockOnInputOrientationDirection : uint8
+{
+	None	UMETA(DisplayName = "None"),
+	Forward UMETA(DisplayName = "Forward"),
+	Backward UMETA(DisplayName = "Backward"),
+	Left UMETA(DisplayName = "Left"),
+	Right UMETA(DisplayName = "Right")
+};
 
 UCLASS()
 class FROMTHEASHESREBORN_API ULockOnFunctionLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
-private:
-	// static TObjectPtr<UCharacterMovementComponent> CharacterMovement;
+
 public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static float AngleFromLockedTarget(AActor* OwningActor, AActor* LockOnTarget);
+	static float AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static ELockOnInputOrientationDirection OrientationOfInput(float Angle);
 	
 };

@@ -73,9 +73,6 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	{
 		return;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("APlayerCharacter InitAbilityActorInfo OwnerActor: %s"), *FTAPlayerState->GetName())
-	UE_LOG(LogTemp, Warning, TEXT("APlayerCharacter InitAbilityActorInfo Avatar: %s"), *this->GetName())
 	
 	FTAAbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	FTAAbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
