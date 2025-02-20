@@ -21,7 +21,7 @@ struct FFTAAppliedEquipmentItem
 
 	FString GetDebugString() const;
 
-private:
+public:
 	friend UEquipmentManagerComponent;
 
 	// The equipment class that got equipped

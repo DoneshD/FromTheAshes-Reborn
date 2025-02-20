@@ -123,7 +123,6 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> Me
 		PlayerComboManagerInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
 		PlayerComboManagerInterface->SetCurrentComboIndex(PlayerComboManagerInterface->GetCurrentComboIndex() + 1);
 		PlayAttackMontage(AttackMontageToPlay);
-
 	}
 	else
 	{
