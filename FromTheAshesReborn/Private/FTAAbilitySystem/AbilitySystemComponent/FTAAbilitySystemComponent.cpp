@@ -139,6 +139,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		// if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
 		if(AbilitySpec.IsActive())
 		{
+			
 			UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
 			
 			if(CurrentFTAAbility->CanBeCanceledForQueue)
@@ -153,6 +154,10 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 						return;
 					}
 				}
+			}
+			else
+			{
+				CancelAbility(InputedAbilitySpec.Ability);
 			}
 		}
 	}
@@ -183,6 +188,7 @@ void UFTAAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 	
 	if (Spec.IsActive())
 	{
+		TryActivateAbility(Spec.Handle);
 		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}

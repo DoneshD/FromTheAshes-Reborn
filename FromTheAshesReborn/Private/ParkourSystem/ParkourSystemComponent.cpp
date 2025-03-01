@@ -734,6 +734,7 @@ void UParkourSystemComponent::FindVaultOrMantleType()
 	}
 	else if (WallDepth >= 60 && WallDepth <= 200)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Here4"));
 		CurrentVaultDepthTag = FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average");
 	}
 	else if (WallDepth < 60)
@@ -748,6 +749,9 @@ void UParkourSystemComponent::FindVaultOrMantleType()
 
 	if(CheckVaultSurface())
 	{
+		UE_LOG(LogTemp, Log, TEXT("CurrentVaultHeightTag: %s"), *CurrentVaultHeightTag.ToString());
+		UE_LOG(LogTemp, Log, TEXT("CurrentVaultDepthTag: %s"), *CurrentVaultDepthTag.ToString());
+
 		//-------------Big,Big------
 		if(CurrentVaultHeightTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Height.High")) && CurrentVaultDepthTag.MatchesTag(FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Long")))
 		{
@@ -807,6 +811,8 @@ void UParkourSystemComponent::FindVaultOrMantleType()
 		UE_LOG(LogTemp, Warning, TEXT("Vault surfaced blocked"))
 		SetParkourAction(FGameplayTag::RequestGameplayTag("Parkour.Action.NoAction"));
 	}
+	
+
 }
 
 void UParkourSystemComponent::PrintVaultHeightandDepth()

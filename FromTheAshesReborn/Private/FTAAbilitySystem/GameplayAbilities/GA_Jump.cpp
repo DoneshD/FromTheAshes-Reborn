@@ -1,17 +1,29 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_Jump.h"
+
 #include "FTACustomBase/FTACharacter.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UGA_Jump::UGA_Jump()
 {
     AbilityInputID = EAbilityInputID::Jump;
-    // InstancingPolicy = EGameplayAbilityInstancingPolicy::NonInstanced;
+    InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
+}
+
+void UGA_Jump::OnCharacterLanded(const FHitResult& Hit)
+{
+    if (CharacterRef)
+    {
+        CharacterRef->LandedDelegate.RemoveDynamic(this, &UGA_Jump::OnCharacterLanded);
+        EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
+    }
 }
 
 void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+    
 
     if (HasAuthorityOrPredictionKey(ActorInfo, &ActivationInfo))
     {
@@ -20,10 +32,18 @@ void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
             EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
             return;
         }
+        
+        CharacterRef = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
+        if (!CharacterRef)
+        {
+            EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+            return;
+        }
 
-        ACharacter* Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get());
-        Character->Jump();
-        EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
+        CharacterRef->LandedDelegate.AddDynamic(this, &UGA_Jump::OnCharacterLanded);
+
+        CharacterRef->Jump();
+        CharacterRef->JumpCurrentCount;
     }
 }
 
@@ -34,9 +54,14 @@ bool UGA_Jump::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const
     {
         return false;
     }
-
+    
     // Ensure the character can jump
-    const AFTACharacter* Character = CastChecked<AFTACharacter>(ActorInfo->AvatarActor.Get(), ECastCheckedType::NullAllowed);
+    ACharacter* Character = CastChecked<ACharacter>(ActorInfo->AvatarActor.Get());
+    if(Character->JumpCurrentCount > 2)
+    {
+        return false;
+    }
+    
     return Character && Character->CanJump();
 }
 
@@ -51,4 +76,9 @@ void UGA_Jump::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGam
     }
 
     EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+}
+
+void UGA_Jump::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
+{
+    Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
