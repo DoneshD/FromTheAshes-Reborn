@@ -1,4 +1,5 @@
 #include "FTACustomBase/FTACharacter.h"
+#include "MotionWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
@@ -21,6 +22,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	EquipmentManagerComponent = CreateDefaultSubobject<UEquipmentManagerComponent>("EquipmentManagerComponent");
 	this->AddOwnedComponent(EquipmentManagerComponent);
 
+	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
+	this->AddOwnedComponent(MotionWarpingComponent);
+
 }
 
 void AFTACharacter::BeginPlay()
@@ -35,6 +39,11 @@ void AFTACharacter::BeginPlay()
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 {
 	return GetFTAAbilitySystemComponent();
+}
+
+TObjectPtr<UMotionWarpingComponent> AFTACharacter::GetMotionWarpingComponent()
+{
+	return MotionWarpingComponent;
 }
 
 void AFTACharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const

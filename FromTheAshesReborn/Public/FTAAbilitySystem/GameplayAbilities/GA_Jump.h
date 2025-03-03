@@ -11,7 +11,6 @@ class FROMTHEASHESREBORN_API UGA_Jump : public UFTAGameplayAbility
 
 private:
 	int JumpCount = 0;
-	int TestInt = 0;
 	
 	ACharacter* CharacterRef;
 

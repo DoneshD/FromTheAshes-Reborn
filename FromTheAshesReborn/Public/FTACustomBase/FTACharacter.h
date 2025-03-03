@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UMotionWarpingComponent;
 struct FGameplayEffectSpec;
 class UEquipmentManagerComponent;
 class UFTACharacterData;
@@ -35,6 +36,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Character | Abilities")
 	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "MotionWarping")
+	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 	
 public:
 	
@@ -44,6 +48,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const  { return FTAAbilitySystemComponent; };
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	TObjectPtr<UMotionWarpingComponent> GetMotionWarpingComponent();
 
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
 	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;

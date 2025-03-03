@@ -46,9 +46,6 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
 	this->AddOwnedComponent(ParkourSystemComponent);
 
-	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
-	this->AddOwnedComponent(MotionWarpingComponent);
-
 }
 
 void APlayerCharacter::BeginPlay()

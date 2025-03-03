@@ -80,7 +80,7 @@ protected:
 
 	// Called when target data is ready
 	UFUNCTION(BlueprintImplementableEvent)
-	void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
+	void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& HitResult);
 	
 	UFUNCTION()
 	void OnHitAdded(FHitResult LastItem);

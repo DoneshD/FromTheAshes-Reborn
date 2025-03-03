@@ -27,9 +27,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "ParkourSystem")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "MotionWarping")
-	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseTurnRate;

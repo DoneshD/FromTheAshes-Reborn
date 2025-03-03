@@ -9,6 +9,7 @@ FFTAGameplayEffectContext* FFTAGameplayEffectContext::ExtractEffectContext(struc
 	{
 		return (FFTAGameplayEffectContext*)BaseEffectContext;
 	}
+	UE_LOG(LogTemp, Error, TEXT("FFTAGameplayEffectContext:: nullptr"))
 	return nullptr;
 }
 

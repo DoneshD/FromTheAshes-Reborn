@@ -13,9 +13,9 @@ UGA_Jump::UGA_Jump()
 
 void UGA_Jump::OnCharacterLanded(const FHitResult& Hit)
 {
-    if (CharacterRef)
+    if (GetFTACharacterFromActorInfo())
     {
-        CharacterRef->LandedDelegate.RemoveDynamic(this, &UGA_Jump::OnCharacterLanded);
+        GetFTACharacterFromActorInfo()->LandedDelegate.RemoveDynamic(this, &UGA_Jump::OnCharacterLanded);
         EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
     }
 }
@@ -34,16 +34,16 @@ void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
         }
         
         CharacterRef = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
-        if (!CharacterRef)
+        if (!GetFTACharacterFromActorInfo())
         {
             EndAbility(Handle, ActorInfo, ActivationInfo, true, true);
             return;
         }
 
-        CharacterRef->LandedDelegate.AddDynamic(this, &UGA_Jump::OnCharacterLanded);
+        GetFTACharacterFromActorInfo()->LandedDelegate.AddDynamic(this, &UGA_Jump::OnCharacterLanded);
 
-        CharacterRef->Jump();
-        CharacterRef->JumpCurrentCount;
+        GetFTACharacterFromActorInfo()->Jump();
+        GetFTACharacterFromActorInfo()->JumpCurrentCount;
     }
 }
 
