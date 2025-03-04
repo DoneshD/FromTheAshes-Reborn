@@ -7,6 +7,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbilitySystemComponent*, SourceASC, float,
                                                UnmitigatedDamage, float, MitigatedDamage);
+//DEBUG REMOVE LATER
+class AWeaponActorBase;
 
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;
@@ -18,6 +20,10 @@ UCLASS()
 class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemComponent
 {
 	GENERATED_BODY()
+
+//DEBUG REMOVE LATER
+public:
+	TObjectPtr<AWeaponActorBase> TestWeaponActor;
 
 public:
 
@@ -73,6 +79,8 @@ public:
 	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
 	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
 	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
+
+	bool IsAbilityAlreadyActive(TSubclassOf<UGameplayAbility> AbilityClass);
 	
 	// Uses a gameplay effect to add the specified dynamic granted tag.
 	void AddDynamicTagGameplayEffect(const FGameplayTag& Tag);
@@ -109,5 +117,7 @@ public:
 
 	// Version of function in AbilitySystemGlobals that returns correct type
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
+
+	
 	
 };

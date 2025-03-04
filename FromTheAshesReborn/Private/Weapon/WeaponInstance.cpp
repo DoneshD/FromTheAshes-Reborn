@@ -1,5 +1,9 @@
 ﻿#include "Weapon/WeaponInstance.h"
+
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
+#include "Weapon/WeaponActorBase.h"
 #include "Weapon/WeaponDefinition.h"
 
 UWeaponInstance::UWeaponInstance(const FObjectInitializer& ObjectInitializer)
@@ -40,7 +44,12 @@ void UWeaponInstance::SpawnEquipmentActors(const TArray<FEquipmentActorToSpawn>&
 			NewActor->FinishSpawning(FTransform::Identity, /*bIsDefaultTransform=*/ true);
 			NewActor->SetActorRelativeTransform(SpawnInfo.AttachTransform);
 			NewActor->AttachToComponent(AttachTarget, FAttachmentTransformRules::KeepRelativeTransform, SpawnInfo.AttachSocket);
+			//DEBUG REMOVE LATER
+
+			AFTACharacter* AFTAChar = Cast<AFTACharacter>(GetPawn());
 			
+			UFTAAbilitySystemComponent* FTAASC = AFTAChar->GetFTAAbilitySystemComponent();
+			FTAASC->TestWeaponActor = Cast<AWeaponActorBase>(NewActor);
 			SpawnedActors.Add(NewActor);
 		}
 	}

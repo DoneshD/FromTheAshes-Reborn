@@ -18,6 +18,8 @@ void UGA_Dash_Grounded::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		Rotation
 		);
 
+	
+
 	UE_LOG(LogTemp, Warning, TEXT("UGA_Dash_Grounded Here"))
 }
 
@@ -26,6 +28,7 @@ bool UGA_Dash_Grounded::CanActivateAbility(const FGameplayAbilitySpecHandle Hand
 	const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+	
 }
 
 void UGA_Dash_Grounded::CancelAbility(const FGameplayAbilitySpecHandle Handle,

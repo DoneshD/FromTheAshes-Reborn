@@ -367,6 +367,21 @@ void UFTAAbilitySystemComponent::CancelActivationGroupAbilities(EFTAAbilityActiv
 	CancelAbilitiesByFunc(ShouldCancelFunc);
 }
 
+bool UFTAAbilitySystemComponent::IsAbilityAlreadyActive(TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		if (Spec.Ability->GetClass() == AbilityClass)
+		{
+			if(Spec.ActiveCount > 0)
+			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void UFTAAbilitySystemComponent::AddDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {
 	
