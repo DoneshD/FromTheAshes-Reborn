@@ -28,7 +28,6 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	check(ASC);
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	UE_LOG(LogTemp, Warning, TEXT("ActivateAbility Super"))
 
 
 	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
@@ -39,8 +38,6 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
 		if(WeaponActor)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("WeaponActor: %s"), *WeaponActor->GetName());
-
 			// MeleeWeaponActor = WeaponActor;
 			//Need to try to bind with a function that takes a ref
 			// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
