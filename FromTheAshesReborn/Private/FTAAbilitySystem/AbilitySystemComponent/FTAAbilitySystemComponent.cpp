@@ -117,7 +117,6 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 	FGameplayAbilitySpec InputedAbilitySpec;
-	// Get the ability from the input tag
 	 if (InputTag.IsValid())
 	 {
 	 	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
@@ -126,7 +125,11 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	 		{
 	 			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
 	 			{
-	 				InputedAbilitySpec = AbilitySpec;
+	 				bool CanActivate = AbilitySpec.Ability->CanActivateAbility(AbilitySpec.Handle, AbilityActorInfo.Get());
+	 				if(CanActivate)
+	 				{
+	 					InputedAbilitySpec = AbilitySpec;
+	 				}
 	 			}
 	 		}
 	 	}
