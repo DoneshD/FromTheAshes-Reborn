@@ -59,5 +59,8 @@ public:
 	virtual void InitAbilitySystemComponent();
 
 	void AddCharacterBaseAbilities();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void TempLaunchCharacter();
 	
 };

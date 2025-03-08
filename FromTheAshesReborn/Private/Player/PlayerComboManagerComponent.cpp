@@ -103,6 +103,7 @@ void UPlayerComboManagerComponent::SetCurrentComboIndex(int Index)
 
 void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTag, int32 NewCount)
 {
+
 	if (NewCount > 0 && ASComponent->HasMatchingGameplayTag(CallbackTag))
 	{
 		FTimerHandle& ComboWindowTimer = TagTimerHandles.FindOrAdd(CallbackTag);
@@ -116,6 +117,7 @@ void UPlayerComboManagerComponent::ComboWindowTagChanged(const FGameplayTag Call
 		RemoveGameplayTagEvent(CallbackTag);
 	}
 }
+
 
 void UPlayerComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {

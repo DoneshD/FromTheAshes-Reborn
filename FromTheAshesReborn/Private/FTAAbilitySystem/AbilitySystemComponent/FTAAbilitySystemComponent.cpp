@@ -116,6 +116,7 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
+	
 	FGameplayAbilitySpec InputedAbilitySpec;
 	 if (InputTag.IsValid())
 	 {
@@ -158,9 +159,10 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 					}
 				}
 			}
+			//Temporary solution for jumping, also fixes strange issue with launcher->air combos
 			else
 			{
-				CancelAbility(InputedAbilitySpec.Ability);
+				CancelAbility(CurrentFTAAbility);
 			}
 		}
 	}
@@ -191,7 +193,7 @@ void UFTAAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 	
 	if (Spec.IsActive())
 	{
-		TryActivateAbility(Spec.Handle);
+		// TryActivateAbility(Spec.Handle);
 		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}

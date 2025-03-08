@@ -120,13 +120,17 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> Me
 
 	AttackMontageToPlay = MatchingDataAsset->MontageToPlay;
 	
-	if(AttackMontageToPlay)
+	if (AttackMontageToPlay)
 	{
 		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
+		int32 CurrentComboIndex = PlayerComboManagerInterface->GetCurrentComboIndex();
+    
 		PlayerComboManagerInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
-		PlayerComboManagerInterface->SetCurrentComboIndex(PlayerComboManagerInterface->GetCurrentComboIndex() + 1);
+		PlayerComboManagerInterface->SetCurrentComboIndex(CurrentComboIndex + 1);
+
 		PlayAttackMontage(AttackMontageToPlay);
 	}
+
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));

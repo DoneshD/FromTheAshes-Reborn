@@ -114,14 +114,14 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTag UniqueIdentifierTag;
-	
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combo")
 	bool CanBeCanceledForQueue = false;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combo")
 	FGameplayTag ComboWindowTag;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combo")
 	FGameplayTagContainer QueueableAbilitiesTags;
 	
 };
