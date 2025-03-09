@@ -4,6 +4,7 @@
 #include "DidItHitActorComponent.h"
 #include "DataAsset/MeleeAttackDataAsset.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "Player/PlayerComboManagerInterface.h"
 #include "Weapon/MeleeWeaponInstance.h"
 #include "Weapon/WeaponActorBase.h"
@@ -39,9 +40,10 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		if(WeaponActor)
 		{
 			// MeleeWeaponActor = WeaponActor;
-			//Need to try to bind with a function that takes a ref
 			// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+			//Need to try to bind with a function that takes a ref
 			GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+			PerformMeleeAttack(MeleeAttackAssets);
 			return;
 		}
 		else
@@ -138,6 +140,28 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> Me
 	}
 }
 
+void UGA_MeleeWeaponAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)
+{
+	AttackMontageToPlay = AttackMontage;
+	if(AttackMontageToPlay)
+	{
+		Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
+		1.0f, NAME_None, false, 1.0f);
+		Task->OnBlendOut.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
+		Task->OnCompleted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
+		Task->OnInterrupted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
+		Task->OnCancelled.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
+		Task->EventReceived.AddDynamic(this, &UGA_MeleeWeaponAttack::EventReceived);
+		
+		Task->ReadyForActivation();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No attack montage"));
+	}
+}
+
+
 void UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting()
 {
 	check(CurrentActorInfo);
@@ -162,6 +186,11 @@ void UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting()
 	GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->ClearHitArray();
 }
 
+void UGA_MeleeWeaponAttack::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
+{
+	ApplyGameplayEffectToTarget(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, TargetData, MeleeAttackDamageEffect, 1, 1);
+}
+
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 {
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
@@ -175,4 +204,18 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 	TargetDataHandle.Add(TargetData);
 	
 	OnMeleeWeaponTargetDataReady(TargetDataHandle);
+}
+
+void UGA_MeleeWeaponAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+}
+
+void UGA_MeleeWeaponAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	ResetMeleeAttack();
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+}
+
+void UGA_MeleeWeaponAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
 }

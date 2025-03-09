@@ -8,8 +8,6 @@
 #include "Input/FTAInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameplayTagContainer.h"
-#include "GameplayTags/FTAGameplayTags.h"
-#include "ParkourSystem/ParkourSystemComponent.h"
 
 AFTAPlayerController::AFTAPlayerController(const FObjectInitializer& ObjectInitializer)
 {

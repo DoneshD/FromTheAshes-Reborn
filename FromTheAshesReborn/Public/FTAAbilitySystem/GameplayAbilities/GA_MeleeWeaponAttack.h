@@ -25,6 +25,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attacks")
 	TArray<TObjectPtr<UMeleeAttackDataAsset>> MeleeAttackAssets;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attacks")
+	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
+
 public:
 
 	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());
@@ -50,8 +53,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
 	void PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> MeleeAttackDataAssets);
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void PlayAttackMontage(UAnimMontage* AttackMontage);
+	// UFUNCTION()
+	void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
 
 protected:
 	struct FMeleeWeaponTraceData
@@ -77,12 +80,19 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void EndMeleeWeaponTargeting();
-
-	// Called when target data is ready
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& HitResult);
+	
+	void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
 	
 	UFUNCTION()
 	void OnHitAdded(FHitResult LastItem);
+
+	UFUNCTION()
+	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 };
