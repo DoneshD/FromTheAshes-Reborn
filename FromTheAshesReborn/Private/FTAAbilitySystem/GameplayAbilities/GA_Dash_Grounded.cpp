@@ -18,9 +18,6 @@ void UGA_Dash_Grounded::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		Rotation
 		);
 
-	
-
-	UE_LOG(LogTemp, Warning, TEXT("UGA_Dash_Grounded Here"))
 }
 
 bool UGA_Dash_Grounded::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,

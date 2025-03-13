@@ -100,17 +100,14 @@ public:
 
 public:
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
 	bool bActivateAbilityOnGranted;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
 	bool bActivateOnInput;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability")
-	int PriorityValue;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTag UniqueIdentifierTag;
