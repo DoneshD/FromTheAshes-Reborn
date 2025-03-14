@@ -48,7 +48,7 @@ public:
 
 	FGameplayAbilitySpec QueuedAbilitySpec;
 	
-	UPlayerComboManagerComponent* PCM;
+	// UPlayerComboManagerComponent* PCM;
 	
 public:
 	

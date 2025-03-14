@@ -7,7 +7,6 @@
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 #include "Player/FTAPlayerController.h"
-#include "Player/PlayerComboManagerComponent.h"
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
@@ -39,12 +38,12 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 			{
 				UE_LOG(LogTemp, Error, TEXT("PlayerController is NULL"));
 			}
-			PCM = OwnerPawn->FindComponentByClass<UPlayerComboManagerComponent>();
+			// PCM = OwnerPawn->FindComponentByClass<UPlayerComboManagerComponent>();
 
-			if(!PCM)
-			{
-				UE_LOG(LogTemp, Error, TEXT("PCM is NULL"));
-			}
+			// if(!PCM)
+			// {
+			// 	UE_LOG(LogTemp, Error, TEXT("PCM is NULL"));
+			// }
 		}
 	}
 	

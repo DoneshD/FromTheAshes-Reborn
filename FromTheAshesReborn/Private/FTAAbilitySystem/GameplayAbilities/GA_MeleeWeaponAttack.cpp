@@ -1,11 +1,13 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_MeleeWeaponAttack.h"
 
 #include "AbilitySystemComponent.h"
+#include "ComboManagerComponent.h"
 #include "DidItHitActorComponent.h"
+#include "DataAsset/FTAAbilityDataAsset.h"
 #include "DataAsset/MeleeAttackDataAsset.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
-#include "Player/PlayerComboManagerInterface.h"
+#include "FTACustomBase/FTACharacter.h"
 #include "Weapon/MeleeWeaponInstance.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -30,6 +32,13 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	FTAChar = Cast<AFTACharacter>(GetAvatarActorFromActorInfo());
+
+	if(!FTAChar)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack - Avatar Actor Not FTAChar"));
+		return;
+	}
 
 	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
 	
@@ -70,41 +79,16 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 
 void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 {
-	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-
-	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
-	PlayerComboManagerInterface->SetCurrentComboIndex(0);
-}
-bool UGA_MeleeWeaponAttack::FindMatchingTagContainer(const TArray<UMeleeAttackDataAsset*>& MeleeAttackDataAssets, TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset)
-{
-	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
-	
-	for (int32 Index = 0; Index < MeleeAttackDataAssets.Num(); ++Index)
-	{
-		if (MeleeAttackDataAssets[Index])
-		{
-			if (PlayerComboManagerInterface->GetCurrentComboContainer().HasAll(MeleeAttackDataAssets[Index]->RequiredTags))
-			{
-				if(MeleeAttackDataAssets[Index]->RequiredIndex == PlayerComboManagerInterface->GetCurrentComboIndex())
-				{
-					OutMatchingDataAsset = MeleeAttackDataAssets[Index];
-					return true;
-				}
-			}
-		}
-	}
-	PlayerComboManagerInterface->GetCurrentComboContainer().Reset();
-	PlayerComboManagerInterface->SetCurrentComboIndex(0);
-	OutMatchingDataAsset = MeleeAttackDataAssets[0];
-	return true;
+	FTAChar->ComboManagerComponent->GetCurrentComboContainer().Reset();
+	FTAChar->ComboManagerComponent->SetCurrentComboIndex(0);
 }
 
-void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> MeleeAttackDataAssets)
-{
-	IPlayerComboManagerInterface* PlayerComboManagerInterface = Cast<IPlayerComboManagerInterface>(GetAvatarActorFromActorInfo());
 
-	TObjectPtr<UMeleeAttackDataAsset> MatchingDataAsset;
-	bool DataAssetFound = FindMatchingTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
+void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> MeleeAttackDataAssets)
+{
+
+	TObjectPtr<UFTAAbilityDataAsset> MatchingDataAsset;
+	bool DataAssetFound = FTAChar->ComboManagerComponent->FindMatchingAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
 	
 	if(!DataAssetFound)
 	{
@@ -124,11 +108,12 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> Me
 	
 	if (AttackMontageToPlay)
 	{
-		FGameplayTag AttackIndentiferTag = MatchingDataAsset->AttackIndentiferTag;
-		int32 CurrentComboIndex = PlayerComboManagerInterface->GetCurrentComboIndex();
-    
-		PlayerComboManagerInterface->GetCurrentComboContainer().AddTag(AttackIndentiferTag);
-		PlayerComboManagerInterface->SetCurrentComboIndex(CurrentComboIndex + 1);
+		FGameplayTag TestTag = MatchingDataAsset->UniqueIdentifierTag;
+
+		int32 CurrentComboIndex = FTAChar->ComboManagerComponent->GetCurrentComboIndex();
+
+		FTAChar->ComboManagerComponent->GetCurrentComboContainer().AddTag(TestTag);
+		FTAChar->ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 
 		PlayAttackMontage(AttackMontageToPlay);
 	}

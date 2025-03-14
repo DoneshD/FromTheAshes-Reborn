@@ -3,11 +3,9 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Player/PlayerComboManagerComponent.h"
 #include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
-#include "MotionWarpingComponent.h"
 
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -39,9 +37,6 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
-	
-	PlayerComboManagerComponent = CreateDefaultSubobject<UPlayerComboManagerComponent>(TEXT("PlayerComboManagerComponent"));
-	this->AddOwnedComponent(PlayerComboManagerComponent);
 
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
 	this->AddOwnedComponent(ParkourSystemComponent);
@@ -80,19 +75,4 @@ void APlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
 	InitAbilitySystemComponent();
-}
-
-FGameplayTagContainer& APlayerCharacter::GetCurrentComboContainer()
-{
-	return PlayerComboManagerComponent->GetCurrentComboContainer();
-}
-
-int32 APlayerCharacter::GetCurrentComboIndex()
-{
-	return PlayerComboManagerComponent->GetCurrentComboIndex();
-}
-
-void APlayerCharacter::SetCurrentComboIndex(int ComboIndex)
-{
-	PlayerComboManagerComponent->SetCurrentComboIndex(ComboIndex);
 }

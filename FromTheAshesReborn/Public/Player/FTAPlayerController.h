@@ -13,7 +13,6 @@
 
 class AFTAPlayerState;
 class UFTAInputComponent;
-class UPlayerComboManagerComponent;
 class UAbilitySystemComponent;
 class UEnhancedInputComponent;
 class UInputMappingContext;

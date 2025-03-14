@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UComboManagerComponent;
 class UMotionWarpingComponent;
 struct FGameplayEffectSpec;
 class UEquipmentManagerComponent;
@@ -39,6 +40,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "MotionWarping")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Combo")
+	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 	
 public:
 	

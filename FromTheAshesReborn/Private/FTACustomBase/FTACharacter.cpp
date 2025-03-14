@@ -1,4 +1,6 @@
 #include "FTACustomBase/FTACharacter.h"
+
+#include "ComboManagerComponent.h"
 #include "MotionWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -24,6 +26,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	this->AddOwnedComponent(MotionWarpingComponent);
+
+	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
+	this->AddOwnedComponent(ComboManagerComponent);
 
 }
 

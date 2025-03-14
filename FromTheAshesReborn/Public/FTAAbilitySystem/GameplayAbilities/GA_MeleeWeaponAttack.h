@@ -6,6 +6,7 @@
 #include "GA_MeleeWeaponAttack.generated.h"
 
 
+class UFTAAbilityDataAsset;
 class UMeleeAttackDataAsset;
 class AWeaponActorBase;
 class UMeleeWeaponInstance;
@@ -22,11 +23,16 @@ protected:
 
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 	
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
+	// TArray<TObjectPtr<UMeleeAttackDataAsset>> MeleeAttackAssets;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
-	TArray<TObjectPtr<UMeleeAttackDataAsset>> MeleeAttackAssets;
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> MeleeAttackAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
+
+	TObjectPtr<AFTACharacter> FTAChar;
 
 public:
 
@@ -47,11 +53,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
 	void ResetMeleeAttack();
 	
-	bool FindMatchingTagContainer(const TArray<UMeleeAttackDataAsset*>& MeleeAttackDataAssets,
-		TObjectPtr<UMeleeAttackDataAsset>& OutMatchingDataAsset);
-	
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
-	void PerformMeleeAttack(TArray<UMeleeAttackDataAsset*> MeleeAttackDataAssets);
+	void PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> MeleeAttackDataAssets);
 
 	// UFUNCTION()
 	void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);

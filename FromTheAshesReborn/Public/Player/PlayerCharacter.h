@@ -2,25 +2,20 @@
 
 #include "CoreMinimal.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "Player/PlayerComboManagerInterface.h"
 #include "PlayerCharacter.generated.h"
 
 class UMotionWarpingComponent;
 class UParkourSystemComponent;
-class UPlayerComboManagerComponent;
 class UGroundedMeleeComboComponent;
 class UGameplayEffect;
 class UTargetSystemComponent;
 
 UCLASS()
-class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter, public IPlayerComboManagerInterface
+class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 {
 	GENERATED_BODY()
 
 protected:
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerComboManager")
-	TObjectPtr<UPlayerComboManagerComponent> PlayerComboManagerComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Targeting")
 	TObjectPtr<UTargetSystemComponent> TargetSystemComponent;
@@ -51,10 +46,5 @@ public:
 
 	virtual void InitAbilitySystemComponent() override;
 	
-	//---------------------------------------Combo Interface-----------------------------------//
-
-	virtual FGameplayTagContainer& GetCurrentComboContainer() override;
-	virtual int32 GetCurrentComboIndex() override;
-	virtual void SetCurrentComboIndex(int ComboIndex) override;
 
 };
