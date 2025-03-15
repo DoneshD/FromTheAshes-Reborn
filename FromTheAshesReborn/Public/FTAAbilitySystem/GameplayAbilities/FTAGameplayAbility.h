@@ -48,7 +48,6 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 	friend class UFTAAbilitySystemComponent;
 
-//variables
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
@@ -58,7 +57,6 @@ protected:
 	EFTAAbilityActivationGroup ActivationGroup;
 
 
-//functions
 public:
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 

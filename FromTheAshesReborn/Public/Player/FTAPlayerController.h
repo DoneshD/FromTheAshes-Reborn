@@ -64,8 +64,6 @@ protected:
 	TObjectPtr<UInputAction> Input_SlowTime;
 
 	bool IsTimeSlowed = false;
-
-	//-------------------------INPUT QUEUE------------------------------//
 	
 
 	void SendLocalInputToASC(bool, EAbilityInputID);

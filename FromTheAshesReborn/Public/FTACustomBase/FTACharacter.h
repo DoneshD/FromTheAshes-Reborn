@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UWallRunningComponent;
 class UComboManagerComponent;
 class UMotionWarpingComponent;
 struct FGameplayEffectSpec;
@@ -43,6 +44,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Combo")
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Wallrunning")
+	TObjectPtr<UWallRunningComponent> WallRunningComponent;
 	
 public:
 	

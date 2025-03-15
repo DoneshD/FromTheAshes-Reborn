@@ -33,7 +33,6 @@ void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
             return;
         }
         
-        CharacterRef = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
         if (!GetFTACharacterFromActorInfo())
         {
             EndAbility(Handle, ActorInfo, ActivationInfo, true, true);

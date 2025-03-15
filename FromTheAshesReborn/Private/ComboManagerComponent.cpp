@@ -88,7 +88,7 @@ void UComboManagerComponent::ComboWindowTagChanged(const FGameplayTag CallbackTa
 
 void UComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 {
-	//Casting in tick!!!!!
+	//TODO: Casting in tick!!!!!
 	UFTAGameplayAbility* QueuedAbility = Cast<UFTAGameplayAbility>(FTAASC->QueuedAbilitySpec.Ability);
 	if(!QueuedAbility)
 	{
@@ -105,7 +105,9 @@ void UComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 
 void UComboManagerComponent::ProceedToNextAbility(TSubclassOf<UGameplayAbility> AbilityToActivateClass)
 {
+	//TODO: Need to change this 
 	FTAASC->CancelAllAbilities();
+	
 	FTAASC->QueuedAbilitySpec = nullptr;
 	
 	bool bActivateAbility = FTAASC->TryActivateAbilityByClass(AbilityToActivateClass);

@@ -10,7 +10,7 @@ UGA_MeleeWeaponAttack_Launcher::UGA_MeleeWeaponAttack_Launcher()
 
 bool UGA_MeleeWeaponAttack_Launcher::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	
+	//Return true if owner is not player
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(ActorInfo->OwnerActor.Get());
 	if(ActorInfo->OwnerActor.Get() != PS)
 	{

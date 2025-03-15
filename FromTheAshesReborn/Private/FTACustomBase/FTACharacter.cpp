@@ -2,6 +2,7 @@
 
 #include "ComboManagerComponent.h"
 #include "MotionWarpingComponent.h"
+#include "WallRunningComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
@@ -29,6 +30,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
 	this->AddOwnedComponent(ComboManagerComponent);
+	
+	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
+	this->AddOwnedComponent(WallRunningComponent);
 
 }
 
