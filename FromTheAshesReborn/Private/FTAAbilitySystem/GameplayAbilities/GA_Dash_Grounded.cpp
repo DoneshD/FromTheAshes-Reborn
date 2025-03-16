@@ -9,8 +9,7 @@ void UGA_Dash_Grounded::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	FVector DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + 2000.0f * ActorInfo->AvatarActor->GetActorForwardVector();
-	DrawDebugSphere(GetWorld(), DashTargetLocation, 100, 12, FColor::Red, true);
+	FVector DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + 800.0f * ActorInfo->AvatarActor->GetActorForwardVector();
 
 	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(GetFTACharacterFromActorInfo()->GetActorLocation(), DashTargetLocation);
 	GetFTACharacterFromActorInfo()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(FName("DashTarget"),

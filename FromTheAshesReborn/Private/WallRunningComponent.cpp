@@ -20,9 +20,9 @@ void UWallRunningComponent::BeginPlay()
 void UWallRunningComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-	CheckForWall();
-	CheckWallRunning();
-	WallRunningMovement();
+	// CheckForWall();
+	// CheckWallRunning();
+	// WallRunningMovement();
 
 }
 
@@ -52,13 +52,13 @@ void UWallRunningComponent::CheckForWall()
 	bWallLeftHit = GetWorld()->LineTraceSingleByObjectType(WallLeftHitResult, StartLocation, EndLocationLeft, QueryParams);
 	bWallRightHit = GetWorld()->LineTraceSingleByObjectType(WallRightHitResult, StartLocation, EndLocationRight, QueryParams);
 
-	// Debug Draw Left Trace (Red for no hit, Green if hit)
-	FColor LeftColor = bWallLeftHit ? FColor::Green : FColor::Red;
-	DrawDebugLine(GetWorld(), StartLocation, EndLocationLeft, LeftColor, false, 2.0f, 0, 2.0f);
-	
-	// Debug Draw Right Trace (Red for no hit, Blue if hit)
-	FColor RightColor = bWallRightHit ? FColor::Blue : FColor::Red;
-	DrawDebugLine(GetWorld(), StartLocation, EndLocationRight, RightColor, false, 2.0f, 0, 2.0f);
+	// // Debug Draw Left Trace (Red for no hit, Green if hit)
+	// FColor LeftColor = bWallLeftHit ? FColor::Green : FColor::Red;
+	// DrawDebugLine(GetWorld(), StartLocation, EndLocationLeft, LeftColor, false, 2.0f, 0, 2.0f);
+	//
+	// // Debug Draw Right Trace (Red for no hit, Blue if hit)
+	// FColor RightColor = bWallRightHit ? FColor::Blue : FColor::Red;
+	// DrawDebugLine(GetWorld(), StartLocation, EndLocationRight, RightColor, false, 2.0f, 0, 2.0f);
 	
 	// Draw Impact Points if hit
 	if (bWallLeftHit)
