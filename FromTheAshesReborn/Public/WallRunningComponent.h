@@ -10,10 +10,24 @@ class FROMTHEASHESREBORN_API UWallRunningComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace")
+	float WallRunCheckDistance = 75.0f;
+	
+	FHitResult WallLeftHitResult;
+	FHitResult WallRightHitResult;
+
+	bool bWallLeftHit;
+	bool bWallRightHit;
+
+	bool IsWallRunning = false;
+
 public:
 
-	bool CheckForWall();
-	bool CheckWallRunning();
+	bool CanWallRun(); 
+	void CheckForWall();
+	void CheckWallRunning();
 
 	void WallRunningMovement();
 
