@@ -23,6 +23,20 @@ protected:
 
 	bool IsWallRunning = false;
 
+	FVector WallNormal;
+	FVector WallForward;
+	
+	ACharacter* CharRef;
+
+	float WallRunAcceleration = 20.0f;
+	float WallRunGravityCounterAcceleration = 10.0f;
+
+	float WallRunKickOffDuration = 1.75f;
+	float WallRunKickOffCurrent = 1.75f;
+	float WallRunSpeedLossDelay = 0.1f;
+
+	float WallRunMaxSpeed = 1600.0f;
+
 public:
 
 	bool CanWallRun(); 
