@@ -82,6 +82,7 @@ void UWallRunningComponent::CheckWallRunning()
 			IsWallRunning = true;
 			CharRef->GetCharacterMovement()->Velocity = FVector(CharRef->GetVelocity().X, CharRef->GetVelocity().Y, FMath::Clamp(CharRef->GetVelocity().Z, -25.0, 35.0f));
 			CharRef->GetCharacterMovement()->GravityScale = 0;
+			
 		}
 	}
 	else
@@ -95,6 +96,7 @@ void UWallRunningComponent::WallRunningMovement()
 {
 	if(IsWallRunning)
 	{
+		CharRef->JumpCurrentCount = 0;
 		FHitResult WallHitResult = bWallRightHit ? WallRightHitResult : WallLeftHitResult;
 		
 		WallNormal = WallHitResult.Normal;
@@ -111,7 +113,13 @@ void UWallRunningComponent::WallRunningMovement()
 		FVector WallForceVector = WallForward * (WallRunAcceleration * 3.6f * 0.2778f * CharRef->GetCharacterMovement()->Mass * 100.0f);
 		CharRef->GetCharacterMovement()->AddForce(WallForceVector);
 
-		CharRef->GetCharacterMovement()->AddForce(WallNormal * -1.0f * 800000.0f);
+		APlayerController* PC = Cast<APlayerController>(CharRef->GetController());
+		bool IsHoldingLeft = PC && PC->IsInputKeyDown(EKeys::A);
+		bool IsHoldingRight = PC && PC->IsInputKeyDown(EKeys::D);
+		if(!IsHoldingLeft && !IsHoldingRight)
+		{
+			CharRef->GetCharacterMovement()->AddForce(WallNormal * -1.0f * 800000.0f);
+		}
 
 		// FVector AntiGravityForceVector = CharRef->GetActorUpVector() * (WallRunGravityCounterAcceleration * 3.6f * 0.2778f * CharRef->GetCharacterMovement()->Mass * 100.0f);
 		// CharRef->GetCharacterMovement()->AddForce(AntiGravityForceVector);
