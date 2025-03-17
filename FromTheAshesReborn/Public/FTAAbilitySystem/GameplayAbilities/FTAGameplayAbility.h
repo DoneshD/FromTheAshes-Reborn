@@ -110,6 +110,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTag UniqueIdentifierTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	FGameplayTag RequiredCharacterOrientationTag;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combo")
 	bool CanBeCanceledForQueue = false;
 	
