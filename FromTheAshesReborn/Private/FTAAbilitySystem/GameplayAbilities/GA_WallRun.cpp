@@ -20,7 +20,7 @@ void UGA_WallRun::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 		return;
 	}
 
-	FTACharacter->WallRunningComponent->WallRunningMovement();
+	// FTACharacter->WallRunningComponent->WallRunningMovement();
 }
 
 bool UGA_WallRun::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const

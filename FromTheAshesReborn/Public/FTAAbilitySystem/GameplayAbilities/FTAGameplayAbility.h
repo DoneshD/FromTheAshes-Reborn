@@ -121,13 +121,13 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTag RequiredCharacterOrientationTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combo")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
 	bool CanBeCanceledForQueue = false;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combo")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
 	FGameplayTag ComboWindowTag;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combo")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
 	FGameplayTagContainer QueueableAbilitiesTags;
 	
 };
