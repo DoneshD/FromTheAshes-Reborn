@@ -50,15 +50,23 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	EFTAAbilityActivationPolicy ActivationPolicy;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Ability Activation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	EFTAAbilityActivationGroup ActivationGroup;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
+	bool EnableTick;
+
+	FTimerHandle AbilityTickTimerHandle;
 
 
 public:
+	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
+	virtual void AbilityTickComponent();
 
 	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponentFromActorInfo() const;

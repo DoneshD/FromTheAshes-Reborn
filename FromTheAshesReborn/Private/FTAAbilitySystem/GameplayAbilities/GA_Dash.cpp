@@ -13,13 +13,13 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	// FVector DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + 800.0f * ActorInfo->AvatarActor->GetActorForwardVector();
-	//
-	// FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(GetFTACharacterFromActorInfo()->GetActorLocation(), DashTargetLocation);
-	// GetFTACharacterFromActorInfo()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(FName("DashTarget"),
-	// 	DashTargetLocation,
-	// 	Rotation
-	// 	);
+	FVector DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + 800.0f * ActorInfo->AvatarActor->GetActorForwardVector();
+	
+	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(GetFTACharacterFromActorInfo()->GetActorLocation(), DashTargetLocation);
+	GetFTACharacterFromActorInfo()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(FName("DashTarget"),
+		DashTargetLocation,
+		Rotation
+		);
 }
 
 bool UGA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const

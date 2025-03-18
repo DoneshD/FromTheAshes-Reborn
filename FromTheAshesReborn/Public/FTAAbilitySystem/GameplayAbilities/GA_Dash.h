@@ -4,6 +4,8 @@
 #include "FTAGameplayAbility.h"
 #include "GA_Dash.generated.h"
 
+class UFTAAbilityDataAsset;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_Dash : public UFTAGameplayAbility
 {
@@ -12,6 +14,9 @@ class FROMTHEASHESREBORN_API UGA_Dash : public UFTAGameplayAbility
 protected:
 	
 	UGA_Dash();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> DashAssets;
 
 public:
 	

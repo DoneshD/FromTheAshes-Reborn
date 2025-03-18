@@ -11,6 +11,12 @@ UGA_Jump::UGA_Jump()
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
+void UGA_Jump::AbilityTickComponent()
+{
+    Super::AbilityTickComponent();
+
+}
+
 void UGA_Jump::OnCharacterLanded(const FHitResult& Hit)
 {
     if (GetFTACharacterFromActorInfo())

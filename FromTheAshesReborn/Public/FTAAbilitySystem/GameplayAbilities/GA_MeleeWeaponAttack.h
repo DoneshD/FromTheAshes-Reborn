@@ -22,9 +22,6 @@ protected:
 	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> Task;
 
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
-	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
-	// TArray<TObjectPtr<UMeleeAttackDataAsset>> MeleeAttackAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> MeleeAttackAssets;

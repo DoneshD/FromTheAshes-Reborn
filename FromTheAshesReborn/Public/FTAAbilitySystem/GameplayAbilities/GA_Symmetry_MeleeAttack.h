@@ -11,6 +11,7 @@ class FROMTHEASHESREBORN_API UGA_Symmetry_MeleeAttack : public UGA_MeleeWeaponAt
 	GENERATED_BODY()
 
 public:
+	
 	UGA_Symmetry_MeleeAttack();
 	
 };

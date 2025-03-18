@@ -23,6 +23,11 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 	
 }
 
+void UFTAGameplayAbility::AbilityTickComponent()
+{
+	
+}
+
 UFTAAbilitySystemComponent* UFTAGameplayAbility::GetFTAAbilitySystemComponentFromActorInfo() const
 {
 	return (CurrentActorInfo ? Cast<UFTAAbilitySystemComponent>(CurrentActorInfo->AbilitySystemComponent.Get()) : nullptr);
@@ -165,11 +170,18 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	if(EnableTick)
+	{
+		GetWorld()->GetTimerManager().SetTimer(AbilityTickTimerHandle, this, &UFTAGameplayAbility::AbilityTickComponent, 0.016f, true);
+	}
 }
 
 void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	GetWorld()->GetTimerManager().ClearTimer(AbilityTickTimerHandle);
 }
 
 bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
