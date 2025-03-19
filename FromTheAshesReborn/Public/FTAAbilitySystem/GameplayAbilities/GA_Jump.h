@@ -15,35 +15,8 @@ private:
 	
 	int JumpCount = 0;
 	
-	ACharacter* CharacterRef;
 	UCharacterMovementComponent* CMC;
 
-	FTimerHandle FJumpLurchWindowTimerHandle;
-
-protected:
-	
-	float CurrentJumpLurchStrengthMultiplier = 0.0f;
-	float CounterCurrentJumpLurchStrengthMultiplier = 0.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Jump Lurch | ")
-	float JumpLurchBaseStrength = 10000.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
-	float JumpLurchMaxMultiplier = 100.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
-	float JumpLurchMinMultiplier = 10.0f;
-	
-	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
-	float JumpLurchWindowDuration = 0.5f;
-
-	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
-	float CounterLurchMaxMultiplier = 100.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
-	float CounterLurchMinMultiplier = 10.0f;
-	
-	float JumpLurchElapsedTime = 0.0f;
 
 public:
 	
@@ -58,10 +31,4 @@ public:
 	UFUNCTION()
 	void OnCharacterLanded(const FHitResult& Hit);
 
-	void StartJumpLurchWindowTimer();
-
-	void UpdateJumpLurch();
-
-	void UpdateJumpLurchStrength();
-	void UpdateCounterLurchForce();
 };

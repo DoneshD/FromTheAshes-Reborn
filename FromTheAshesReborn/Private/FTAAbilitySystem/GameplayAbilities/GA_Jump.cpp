@@ -55,7 +55,6 @@ void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
         }
         
         GetFTACharacterFromActorInfo()->Jump();
-        StartJumpLurchWindowTimer();
         
     }
 }
@@ -92,46 +91,6 @@ void UGA_Jump::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 void UGA_Jump::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
     Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
-void UGA_Jump::StartJumpLurchWindowTimer()
-{
-    JumpLurchElapsedTime = 0.0f;
-    GetWorld()->GetTimerManager().SetTimer(FJumpLurchWindowTimerHandle, this, &UGA_Jump::UpdateJumpLurch, 0.016, true);
-}
-
-void UGA_Jump::UpdateJumpLurch()
-{
-    JumpLurchElapsedTime += 0.016f;
-    if(JumpLurchElapsedTime >= JumpLurchWindowDuration)
-    {
-        JumpLurchElapsedTime = JumpLurchWindowDuration;
-        GetWorld()->GetTimerManager().ClearTimer(FJumpLurchWindowTimerHandle);
-    }
-
-    UpdateJumpLurchStrength();
-    UpdateCounterLurchForce();
-}
-
-void UGA_Jump::UpdateJumpLurchStrength()
-{
-    float Alpha = FMath::Pow(JumpLurchElapsedTime / JumpLurchWindowDuration, 0.5f);
-
-    CurrentJumpLurchStrengthMultiplier = FMath::Lerp(JumpLurchMaxMultiplier, JumpLurchMinMultiplier, Alpha);
-
-    UE_LOG(LogTemp, Warning, TEXT("LurchForce: %f"), JumpLurchBaseStrength * CurrentJumpLurchStrengthMultiplier);
-    
-    FVector LurchForce = CMC->GetLastInputVector().GetSafeNormal(0.0001f) * (JumpLurchBaseStrength * CurrentJumpLurchStrengthMultiplier);
-    CMC->AddForce(LurchForce);
-}
-
-void UGA_Jump::UpdateCounterLurchForce()
-{
-    float Alpha = FMath::Pow(JumpLurchElapsedTime / JumpLurchWindowDuration, 0.5f); // Square root curve
-    CounterCurrentJumpLurchStrengthMultiplier = FMath::Lerp(JumpLurchMaxMultiplier, JumpLurchMinMultiplier, Alpha);
-    
-    FVector CounterLurchForce = -CMC->GetLastInputVector().GetSafeNormal(0.0001f) * (JumpLurchBaseStrength * CounterCurrentJumpLurchStrengthMultiplier);
-    UE_LOG(LogTemp, Warning, TEXT("CounterLurchForce: %f"), JumpLurchBaseStrength * CurrentJumpLurchStrengthMultiplier);
-    CMC->AddForce(CounterLurchForce);
     
 }
+

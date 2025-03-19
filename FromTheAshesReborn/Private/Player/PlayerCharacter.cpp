@@ -24,12 +24,18 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->bUsePawnControlRotation = false;
 
-	GetCharacterMovement()->JumpZVelocity = 1000.f;
-	GetCharacterMovement()->GravityScale = 2.f;
-	GetCharacterMovement()->AirControl = 0.7f;
-	GetCharacterMovement()->AirControlBoostMultiplier = 6.f;
+	GetCharacterMovement()->JumpZVelocity = 1500.f;
+	GetCharacterMovement()->GravityScale = 4.0f;
+	GetCharacterMovement()->AirControl = 1.0f;
+	GetCharacterMovement()->AirControlBoostMultiplier = 1.0f;
+	GetCharacterMovement()->AirControlBoostVelocityThreshold = 100.0f;
+
 	
-	//Walk and crouch
+	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
+	GetCharacterMovement()->BrakingFriction = 1.0f;
+	GetCharacterMovement()->bUseSeparateBrakingFriction = true;
+	GetCharacterMovement()->FallingLateralFriction = 50.0f;
+	
 	GetCharacterMovement()->SetCrouchedHalfHeight(48.f);
 	// GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
