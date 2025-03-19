@@ -13,16 +13,7 @@ UGA_Jump::UGA_Jump()
 void UGA_Jump::AbilityTickComponent()
 {
     Super::AbilityTickComponent();
-
-    FVector JumpLurchInfluencer = FVector(0.0f, 0.0f, 0.0f);
-    // UE_LOG(LogTemp, Warning, TEXT("LastInputVectorString: %s"), *CMC->GetLastInputVector().GetSafeNormal().ToString());
     
-    // FVector WallForceVector = CMC->GetLastInputVector().GetSafeNormal() * (20 * 3.6f * 0.2778f * CMC->Mass * 100.0f);
-    // CMC->AddForce(WallForceVector);
-    
-    CMC->AddForce(CMC->GetLastInputVector().GetSafeNormal(0.0001) * 600000.0f);
-    
-
 }
 
 void UGA_Jump::OnCharacterLanded(const FHitResult& Hit)
@@ -106,19 +97,41 @@ void UGA_Jump::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGamepl
 void UGA_Jump::StartJumpLurchWindowTimer()
 {
     JumpLurchElapsedTime = 0.0f;
-    GetWorld()->GetTimerManager().SetTimer(FJumpLurchWindowTimerHandle, this, &UGA_Jump::UpdateJumpLurchStrength, 0.016, true);
+    GetWorld()->GetTimerManager().SetTimer(FJumpLurchWindowTimerHandle, this, &UGA_Jump::UpdateJumpLurch, 0.016, true);
 }
 
-void UGA_Jump::UpdateJumpLurchStrength()
+void UGA_Jump::UpdateJumpLurch()
 {
-    JumpLurchElapsedTime += 0.01f;
+    JumpLurchElapsedTime += 0.016f;
     if(JumpLurchElapsedTime >= JumpLurchWindowDuration)
     {
         JumpLurchElapsedTime = JumpLurchWindowDuration;
         GetWorld()->GetTimerManager().ClearTimer(FJumpLurchWindowTimerHandle);
     }
 
-    float Alpha = JumpLurchElapsedTime / JumpLurchWindowDuration;
-    float CurrentValue = FMath::Lerp(JumpLurchMaxMultiplier, JumpLurchMinMultiplier, Alpha);
-    UE_LOG(LogTemp, Warning, TEXT("CurrentValue: %f"), CurrentValue);
+    UpdateJumpLurchStrength();
+    UpdateCounterLurchForce();
+}
+
+void UGA_Jump::UpdateJumpLurchStrength()
+{
+    float Alpha = FMath::Pow(JumpLurchElapsedTime / JumpLurchWindowDuration, 0.5f);
+
+    CurrentJumpLurchStrengthMultiplier = FMath::Lerp(JumpLurchMaxMultiplier, JumpLurchMinMultiplier, Alpha);
+
+    UE_LOG(LogTemp, Warning, TEXT("LurchForce: %f"), JumpLurchBaseStrength * CurrentJumpLurchStrengthMultiplier);
+    
+    FVector LurchForce = CMC->GetLastInputVector().GetSafeNormal(0.0001f) * (JumpLurchBaseStrength * CurrentJumpLurchStrengthMultiplier);
+    CMC->AddForce(LurchForce);
+}
+
+void UGA_Jump::UpdateCounterLurchForce()
+{
+    float Alpha = FMath::Pow(JumpLurchElapsedTime / JumpLurchWindowDuration, 0.5f); // Square root curve
+    CounterCurrentJumpLurchStrengthMultiplier = FMath::Lerp(JumpLurchMaxMultiplier, JumpLurchMinMultiplier, Alpha);
+    
+    FVector CounterLurchForce = -CMC->GetLastInputVector().GetSafeNormal(0.0001f) * (JumpLurchBaseStrength * CounterCurrentJumpLurchStrengthMultiplier);
+    UE_LOG(LogTemp, Warning, TEXT("CounterLurchForce: %f"), JumpLurchBaseStrength * CurrentJumpLurchStrengthMultiplier);
+    CMC->AddForce(CounterLurchForce);
+    
 }

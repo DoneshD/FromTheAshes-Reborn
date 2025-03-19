@@ -22,27 +22,28 @@ private:
 
 protected:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jump Lurch")
-	float JumpLurchStrength = 5.0f;
+	float CurrentJumpLurchStrengthMultiplier = 0.0f;
+	float CounterCurrentJumpLurchStrengthMultiplier = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jump Lurch")
-	float JumpLurchVelocity = 100.0f;
+	UPROPERTY(EditAnywhere, Category = "Jump Lurch | ")
+	float JumpLurchBaseStrength = 10000.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jump Lurch")
-	float JumpLurchMaxMultiplier = 10.0f;
+	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
+	float JumpLurchMaxMultiplier = 100.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jump Lurch")
-	float JumpLurchMinMultiplier = 2.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jump Lurch")
-	float JumpLurchSpeedLoss = 12.5f;
+	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
+	float JumpLurchMinMultiplier = 10.0f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Jump Lurch")
+	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
 	float JumpLurchWindowDuration = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
+	float CounterLurchMaxMultiplier = 100.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Jump Lurch")
+	float CounterLurchMinMultiplier = 10.0f;
 	
 	float JumpLurchElapsedTime = 0.0f;
-
-	
 
 public:
 	
@@ -59,6 +60,8 @@ public:
 
 	void StartJumpLurchWindowTimer();
 
+	void UpdateJumpLurch();
+
 	void UpdateJumpLurchStrength();
-	
+	void UpdateCounterLurchForce();
 };
