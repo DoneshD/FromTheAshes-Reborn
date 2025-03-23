@@ -54,7 +54,8 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")
-	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const  { return FTAAbilitySystemComponent; };
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const  { return FTAAbilitySystemComponent; }
+
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	TObjectPtr<UMotionWarpingComponent> GetMotionWarpingComponent();

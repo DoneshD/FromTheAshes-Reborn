@@ -15,8 +15,15 @@ protected:
 	
 	UGA_Dash();
 
+	virtual void AbilityTickComponent() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> DashAssets;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	float DashWarpDistance = 400.0f;
+
+	FVector DashTargetLocation;
 
 public:
 	

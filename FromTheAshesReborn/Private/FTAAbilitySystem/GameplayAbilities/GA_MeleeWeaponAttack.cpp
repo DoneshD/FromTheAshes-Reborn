@@ -1,10 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_MeleeWeaponAttack.h"
-
 #include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
 #include "DidItHitActorComponent.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
-#include "DataAsset/MeleeAttackDataAsset.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -13,6 +11,7 @@
 
 UGA_MeleeWeaponAttack::UGA_MeleeWeaponAttack(const FObjectInitializer&)
 {
+	
 }
 
 UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
