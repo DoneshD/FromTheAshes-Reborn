@@ -7,6 +7,7 @@
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
+#include "Player/FTAPlayerState.h"
 
 
 UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer)
@@ -36,6 +37,11 @@ UFTAAbilitySystemComponent* UFTAGameplayAbility::GetFTAAbilitySystemComponentFro
 AFTAPlayerController* UFTAGameplayAbility::GetFTAPlayerControllerFromActorInfo() const
 {
 	return (CurrentActorInfo ? Cast<AFTAPlayerController>(CurrentActorInfo->PlayerController.Get()) : nullptr);
+}
+
+AFTAPlayerState* UFTAGameplayAbility::GetFTAPlayerStateFromOwnerInfo() const
+{
+	return (CurrentActorInfo ? Cast<AFTAPlayerState>(CurrentActorInfo->OwnerActor.Get()) : nullptr);
 }
 
 AController* UFTAGameplayAbility::GetControllerFromActorInfo() const

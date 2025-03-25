@@ -25,6 +25,8 @@ public:
 	static float AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static ELockOnInputOrientationDirection OrientationOfInput(float Angle);
-	
+	static ELockOnInputOrientationDirection GetOrientationOfInput(float Angle);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	static FRotator CheckRotationBasedOnTarget(AActor* OwningActor, AActor* LockOnTarget, FVector Location);
 };

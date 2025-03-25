@@ -1,7 +1,12 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Dash/GA_Dash.h"
 #include "MotionWarpingComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
+#include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/FTAPlayerState.h"
+
+class AFTAPlayerState;
 
 UGA_Dash::UGA_Dash()
 {
@@ -19,13 +24,17 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + 800.0f * ActorInfo->AvatarActor->GetActorForwardVector();
+	FVector TargetLocation = UInputReadingFunctionLibrary::CheckInputVector(GetFTACharacterFromActorInfo()->GetCharacterMovement());
+	DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + DashWarpDistance * TargetLocation;
+
+	//TODO: Player only, fix later for enemies
+	FRotator TargetRotation;
+	if(GetFTAPlayerStateFromOwnerInfo())
+	{
+		TargetRotation = ULockOnFunctionLibrary::CheckRotationBasedOnTarget(CurrentActorInfo->AvatarActor.Get(), GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor, DashTargetLocation);
+	}
 	
-	FRotator Rotation = UKismetMathLibrary::FindLookAtRotation(GetFTACharacterFromActorInfo()->GetActorLocation(), DashTargetLocation);
-	GetFTACharacterFromActorInfo()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(FName("DashTarget"),
-		DashTargetLocation,
-		Rotation
-		);
+	GetFTACharacterFromActorInfo()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(FName("DashTarget"), DashTargetLocation, TargetRotation);
 		
 }
 

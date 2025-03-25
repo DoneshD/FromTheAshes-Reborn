@@ -24,7 +24,7 @@ bool UGA_MeleeWeaponAttack_Launcher::CanActivateAbility(const FGameplayAbilitySp
 	
 	float AngleOfInput = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
 	
-	ELockOnInputOrientationDirection InputOrientation = ULockOnFunctionLibrary::OrientationOfInput(AngleOfInput);
+	ELockOnInputOrientationDirection InputOrientation = ULockOnFunctionLibrary::GetOrientationOfInput(AngleOfInput);
 	if(InputOrientation != ELockOnInputOrientationDirection::Backward)
 	{
 		return false;

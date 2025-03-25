@@ -4,6 +4,7 @@
 #include "Abilities/GameplayAbility.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
+#include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
 class IFTAAbilitySourceInterface;
@@ -73,6 +74,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
 	AFTAPlayerController* GetFTAPlayerControllerFromActorInfo() const;
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	AFTAPlayerState* GetFTAPlayerStateFromOwnerInfo() const;
 
 	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
 	AController* GetControllerFromActorInfo() const;

@@ -40,7 +40,7 @@ float ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AActor* OwningA
 	return AngleFromTarget;
 }
 
-ELockOnInputOrientationDirection ULockOnFunctionLibrary::OrientationOfInput(float Angle)
+ELockOnInputOrientationDirection ULockOnFunctionLibrary::GetOrientationOfInput(float Angle)
 {
 	if (Angle >= -25.0f && Angle < 25.0f)
 	{
@@ -61,4 +61,15 @@ ELockOnInputOrientationDirection ULockOnFunctionLibrary::OrientationOfInput(floa
 
 	UE_LOG(LogTemp, Error, TEXT("OrientationOfInput None"));
 	return ELockOnInputOrientationDirection::None;
+}
+
+FRotator ULockOnFunctionLibrary::CheckRotationBasedOnTarget(AActor* OwningActor, AActor* LockOnTarget, FVector Location)
+{
+	if (LockOnTarget)
+	{
+		return UKismetMathLibrary::FindLookAtRotation(OwningActor->GetActorLocation(), LockOnTarget->GetActorLocation());
+	}
+	
+	return UKismetMathLibrary::FindLookAtRotation(OwningActor->GetActorLocation(), Location);
+	
 }
