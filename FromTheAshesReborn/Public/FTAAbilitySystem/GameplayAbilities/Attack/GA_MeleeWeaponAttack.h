@@ -2,7 +2,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GA_FromEquipment.h"
+#include "../GA_FromEquipment.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
 
@@ -11,6 +11,23 @@ class UMeleeAttackDataAsset;
 class AWeaponActorBase;
 class UMeleeWeaponInstance;
 class UFTAAT_PlayMontageAndWaitForEvent;
+
+
+USTRUCT(BlueprintType)
+struct FMeleeAttackTypes
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Types")
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> NormalAttacks;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Types")
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> PauseAttacks;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Types")
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> SpecialAttacks;
+	
+};
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
@@ -27,9 +44,13 @@ protected:
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> MeleeAttackAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
+	FMeleeAttackTypes MeleeAttackTypes;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
 
 	TObjectPtr<AFTACharacter> FTAChar;
+
 
 public:
 

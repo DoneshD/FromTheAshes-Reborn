@@ -1,4 +1,4 @@
-﻿#include "FTAAbilitySystem/GameplayAbilities/GA_MeleeWeaponAttack_Launcher.h"
+﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_Launcher.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"

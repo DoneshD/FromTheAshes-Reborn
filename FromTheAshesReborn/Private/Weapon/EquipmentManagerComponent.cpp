@@ -111,9 +111,6 @@ UWeaponInstance* UEquipmentManagerComponent::GetEquippedWeaponInstance()
 
 UFTAAbilitySystemComponent* UEquipmentManagerComponent::GetAbilitySystemComponent() const
 {
-	//TODO: NEED TO FIND A WAY ON HOW TO IVE SAME ASC TO PLAYER STATE AND CHARACTER!!!!!
-	// AFTAPlayerController* PC = Cast<AFTAPlayerController>(GetOwner()->GetInstigatorController());
-	// return PC->GetFTAAbilitySystemComponent();
 	AFTACharacter* FTACharacter = Cast<AFTACharacter>(GetOwner());
 	return FTACharacter->GetFTAAbilitySystemComponent();
 }

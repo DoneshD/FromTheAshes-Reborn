@@ -1,4 +1,4 @@
-﻿#include "FTAAbilitySystem/GameplayAbilities/GA_MeleeWeaponAttack.h"
+﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
 #include "DidItHitActorComponent.h"

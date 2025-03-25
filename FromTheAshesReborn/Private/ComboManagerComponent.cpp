@@ -2,6 +2,7 @@
 #include "DataAsset/FTAAbilityDataAsset.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
+#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "FTACustomBase/FTACharacter.h"
 
 

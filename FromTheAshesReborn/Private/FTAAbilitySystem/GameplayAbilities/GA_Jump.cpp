@@ -1,4 +1,4 @@
-﻿#include "FTAAbilitySystem/GameplayAbilities/GA_Jump.h"
+﻿#include "FTAAbilitySystem/GameplayAbilities/Jump/GA_Jump.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "GameFramework/Character.h"
