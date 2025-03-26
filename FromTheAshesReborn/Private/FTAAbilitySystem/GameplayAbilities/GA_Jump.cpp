@@ -10,11 +10,6 @@ UGA_Jump::UGA_Jump()
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
-void UGA_Jump::AbilityTickComponent()
-{
-    Super::AbilityTickComponent();
-    
-}
 
 void UGA_Jump::OnCharacterLanded(const FHitResult& Hit)
 {
@@ -24,8 +19,6 @@ void UGA_Jump::OnCharacterLanded(const FHitResult& Hit)
         EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, false);
     }
 }
-
-
 
 void UGA_Jump::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {

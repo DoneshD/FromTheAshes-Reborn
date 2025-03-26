@@ -4,6 +4,7 @@
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
@@ -24,10 +25,11 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 	
 }
 
-void UFTAGameplayAbility::AbilityTickComponent()
+void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
 {
 	
 }
+
 
 UFTAAbilitySystemComponent* UFTAGameplayAbility::GetFTAAbilitySystemComponentFromActorInfo() const
 {
@@ -176,18 +178,28 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	if(EnableTick)
+	if (bEnableTick)
 	{
-		GetWorld()->GetTimerManager().SetTimer(AbilityTickTimerHandle, this, &UFTAGameplayAbility::AbilityTickComponent, 0.016f, true);
+		TickTask = UFTAAT_OnTick::StartTicking(this);
+		if (TickTask)
+		{
+			TickTask->OnTick.AddDynamic(this, &UFTAGameplayAbility::OnAbilityTick);
+			TickTask->ReadyForActivation();
+		}
 	}
+	
 }
 
 void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	GetWorld()->GetTimerManager().ClearTimer(AbilityTickTimerHandle);
+	if (TickTask)
+	{
+		TickTask->EndTask();
+		TickTask = nullptr;
+	}
+
 }
 
 bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const

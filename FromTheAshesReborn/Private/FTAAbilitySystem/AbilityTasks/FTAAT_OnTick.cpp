@@ -14,4 +14,20 @@ void UFTAAT_OnTick::Activate()
 void UFTAAT_OnTick::TickTask(float DeltaTime)
 {
 	Super::TickTask(DeltaTime);
+
+	if (ShouldBroadcastAbilityTaskDelegates())
+	{
+		OnTick.Broadcast(DeltaTime);
+	}
+}
+
+UFTAAT_OnTick* UFTAAT_OnTick::StartTicking(UGameplayAbility* OwningAbility)
+{
+	UFTAAT_OnTick* MyTask = NewAbilityTask<UFTAAT_OnTick>(OwningAbility);
+	return MyTask;
+}
+
+void UFTAAT_OnTick::OnDestroy(bool AbilityEnded)
+{
+	Super::OnDestroy(AbilityEnded);
 }

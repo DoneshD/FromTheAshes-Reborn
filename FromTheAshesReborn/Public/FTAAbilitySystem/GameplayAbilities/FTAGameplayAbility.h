@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UFTAAT_OnTick;
 class IFTAAbilitySourceInterface;
 class AFTACharacter;
 class AFTAPlayerController;
@@ -58,17 +59,18 @@ protected:
 	EFTAAbilityActivationGroup ActivationGroup;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
-	bool EnableTick;
+	bool bEnableTick;
 
-	FTimerHandle AbilityTickTimerHandle;
-
+	UPROPERTY()
+	UFTAAT_OnTick* TickTask;
 
 public:
 	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	virtual void AbilityTickComponent();
-
+	UFUNCTION()
+	virtual void OnAbilityTick(float DeltaTime);
+	
 	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponentFromActorInfo() const;
 

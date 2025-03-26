@@ -5,10 +5,6 @@ UGA_Dash_Aerial::UGA_Dash_Aerial()
 	
 }
 
-void UGA_Dash_Aerial::AbilityTickComponent()
-{
-	Super::AbilityTickComponent();
-}
 
 void UGA_Dash_Aerial::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {

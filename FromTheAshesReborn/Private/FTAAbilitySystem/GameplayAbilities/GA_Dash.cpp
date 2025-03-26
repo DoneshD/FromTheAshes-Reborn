@@ -1,34 +1,35 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Dash/GA_Dash.h"
 #include "MotionWarpingComponent.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/FTAPlayerState.h"
 
-class AFTAPlayerState;
 
 UGA_Dash::UGA_Dash()
 {
+	
 }
 
-void UGA_Dash::AbilityTickComponent()
+void UGA_Dash::OnAbilityTick(float DeltaTime)
 {
-	Super::AbilityTickComponent();
+	Super::OnAbilityTick(DeltaTime);
 
-	float CurrentTime = GetWorld()->GetTimeSeconds();
-	ElapsedTime = CurrentTime - DashStartTime;
+	ElapsedTime = GetWorld()->GetTimeSeconds() - DashStartTime;
 	float Alpha = FMath::Clamp(ElapsedTime / Duration, 0.0f, 1.0f);
-
 	FVector NewLocation = FMath::Lerp(StartLocation, DashTargetLocation, Alpha);
-	CurrentActorInfo->AvatarActor->SetActorLocation(NewLocation);
-
-	if (Alpha >= 1.0f)
+	
+	FHitResult Hit;
+	CurrentActorInfo->AvatarActor->SetActorLocation(NewLocation, true, &Hit);
+	
+	if (Alpha >= 1.0f || Hit.bBlockingHit)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	}
-	
 }
+
 
 void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -39,7 +40,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + Distance * TargetLocation;
 	ElapsedTime = 0.0f;
 	StartLocation = ActorInfo->AvatarActor->GetActorLocation();
-	DashStartTime = GetWorld()->GetTimeSeconds(); 
+	DashStartTime = GetWorld()->GetTimeSeconds();
 	
 }
 

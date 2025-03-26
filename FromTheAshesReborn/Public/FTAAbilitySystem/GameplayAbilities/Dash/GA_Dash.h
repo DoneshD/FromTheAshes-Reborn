@@ -13,11 +13,10 @@ class FROMTHEASHESREBORN_API UGA_Dash : public UFTAGameplayAbility
 
 private:
 	
-	FVector DashTargetLocation;
-
-	float ElapsedTime = 0.0f;
-
 	FVector StartLocation;
+	FVector DashTargetLocation;
+	
+	float ElapsedTime = 0.0f;
 	float DashStartTime = 0.0f;
 
 protected:
@@ -30,14 +29,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float Duration = 0.20f;
-	
 
 protected:
 	
 	UGA_Dash();
 	
-	virtual void AbilityTickComponent() override;
-
+	virtual void OnAbilityTick(float DeltaTime) override;
 
 public:
 	
@@ -46,5 +43,4 @@ public:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	// void StartDashTimer
 };

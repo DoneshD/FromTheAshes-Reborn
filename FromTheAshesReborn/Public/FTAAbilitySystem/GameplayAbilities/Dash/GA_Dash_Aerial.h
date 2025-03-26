@@ -14,7 +14,6 @@ protected:
 
 	UGA_Dash_Aerial();
 	
-	virtual void AbilityTickComponent() override;
 
 public:
 	
