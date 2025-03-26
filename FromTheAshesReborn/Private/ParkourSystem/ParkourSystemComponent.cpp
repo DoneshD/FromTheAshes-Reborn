@@ -178,7 +178,7 @@ void UParkourSystemComponent::SelectParkourAction(bool InAutoClimb)
 		{
 			ResetParkourResult();
 			FindParkourLocationAndShape();
-			ShowHitResults();
+			// ShowHitResults();
 			FindSizeParkourObjects();
 			FindParkourType(MemberAutoClimb);
 
@@ -227,7 +227,7 @@ void UParkourSystemComponent::FindParkourLocationAndShape()
 				// if (bPotentialWallHeightHitOut)
 				// {
 				// 	DrawDebugLine(GetWorld(), StartWallHitTraceLocation, PotentialWallHeightHitOutResult.Location, FColor::Green, false, 1.0f, 0, 2.0f);
-					// DrawDebugPoint(GetWorld(), PotentialWallHeightHitOutResult.Location, 10.0f, FColor::Red, false, 1.0f);
+				// 	DrawDebugPoint(GetWorld(), PotentialWallHeightHitOutResult.Location, 10.0f, FColor::Red, false, 1.0f);
 				// }
 				// else
 				// {
@@ -556,7 +556,7 @@ void UParkourSystemComponent::FindWallDepth()
 		
 		FHitResult FWallEdgeOutHitResult;
 		TArray<AActor*> ActorsToIgnoreWallEdge;
-		
+
 		bool bWallEdgeTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), WallEdgeStartLocation, WallEdgeEndLocation, 10.0f, TraceTypeQuery1,
 					false, ActorsToIgnoreWallEdge, EDrawDebugTrace::None, FWallEdgeOutHitResult, true, FLinearColor::Red, FLinearColor::Green, 30.0f);
 
@@ -570,7 +570,7 @@ void UParkourSystemComponent::FindWallDepth()
 		
 			FHitResult FWallGroundOutHitResult;
 			TArray<AActor*> ActorsToIgnoreWallGround;
-		
+
 			bool bWallGroundTraceOutHit = UKismetSystemLibrary::SphereTraceSingle(GetWorld(), WallGroundStartLocation, WallGroundEndLocation, 30.0f, TraceTypeQuery1,
 						false, ActorsToIgnoreWallGround, EDrawDebugTrace::None, FWallGroundOutHitResult, true, FLinearColor::Blue, FLinearColor::Yellow, 5.0f);
 

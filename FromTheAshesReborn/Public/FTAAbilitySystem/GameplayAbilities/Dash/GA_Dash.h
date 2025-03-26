@@ -15,18 +15,29 @@ private:
 	
 	FVector DashTargetLocation;
 
+	float ElapsedTime = 0.0f;
+
+	FVector StartLocation;
+	float DashStartTime = 0.0f;
+
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> DashAssets;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	float DashWarpDistance = 400.0f;
+	float Distance = 600.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	float Duration = 0.20f;
+	
 
 protected:
 	
 	UGA_Dash();
+	
 	virtual void AbilityTickComponent() override;
+
 
 public:
 	
@@ -34,4 +45,6 @@ public:
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
+	// void StartDashTimer
 };

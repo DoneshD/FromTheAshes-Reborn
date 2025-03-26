@@ -71,5 +71,4 @@ FRotator ULockOnFunctionLibrary::CheckRotationBasedOnTarget(AActor* OwningActor,
 	}
 	
 	return UKismetMathLibrary::FindLookAtRotation(OwningActor->GetActorLocation(), Location);
-	
 }

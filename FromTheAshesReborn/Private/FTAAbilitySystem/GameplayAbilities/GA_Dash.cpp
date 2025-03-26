@@ -10,32 +10,37 @@ class AFTAPlayerState;
 
 UGA_Dash::UGA_Dash()
 {
-	
 }
 
 void UGA_Dash::AbilityTickComponent()
 {
 	Super::AbilityTickComponent();
+
+	float CurrentTime = GetWorld()->GetTimeSeconds();
+	ElapsedTime = CurrentTime - DashStartTime;
+	float Alpha = FMath::Clamp(ElapsedTime / Duration, 0.0f, 1.0f);
+
+	FVector NewLocation = FMath::Lerp(StartLocation, DashTargetLocation, Alpha);
+	CurrentActorInfo->AvatarActor->SetActorLocation(NewLocation);
+
+	if (Alpha >= 1.0f)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	}
 	
 }
 
-void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
-                               const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
+void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	FVector TargetLocation = UInputReadingFunctionLibrary::CheckInputVector(GetFTACharacterFromActorInfo()->GetCharacterMovement());
-	DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + DashWarpDistance * TargetLocation;
-
-	//TODO: Player only, fix later for enemies
-	FRotator TargetRotation;
-	if(GetFTAPlayerStateFromOwnerInfo())
-	{
-		TargetRotation = ULockOnFunctionLibrary::CheckRotationBasedOnTarget(CurrentActorInfo->AvatarActor.Get(), GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor, DashTargetLocation);
-	}
 	
-	GetFTACharacterFromActorInfo()->GetMotionWarpingComponent()->AddOrUpdateWarpTargetFromLocationAndRotation(FName("DashTarget"), DashTargetLocation, TargetRotation);
-		
+	DashTargetLocation = ActorInfo->AvatarActor->GetActorLocation() + Distance * TargetLocation;
+	ElapsedTime = 0.0f;
+	StartLocation = ActorInfo->AvatarActor->GetActorLocation();
+	DashStartTime = GetWorld()->GetTimeSeconds(); 
+	
 }
 
 bool UGA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
