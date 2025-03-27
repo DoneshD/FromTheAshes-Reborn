@@ -12,32 +12,50 @@ class FROMTHEASHESREBORN_API UGA_Dash : public UFTAGameplayAbility
 	GENERATED_BODY()
 
 private:
+
+	// Dashing
+	FVector DashStartLocation;
+	FVector DashEndLocation;
 	
-	FVector StartLocation;
-	FVector DashTargetLocation;
-	
-	float ElapsedTime = 0.0f;
+	float DashElapsedTime = 0.0f;
 	float DashStartTime = 0.0f;
 
-protected:
+	// Gliding
+	FVector GlideVelocity;
+	bool IsGliding = false;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> DashAssets;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	float Distance = 600.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	float Duration = 0.20f;
+	float GlideElapsedTime = 0.0f;
+	float GlideTimeDuration = 1.0f;
 
 protected:
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> DashAbilityAssets;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	float DashDistance = 600.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	float DashDuration = 0.20f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+	float ForwardGlideSpeed = 2000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+	float InitialDownwardVelocity = -100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+	float GlideGravityScale = 0.3f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
+	float GlideDrag = 0.98f;
+
+protected:
+
 	UGA_Dash();
-	
+
 	virtual void OnAbilityTick(float DeltaTime) override;
 
-public:
-	
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
