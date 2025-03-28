@@ -11,7 +11,9 @@ class FROMTHEASHESREBORN_API UGA_Dash : public UFTAGameplayAbility
 {
 	GENERATED_BODY()
 
-private:
+protected:
+
+	bool IsDashing = false;
 
 	// Dashing
 	FVector DashStartLocation;
@@ -19,15 +21,6 @@ private:
 	
 	float DashElapsedTime = 0.0f;
 	float DashStartTime = 0.0f;
-
-	// Gliding
-	FVector GlideVelocity;
-	bool IsGliding = false;
-	
-	float GlideElapsedTime = 0.0f;
-	float GlideTimeDuration = 1.0f;
-
-protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> DashAbilityAssets;
@@ -38,17 +31,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashDuration = 0.20f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
-	float ForwardGlideSpeed = 2000.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
-	float InitialDownwardVelocity = -100.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
-	float GlideGravityScale = 0.3f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Glide")
-	float GlideDrag = 0.98f;
 
 protected:
 
@@ -61,4 +43,7 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
+	virtual void UpdateDashMovement(float DeltaTime);
+
+	virtual void DashLocationReached();
 };
