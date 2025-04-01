@@ -21,7 +21,6 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 	bActivateOnInput = true;
 
 	ActivationPolicy = EFTAAbilityActivationPolicy::OnInputTriggered;
-	ActivationGroup = EFTAAbilityActivationGroup::Independent;
 	
 }
 
@@ -152,14 +151,8 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 
 void UFTAGameplayAbility::SetCanBeCanceled(bool bCanBeCanceled)
 {
-	// The ability can not block canceling if it's replaceable.
-	if (!bCanBeCanceled && (ActivationGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable))
-	{
-		UE_LOG(LogTemp, Error, TEXT("SetCanBeCanceled: Ability [%s] can not block canceling because its activation group is replaceable."), *GetName());
-		return;
-	}
-	
 	Super::SetCanBeCanceled(bCanBeCanceled);
+	
 }
 
 void UFTAGameplayAbility::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)

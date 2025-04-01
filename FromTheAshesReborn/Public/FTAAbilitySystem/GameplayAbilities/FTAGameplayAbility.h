@@ -39,10 +39,10 @@ enum class EFTAAbilityActivationGroup : uint8
 
 	// Ability blocks all other exclusive abilities from activating.
 	Exclusive_Blocking,
-	
-	//MAX	UMETA(Hidden)
+
 	MAX	UMETA(Hidden)
 };
+
 
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
@@ -56,8 +56,8 @@ protected:
 	EFTAAbilityActivationPolicy ActivationPolicy;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	EFTAAbilityActivationGroup ActivationGroup;
-
+	EFTAAbilityActivationPolicy ActivationGroup;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
 
@@ -87,7 +87,6 @@ public:
 	AFTACharacter* GetFTACharacterFromActorInfo() const;
 
 	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
-	EFTAAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 

@@ -210,4 +210,5 @@ void UGA_MeleeWeaponAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventDat
 
 void UGA_MeleeWeaponAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	UE_LOG(LogTemp, Log, TEXT("Received gameplay event: %s"), *EventTag.ToString());
 }

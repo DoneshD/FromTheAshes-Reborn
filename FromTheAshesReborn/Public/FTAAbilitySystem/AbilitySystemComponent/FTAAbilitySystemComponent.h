@@ -32,17 +32,9 @@ public:
 	UPROPERTY()
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 
-	// Handles to abilities that had their input pressed this frame.
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
-
-	// Handles to abilities that had their input released this frame.
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
-
-	// Handles to abilities that have their input held.
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
-
-	// Number of abilities running in each activation group.
-	int32 ActivationGroupCounts[(uint8)EFTAAbilityActivationGroup::MAX];
 	
 	FReceivedDamageDelegate ReceivedDamage;
 
@@ -75,11 +67,7 @@ public:
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();
 
-	bool IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const;
-	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
-	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
-	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
-
+	//TODO: Might need
 	bool IsAbilityAlreadyActive(TSubclassOf<UGameplayAbility> AbilityClass);
 	
 	// Uses a gameplay effect to add the specified dynamic granted tag.
