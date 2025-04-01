@@ -71,23 +71,29 @@ public:
 	UFUNCTION()
 	virtual void OnAbilityTick(float DeltaTime);
 	
-	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability Getters")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponentFromActorInfo() const;
 
-	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability Getters")
 	AFTAPlayerController* GetFTAPlayerControllerFromActorInfo() const;
 
-	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability Getters")
 	AFTAPlayerState* GetFTAPlayerStateFromOwnerInfo() const;
 
-	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability Getters")
 	AController* GetControllerFromActorInfo() const;
 
-	UFUNCTION(BlueprintCallable, Category = "FTA|Ability")
+	UFUNCTION(BlueprintCallable, Category = "FTA|Ability Getters")
 	AFTACharacter* GetFTACharacterFromActorInfo() const;
 
 	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
 	EFTAAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
+	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup) const;
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
+	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup);
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 

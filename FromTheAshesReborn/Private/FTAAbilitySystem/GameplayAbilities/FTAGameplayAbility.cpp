@@ -82,6 +82,79 @@ AFTACharacter* UFTAGameplayAbility::GetFTACharacterFromActorInfo() const
 	return (CurrentActorInfo ? Cast<AFTACharacter>(CurrentActorInfo->AvatarActor.Get()) : nullptr);
 }
 
+bool UFTAGameplayAbility::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup) const
+{
+	if (!IsInstantiated())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Ability is not instantiated"));
+		return false;
+	}
+	
+	if (!IsActive())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Ability is not active"));
+		return false;
+	}
+	
+	UFTAAbilitySystemComponent* FTAASC = GetFTAAbilitySystemComponentFromActorInfo();
+	if (!FTAASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: FTAASC is not valid"));
+		return false;
+	}
+	
+	if((ActivationGroup != EFTAAbilityActivationGroup::Exclusive_Blocking) && FTAASC->IsActivationGroupBlocked(NewGroup))
+	{
+		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't change groups if it's blocked (unless it is the one doing the blocking)."));
+		return false;
+	}
+	
+	if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !CanBeCanceled())
+	{
+		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
+		return false;
+	}
+
+	return true;
+	
+}
+
+bool UFTAGameplayAbility::ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup)
+{
+	if (!IsInstantiated())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Ability is not instantiated"));
+		return false;
+	}
+	
+	if (!IsActive())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Ability is not active"));
+		return false;
+	}
+	
+	UFTAAbilitySystemComponent* FTAASC = GetFTAAbilitySystemComponentFromActorInfo();
+	if (!FTAASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: FTAASC is not valid"));
+		return false;
+	}
+
+	if (!CanChangeActivationGroup(NewGroup))
+	{
+		return false;
+	}
+
+	if(ActivationGroup != NewGroup)
+	{
+		FTAASC->RemoveAbilityFromActivationGroup(ActivationGroup, this);
+		FTAASC->AddAbilityToActivationGroup(NewGroup, this);
+
+		ActivationGroup = NewGroup;
+	}
+	return true;
+}
+
 void UFTAGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const
 {
 	// Try to activate if activation policy is on spawn.
