@@ -364,20 +364,48 @@ void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityAct
 	ActivationGroupCount[(uint8)Group]--;
 }
 
-bool UFTAAbilitySystemComponent::IsAbilityAlreadyActive(TSubclassOf<UGameplayAbility> AbilityClass)
+void UFTAAbilitySystemComponent::NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability)
 {
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	{
-		if (Spec.Ability->GetClass() == AbilityClass)
-		{
-			if(Spec.ActiveCount > 0)
-			{
-				return true;
-			}
-		}
-	}
-	return false;
+	Super::NotifyAbilityActivated(Handle, Ability);
+
+	UFTAGameplayAbility* FTAAbility = CastChecked<UFTAGameplayAbility>(Ability);
+
+	AddAbilityToActivationGroup(FTAAbility->GetActivationGroup(), FTAAbility);
 }
+
+void UFTAAbilitySystemComponent::NotifyAbilityFailed(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason)
+{
+	Super::NotifyAbilityFailed(Handle, Ability, FailureReason);
+}
+
+void UFTAAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, bool bWasCancelled)
+{
+	Super::NotifyAbilityEnded(Handle, Ability, bWasCancelled);
+
+	UFTAGameplayAbility* FTAAbility = CastChecked<UFTAGameplayAbility>(Ability);
+
+	RemoveAbilityFromActivationGroup(FTAAbility->GetActivationGroup(), FTAAbility);
+}
+
+void UFTAAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags,
+	const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags)
+{
+	FGameplayTagContainer ModifiedBlockTags = BlockTags;
+	FGameplayTagContainer ModifiedCancelTags = CancelTags;
+
+	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags, bExecuteCancelTags, CancelTags);
+
+	if(TagRelationshipMapping)
+	{
+		TagRelationshipMapping->GetAbilityTagsToBlockAndCancel(AbilityTags, &ModifiedBlockTags, &ModifiedCancelTags);
+	}
+}
+
+void UFTAAbilitySystemComponent::HandleChangeAbilityCanBeCanceled(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bCanBeCanceled)
+{
+	Super::HandleChangeAbilityCanBeCanceled(AbilityTags, RequestingAbility, bCanBeCanceled);
+}
+
 
 void UFTAAbilitySystemComponent::AddDynamicTagGameplayEffect(const FGameplayTag& Tag)
 {

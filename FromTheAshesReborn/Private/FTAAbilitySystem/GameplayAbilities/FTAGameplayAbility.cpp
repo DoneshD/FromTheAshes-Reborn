@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
@@ -332,7 +333,104 @@ void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSp
 
 bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	return Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, SourceTags, TargetTags, OptionalRelevantTags);
+	// return Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, SourceTags, TargetTags, OptionalRelevantTags);
+
+	bool IsBlocked = false;
+	bool IsMissing = false;
+
+	UAbilitySystemGlobals& AbilitySystemGlobals = UAbilitySystemGlobals::Get();
+	const FGameplayTag& BlockedTag = AbilitySystemGlobals.ActivateFailTagsBlockedTag;
+	const FGameplayTag& MissingTag = AbilitySystemGlobals.ActivateFailTagsMissingTag;
+
+	// Check if any of this ability's tags are currently blocked
+	if (AbilitySystemComponent.AreAbilityTagsBlocked(AbilityTags))
+	{
+		IsBlocked = true;
+	}
+
+	const UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(&AbilitySystemComponent);
+	static FGameplayTagContainer AllRequiredTags;
+	static FGameplayTagContainer AllBlockedTags;
+
+	AllRequiredTags = ActivationRequiredTags;
+	AllBlockedTags = ActivationBlockedTags;
+
+	// Expand our ability tags to add additional required/blocked tags
+	if (FTAASC)
+	{
+		FTAASC->GetAdditionalActivationTagRequirements(AbilityTags, AllRequiredTags, AllBlockedTags);
+	}
+
+	// Check to see the required/blocked tags for this ability
+	if (AllBlockedTags.Num() || AllRequiredTags.Num())
+	{
+		static FGameplayTagContainer AbilitySystemComponentTags;
+		
+		AbilitySystemComponentTags.Reset();
+		AbilitySystemComponent.GetOwnedGameplayTags(AbilitySystemComponentTags);
+
+		if (AbilitySystemComponentTags.HasAny(AllBlockedTags))
+		{
+			IsBlocked = true;
+		}
+
+		if (!AbilitySystemComponentTags.HasAll(AllRequiredTags))
+		{
+			IsMissing = true;
+		}
+	}
+
+	if (SourceTags != nullptr)
+	{
+		if (SourceBlockedTags.Num() || SourceRequiredTags.Num())
+		{
+			if (SourceTags->HasAny(SourceBlockedTags))
+			{
+				IsBlocked = true;
+			}
+
+			if (!SourceTags->HasAll(SourceRequiredTags))
+			{
+				IsMissing = true;
+			}
+		}
+	}
+
+	if (TargetTags != nullptr)
+	{
+		if (TargetBlockedTags.Num() || TargetRequiredTags.Num())
+		{
+			if (TargetTags->HasAny(TargetBlockedTags))
+			{
+				IsBlocked = true;
+			}
+
+			if (!TargetTags->HasAll(TargetRequiredTags))
+			{
+				IsMissing = true;
+			}
+		}
+	}
+
+	if (IsBlocked)
+	{
+		if (OptionalRelevantTags && BlockedTag.IsValid())
+		{
+			OptionalRelevantTags->AddTag(BlockedTag);
+		}
+		return false;
+	}
+	if (IsMissing)
+	{
+		if (OptionalRelevantTags && MissingTag.IsValid())
+		{
+			OptionalRelevantTags->AddTag(MissingTag);
+		}
+		return false;
+	}
+
+	return true;
+	
 }
 
 void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const

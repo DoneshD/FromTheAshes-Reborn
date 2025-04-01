@@ -25,13 +25,6 @@ bool UGA_Launched_Vertical::CanActivateAbility(const FGameplayAbilitySpecHandle 
 		return false;
 	}
 
-	UFTAAbilitySystemComponent* ASC = GetFTAAbilitySystemComponentFromActorInfo();
-
-	if (ASC->IsAbilityAlreadyActive(GetCurrentAbilitySpec()->Ability.GetClass()))
-	{
-		return false;
-	}
-
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
 
