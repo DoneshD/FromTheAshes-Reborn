@@ -116,58 +116,70 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 	
-	FGameplayAbilitySpec InputedAbilitySpec;
-	 if (InputTag.IsValid())
-	 {
-	 	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
-	 	{
-	 		if (AbilitySpec.Ability)
-	 		{
-	 			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
-	 			{
-	 				bool CanActivate = AbilitySpec.Ability->CanActivateAbility(AbilitySpec.Handle, AbilityActorInfo.Get());
-	 				if(CanActivate)
-	 				{
-	 					InputedAbilitySpec = AbilitySpec;
-	 				}
-	 			}
-	 		}
-	 	}
-	 }
-	
-	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	// FGameplayAbilitySpec InputedAbilitySpec;
+	//  if (InputTag.IsValid())
+	//  {
+	//  	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	//  	{
+	//  		if (AbilitySpec.Ability)
+	//  		{
+	//  			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+	//  			{
+	//  				bool CanActivate = AbilitySpec.Ability->CanActivateAbility(AbilitySpec.Handle, AbilityActorInfo.Get());
+	//  				if(CanActivate)
+	//  				{
+	//  					InputedAbilitySpec = AbilitySpec;
+	//  				}
+	//  			}
+	//  		}
+	//  	}
+	//  }
+	//
+	// for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	// {
+	// 	//If there is input during an active ability, check if it can be cancel current and activate
+	// 	
+	// 	// if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
+	// 	if(AbilitySpec.IsActive())
+	// 	{
+	// 		
+	// 		UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
+	// 		
+	// 		if(CurrentFTAAbility->CanBeCanceledForQueue)
+	// 		{
+	// 			UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(InputedAbilitySpec.Ability);
+	// 	
+	// 			if(InputedFTAAbility)
+	// 			{
+	// 				if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->UniqueIdentifierTag))
+	// 				{
+	// 					QueuedAbilitySpec = InputedAbilitySpec;
+	// 					return;
+	// 				}
+	// 			}
+	// 		}
+	// 		//Temporary solution for jumping, also fixes strange issue with launcher->air combos
+	// 		else
+	// 		{
+	// 			CancelAbility(CurrentFTAAbility);
+	// 		}
+	// 	}
+	// }
+	//
+	// InputPressedSpecHandles.AddUnique(InputedAbilitySpec.Handle);
+	// InputHeldSpecHandles.AddUnique(InputedAbilitySpec.Handle);
+
+	if (InputTag.IsValid())
 	{
-		//If there is input during an active ability, check if it can be cancel current and activate
-		
-		// if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
-		if(AbilitySpec.IsActive())
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
 		{
-			
-			UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
-			
-			if(CurrentFTAAbility->CanBeCanceledForQueue)
+			if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
 			{
-				UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(InputedAbilitySpec.Ability);
-		
-				if(InputedFTAAbility)
-				{
-					if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->UniqueIdentifierTag))
-					{
-						QueuedAbilitySpec = InputedAbilitySpec;
-						return;
-					}
-				}
-			}
-			//Temporary solution for jumping, also fixes strange issue with launcher->air combos
-			else
-			{
-				CancelAbility(CurrentFTAAbility);
+				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
+				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
 			}
 		}
 	}
-	
-	InputPressedSpecHandles.AddUnique(InputedAbilitySpec.Handle);
-	InputHeldSpecHandles.AddUnique(InputedAbilitySpec.Handle);
 	
 }
 
@@ -309,12 +321,15 @@ bool UFTAAbilitySystemComponent::IsActivationGroupBlocked(EFTAAbilityActivationG
 	case EFTAAbilityActivationGroup::Independent:
 		IsBlocked = false;
 		break;
+		
 	case EFTAAbilityActivationGroup::Exclusive_Replaceable:
 	case EFTAAbilityActivationGroup::Exclusive_Blocking:
-		IsBlocked = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
+		IsBlocked = (ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0);
+		break;
 
 	default:
 		UE_LOG(LogTemp, Error, TEXT("IsActivationGroupBlocked: Invalid Activation Group"));
+		break;
 	}
 	
 	return IsBlocked;
@@ -351,9 +366,9 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 
 void UFTAAbilitySystemComponent::CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility)
 {
-	auto ShouldCancelFunc = [this, Group, IgnoreFTAAbility](const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)
+	auto ShouldCancelFunc = [this, Group, IgnoreFTAAbility](const UFTAGameplayAbility* LyraAbility, FGameplayAbilitySpecHandle Handle)
 	{
-		return ((FTAAbility->GetActivationGroup() == Group) && (FTAAbility != IgnoreFTAAbility));
+		return ((LyraAbility->GetActivationGroup() == Group) && (LyraAbility != IgnoreFTAAbility));
 	};
 
 	CancelAbilitiesByFunc(ShouldCancelFunc);

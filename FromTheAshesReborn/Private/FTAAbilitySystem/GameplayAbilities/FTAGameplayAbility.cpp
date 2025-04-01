@@ -219,6 +219,12 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		return false;
 	}
 
+	UFTAAbilitySystemComponent* FTAASC = CastChecked<UFTAAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
+	if(FTAASC->IsActivationGroupBlocked(ActivationGroup))
+	{
+		return false;
+	}
+
 	return true;
 	
 }
