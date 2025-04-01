@@ -21,7 +21,11 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 {
 	GENERATED_BODY()
 
-//DEBUG REMOVE LATER
+//TODO: DEBUG REMOVE LATER
+
+protected:
+	int32 ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::MAX];
+	
 public:
 	TObjectPtr<AWeaponActorBase> TestWeaponActor;
 
@@ -52,10 +56,10 @@ public:
 
 	typedef TFunctionRef<bool(const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
 	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
-	
+
+	//TODO: Might not be needed
 	void CancelInputActivatedAbilities();
 
-	// Input bound to an ability is pressed
 	virtual void AbilityLocalInputPressed(int32 InputID) override;
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
@@ -66,6 +70,12 @@ public:
 
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();
+
+	bool IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const;
+	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
+	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
+	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
+	
 
 	//TODO: Might need
 	bool IsAbilityAlreadyActive(TSubclassOf<UGameplayAbility> AbilityClass);

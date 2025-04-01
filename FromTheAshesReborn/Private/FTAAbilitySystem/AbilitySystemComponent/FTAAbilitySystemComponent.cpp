@@ -300,6 +300,70 @@ void UFTAAbilitySystemComponent::ClearAbilityInput()
 	InputHeldSpecHandles.Reset();
 }
 
+bool UFTAAbilitySystemComponent::IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const
+{
+	bool IsBlocked = false;
+	
+	switch (Group)
+	{
+	case EFTAAbilityActivationGroup::Independent:
+		IsBlocked = false;
+		break;
+	case EFTAAbilityActivationGroup::Exclusive_Replaceable:
+	case EFTAAbilityActivationGroup::Exclusive_Blocking:
+		IsBlocked = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
+
+	default:
+		UE_LOG(LogTemp, Error, TEXT("IsActivationGroupBlocked: Invalid Activation Group"));
+	}
+	
+	return IsBlocked;
+}
+
+void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility)
+{
+	if(!FTAAbility)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Ability to Add"));
+		return;
+	}
+	
+	ActivationGroupCount[(uint8)Group]++;
+	switch (Group)
+	{
+	case EFTAAbilityActivationGroup::Independent:
+		break;
+	case EFTAAbilityActivationGroup::Exclusive_Replaceable:
+	case EFTAAbilityActivationGroup::Exclusive_Blocking:
+		CancelActivationGroupAbilities(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+		break;
+
+	default:
+		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Group"));
+		break;
+	}
+	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Replaceable] + ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
+	if (ExclusiveCount > 1)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running."));
+	}
+}
+
+void UFTAAbilitySystemComponent::CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility)
+{
+	auto ShouldCancelFunc = [this, Group, IgnoreFTAAbility](const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)
+	{
+		return ((FTAAbility->GetActivationGroup() == Group) && (FTAAbility != IgnoreFTAAbility));
+	};
+
+	CancelAbilitiesByFunc(ShouldCancelFunc);
+}
+
+void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility)
+{
+	ActivationGroupCount[(uint8)Group]--;
+}
+
 bool UFTAAbilitySystemComponent::IsAbilityAlreadyActive(TSubclassOf<UGameplayAbility> AbilityClass)
 {
 	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())

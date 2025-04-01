@@ -56,7 +56,7 @@ protected:
 	EFTAAbilityActivationPolicy ActivationPolicy;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	EFTAAbilityActivationPolicy ActivationGroup;
+	EFTAAbilityActivationGroup ActivationGroup;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
@@ -87,6 +87,7 @@ public:
 	AFTACharacter* GetFTACharacterFromActorInfo() const;
 
 	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
+	EFTAAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
 
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 
