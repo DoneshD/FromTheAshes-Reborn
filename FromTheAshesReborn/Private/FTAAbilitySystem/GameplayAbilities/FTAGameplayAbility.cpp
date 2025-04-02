@@ -348,10 +348,23 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 	const FGameplayTag& BlockedTag = AbilitySystemGlobals.ActivateFailTagsBlockedTag;
 	const FGameplayTag& MissingTag = AbilitySystemGlobals.ActivateFailTagsMissingTag;
 
-	// Check if any of this ability's tags are currently blocked
+	FGameplayTagContainer BlockContainer;
+	AbilitySystemComponent.GetBlockedAbilityTags(BlockContainer);
+	
+
+	for (const FGameplayTag& Tag : BlockContainer)
+	{
+		UE_LOG(LogTemp, Log, TEXT("BlockContainer - %s"), *Tag.ToString());
+	}
+	
+	
+
 	if (AbilitySystemComponent.AreAbilityTagsBlocked(AbilityTags))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("AreAbilityTagsBlocked"));
+
 		IsBlocked = true;
+
 	}
 
 	const UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(&AbilitySystemComponent);
@@ -366,25 +379,13 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 	{
 		FTAASC->GetAdditionalActivationTagRequirements(AbilityTags, AllRequiredTags, AllBlockedTags);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("AllBlockedTags:"));
-	for (const FGameplayTag& Tag : AllBlockedTags)
-	{
-		UE_LOG(LogTemp, Log, TEXT("- %s"), *Tag.ToString());
-	}
-
-	UE_LOG(LogTemp, Log, TEXT("AllBlockedTags num %d:"), AllBlockedTags.Num());
 	
-
-
-
-	// Check to see the required/blocked tags for this ability
 	if (AllBlockedTags.Num() || AllRequiredTags.Num())
 	{
 		static FGameplayTagContainer AbilitySystemComponentTags;
 		
 		AbilitySystemComponentTags.Reset();
-		AbilitySystemComponent.GetOwnedGameplayTags(AbilitySystemComponentTags);
+		AbilitySystemComponent.GetOwnedGameplayTags(AllBlockedTags);
 
 		if (AbilitySystemComponentTags.HasAny(AllBlockedTags))
 		{

@@ -402,19 +402,38 @@ void UFTAAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle H
 	RemoveAbilityFromActivationGroup(FTAAbility->GetActivationGroup(), FTAAbility);
 }
 
-void UFTAAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags,
-	const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags)
+void UFTAAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(
+	const FGameplayTagContainer& AbilityTags,
+	UGameplayAbility* RequestingAbility,
+	bool bEnableBlockTags,
+	const FGameplayTagContainer& BlockTags,
+	bool bExecuteCancelTags,
+	const FGameplayTagContainer& CancelTags)
 {
 	FGameplayTagContainer ModifiedBlockTags = BlockTags;
 	FGameplayTagContainer ModifiedCancelTags = CancelTags;
 
-	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, BlockTags, bExecuteCancelTags, CancelTags);
-
-	if(TagRelationshipMapping)
+	// Get additional tags from the relationship mapping
+	if (TagRelationshipMapping)
 	{
 		TagRelationshipMapping->GetAbilityTagsToBlockAndCancel(AbilityTags, &ModifiedBlockTags, &ModifiedCancelTags);
 	}
+
+	// Debug log: show the block tags that will actually be applied
+	for (const FGameplayTag& Tag : ModifiedBlockTags)
+	{
+		UE_LOG(LogTemp, Log, TEXT("ApplyAbilityBlockAndCancelTags - ModifiedBlockTag: %s"), *Tag.ToString());
+	}
+
+	for (const FGameplayTag& Tag : ModifiedCancelTags)
+	{
+		UE_LOG(LogTemp, Log, TEXT("ApplyAbilityBlockAndCancelTags - ModifiedCancelTag: %s"), *Tag.ToString());
+	}
+
+	// IMPORTANT: Pass modified tags to the base implementation
+	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, ModifiedBlockTags, bExecuteCancelTags, ModifiedCancelTags);
 }
+
 
 void UFTAAbilitySystemComponent::HandleChangeAbilityCanBeCanceled(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bCanBeCanceled)
 {
@@ -444,11 +463,8 @@ void UFTAAbilitySystemComponent::SetTagRelationshipMapping(UFTAAbilityTagRelatio
 
 void UFTAAbilitySystemComponent::GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const
 {
-	UE_LOG(LogTemp, Warning, TEXT("Outside"));
-
 	if (TagRelationshipMapping)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Inside"));
 		TagRelationshipMapping->GetRequiredAndBlockedActivationTags(AbilityTags, &OutActivationRequired, &OutActivationBlocked);
 	}
 }

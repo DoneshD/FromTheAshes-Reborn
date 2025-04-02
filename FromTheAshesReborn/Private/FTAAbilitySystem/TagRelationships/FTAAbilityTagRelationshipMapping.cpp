@@ -1,7 +1,13 @@
-﻿#include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
+﻿
+#include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 
-void UFTAAbilityTagRelationshipMapping::GetAbilityTagsToBlockAndCancel(const FGameplayTagContainer& AbilityTags,
-	FGameplayTagContainer* OutTagsToBlock, FGameplayTagContainer* OutTagsToCancel) const
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(FTAAbilityTagRelationshipMapping)
+
+void UFTAAbilityTagRelationshipMapping::GetAbilityTagsToBlockAndCancel(
+	const FGameplayTagContainer& AbilityTags, 
+	FGameplayTagContainer* OutTagsToBlock, 
+	FGameplayTagContainer* OutTagsToCancel) const
 {
 	for (int32 i = 0; i < AbilityTagRelationships.Num(); i++)
 	{
@@ -11,18 +17,32 @@ void UFTAAbilityTagRelationshipMapping::GetAbilityTagsToBlockAndCancel(const FGa
 			if (OutTagsToBlock)
 			{
 				OutTagsToBlock->AppendTags(Tags.AbilityTagsToBlock);
+
+				// Log each tag being added
+				for (const FGameplayTag& Tag : Tags.AbilityTagsToBlock)
+				{
+					UE_LOG(LogTemp, Log, TEXT("Appending Block Tag: %s"), *Tag.ToString());
+				}
 			}
+
 			if (OutTagsToCancel)
 			{
 				OutTagsToCancel->AppendTags(Tags.AbilityTagsToCancel);
+
+				// Log each tag being added
+				for (const FGameplayTag& Tag : Tags.AbilityTagsToCancel)
+				{
+					UE_LOG(LogTemp, Log, TEXT("Appending Cancel Tag: %s"), *Tag.ToString());
+				}
 			}
 		}
 	}
 }
 
-void UFTAAbilityTagRelationshipMapping::GetRequiredAndBlockedActivationTags(const FGameplayTagContainer& AbilityTags,
-	FGameplayTagContainer* OutActivationRequired, FGameplayTagContainer* OutActivationBlocked) const
+
+void UFTAAbilityTagRelationshipMapping::GetRequiredAndBlockedActivationTags(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer* OutActivationRequired, FGameplayTagContainer* OutActivationBlocked) const
 {
+	// Simple iteration for now
 	for (int32 i = 0; i < AbilityTagRelationships.Num(); i++)
 	{
 		const FFTAAbilityTagRelationship& Tags = AbilityTagRelationships[i];
@@ -34,19 +54,15 @@ void UFTAAbilityTagRelationshipMapping::GetRequiredAndBlockedActivationTags(cons
 			}
 			if (OutActivationBlocked)
 			{
-				for (const FGameplayTag& Tag : Tags.ActivationBlockedTags)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("INSIDE ActivationBlockedTags - %s"), *Tag.ToString());
-				}
 				OutActivationBlocked->AppendTags(Tags.ActivationBlockedTags);
 			}
 		}
 	}
 }
 
-bool UFTAAbilityTagRelationshipMapping::IsAbilityCancelledByTag(const FGameplayTagContainer& AbilityTags,
-	const FGameplayTag& ActionTag) const
+bool UFTAAbilityTagRelationshipMapping::IsAbilityCancelledByTag(const FGameplayTagContainer& AbilityTags, const FGameplayTag& ActionTag) const
 {
+	// Simple iteration for now
 	for (int32 i = 0; i < AbilityTagRelationships.Num(); i++)
 	{
 		const FFTAAbilityTagRelationship& Tags = AbilityTagRelationships[i];
@@ -56,5 +72,7 @@ bool UFTAAbilityTagRelationshipMapping::IsAbilityCancelledByTag(const FGameplayT
 			return true;
 		}
 	}
+
 	return false;
 }
+
