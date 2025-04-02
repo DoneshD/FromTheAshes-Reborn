@@ -350,21 +350,10 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 
 	FGameplayTagContainer BlockContainer;
 	AbilitySystemComponent.GetBlockedAbilityTags(BlockContainer);
-	
-
-	for (const FGameplayTag& Tag : BlockContainer)
-	{
-		UE_LOG(LogTemp, Log, TEXT("BlockContainer - %s"), *Tag.ToString());
-	}
-	
-	
 
 	if (AbilitySystemComponent.AreAbilityTagsBlocked(AbilityTags))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AreAbilityTagsBlocked"));
-
 		IsBlocked = true;
-
 	}
 
 	const UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(&AbilitySystemComponent);
@@ -374,7 +363,6 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 	AllRequiredTags = ActivationRequiredTags;
 	AllBlockedTags = ActivationBlockedTags;
 
-	// Expand our ability tags to add additional required/blocked tags
 	if (FTAASC)
 	{
 		FTAASC->GetAdditionalActivationTagRequirements(AbilityTags, AllRequiredTags, AllBlockedTags);

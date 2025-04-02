@@ -402,35 +402,17 @@ void UFTAAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle H
 	RemoveAbilityFromActivationGroup(FTAAbility->GetActivationGroup(), FTAAbility);
 }
 
-void UFTAAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(
-	const FGameplayTagContainer& AbilityTags,
-	UGameplayAbility* RequestingAbility,
-	bool bEnableBlockTags,
-	const FGameplayTagContainer& BlockTags,
-	bool bExecuteCancelTags,
-	const FGameplayTagContainer& CancelTags)
+void UFTAAbilitySystemComponent::ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags,
+	const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags)
 {
 	FGameplayTagContainer ModifiedBlockTags = BlockTags;
 	FGameplayTagContainer ModifiedCancelTags = CancelTags;
 
-	// Get additional tags from the relationship mapping
 	if (TagRelationshipMapping)
 	{
 		TagRelationshipMapping->GetAbilityTagsToBlockAndCancel(AbilityTags, &ModifiedBlockTags, &ModifiedCancelTags);
 	}
-
-	// Debug log: show the block tags that will actually be applied
-	for (const FGameplayTag& Tag : ModifiedBlockTags)
-	{
-		UE_LOG(LogTemp, Log, TEXT("ApplyAbilityBlockAndCancelTags - ModifiedBlockTag: %s"), *Tag.ToString());
-	}
-
-	for (const FGameplayTag& Tag : ModifiedCancelTags)
-	{
-		UE_LOG(LogTemp, Log, TEXT("ApplyAbilityBlockAndCancelTags - ModifiedCancelTag: %s"), *Tag.ToString());
-	}
-
-	// IMPORTANT: Pass modified tags to the base implementation
+	
 	Super::ApplyAbilityBlockAndCancelTags(AbilityTags, RequestingAbility, bEnableBlockTags, ModifiedBlockTags, bExecuteCancelTags, ModifiedCancelTags);
 }
 
