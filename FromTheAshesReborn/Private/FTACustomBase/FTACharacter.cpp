@@ -93,6 +93,7 @@ bool AFTACharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagC
 void AFTACharacter::InitAbilitySystemComponent()
 {
 	FTAAbilitySystemComponent->InitAbilityActorInfo(this, this);
+	
 }
 
 void AFTACharacter::AddCharacterBaseAbilities()
@@ -104,5 +105,6 @@ void AFTACharacter::AddCharacterBaseAbilities()
 			AbilitySet->GiveToAbilitySystem(FTAAbilitySystemComponent, nullptr);
 		}
 	}
+	FTAAbilitySystemComponent->SetTagRelationshipMapping(CharacterAbilitySetData->CharacterTagRelationshipMapping);
 }
 

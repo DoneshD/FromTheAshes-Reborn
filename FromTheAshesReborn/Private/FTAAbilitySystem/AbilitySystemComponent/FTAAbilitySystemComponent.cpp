@@ -444,8 +444,11 @@ void UFTAAbilitySystemComponent::SetTagRelationshipMapping(UFTAAbilityTagRelatio
 
 void UFTAAbilitySystemComponent::GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const
 {
+	UE_LOG(LogTemp, Warning, TEXT("Outside"));
+
 	if (TagRelationshipMapping)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Inside"));
 		TagRelationshipMapping->GetRequiredAndBlockedActivationTags(AbilityTags, &OutActivationRequired, &OutActivationBlocked);
 	}
 }

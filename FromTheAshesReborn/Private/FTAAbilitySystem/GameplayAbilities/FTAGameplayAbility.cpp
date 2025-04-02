@@ -367,6 +367,17 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 		FTAASC->GetAdditionalActivationTagRequirements(AbilityTags, AllRequiredTags, AllBlockedTags);
 	}
 
+	UE_LOG(LogTemp, Log, TEXT("AllBlockedTags:"));
+	for (const FGameplayTag& Tag : AllBlockedTags)
+	{
+		UE_LOG(LogTemp, Log, TEXT("- %s"), *Tag.ToString());
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("AllBlockedTags num %d:"), AllBlockedTags.Num());
+	
+
+
+
 	// Check to see the required/blocked tags for this ability
 	if (AllBlockedTags.Num() || AllRequiredTags.Num())
 	{

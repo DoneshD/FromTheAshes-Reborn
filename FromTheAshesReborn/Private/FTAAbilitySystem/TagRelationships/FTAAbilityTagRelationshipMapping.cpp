@@ -34,6 +34,10 @@ void UFTAAbilityTagRelationshipMapping::GetRequiredAndBlockedActivationTags(cons
 			}
 			if (OutActivationBlocked)
 			{
+				for (const FGameplayTag& Tag : Tags.ActivationBlockedTags)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("INSIDE ActivationBlockedTags - %s"), *Tag.ToString());
+				}
 				OutActivationBlocked->AppendTags(Tags.ActivationBlockedTags);
 			}
 		}
