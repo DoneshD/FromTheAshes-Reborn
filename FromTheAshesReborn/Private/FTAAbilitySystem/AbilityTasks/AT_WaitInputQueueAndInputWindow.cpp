@@ -28,7 +28,6 @@ void UAT_WaitInputQueueAndInputWindow::Activate()
 	if (FTAASC)
 	{
 		FTAASC->OnInputQueueReceived.AddDynamic(this, &UAT_WaitInputQueueAndInputWindow::OnInputQueueTagReceived);
-
 		OnRegisterInputWindowTagEventDelegate.AddUniqueDynamic(this, &UAT_WaitInputQueueAndInputWindow::RegisterInputWindowTagEvent);
 	}
 	
@@ -79,13 +78,13 @@ void UAT_WaitInputQueueAndInputWindow::InputWindowTagChanged(const FGameplayTag 
 
 void UAT_WaitInputQueueAndInputWindow::InputWindowOpen(FGameplayTag InputWindowTag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("InputWindowOpen with InputWindowTag: %s"), *InputWindowTag.GetTagName().ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("InputWindowOpen with InputWindowTag: %s"), *InputWindowTag.GetTagName().ToString());
 	ProceedToNextAbility();
 }
 
 void UAT_WaitInputQueueAndInputWindow::ProceedToNextAbility()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Made it"));
+	// UE_LOG(LogTemp, Warning, TEXT("Made it"));
 }
 
 void UAT_WaitInputQueueAndInputWindow::RemoveInputWindowTagEvent(FGameplayTag InputWindowTag)

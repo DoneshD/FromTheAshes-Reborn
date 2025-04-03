@@ -166,7 +166,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	// 	}
 	// }
 
-	
+	UE_LOG(LogTemp, Warning, TEXT("Here"))
 	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
 	if(BlockingAbilityActive)
 	{
