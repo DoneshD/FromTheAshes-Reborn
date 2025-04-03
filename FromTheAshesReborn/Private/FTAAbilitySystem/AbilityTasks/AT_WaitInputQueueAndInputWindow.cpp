@@ -38,7 +38,7 @@ void UAT_WaitInputQueueAndInputWindow::Activate()
 			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
 			if(FTAAbility->ComboWindowTag.IsValid())
 			{
-				UE_LOG(LogTemp, Log, TEXT("Found ability: %s"), *Spec.Ability->GetName())
+				// UE_LOG(LogTemp, Log, TEXT("Found ability: %s"), *Spec.Ability->GetName())
 				OnRegisterInputWindowTagEventDelegate.Broadcast(FTAAbility->ComboWindowTag);
 			}
 		}
@@ -47,8 +47,8 @@ void UAT_WaitInputQueueAndInputWindow::Activate()
 
 void UAT_WaitInputQueueAndInputWindow::OnInputQueueTagReceived(UFTAAbilitySystemComponent* SourceASC,FGameplayTag InputTag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("OnInputReceived"))
-	UE_LOG(LogTemp, Warning, TEXT("Tag Name: %s"), *InputTag.GetTagName().ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("OnInputReceived"))
+	// UE_LOG(LogTemp, Warning, TEXT("Tag Name: %s"), *InputTag.GetTagName().ToString());
 	CurrentInputTag = InputTag;
 }
 
@@ -79,21 +79,24 @@ void UAT_WaitInputQueueAndInputWindow::InputWindowTagChanged(const FGameplayTag 
 
 void UAT_WaitInputQueueAndInputWindow::InputWindowOpen(FGameplayTag InputWindowTag)
 {
-	UE_LOG(LogTemp, Warning, TEXT("InputWindowOpen with InputWindowTag: %s"), *InputWindowTag.GetTagName().ToString());
+	// UE_LOG(LogTemp, Warning, TEXT("InputWindowOpen with InputWindowTag: %s"), *InputWindowTag.GetTagName().ToString());
 	
 	for (const FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
 	{
 		if (Spec.Ability)
 		{
 			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
-			if(FTAAbility->ComboWindowTag.MatchesTag(InputWindowTag) && FTAAbility->InputTag.MatchesTag(CurrentInputTag))
+			if(FTAAbility)
 			{
-				UE_LOG(LogTemp, Log, TEXT("Found ability to try and activate: %s"), *Spec.Ability->GetName());
-				InputWindowTag = FGameplayTag::EmptyTag;
-				CurrentInputTag = FGameplayTag::EmptyTag;
-				FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
-				
+				if(FTAAbility->ComboWindowTag.MatchesTag(InputWindowTag) && FTAAbility->InputTag.MatchesTag(CurrentInputTag))
+				{
+					// UE_LOG(LogTemp, Log, TEXT("Found ability to try and activate: %s"), *Spec.Ability->GetName());
+					InputWindowTag = FGameplayTag::EmptyTag;
+					CurrentInputTag = FGameplayTag::EmptyTag;
+					FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
+				}
 			}
+			
 		}
 	}
 	

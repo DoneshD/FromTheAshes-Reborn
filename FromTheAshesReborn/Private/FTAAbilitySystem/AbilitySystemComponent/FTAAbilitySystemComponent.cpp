@@ -116,14 +116,15 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 
-	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
-	if(BlockingAbilityActive)
-	{
+	// bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
+	//
+	// if(BlockingAbilityActive)
+	// {
 		if (InputTag.IsValid())
 		{
 			OnInputQueueReceived.Broadcast(this, InputTag);
 		}
-	}
+	// }
 	
 	if (InputTag.IsValid())
 	{
