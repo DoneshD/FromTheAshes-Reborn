@@ -15,6 +15,8 @@ public:
 
 	UFTAAbilitySystemComponent* FTAASC;
 
+	FGameplayTag CurrentInputTag;
+
 	FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
 	
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;

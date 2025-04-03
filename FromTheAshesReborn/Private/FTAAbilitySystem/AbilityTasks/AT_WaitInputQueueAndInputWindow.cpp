@@ -49,6 +49,7 @@ void UAT_WaitInputQueueAndInputWindow::OnInputQueueTagReceived(UFTAAbilitySystem
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnInputReceived"))
 	UE_LOG(LogTemp, Warning, TEXT("Tag Name: %s"), *InputTag.GetTagName().ToString());
+	CurrentInputTag = InputTag;
 }
 
 void UAT_WaitInputQueueAndInputWindow::RegisterInputWindowTagEvent(FGameplayTag InputWindowTag)
@@ -78,8 +79,24 @@ void UAT_WaitInputQueueAndInputWindow::InputWindowTagChanged(const FGameplayTag 
 
 void UAT_WaitInputQueueAndInputWindow::InputWindowOpen(FGameplayTag InputWindowTag)
 {
-	// UE_LOG(LogTemp, Warning, TEXT("InputWindowOpen with InputWindowTag: %s"), *InputWindowTag.GetTagName().ToString());
-	ProceedToNextAbility();
+	UE_LOG(LogTemp, Warning, TEXT("InputWindowOpen with InputWindowTag: %s"), *InputWindowTag.GetTagName().ToString());
+	
+	for (const FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
+	{
+		if (Spec.Ability)
+		{
+			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
+			if(FTAAbility->ComboWindowTag.MatchesTag(InputWindowTag) && FTAAbility->InputTag.MatchesTag(CurrentInputTag))
+			{
+				UE_LOG(LogTemp, Log, TEXT("Found ability to try and activate: %s"), *Spec.Ability->GetName());
+				InputWindowTag = FGameplayTag::EmptyTag;
+				CurrentInputTag = FGameplayTag::EmptyTag;
+				FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
+				
+			}
+		}
+	}
+	
 }
 
 void UAT_WaitInputQueueAndInputWindow::ProceedToNextAbility()
@@ -127,7 +144,9 @@ void UAT_WaitInputQueueAndInputWindow::OnDestroy(bool AbilityEnded)
 		FTAASC->OnInputQueueReceived.RemoveDynamic(this, &UAT_WaitInputQueueAndInputWindow::OnInputQueueTagReceived);
 	}
 
+
 	Super::OnDestroy(AbilityEnded);
+	
 
 }
 
