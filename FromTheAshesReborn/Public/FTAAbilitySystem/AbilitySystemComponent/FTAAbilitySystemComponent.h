@@ -44,7 +44,7 @@ public:
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
-	FWaitQueueInputDelegate OnQueueInputReceived;
+	FWaitQueueInputDelegate OnInputQueueReceived;
 	
 	FReceivedDamageDelegate ReceivedDamage;
 

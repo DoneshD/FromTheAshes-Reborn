@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
+#include "FTAAbilitySystem/AbilityTasks/AT_WaitInputQueueAndInputWindow.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "ComboManagerComponent.generated.h"
 
@@ -50,6 +51,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	bool IsInInputQueueWindow = false;
+
+	FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
 	
 	UFUNCTION(BlueprintCallable)
 	void InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses);

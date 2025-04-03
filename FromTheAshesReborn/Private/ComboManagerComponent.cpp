@@ -30,7 +30,7 @@ void UComboManagerComponent::BeginPlay()
 		return;
 	}
 
-	OnRegisterTestWindowTagEventDelegate.AddUniqueDynamic(this, &UComboManagerComponent::RegisterGameplayTagEvent);
+	// OnRegisterTestWindowTagEventDelegate.AddUniqueDynamic(this, &UComboManagerComponent::RegisterGameplayTagEvent);
 	
 }
 
@@ -49,7 +49,7 @@ void UComboManagerComponent::InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFT
 		{
 			if (AbilityClass.GetDefaultObject())
 			{
-				OnRegisterTestWindowTagEventDelegate.Broadcast(AbilityClass.GetDefaultObject()->ComboWindowTag);
+				OnRegisterInputWindowTagEventDelegate.Broadcast(AbilityClass.GetDefaultObject()->ComboWindowTag);
 			}
 		}
 	}
