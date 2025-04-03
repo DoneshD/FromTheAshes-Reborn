@@ -5,7 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/AbilityTasks/AT_WaitQueueInput.h"
+#include "FTAAbilitySystem/AbilityTasks/AT_WaitInputQueueAndInputWindow.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -260,10 +260,10 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			TickTask->ReadyForActivation();
 		}
 	}
-	QueueInputTask = UAT_WaitQueueInput::WaitQueueInput(this);
-	if(QueueInputTask)
+	WaitInputQueueAndInputWindowTask = UAT_WaitInputQueueAndInputWindow::WaitInputQueueAndInputWindow(this);
+	if(WaitInputQueueAndInputWindowTask)
 	{
-		QueueInputTask->ReadyForActivation();
+		WaitInputQueueAndInputWindowTask->ReadyForActivation();
 	}
 }
 

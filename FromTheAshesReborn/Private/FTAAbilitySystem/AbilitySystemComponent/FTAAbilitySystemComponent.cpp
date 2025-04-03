@@ -115,12 +115,64 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
+
+	FGameplayAbilitySpec InputedAbilitySpec;
+	if (InputTag.IsValid())
+	{
+		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+		{
+			if (AbilitySpec.Ability)
+			{
+				if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+				{
+					bool CanActivate = AbilitySpec.Ability->CanActivateAbility(AbilitySpec.Handle, AbilityActorInfo.Get());
+					if(CanActivate)
+					{
+						InputedAbilitySpec = AbilitySpec;
+					}
+				}
+			}
+		}
+	}
+	
+	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		//If there is input during an active ability, check if it can be cancel current and activate
+		
+		// if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
+		if(AbilitySpec.IsActive())
+		{
+			
+			UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
+			
+			if(CurrentFTAAbility->CanBeCanceledForQueue)
+			{
+				UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(InputedAbilitySpec.Ability);
+		
+				if(InputedFTAAbility)
+				{
+					if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->UniqueIdentifierTag))
+					{
+						QueuedAbilitySpec = InputedAbilitySpec;
+						return;
+					}
+				}
+			}
+			//Temporary solution for jumping, also fixes strange issue with launcher->air combos
+			else
+			{
+				CancelAbility(CurrentFTAAbility);
+			}
+		}
+	}
+
+	
 	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
 	if(BlockingAbilityActive)
 	{
 		if (InputTag.IsValid())
 		{
-			OnQueueInputReceived.Broadcast(this);
+			OnQueueInputReceived.Broadcast(this, InputTag);
 		}
 	}
 	
@@ -230,6 +282,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 					const UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec->Ability);
 					if(FTAAbilityCDO->GetActivationPolicy() == EFTAAbilityActivationPolicy::OnInputTriggered)
 					{
+						
 						AbilitiesToActivate.AddUnique(AbilitySpec->Handle);
 					}
 				}

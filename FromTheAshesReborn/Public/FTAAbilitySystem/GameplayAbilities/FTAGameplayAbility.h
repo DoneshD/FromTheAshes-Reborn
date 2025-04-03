@@ -7,7 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
-class UAT_WaitQueueInput;
+class UAT_WaitInputQueueAndInputWindow;
 class UFTAAT_OnTick;
 class IFTAAbilitySourceInterface;
 class AFTACharacter;
@@ -66,7 +66,7 @@ protected:
 	UFTAAT_OnTick* TickTask;
 
 	UPROPERTY()
-	TObjectPtr<UAT_WaitQueueInput> QueueInputTask;
+	TObjectPtr<UAT_WaitInputQueueAndInputWindow> WaitInputQueueAndInputWindowTask;
 
 public:
 	
@@ -124,6 +124,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	FGameplayTag InputTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
 	bool bActivateAbilityOnGranted;
