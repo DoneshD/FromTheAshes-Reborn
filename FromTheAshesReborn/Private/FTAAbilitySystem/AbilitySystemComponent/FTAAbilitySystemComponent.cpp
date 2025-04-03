@@ -115,60 +115,15 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
+	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
+	if(BlockingAbilityActive)
+	{
+		if (InputTag.IsValid())
+		{
+			OnQueueInputReceived.Broadcast(this);
+		}
+	}
 	
-	// FGameplayAbilitySpec InputedAbilitySpec;
-	//  if (InputTag.IsValid())
-	//  {
-	//  	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
-	//  	{
-	//  		if (AbilitySpec.Ability)
-	//  		{
-	//  			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
-	//  			{
-	//  				bool CanActivate = AbilitySpec.Ability->CanActivateAbility(AbilitySpec.Handle, AbilityActorInfo.Get());
-	//  				if(CanActivate)
-	//  				{
-	//  					InputedAbilitySpec = AbilitySpec;
-	//  				}
-	//  			}
-	//  		}
-	//  	}
-	//  }
-	//
-	// for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
-	// {
-	// 	//If there is input during an active ability, check if it can be cancel current and activate
-	// 	
-	// 	// if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
-	// 	if(AbilitySpec.IsActive())
-	// 	{
-	// 		
-	// 		UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
-	// 		
-	// 		if(CurrentFTAAbility->CanBeCanceledForQueue)
-	// 		{
-	// 			UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(InputedAbilitySpec.Ability);
-	// 	
-	// 			if(InputedFTAAbility)
-	// 			{
-	// 				if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->UniqueIdentifierTag))
-	// 				{
-	// 					QueuedAbilitySpec = InputedAbilitySpec;
-	// 					return;
-	// 				}
-	// 			}
-	// 		}
-	// 		//Temporary solution for jumping, also fixes strange issue with launcher->air combos
-	// 		else
-	// 		{
-	// 			CancelAbility(CurrentFTAAbility);
-	// 		}
-	// 	}
-	// }
-	//
-	// InputPressedSpecHandles.AddUnique(InputedAbilitySpec.Handle);
-	// InputHeldSpecHandles.AddUnique(InputedAbilitySpec.Handle);
-
 	if (InputTag.IsValid())
 	{
 		for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
@@ -266,6 +221,9 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 				{
 					//Ability is already active, passing along event
 					AbilitySpecInputPressed(*AbilitySpec);
+					// OnQueueInputReceived.Broadcast(this);
+					// UE_LOG(LogTemp, Warning, TEXT("Test 1"))
+					
 				}
 				else
 				{

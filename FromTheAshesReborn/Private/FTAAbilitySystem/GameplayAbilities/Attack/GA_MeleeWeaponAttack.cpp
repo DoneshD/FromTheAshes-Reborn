@@ -129,15 +129,15 @@ void UGA_MeleeWeaponAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMon
 	AttackMontageToPlay = AttackMontage;
 	if(AttackMontageToPlay)
 	{
-		Task = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
+		PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
 		1.0f, NAME_None, false, 1.0f);
-		Task->OnBlendOut.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
-		Task->OnCompleted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
-		Task->OnInterrupted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
-		Task->OnCancelled.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
-		Task->EventReceived.AddDynamic(this, &UGA_MeleeWeaponAttack::EventReceived);
+		PlayMontageTask->OnBlendOut.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
+		PlayMontageTask->OnCompleted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
+		PlayMontageTask->OnInterrupted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
+		PlayMontageTask->OnCancelled.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
+		PlayMontageTask->EventReceived.AddDynamic(this, &UGA_MeleeWeaponAttack::EventReceived);
 		
-		Task->ReadyForActivation();
+		PlayMontageTask->ReadyForActivation();
 	}
 	else
 	{

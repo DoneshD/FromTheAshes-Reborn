@@ -90,8 +90,6 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnGameplayEvent(FGameplayTag EventTag, c
 	}
 }
 
-
-
 UFTAAT_PlayMontageAndWaitForEvent* UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(UGameplayAbility* OwningAbility,
 FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer EventTags, float Rate, FName StartSection, bool bStopWhenAbilityEnds, float AnimRootMotionTranslationScale)
 {
@@ -145,16 +143,13 @@ void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 			
 				MontageEndedDelegate.BindUObject(this, &UFTAAT_PlayMontageAndWaitForEvent::OnMontageEnded);
 				AnimInstance->Montage_SetEndDelegate(MontageEndedDelegate, MontageToPlay);
-			
-			
+				
 				ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
 				if (Character && (Character->GetLocalRole() == ROLE_Authority ||
 					(Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
 				{
 					Character->SetAnimRootMotionTranslationScale(AnimRootMotionTranslationScale);
-			
 				}
-
 				bPlayedMontage = true;
 			}
 		}

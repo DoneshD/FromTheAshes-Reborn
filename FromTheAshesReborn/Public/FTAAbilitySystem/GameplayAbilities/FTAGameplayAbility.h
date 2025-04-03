@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UAT_WaitQueueInput;
 class UFTAAT_OnTick;
 class IFTAAbilitySourceInterface;
 class AFTACharacter;
@@ -63,6 +64,9 @@ protected:
 
 	UPROPERTY()
 	UFTAAT_OnTick* TickTask;
+
+	UPROPERTY()
+	TObjectPtr<UAT_WaitQueueInput> QueueInputTask;
 
 public:
 	

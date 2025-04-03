@@ -7,6 +7,10 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbilitySystemComponent*, SourceASC, float,
                                                UnmitigatedDamage, float, MitigatedDamage);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitQueueInputDelegate, class UFTAAbilitySystemComponent*, SourceASC);
+
+
 //DEBUG REMOVE LATER
 class AWeaponActorBase;
 
@@ -39,6 +43,8 @@ public:
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
+
+	FWaitQueueInputDelegate OnQueueInputReceived;
 	
 	FReceivedDamageDelegate ReceivedDamage;
 

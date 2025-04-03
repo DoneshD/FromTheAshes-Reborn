@@ -5,6 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/AbilityTasks/AT_WaitQueueInput.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -29,7 +30,6 @@ void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
 {
 	
 }
-
 
 UFTAAbilitySystemComponent* UFTAGameplayAbility::GetFTAAbilitySystemComponentFromActorInfo() const
 {
@@ -260,7 +260,11 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			TickTask->ReadyForActivation();
 		}
 	}
-	
+	QueueInputTask = UAT_WaitQueueInput::WaitQueueInput(this);
+	if(QueueInputTask)
+	{
+		QueueInputTask->ReadyForActivation();
+	}
 }
 
 void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
