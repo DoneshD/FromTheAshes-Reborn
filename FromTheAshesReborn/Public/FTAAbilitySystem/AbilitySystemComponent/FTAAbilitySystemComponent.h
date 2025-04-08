@@ -18,6 +18,7 @@ class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;
 class UFTAAbilityTagRelationshipMapping;
 class UPlayerComboManagerComponent;
+class UFTAGameplayAbility;
 
 
 UCLASS()
@@ -81,6 +82,12 @@ public:
 	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
 	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
+	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const;
+
+	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
+	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability);
 	
 	virtual void NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability) override;
 	virtual void NotifyAbilityFailed(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason) override;

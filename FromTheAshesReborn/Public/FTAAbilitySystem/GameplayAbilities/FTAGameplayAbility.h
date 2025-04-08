@@ -57,7 +57,9 @@ protected:
 	EFTAAbilityActivationPolicy ActivationPolicy;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	EFTAAbilityActivationGroup ActivationGroup;
+	EFTAAbilityActivationGroup ActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
+
+	EFTAAbilityActivationGroup DefaultActivationGroup;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;

@@ -23,6 +23,8 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 	bActivateOnInput = true;
 
 	ActivationPolicy = EFTAAbilityActivationPolicy::OnInputTriggered;
+
+	DefaultActivationGroup = GetActivationGroup();
 	
 }
 
@@ -270,6 +272,14 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	UE_LOG(LogTemp, Warning, TEXT("UFTAGameplayAbility::EndAbility"))
+	// ActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
+	UE_LOG(LogTemp, Warning, TEXT("Ability Name: %s"), *this->GetName());
+
+	// GetFTAAbilitySystemComponentFromActorInfo()->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, this);
+	UE_LOG(LogTemp, Warning, TEXT("Activation Group: %s"), *UEnum::GetValueAsString(GetActivationGroup()));
+
 
 	if (TickTask)
 	{

@@ -116,15 +116,65 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
 
-	// bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
-	//
-	// if(BlockingAbilityActive)
+	// FGameplayAbilitySpec InputedAbilitySpec;
+	// if (InputTag.IsValid())
 	// {
+	// 	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	// 	{
+	// 		if (AbilitySpec.Ability)
+	// 		{
+	// 			if (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag))
+	// 			{
+	// 				bool CanActivate = AbilitySpec.Ability->CanActivateAbility(AbilitySpec.Handle, AbilityActorInfo.Get());
+	// 				if(CanActivate)
+	// 				{
+	// 					InputedAbilitySpec = AbilitySpec;
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
+	//
+	// for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	// {
+	// 	//If there is input during an active ability, check if it can be cancel current and activate
+	// 	
+	// 	// if(AbilitySpec.IsActive() && PCM->IsInInputQueueWindow == true)
+	// 	if(AbilitySpec.IsActive())
+	// 	{
+	// 		
+	// 		UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
+	// 		
+	// 		if(CurrentFTAAbility->CanBeCanceledForQueue)
+	// 		{
+	// 			UFTAGameplayAbility* InputedFTAAbility = Cast<UFTAGameplayAbility>(InputedAbilitySpec.Ability);
+	// 	
+	// 			if(InputedFTAAbility)
+	// 			{
+	// 				if(CurrentFTAAbility->QueueableAbilitiesTags.HasTag(InputedFTAAbility->UniqueIdentifierTag))
+	// 				{
+	// 					QueuedAbilitySpec = InputedAbilitySpec;
+	// 					return;
+	// 				}
+	// 			}
+	// 		}
+	// 		//Temporary solution for jumping, also fixes strange issue with launcher->air combos
+	// 		else
+	// 		{
+	// 			CancelAbility(CurrentFTAAbility);
+	// 		}
+	// 	}
+	// }
+
+	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
+	if(BlockingAbilityActive)
+	{
 		if (InputTag.IsValid())
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Here"))
 			OnInputQueueReceived.Broadcast(this, InputTag);
 		}
-	// }
+	}
 	
 	if (InputTag.IsValid())
 	{
@@ -313,7 +363,7 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 	case EFTAAbilityActivationGroup::Exclusive_Blocking:
 		CancelActivationGroupAbilities(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
 		break;
-
+	
 	default:
 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Group"));
 		break;
@@ -340,6 +390,34 @@ void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityAct
 	ActivationGroupCount[(uint8)Group]--;
 }
 
+bool UFTAAbilitySystemComponent::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const
+{
+	// if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
+	// 	return false;
+	// }
+
+	return true;
+}
+
+bool UFTAAbilitySystemComponent::ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability)
+{
+	if (!CanChangeActivationGroup(NewGroup, Ability))
+	{
+		return false;
+	}
+
+	if(Ability->ActivationGroup != NewGroup)
+	{
+		RemoveAbilityFromActivationGroup(Ability->ActivationGroup, Ability);
+		AddAbilityToActivationGroup(NewGroup, Ability);
+
+		Ability->ActivationGroup = NewGroup;
+	}
+	return true;
+}
+
 void UFTAAbilitySystemComponent::NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability)
 {
 	Super::NotifyAbilityActivated(Handle, Ability);
@@ -360,6 +438,7 @@ void UFTAAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle H
 
 	UFTAGameplayAbility* FTAAbility = CastChecked<UFTAGameplayAbility>(Ability);
 
+	UE_LOG(LogTemp, Warning, TEXT("UFTAAbilitySystemComponent::NotifyAbilityEnded"))
 	RemoveAbilityFromActivationGroup(FTAAbility->GetActivationGroup(), FTAAbility);
 }
 

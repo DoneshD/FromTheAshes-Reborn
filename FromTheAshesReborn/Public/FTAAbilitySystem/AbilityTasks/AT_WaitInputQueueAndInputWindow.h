@@ -4,6 +4,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "AT_WaitInputQueueAndInputWindow.generated.h"
 
+class UFTAAbilitySystemComponent;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterInputWindowTagEventSignature, FGameplayTag, InputWindowTag);
 
 UCLASS()
@@ -15,9 +16,9 @@ public:
 
 	UFTAAbilitySystemComponent* FTAASC;
 
-	FGameplayTag CurrentInputTag;
-
 	FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
+
+	FGameplayTag CurrentInputTag;
 	
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
@@ -36,7 +37,8 @@ public:
 	UFUNCTION()
 	void OnInputQueueTagReceived(class UFTAAbilitySystemComponent* SourceASC, FGameplayTag InputTag);
 	
-	
+	void ChangeActivationGroupToReplaceable(FGameplayTag InputWindowTag);
+	void ChangeActivationGroupToBlocking(FGameplayTag InputWindowTag);
 
 	UFUNCTION()
 	void RegisterInputWindowTagEvent(FGameplayTag InputWindowTag);
