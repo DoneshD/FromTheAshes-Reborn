@@ -1,5 +1,4 @@
 ﻿#include "FTAAbilitySystem/AbilityTasks/AT_WaitInputQueueAndInputWindow.h"
-
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 UAT_WaitInputQueueAndInputWindow::UAT_WaitInputQueueAndInputWindow(const FObjectInitializer& ObjectInitializer)
@@ -33,6 +32,7 @@ void UAT_WaitInputQueueAndInputWindow::Activate()
 		FTAASC->OnInputQueueReceived.AddDynamic(this, &UAT_WaitInputQueueAndInputWindow::OnInputQueueTagReceived);
 		// UE_LOG(LogTemp, Warning, TEXT("Add dynamic"))
 		OnRegisterInputWindowTagEventDelegate.AddUniqueDynamic(this, &UAT_WaitInputQueueAndInputWindow::RegisterInputWindowTagEvent);
+		
 	}
 	
 	for (const FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
@@ -173,25 +173,23 @@ void UAT_WaitInputQueueAndInputWindow::RemoveInputWindowTagEvent(FGameplayTag In
 {
 	
 
-	if (TagTimerHandles.Contains(InputWindowTag))
-	{
-		FTimerHandle& ComboWindowTimer = TagTimerHandles[InputWindowTag];
-		if (GetWorld()->GetTimerManager().IsTimerActive(ComboWindowTimer))
-		{
-			GetWorld()->GetTimerManager().ClearTimer(ComboWindowTimer);
-		}
-		TagTimerHandles.Remove(InputWindowTag);
-		UE_LOG(LogTemp, Error, TEXT("Removving"));
-	}
-	
-	if (TagDelegateHandles.Contains(InputWindowTag))
-	{
-		FDelegateHandle Handle = TagDelegateHandles[InputWindowTag];
-		FTAASC->RegisterGameplayTagEvent(InputWindowTag, EGameplayTagEventType::NewOrRemoved).Remove(Handle);
-		TagDelegateHandles.Remove(InputWindowTag);
-		UE_LOG(LogTemp, Error, TEXT("Removving"));
-
-	}
+	// if (TagTimerHandles.Contains(InputWindowTag))
+	// {
+	// 	FTimerHandle& ComboWindowTimer = TagTimerHandles[InputWindowTag];
+	// 	if (GetWorld()->GetTimerManager().IsTimerActive(ComboWindowTimer))
+	// 	{
+	// 		GetWorld()->GetTimerManager().ClearTimer(ComboWindowTimer);
+	// 	}
+	// 	TagTimerHandles.Remove(InputWindowTag);
+	// }
+	//
+	// if (TagDelegateHandles.Contains(InputWindowTag))
+	// {
+	// 	FDelegateHandle Handle = TagDelegateHandles[InputWindowTag];
+	// 	FTAASC->RegisterGameplayTagEvent(InputWindowTag, EGameplayTagEventType::NewOrRemoved).Remove(Handle);
+	// 	TagDelegateHandles.Remove(InputWindowTag);
+	//
+	// }
 }
 
 void UAT_WaitInputQueueAndInputWindow::ExternalCancel()

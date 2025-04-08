@@ -32,6 +32,8 @@ protected:
 	
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
+
+	FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
 	
 	UComboManagerComponent();
 	virtual void BeginPlay() override;
