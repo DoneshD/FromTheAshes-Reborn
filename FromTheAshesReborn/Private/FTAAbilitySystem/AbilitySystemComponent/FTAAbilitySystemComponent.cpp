@@ -167,11 +167,12 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	// }
 
 	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
-	if(BlockingAbilityActive)
+	bool ReplaceableAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Replaceable] > 0;
+	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
 		if (InputTag.IsValid())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Here"))
+			UE_LOG(LogTemp, Warning, TEXT("InputTag.IsValid()"))
 			OnInputQueueReceived.Broadcast(this, InputTag);
 		}
 	}
@@ -232,13 +233,6 @@ void UFTAAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& 
 
 void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)
 {
-	// if(HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Gameplay.AbilityInputBlocked")))
-	// {
-	// 	ClearAbilityInput();
-	// 	return;
-	// }
-	
-	// Clear all abilities in array not being pressed
 
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
@@ -271,11 +265,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 
 				if(AbilitySpec->IsActive())
 				{
-					//Ability is already active, passing along event
 					AbilitySpecInputPressed(*AbilitySpec);
-					// OnQueueInputReceived.Broadcast(this);
-					// UE_LOG(LogTemp, Warning, TEXT("Test 1"))
-					
 				}
 				else
 				{
@@ -305,7 +295,6 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 				AbilitySpec->InputPressed = false;
 				if(AbilitySpec->IsActive())
 				{
-					// Ability is active so pass along the input event.
 					AbilitySpecInputReleased(*AbilitySpec);
 				}
 			}
@@ -438,7 +427,6 @@ void UFTAAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle H
 
 	UFTAGameplayAbility* FTAAbility = CastChecked<UFTAGameplayAbility>(Ability);
 
-	UE_LOG(LogTemp, Warning, TEXT("UFTAAbilitySystemComponent::NotifyAbilityEnded"))
 	RemoveAbilityFromActivationGroup(FTAAbility->GetActivationGroup(), FTAAbility);
 }
 

@@ -114,6 +114,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> Mel
 		FTAChar->ComboManagerComponent->GetCurrentComboContainer().AddTag(TestTag);
 		FTAChar->ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 
+
 		PlayAttackMontage(AttackMontageToPlay);
 	}
 

@@ -49,7 +49,7 @@ void UComboManagerComponent::InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFT
 		{
 			if (AbilityClass.GetDefaultObject())
 			{
-				OnRegisterInputWindowTagEventDelegate.Broadcast(AbilityClass.GetDefaultObject()->ComboWindowTag);
+				// OnRegisterInputWindowTagEventDelegate.Broadcast(AbilityClass.GetDefaultObject()->ComboWindowTag);
 			}
 		}
 	}

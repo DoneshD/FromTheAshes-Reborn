@@ -95,12 +95,6 @@ public:
 	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
 	EFTAAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
 
-	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
-	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup) const;
-
-	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
-	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup);
-
 	void TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const;
 
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;

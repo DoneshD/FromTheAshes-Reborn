@@ -15,7 +15,7 @@ class AFTAPlayerController;
 class UAbilitySystemComponent;
 
 // DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterWindowTagEventSignature, FGameplayTag, ComboWindowTag);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterTestWindowTagEventSignature, FGameplayTag, TestComboWindowTag);
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRegisterTestWindowTagEventSignature, FGameplayTag, TestComboWindowTag);
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -47,12 +47,12 @@ protected:
 public:
 
 	// FRegisterWindowTagEventSignature OnRegisterWindowTagEventDelegate;
-	FRegisterTestWindowTagEventSignature OnRegisterTestWindowTagEventDelegate;
+	// FRegisterTestWindowTagEventSignature OnRegisterTestWindowTagEventDelegate;
 
 	UPROPERTY(EditAnywhere)
 	bool IsInInputQueueWindow = false;
 
-	FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
+	// FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
 	
 	UFUNCTION(BlueprintCallable)
 	void InputQueueAllowedInputsBegin(TArray<TSubclassOf<UFTAGameplayAbility>> QueueableAbilityClasses);
