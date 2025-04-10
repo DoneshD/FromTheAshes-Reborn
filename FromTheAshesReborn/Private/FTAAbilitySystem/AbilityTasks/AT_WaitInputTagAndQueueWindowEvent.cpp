@@ -14,21 +14,29 @@ UAT_WaitInputTagAndQueueWindowEvent* UAT_WaitInputTagAndQueueWindowEvent::WaitIn
 void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 {
 	Super::Activate();
+	
 	FTAASC = Cast<UFTAAbilitySystemComponent>(AbilitySystemComponent);
 	if(!FTAASC || !Ability)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UAT_WaitInputTagAndQueueWindowEvent::Activate - FTAASC or Ability is invalid"));
 		return;
 	}
+	
 	FTAASC->OnInputQueueReceived.AddDynamic(this, &UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived);
-	for(FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
+
+	TArray<FGameplayAbilitySpecHandle> SpecArray;
+	FTAASC->GetAllAbilities(SpecArray);
+	for(FGameplayAbilitySpecHandle& Handle : SpecArray)
 	{
-		if(UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability))
+		if(FGameplayAbilitySpec* Spec = FTAASC->FindAbilitySpecFromHandle(Handle))
 		{
-			if(FTAAbility->QueueWindowTag.IsValid())
+			if(UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec->Ability))
 			{
-				Queueablebilities.Add(FTAAbility->QueueWindowTag, FTAAbility);
-				RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
+				if(FTAAbility->QueueWindowTag.IsValid())
+				{
+					Queueablebilities.Add(FTAAbility->QueueWindowTag, FTAAbility);
+					RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
+				}
 			}
 		}
 	}
@@ -88,9 +96,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::RemoveQueueWindowTagEvent(FGameplayTag
 			.Remove(Handle->DelegateHandle);
 		QueueWindowHandles.Remove(QueueWindowTag);
 	}
-	// FTAASC->RegisterGameplayTagEvent(QueueWindowTag, EGameplayTagEventType::NewOrRemoved).Remove(QueueWindowHandles.Find(QueueWindowTag)->DelegateHandle);
-	// QueueWindowHandles.Remove(QueueWindowTag);
-	
 }
 
 void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGameplayTag QueueWindowTag, int32 NewCount)

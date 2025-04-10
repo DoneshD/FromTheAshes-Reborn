@@ -22,6 +22,7 @@ protected:
 	{
 		FDelegateHandle DelegateHandle;
 	};
+	
 	TMap<FGameplayTag, FQueueWindowHandle> QueueWindowHandles;
 	TMap<FGameplayTag, TWeakObjectPtr<UFTAGameplayAbility>> Queueablebilities;
 
