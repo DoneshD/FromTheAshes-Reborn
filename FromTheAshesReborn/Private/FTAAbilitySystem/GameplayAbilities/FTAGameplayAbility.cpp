@@ -190,10 +190,13 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		}
 	}
 
-	WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
-	if(WaitInputTagAndQueueWindowEventTask)
+	if (!WaitInputTagAndQueueWindowEventTask)
 	{
-		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
+		WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
+		if (WaitInputTagAndQueueWindowEventTask)
+		{
+			WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
+		}
 	}
 }
 

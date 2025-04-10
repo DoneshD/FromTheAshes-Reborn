@@ -24,7 +24,7 @@ protected:
 	};
 	
 	TMap<FGameplayTag, FQueueWindowHandle> QueueWindowHandles;
-	TMap<FGameplayTag, TWeakObjectPtr<UFTAGameplayAbility>> Queueablebilities;
+	TMap<FGameplayTag, UFTAGameplayAbility*> Queueablebilities;
 
 public:
 	UAT_WaitInputTagAndQueueWindowEvent(const FObjectInitializer& ObjectInitializer);
