@@ -96,7 +96,7 @@ void UComboManagerComponent::ComboWindowOpen(FGameplayTag ComboWindowTag)
 		return;
 	}
 	
-	if(ComboWindowTag.MatchesTag(QueuedAbility->ComboWindowTag))
+	if(ComboWindowTag.MatchesTag(QueuedAbility->QueueWindowTag))
 	{
 		
 		ProceedToNextAbility(QueuedAbility->GetClass());

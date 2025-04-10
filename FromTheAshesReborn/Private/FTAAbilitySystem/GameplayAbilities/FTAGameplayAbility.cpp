@@ -5,7 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/AbilityTasks/AT_WaitInputQueueAndInputWindow.h"
+#include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -189,11 +189,11 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			TickTask->ReadyForActivation();
 		}
 	}
-	
-	WaitInputQueueAndInputWindowTask = UAT_WaitInputQueueAndInputWindow::WaitInputQueueAndInputWindow(this);
-	if(WaitInputQueueAndInputWindowTask)
+
+	WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
+	if(WaitInputTagAndQueueWindowEventTask)
 	{
-		WaitInputQueueAndInputWindowTask->ReadyForActivation();
+		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
 }
 
@@ -206,10 +206,11 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 		TickTask->EndTask();
 		TickTask = nullptr;
 	}
-	if(WaitInputQueueAndInputWindowTask)
+
+	if(WaitInputTagAndQueueWindowEventTask)
 	{
-		WaitInputQueueAndInputWindowTask->EndTask();
-		WaitInputQueueAndInputWindowTask = nullptr;
+		WaitInputTagAndQueueWindowEventTask->EndTask();
+		WaitInputTagAndQueueWindowEventTask = nullptr;
 	}
 
 }

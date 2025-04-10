@@ -8,7 +8,7 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbilitySystemComponent*, SourceASC, float,
                                                UnmitigatedDamage, float, MitigatedDamage);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FWaitQueueInputDelegate, class UFTAAbilitySystemComponent*, SourceASC, FGameplayTag, InputTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitQueueInputDelegate, FGameplayTag, InputTag);
 
 
 //DEBUG REMOVE LATER
@@ -46,6 +46,8 @@ public:
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
 	FWaitQueueInputDelegate OnInputQueueReceived;
+	
+	FGameplayTag QueuedInputTag;
 	
 	FReceivedDamageDelegate ReceivedDamage;
 

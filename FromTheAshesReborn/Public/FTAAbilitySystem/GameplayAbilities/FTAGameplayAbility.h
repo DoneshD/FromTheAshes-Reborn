@@ -7,7 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
-class UAT_WaitInputQueueAndInputWindow;
+class UAT_WaitInputTagAndQueueWindowEvent;
 class UFTAAT_OnTick;
 class IFTAAbilitySourceInterface;
 class AFTACharacter;
@@ -68,7 +68,7 @@ protected:
 	UFTAAT_OnTick* TickTask;
 
 	UPROPERTY()
-	TObjectPtr<UAT_WaitInputQueueAndInputWindow> WaitInputQueueAndInputWindowTask;
+	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
 
 public:
 	
@@ -140,7 +140,7 @@ public:
 	bool CanBeCanceledForQueue = false;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
-	FGameplayTag ComboWindowTag;
+	FGameplayTag QueueWindowTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
 	FGameplayTagContainer QueueableAbilitiesTags;

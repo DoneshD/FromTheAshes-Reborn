@@ -3,7 +3,6 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
-#include "FTAAbilitySystem/AbilityTasks/AT_WaitInputQueueAndInputWindow.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "ComboManagerComponent.generated.h"
 
@@ -33,7 +32,7 @@ protected:
 	TMap<FGameplayTag, FDelegateHandle> TagDelegateHandles;
 	TMap<FGameplayTag, FTimerHandle> TagTimerHandles;
 
-	FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
+	// FRegisterInputWindowTagEventSignature OnRegisterInputWindowTagEventDelegate;
 	
 	UComboManagerComponent();
 	virtual void BeginPlay() override;

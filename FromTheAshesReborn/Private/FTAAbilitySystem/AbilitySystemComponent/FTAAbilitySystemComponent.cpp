@@ -165,15 +165,19 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	// 		}
 	// 	}
 	// }
-
+	
+	
 	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
 	bool ReplaceableAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Replaceable] > 0;
-	if(BlockingAbilityActive || ReplaceableAbilityActive)
+	if(BlockingAbilityActive)
 	{
 		if (InputTag.IsValid())
 		{
+			UE_LOG(LogTemp, Warning, TEXT("ASC InputTag: %s, "),
+			*InputTag.ToString());
 			UE_LOG(LogTemp, Warning, TEXT("InputTag.IsValid()"))
-			OnInputQueueReceived.Broadcast(this, InputTag);
+			OnInputQueueReceived.Broadcast(InputTag);
+			return;
 		}
 	}
 	
