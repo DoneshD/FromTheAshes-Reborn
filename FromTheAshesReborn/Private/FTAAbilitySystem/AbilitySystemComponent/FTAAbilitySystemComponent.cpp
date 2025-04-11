@@ -121,6 +121,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	{
 		if (InputTag.IsValid())
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Input sacved"))
 			OnInputQueueReceived.Broadcast(InputTag);
 			return;
 		}

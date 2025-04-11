@@ -37,6 +37,8 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 				{
 					QueueableAbilities.Add(FTAAbility->QueueWindowTag, FTAAbility);
 					RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
+					UE_LOG(LogTemp, Warning, TEXT("IRegisterQueueWindowTagEvent"))
+
 				}
 			}
 		}
@@ -64,6 +66,8 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnDestroy(bool AbilityEnded)
 				.Remove(Pair.Value.DelegateHandle);
 		}
 		QueueWindowHandles.Empty();
+		FTAASC->RemoveLooseGameplayTag(QueuedInputTag);
+
 	}
 	Super::OnDestroy(AbilityEnded);
 }
@@ -71,7 +75,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnDestroy(bool AbilityEnded)
 void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputTag)
 {
 	QueuedInputTag = InputTag;
-
 	for (const auto& Pair : QueueableAbilities)
 	{
 		if (FTAASC->HasMatchingGameplayTag(Pair.Key))
@@ -103,18 +106,18 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 {
 	if (NewCount > 0 && FTAASC->HasMatchingGameplayTag(QueueWindowTag))
 	{
-		if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
-		{
-			FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
-		}
+		// if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
+		// {
+		// 	FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
+		// }
 		TryActivateMatchingAbility(QueueWindowTag);
 	}
 	else
 	{
-		if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
-		{
-			FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
-		}
+		// if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
+		// {
+		// 	FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+		// }
 	}
 }
 
