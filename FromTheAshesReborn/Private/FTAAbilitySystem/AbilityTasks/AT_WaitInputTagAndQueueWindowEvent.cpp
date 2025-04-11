@@ -35,7 +35,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 			{
 				if(FTAAbility->QueueWindowTag.IsValid())
 				{
-					Queueablebilities.Add(FTAAbility->QueueWindowTag, FTAAbility);
+					QueueableAbilities.Add(FTAAbility->QueueWindowTag, FTAAbility);
 					RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
 				}
 			}
@@ -72,7 +72,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 {
 	QueuedInputTag = InputTag;
 
-	for (const auto& Pair : Queueablebilities)
+	for (const auto& Pair : QueueableAbilities)
 	{
 		if (FTAASC->HasMatchingGameplayTag(Pair.Key))
 		{
@@ -103,13 +103,24 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 {
 	if (NewCount > 0 && FTAASC->HasMatchingGameplayTag(QueueWindowTag))
 	{
+		if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
+		{
+			FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+		}
 		TryActivateMatchingAbility(QueueWindowTag);
+	}
+	else
+	{
+		if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
+		{
+			FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
+		}
 	}
 }
 
 void UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility(const FGameplayTag& QueueWindowTag)
 {
-	if (UFTAGameplayAbility* FTAAbility = *Queueablebilities.Find(QueueWindowTag))
+	if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
 	{
 		if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 		{
