@@ -40,5 +40,5 @@ void UGA_Dash_Grounded::DashLocationReached()
 {
 	Super::DashLocationReached();
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	// EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

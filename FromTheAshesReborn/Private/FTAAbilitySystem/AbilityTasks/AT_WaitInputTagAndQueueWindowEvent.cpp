@@ -26,19 +26,22 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 
 	TArray<FGameplayAbilitySpecHandle> SpecArray;
 	FTAASC->GetAllAbilities(SpecArray);
-	
-	for(FGameplayAbilitySpecHandle& Handle : SpecArray)
-	{
-		if(FGameplayAbilitySpec* Spec = FTAASC->FindAbilitySpecFromHandle(Handle))
-		{
-			if(UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec->Ability))
-			{
-				if(FTAAbility->QueueWindowTag.IsValid())
-				{
-					QueueableAbilities.Add(FTAAbility->QueueWindowTag, FTAAbility);
-					RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
-					UE_LOG(LogTemp, Warning, TEXT("IRegisterQueueWindowTagEvent"))
 
+	for (FGameplayAbilitySpecHandle& Handle : SpecArray)
+	{
+		if (FGameplayAbilitySpec* Spec = FTAASC->FindAbilitySpecFromHandle(Handle))
+		{
+			if (UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec->Ability))
+			{
+				if (FTAAbility->QueueWindowTag.IsValid())
+				{
+					TArray<UFTAGameplayAbility*>& Abilities = QueueableAbilities.FindOrAdd(FTAAbility->QueueWindowTag);
+				
+					if (!Abilities.Contains(FTAAbility))
+					{
+						Abilities.Add(FTAAbility);
+					}
+					RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
 				}
 			}
 		}
@@ -123,20 +126,21 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 
 void UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility(const FGameplayTag& QueueWindowTag)
 {
-	if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
+	if (TArray<UFTAGameplayAbility*>* FTAAbilities = QueueableAbilities.Find(QueueWindowTag))
 	{
-		if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
+		for (UFTAGameplayAbility* FTAAbility : *FTAAbilities) // <-- add * here
 		{
-			QueuedInputTag = FGameplayTag::EmptyTag;
-			FTAASC->CancelAllAbilities();
-			bool IsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
-			if (!IsActivated)
+			if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 			{
-				UE_LOG(LogTemp, Error, TEXT("TryActivateMatchingAbility: Activation failed for %s"), *FTAAbility->GetName());
-			}
-			else
-			{
-				EndTask();
+				FTAASC->CancelAllAbilities();
+
+				bool IsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
+				if (IsActivated)
+				{
+					// UE_LOG(LogTemp, Error, TEXT("TryActivateMatchingAbility: Activation failed for %s"), *FTAAbility->GetName());
+					QueuedInputTag = FGameplayTag::EmptyTag;
+					EndTask();
+				}
 			}
 		}
 	}

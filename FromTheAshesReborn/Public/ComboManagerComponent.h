@@ -16,11 +16,14 @@ class FROMTHEASHESREBORN_API UComboManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-protected:
+public:
 	
 	UFTAAbilitySystemComponent* FTAASC;
-	
+
+	UPROPERTY(BlueprintReadWrite)
 	FGameplayTagContainer CurrentComboTagContainer;
+
+	UPROPERTY(BlueprintReadWrite)
 	int CurrentComboIndex = 0;
 	
 public:
