@@ -46,14 +46,9 @@ public:
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
 	FWaitQueueInputDelegate OnInputQueueReceived;
-	
 	FGameplayTag QueuedInputTag;
 	
 	FReceivedDamageDelegate ReceivedDamage;
-
-	FGameplayAbilitySpec QueuedAbilitySpec;
-	
-	// UPlayerComboManagerComponent* PCM;
 	
 public:
 	

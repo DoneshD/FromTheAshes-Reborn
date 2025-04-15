@@ -72,8 +72,6 @@ void UGA_Dash::UpdateDashMovement(float DeltaTime)
 
 void UGA_Dash::DashLocationReached()
 {
-	GetFTACharacterFromActorInfo()->ComboManagerComponent->GetCurrentComboContainer().Reset();
-	GetFTACharacterFromActorInfo()->ComboManagerComponent->SetCurrentComboIndex(0);
 	IsDashing = false;
 }
 
@@ -92,6 +90,9 @@ void UGA_Dash::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData Even
 void UGA_Dash::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
+
+	GetFTACharacterFromActorInfo()->ComboManagerComponent->GetCurrentComboContainer().Reset();
+	GetFTACharacterFromActorInfo()->ComboManagerComponent->SetCurrentComboIndex(0);
 	
 }
 

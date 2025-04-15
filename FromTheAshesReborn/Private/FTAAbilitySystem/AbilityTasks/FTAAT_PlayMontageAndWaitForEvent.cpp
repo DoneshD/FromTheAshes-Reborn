@@ -72,6 +72,7 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnMontageEnded(UAnimMontage* Montage, bo
 	{
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
+			UE_LOG(LogTemp, Warning, TEXT("UFTAAT_PlayMontageAndWaitForEvent::OnMontageEnded"));
 			OnCompleted.Broadcast(FGameplayTag(), FGameplayEventData());
 		}
 	}
@@ -168,7 +169,6 @@ void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 		UE_LOG(LogTemp, Warning, TEXT("UFTAAbilityTask_PlayMontageAndWaitForEvent called in Ability %s failed to play montage %s; Task Instance Name %s."), *Ability->GetName(), *GetNameSafe(MontageToPlay), *InstanceName.ToString());
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
-			//ABILITY_LOG(Display, TEXT("%s: OnCancelled"), *GetName());
 			OnCancelled.Broadcast(FGameplayTag(), FGameplayEventData());
 		}
 	}
