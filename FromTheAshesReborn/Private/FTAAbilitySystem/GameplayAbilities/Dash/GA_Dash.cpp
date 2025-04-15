@@ -33,8 +33,9 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	DashEndLocation = ActorInfo->AvatarActor->GetActorLocation() + (InputDir * DashDistance);
 
 	IsDashing = true;
+
+	PlayAbilityAnimMontage(DashMontage);
 	
-	DrawDebugPoint(GetWorld(), DashEndLocation, 10.f, FColor::Red, false, 1.0f);
 }
 
 bool UGA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -71,5 +72,30 @@ void UGA_Dash::UpdateDashMovement(float DeltaTime)
 
 void UGA_Dash::DashLocationReached()
 {
+	GetFTACharacterFromActorInfo()->ComboManagerComponent->GetCurrentComboContainer().Reset();
+	GetFTACharacterFromActorInfo()->ComboManagerComponent->SetCurrentComboIndex(0);
+}
+
+void UGA_Dash::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
+{
+	Super::PlayAbilityAnimMontage(AnimMontage);
+	
+}
+
+void UGA_Dash::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageCancelled(EventTag, EventData);
+	
+}
+
+void UGA_Dash::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageCompleted(EventTag, EventData);
+	
+}
+
+void UGA_Dash::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::EventMontageReceived(EventTag, EventData);
 	
 }

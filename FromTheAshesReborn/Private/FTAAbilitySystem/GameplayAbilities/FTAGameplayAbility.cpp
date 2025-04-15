@@ -400,15 +400,15 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 	MontageToPlay = AnimMontage;
 	if(MontageToPlay)
 	{
-		PlayMontageTaskNew = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
+		PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
 		1.0f, NAME_None, false, 1.0f);
-		PlayMontageTaskNew->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
-		PlayMontageTaskNew->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
-		PlayMontageTaskNew->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
-		PlayMontageTaskNew->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
-		PlayMontageTaskNew->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
+		PlayMontageTask->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
+		PlayMontageTask->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
+		PlayMontageTask->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
+		PlayMontageTask->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
+		PlayMontageTask->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
 		
-		PlayMontageTaskNew->ReadyForActivation();
+		PlayMontageTask->ReadyForActivation();
 	}
 	else
 	{

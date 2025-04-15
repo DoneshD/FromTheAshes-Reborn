@@ -24,4 +24,6 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	virtual void DashLocationReached() override;
+
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 };

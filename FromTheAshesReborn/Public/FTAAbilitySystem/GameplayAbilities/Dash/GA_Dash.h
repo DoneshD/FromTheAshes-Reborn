@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashDuration = 0.20f;
 
+	//TODO: Temporary
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	TObjectPtr<UAnimMontage> DashMontage;
 
 protected:
 
@@ -46,4 +49,11 @@ protected:
 	virtual void UpdateDashMovement(float DeltaTime);
 
 	virtual void DashLocationReached();
+
+	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
+
+	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
 };

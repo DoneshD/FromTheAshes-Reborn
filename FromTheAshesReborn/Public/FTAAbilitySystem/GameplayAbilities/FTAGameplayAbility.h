@@ -73,7 +73,7 @@ protected:
 	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
 
 	UPROPERTY()
-	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTaskNew;
+	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
 
 	UPROPERTY()
 	TObjectPtr<UAnimMontage> MontageToPlay;

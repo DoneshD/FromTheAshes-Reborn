@@ -35,8 +35,6 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY()
-	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
 
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
