@@ -121,7 +121,6 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	{
 		if (InputTag.IsValid())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Input sacved"))
 			OnInputQueueReceived.Broadcast(InputTag);
 			return;
 		}
@@ -465,37 +464,6 @@ void UFTAAbilitySystemComponent::K2_RemoveLooseGameplayTag(const FGameplayTag& G
 void UFTAAbilitySystemComponent::K2_RemoveLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count)
 {
 	RemoveLooseGameplayTags(GameplayTags, Count);
-}
-
-float UFTAAbilitySystemComponent::PlayMontageForMesh(UGameplayAbility* InAnimatingAbility, USkeletalMeshComponent* InMesh, FGameplayAbilityActivationInfo ActivationInfo, UAnimMontage* NewAnimMontage, float InPlayRate, FName StartSectionName, bool bReplicateMontage)
-{
-	UFTAGameplayAbility* InAbility = Cast<UFTAGameplayAbility>(InAnimatingAbility);
-
-	float Duration = -1.f;
-
-	UAnimInstance* AnimInstance = IsValid(InMesh) && InMesh->GetOwner() == AbilityActorInfo->AvatarActor ? InMesh->GetAnimInstance() : nullptr;
-	if (AnimInstance && NewAnimMontage)
-	{
-		Duration = AnimInstance->Montage_Play(NewAnimMontage, InPlayRate);
-		if (Duration > 0.f)
-		{
-			if (NewAnimMontage->HasRootMotion() && AnimInstance->GetOwningActor())
-			{
-				UE_LOG(LogRootMotion, Log, TEXT("UAbilitySystemComponent::PlayMontage %s, Role: %s")
-					, *GetNameSafe(NewAnimMontage)
-					, *UEnum::GetValueAsString(TEXT("Engine.ENetRole"), AnimInstance->GetOwningActor()->GetLocalRole())
-					);
-			}
-			
-			// Start at a given Section.
-			if (StartSectionName != NAME_None)
-			{
-				AnimInstance->Montage_JumpToSection(StartSectionName, NewAnimMontage);
-			}
-
-		}
-	}
-	return Duration;
 }
 
 void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage)

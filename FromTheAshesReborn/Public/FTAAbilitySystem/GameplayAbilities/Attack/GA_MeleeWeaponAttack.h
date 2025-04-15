@@ -74,9 +74,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
 	void PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> MeleeAttackDataAssets);
 
-	// UFUNCTION()
-	void PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage);
-
 protected:
 	struct FMeleeWeaponTraceData
 	{
@@ -107,13 +104,10 @@ protected:
 	UFUNCTION()
 	void OnHitAdded(FHitResult LastItem);
 
-	UFUNCTION()
-	void OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
+	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 
-	UFUNCTION()
-	void OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
-	void EventReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 
 };

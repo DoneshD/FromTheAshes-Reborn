@@ -7,6 +7,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
@@ -392,4 +393,40 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 	UObject* SourceObject = GetSourceObject(Handle, ActorInfo);
 
 	OutAbilitySource = Cast<IFTAAbilitySourceInterface>(SourceObject);
+}
+
+void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
+{
+	MontageToPlay = AnimMontage;
+	if(MontageToPlay)
+	{
+		PlayMontageTaskNew = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
+		1.0f, NAME_None, false, 1.0f);
+		PlayMontageTaskNew->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
+		PlayMontageTaskNew->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
+		PlayMontageTaskNew->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
+		PlayMontageTaskNew->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
+		PlayMontageTaskNew->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
+		
+		PlayMontageTaskNew->ReadyForActivation();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No attack montage"));
+	}
+}
+
+void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	
+}
+
+void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	
+}
+
+void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	
 }

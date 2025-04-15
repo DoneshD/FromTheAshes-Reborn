@@ -97,7 +97,6 @@ public:
 	virtual void ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags) override;
 	virtual void HandleChangeAbilityCanBeCanceled(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bCanBeCanceled) override;
 	
-	
 	// Uses a gameplay effect to add the specified dynamic granted tag.
 	void AddDynamicTagGameplayEffect(const FGameplayTag& Tag);
 
@@ -127,10 +126,7 @@ public:
 	
 	// Called from FTADamageExecCalculation. Broadcasts on ReceivedDamage whenever this ASC receives damage.
 	virtual void ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
-
-	// Plays a montage and handles replication and prediction based on passed in ability/activation info
-	virtual float PlayMontageForMesh(UGameplayAbility* AnimatingAbility, class USkeletalMeshComponent* InMesh, FGameplayAbilityActivationInfo ActivationInfo, UAnimMontage* Montage, float InPlayRate, FName StartSectionName = NAME_None, bool bReplicateMontage = true);
-
+	
 	// Version of function in AbilitySystemGlobals that returns correct type
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
 

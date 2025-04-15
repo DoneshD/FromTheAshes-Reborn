@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UFTAAT_PlayMontageAndWaitForEvent;
 class UAT_WaitInputTagAndQueueWindowEvent;
 class UFTAAT_OnTick;
 class IFTAAbilitySourceInterface;
@@ -64,11 +65,47 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
 
+	//TODO: change to TObject
 	UPROPERTY()
 	UFTAAT_OnTick* TickTask;
 
 	UPROPERTY()
 	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTaskNew;
+
+	UPROPERTY()
+	TObjectPtr<UAnimMontage> MontageToPlay;
+
+public:
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
+	EAbilityInputID AbilityInputID = EAbilityInputID::None;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	FGameplayTag InputTag;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	bool bActivateAbilityOnGranted;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	bool bActivateOnInput;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	FGameplayTag UniqueIdentifierTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	FGameplayTag RequiredCharacterOrientationTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
+	bool CanBeCanceledForQueue = false;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
+	FGameplayTag QueueWindowTag;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
+	FGameplayTagContainer QueueableAbilitiesTags;
 
 public:
 	
@@ -116,33 +153,16 @@ public:
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 
-public:
+	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage);
 
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
-	EAbilityInputID AbilityInputID = EAbilityInputID::None;
+	UFUNCTION()
+	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
-	FGameplayTag InputTag;
+	UFUNCTION()
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
-	bool bActivateAbilityOnGranted;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
-	bool bActivateOnInput;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTag UniqueIdentifierTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTag RequiredCharacterOrientationTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
-	bool CanBeCanceledForQueue = false;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
-	FGameplayTag QueueWindowTag;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
-	FGameplayTagContainer QueueableAbilitiesTags;
 	
 };

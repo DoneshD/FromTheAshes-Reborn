@@ -83,7 +83,6 @@ void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 	FTAChar->ComboManagerComponent->SetCurrentComboIndex(0);
 }
 
-
 void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> MeleeAttackDataAssets)
 {
 
@@ -115,7 +114,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> Mel
 		FTAChar->ComboManagerComponent->GetCurrentComboContainer().AddTag(TestTag);
 		FTAChar->ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 
-		PlayAttackMontage(AttackMontageToPlay);
+		PlayAbilityAnimMontage(AttackMontageToPlay);
 	}
 
 	else
@@ -125,26 +124,6 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> Mel
 	}
 }
 
-void UGA_MeleeWeaponAttack::PlayAttackMontage(TObjectPtr<UAnimMontage> AttackMontage)
-{
-	AttackMontageToPlay = AttackMontage;
-	if(AttackMontageToPlay)
-	{
-		PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AttackMontageToPlay, FGameplayTagContainer(),
-		1.0f, NAME_None, false, 1.0f);
-		PlayMontageTask->OnBlendOut.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
-		PlayMontageTask->OnCompleted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCompleted);
-		PlayMontageTask->OnInterrupted.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
-		PlayMontageTask->OnCancelled.AddDynamic(this, &UGA_MeleeWeaponAttack::OnCancelled);
-		PlayMontageTask->EventReceived.AddDynamic(this, &UGA_MeleeWeaponAttack::EventReceived);
-		
-		PlayMontageTask->ReadyForActivation();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No attack montage"));
-	}
-}
 
 
 void UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting()
@@ -199,17 +178,30 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 	OnMeleeWeaponTargetDataReady(TargetDataHandle);
 }
 
-void UGA_MeleeWeaponAttack::OnCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+
+void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
+	Super::PlayAbilityAnimMontage(AnimMontage);
+	
 }
 
-void UGA_MeleeWeaponAttack::OnCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+void UGA_MeleeWeaponAttack::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	Super::OnMontageCancelled(EventTag, EventData);
+	
+}
+
+void UGA_MeleeWeaponAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageCompleted(EventTag, EventData);
+
 	ResetMeleeAttack();
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	
 }
 
-void UGA_MeleeWeaponAttack::EventReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	UE_LOG(LogTemp, Log, TEXT("Received gameplay event: %s"), *EventTag.ToString());
+	Super::EventMontageReceived(EventTag, EventData);
+
 }
