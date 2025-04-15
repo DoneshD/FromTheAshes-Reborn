@@ -402,7 +402,7 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 	{
 		PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
 		1.0f, NAME_None, false, 1.0f);
-		PlayMontageTask->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
+		// PlayMontageTask->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
 		PlayMontageTask->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
 		PlayMontageTask->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
 		PlayMontageTask->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
@@ -412,7 +412,7 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No attack montage"));
+		UE_LOG(LogTemp, Warning, TEXT("No montage"));
 	}
 }
 

@@ -74,6 +74,7 @@ void UGA_Dash::DashLocationReached()
 {
 	GetFTACharacterFromActorInfo()->ComboManagerComponent->GetCurrentComboContainer().Reset();
 	GetFTACharacterFromActorInfo()->ComboManagerComponent->SetCurrentComboIndex(0);
+	IsDashing = false;
 }
 
 void UGA_Dash::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)

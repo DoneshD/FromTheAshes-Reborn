@@ -39,5 +39,6 @@ void UGA_Dash_Grounded::OnMontageCompleted(FGameplayTag EventTag, FGameplayEvent
 {
 	Super::OnMontageCompleted(EventTag, EventData);
 
-	
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+
 }
