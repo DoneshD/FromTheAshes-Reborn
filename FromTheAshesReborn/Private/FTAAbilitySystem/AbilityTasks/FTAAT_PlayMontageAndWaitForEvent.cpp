@@ -72,7 +72,6 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnMontageEnded(UAnimMontage* Montage, bo
 	{
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("UFTAAT_PlayMontageAndWaitForEvent::OnMontageEnded"));
 			OnCompleted.Broadcast(FGameplayTag(), FGameplayEventData());
 		}
 	}

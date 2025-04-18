@@ -17,27 +17,6 @@ bool UHealthAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackDat
 		return false;
 	}
 
-	//This checks the gameplay effect for any tags that may prevent health from being affected
-
-	//--------------Example--------------//
-
-	/*
-	if (Data.EvaluatedData.Attribute == GetDamageAttribute())
-	{
-		if (Data.EvaluatedData.Magnitude > 0.0f)
-		{
-			const bool bIsDamageFromSelfDestruct = Data.EffectSpec.GetDynamicAssetTags().HasTagExact(TAG_Gameplay_DamageSelfDestruct);
-
-			if (Data.Target.HasMatchingGameplayTag(TAG_Gameplay_DamageImmunity) && !bIsDamageFromSelfDestruct)
-			{
-				// Do not take away any health.
-				Data.EvaluatedData.Magnitude = 0.0f;
-				return false;
-			}
-		}
-	}
-	*/
-	
 	return true;
 	
 }
