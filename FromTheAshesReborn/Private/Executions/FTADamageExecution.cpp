@@ -4,6 +4,7 @@
 #include "FTAAbilitySystem/AttributeSets/DamageAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
+#include "FTAAbilitySystem/AttributeSets/WeaponAttributeSet.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 
 struct FDamageStatics
@@ -12,7 +13,7 @@ struct FDamageStatics
 
 	FDamageStatics()
 	{
-		BaseDamageDef = FGameplayEffectAttributeCaptureDefinition(UDamageAttributeSet::GetBaseDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
+		BaseDamageDef = FGameplayEffectAttributeCaptureDefinition(UWeaponAttributeSet::GetBaseWeaponDamageAttribute(), EGameplayEffectAttributeCaptureSource::Source, true);
 	}
 };
 

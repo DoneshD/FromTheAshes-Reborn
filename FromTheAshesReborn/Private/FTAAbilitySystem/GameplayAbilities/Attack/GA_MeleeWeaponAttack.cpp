@@ -167,11 +167,13 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 {
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
 	TargetData->HitResult = LastItem;
+	
 	if(!TargetData)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Target Data"))
 		return;
 	}
+	
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
 	TargetDataHandle.Add(TargetData);
 	

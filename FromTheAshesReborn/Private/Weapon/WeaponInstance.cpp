@@ -50,6 +50,7 @@ void UWeaponInstance::SpawnEquipmentActors(const TArray<FEquipmentActorToSpawn>&
 			
 			UFTAAbilitySystemComponent* FTAASC = AFTAChar->GetFTAAbilitySystemComponent();
 			FTAASC->TestWeaponActor = Cast<AWeaponActorBase>(NewActor);
+			
 			SpawnedActors.Add(NewActor);
 		}
 	}
