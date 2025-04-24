@@ -153,12 +153,12 @@ void UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting()
 void UGA_MeleeWeaponAttack::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
 {
 	TArray<FActiveGameplayEffectHandle> AppliedEffects = ApplyGameplayEffectToTarget(
-		CurrentSpecHandle, 
-		CurrentActorInfo, 
-		CurrentActivationInfo, 
-		TargetData, 
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		TargetData,
 		MeleeAttackDamageEffect, 
-		1, 
+		1,
 		1
 	);
 }

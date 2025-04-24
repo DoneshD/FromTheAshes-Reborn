@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "FTAAttributeSet.h"
+#include "../FTAAttributeSet.h"
 #include "WeaponAttributeSet.generated.h"
 
 UCLASS()

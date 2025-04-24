@@ -8,8 +8,7 @@
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 #include "Player/FTAPlayerController.h"
 
-UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	
 }
@@ -38,79 +37,9 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 			{
 				UE_LOG(LogTemp, Error, TEXT("PlayerController is NULL"));
 			}
-			// PCM = OwnerPawn->FindComponentByClass<UPlayerComboManagerComponent>();
-
-			// if(!PCM)
-			// {
-			// 	UE_LOG(LogTemp, Error, TEXT("PCM is NULL"));
-			// }
 		}
 	}
 	
-}
-
-void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc)
-{
-	ABILITYLIST_SCOPE_LOCK();
-	for(const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
-	{
-		if(!AbilitySpec.IsActive())
-		{
-			continue;
-		}
-		
-		//Getting the Class Default Object of GA
-		UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec.Ability);
-
-		//Make sure we do have an instanced ability per actor or execution so we do not operate on the CDO
-		if(FTAAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
-		{
-			//Get all instances of the ability (includes per execution)
-			TArray<UGameplayAbility*> AllInstances = AbilitySpec.GetAbilityInstances();
-
-			for(UGameplayAbility* AbilityInstance : AllInstances)
-			{
-				UFTAGameplayAbility* FTAAbilityInstance = CastChecked<UFTAGameplayAbility>(AbilityInstance);
-
-				// ----??-----
-				if(ShouldCancelFunc(FTAAbilityInstance, AbilitySpec.Handle))
-				{
-					if(FTAAbilityInstance->CanBeCanceled())
-					{
-						/**
-						*Cancels the instance of the ability:
-						*Note: AbilitySpec.Handle is info shared across all instances, like a common description of it
-						* FTAAbilityInstance->GetCurrentActivationInfo() is info from this specific instance
-						*/
-						FTAAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FTAAbilityInstance->GetCurrentActivationInfo(), false);
-					}
-					else
-					{
-						UE_LOG(LogTemp, Error, TEXT("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false."), *FTAAbilityInstance->GetName());
-					}
-				}
-			}
-		}
-		else
-		{
-			// Cancel the non-instanced ability CDO.
-			if (ShouldCancelFunc(FTAAbilityCDO, AbilitySpec.Handle))
-			{
-				// Non-instanced abilities can always be canceled.
-				check(FTAAbilityCDO->CanBeCanceled());
-				FTAAbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), false);
-			}
-		}
-	}
-}
-
-void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
-{
-	auto ShouldCancelFunc = [this](const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpec Handle)
-	{
-		const EFTAAbilityActivationPolicy ActivationPolicy = FTAAbility->GetActivationPolicy();
-		return((ActivationPolicy == EFTAAbilityActivationPolicy::OnInputTriggered || ActivationPolicy == EFTAAbilityActivationPolicy::WhileInputActive));
-	};
 }
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
@@ -161,8 +90,6 @@ void UFTAAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 	
 	if (Spec.IsActive())
 	{
-		// TryActivateAbility(Spec.Handle);
-		// Invoke the InputPressed event. This is not replicated here. If someone is listening, they may replicate the InputPressed event to the server.
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}
 }
@@ -171,11 +98,8 @@ void UFTAAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& 
 {
 	Super::AbilitySpecInputReleased(Spec);
 
-	// We don't support UGameplayAbility::bReplicateInputDirectly.
-	// Use replicated events instead so that the WaitInputRelease ability task works.
 	if (Spec.IsActive())
 	{
-		// Invoke the InputReleased event. This is not replicated here. If someone is listening, they may replicate the InputReleased event to the server.
 		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
 	}
 }
@@ -186,7 +110,6 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
 
-	// Process all abilities that activate when the input is held.
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputHeldSpecHandles)
 	{
 		if(const FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
@@ -201,9 +124,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 			}
 		}
 	}
-
-	// Process all abilities that had their input pressed this frame.
-
+	
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputPressedSpecHandles)
 	{
 		if(FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
@@ -229,7 +150,6 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 		}
 	}
 
-	//Activate all ability that were pressed or held
 	for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : AbilitiesToActivate)
 	{
 		TryActivateAbility(AbilitySpecHandle);
@@ -259,6 +179,60 @@ void UFTAAbilitySystemComponent::ClearAbilityInput()
 	InputPressedSpecHandles.Reset();
 	InputReleasedSpecHandles.Reset();
 	InputHeldSpecHandles.Reset();
+}
+
+void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc)
+{
+	ABILITYLIST_SCOPE_LOCK();
+	for(const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		if(!AbilitySpec.IsActive())
+		{
+			continue;
+		}
+		
+		UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec.Ability);
+
+		if(FTAAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
+		{
+			TArray<UGameplayAbility*> AllInstances = AbilitySpec.GetAbilityInstances();
+
+			for(UGameplayAbility* AbilityInstance : AllInstances)
+			{
+				UFTAGameplayAbility* FTAAbilityInstance = CastChecked<UFTAGameplayAbility>(AbilityInstance);
+
+				if(ShouldCancelFunc(FTAAbilityInstance, AbilitySpec.Handle))
+				{
+					if(FTAAbilityInstance->CanBeCanceled())
+					{
+						
+						FTAAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FTAAbilityInstance->GetCurrentActivationInfo(), false);
+					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false."), *FTAAbilityInstance->GetName());
+					}
+				}
+			}
+		}
+		else
+		{
+			if (ShouldCancelFunc(FTAAbilityCDO, AbilitySpec.Handle))
+			{
+				check(FTAAbilityCDO->CanBeCanceled());
+				FTAAbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), false);
+			}
+		}
+	}
+}
+
+void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
+{
+	auto ShouldCancelFunc = [this](const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpec Handle)
+	{
+		const EFTAAbilityActivationPolicy ActivationPolicy = FTAAbility->GetActivationPolicy();
+		return((ActivationPolicy == EFTAAbilityActivationPolicy::OnInputTriggered || ActivationPolicy == EFTAAbilityActivationPolicy::WhileInputActive));
+	};
 }
 
 bool UFTAAbilitySystemComponent::IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const
@@ -330,11 +304,11 @@ void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityAct
 
 bool UFTAAbilitySystemComponent::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const
 {
-	// if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
-	// 	return false;
-	// }
+	if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
+	{
+		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
+		return false;
+	}
 
 	return true;
 }

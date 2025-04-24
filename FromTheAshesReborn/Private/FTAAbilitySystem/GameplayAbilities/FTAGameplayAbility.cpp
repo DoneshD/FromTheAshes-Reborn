@@ -14,19 +14,15 @@
 #include "Player/FTAPlayerState.h"
 
 
-UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer)
-	: Super(ObjectInitializer)
+UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-	// Default to Instance Per Actor
 	InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 
 	bActivateAbilityOnGranted = false;
 	bActivateOnInput = true;
-
 	ActivationPolicy = EFTAAbilityActivationPolicy::OnInputTriggered;
 
-	DefaultActivationGroup = GetActivationGroup();
-	
+	bIsCancelable = true;
 }
 
 void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
@@ -237,39 +233,39 @@ FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGamep
 {
 	FGameplayEffectContextHandle ContextHandle = Super::MakeEffectContext(Handle, ActorInfo);
 	
-	// FFTAGameplayEffectContext* EffectContext = FFTAGameplayEffectContext::ExtractEffectContext(ContextHandle);
-	//
-	// if(!EffectContext)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("Effect Context is Null"));
-	// 	return ContextHandle;
-	// }
-	// check(EffectContext);
-	// check(ActorInfo);
-	//
-	// AActor* EffectCauser = nullptr;
-	// const IFTAAbilitySourceInterface* AbilitySource = nullptr;
-	// float SourceLevel = 0.0f;
-	// GetAbilitySource(Handle, ActorInfo, /*out*/ SourceLevel, /*out*/ AbilitySource, /*out*/ EffectCauser);
-	//
-	// UObject* SourceObject = GetSourceObject(Handle, ActorInfo);
-	//
-	// if(!SourceObject)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("SourceObject is Null"));
-	// 	return ContextHandle;
-	// }
-	// AActor* Instigator = ActorInfo ? ActorInfo->OwnerActor.Get() : nullptr;
-	//
-	// if(!Instigator)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("Instigator is Null"));
-	// 	return ContextHandle;
-	// }
-	//
-	// EffectContext->SetAbilitySource(AbilitySource, SourceLevel);
-	// EffectContext->AddInstigator(Instigator, EffectCauser);
-	// EffectContext->AddSourceObject(SourceObject);
+	FFTAGameplayEffectContext* EffectContext = FFTAGameplayEffectContext::ExtractEffectContext(ContextHandle);
+	
+	if(!EffectContext)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Effect Context is Null"));
+		return ContextHandle;
+	}
+	check(EffectContext);
+	check(ActorInfo);
+	
+	AActor* EffectCauser = nullptr;
+	const IFTAAbilitySourceInterface* AbilitySource = nullptr;
+	float SourceLevel = 0.0f;
+	GetAbilitySource(Handle, ActorInfo, /*out*/ SourceLevel, /*out*/ AbilitySource, /*out*/ EffectCauser);
+	
+	UObject* SourceObject = GetSourceObject(Handle, ActorInfo);
+	
+	if(!SourceObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SourceObject is Null"));
+		return ContextHandle;
+	}
+	AActor* Instigator = ActorInfo ? ActorInfo->OwnerActor.Get() : nullptr;
+	
+	if(!Instigator)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Instigator is Null"));
+		return ContextHandle;
+	}
+	
+	EffectContext->SetAbilitySource(AbilitySource, SourceLevel);
+	EffectContext->AddInstigator(Instigator, EffectCauser);
+	EffectContext->AddSourceObject(SourceObject);
 	
 	return ContextHandle;
 }

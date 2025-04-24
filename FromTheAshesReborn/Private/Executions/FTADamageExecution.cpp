@@ -1,10 +1,10 @@
 ﻿#pragma once
-#include "Executions/FTADamageExecution.h"
 
+#include "Executions/FTADamageExecution.h"
 #include "FTAAbilitySystem/AttributeSets/DamageAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
-#include "FTAAbilitySystem/AttributeSets/WeaponAttributeSet.h"
+#include "FTAAbilitySystem/AttributeSets/WeaponAttributeSets/WeaponAttributeSet.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 
 struct FDamageStatics
@@ -47,13 +47,10 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	const AActor* EffectCauser = TypedContext->GetEffectCauser();
 	const FHitResult* HitActorResult = TypedContext->GetHitResult();
 	
-	// Clamping is done when damage is converted to -health
 	const float DamageDone = FMath::Max(BaseDamage, 0.0f);
 	
 	if (DamageDone > 0.0f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OutExecutionOutput"));
-		// Apply a damage modifier, this gets turned into - health on the target
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UHealthAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, BaseDamage));
 	}
 }

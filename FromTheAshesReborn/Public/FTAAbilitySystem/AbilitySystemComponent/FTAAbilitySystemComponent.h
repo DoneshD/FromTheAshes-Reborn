@@ -53,16 +53,9 @@ public:
 public:
 	
 	UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
-
-	typedef TFunctionRef<bool(const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
-	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
-
-	//TODO: Might not be needed
-	void CancelInputActivatedAbilities();
 
 	virtual void AbilityLocalInputPressed(int32 InputID) override;
 
@@ -71,6 +64,11 @@ public:
 	
 	virtual void AbilitySpecInputPressed(FGameplayAbilitySpec& Spec) override;
 	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
+
+	typedef TFunctionRef<bool(const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
+	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
+
+	void CancelInputActivatedAbilities();
 
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();

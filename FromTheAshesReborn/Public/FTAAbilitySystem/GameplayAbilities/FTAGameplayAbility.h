@@ -16,35 +16,23 @@ class AFTAPlayerController;
 class UPlayerComboManagerComponent;
 class USkeletalMeshComponent;
 
-
 UENUM(BlueprintType)
 enum class EFTAAbilityActivationPolicy : uint8
 {
-	// Try to activate the ability when the input is triggered.
 	OnInputTriggered,
-
-	// Continually try to activate the ability while the input is active.
 	WhileInputActive,
-
-	// Try to activate the ability when an avatar is assigned.
 	OnSpawn
 };
 
 UENUM(BlueprintType)
 enum class EFTAAbilityActivationGroup : uint8
 {
-	// Ability runs independently of all other abilities.
 	Independent,
-
-	// Ability is canceled and replaced by other exclusive abilities.
 	Exclusive_Replaceable,
-
-	// Ability blocks all other exclusive abilities from activating.
 	Exclusive_Blocking,
 
 	MAX	UMETA(Hidden)
 };
-
 
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
@@ -59,8 +47,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	EFTAAbilityActivationGroup ActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
-
-	EFTAAbilityActivationGroup DefaultActivationGroup;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
@@ -94,18 +80,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
 	FGameplayTag UniqueIdentifierTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
-	FGameplayTag RequiredCharacterOrientationTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
-	bool CanBeCanceledForQueue = false;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
 	FGameplayTag QueueWindowTag;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
-	FGameplayTagContainer QueueableAbilitiesTags;
 
 public:
 	
