@@ -48,11 +48,13 @@ bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UFTAAb
 				if(AbilityDataAssets[Index]->RequiredIndex == GetCurrentComboIndex())
 				{
 					OutMatchingAbilityDataAsset = AbilityDataAssets[Index];
+					UE_LOG(LogTemp, Warning, TEXT("True"));
 					return true;
 				}
 			}
 		}
 	}
+	UE_LOG(LogTemp, Warning, TEXT("False"));
 	GetCurrentComboContainer().Reset();
 	SetCurrentComboIndex(0);
 	OutMatchingAbilityDataAsset = AbilityDataAssets[0];

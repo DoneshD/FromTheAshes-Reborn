@@ -109,18 +109,29 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 {
 	if (NewCount > 0 && FTAASC->HasMatchingGameplayTag(QueueWindowTag))
 	{
-		// if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
-		// {
-		// 	FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
-		// }
+		TArray<UFTAGameplayAbility*> Abilities = *QueueableAbilities.Find(QueueWindowTag);
+
+		for(UFTAGameplayAbility* FTAAbility : Abilities)
+		{
+			if (FTAAbility)
+			{
+				FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+			}
+		}
+		
 		TryActivateMatchingAbility(QueueWindowTag);
 	}
 	else
 	{
-		// if (UFTAGameplayAbility* FTAAbility = *QueueableAbilities.Find(QueueWindowTag))
-		// {
-		// 	FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
-		// }
+		TArray<UFTAGameplayAbility*> Abilities = *QueueableAbilities.Find(QueueWindowTag);
+
+		for(UFTAGameplayAbility* FTAAbility : Abilities)
+		{
+			if (FTAAbility)
+			{
+				FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
+			}
+		}
 	}
 }
 
@@ -128,10 +139,11 @@ void UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility(const FGame
 {
 	if (TArray<UFTAGameplayAbility*>* FTAAbilities = QueueableAbilities.Find(QueueWindowTag))
 	{
-		for (UFTAGameplayAbility* FTAAbility : *FTAAbilities) // <-- add * here
+		for (UFTAGameplayAbility* FTAAbility : *FTAAbilities)
 		{
 			if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 			{
+				//Change to tag relationship and activation policy
 				FTAASC->CancelAllAbilities();
 
 				bool IsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());

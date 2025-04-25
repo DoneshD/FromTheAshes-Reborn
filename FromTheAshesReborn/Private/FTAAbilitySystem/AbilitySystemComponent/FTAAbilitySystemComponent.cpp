@@ -46,7 +46,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 {
 	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
 	bool ReplaceableAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Replaceable] > 0;
-	if(BlockingAbilityActive)
+	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
 		if (InputTag.IsValid())
 		{
@@ -280,7 +280,7 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Group"));
 		break;
 	}
-	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Replaceable] + ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
+	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
 	if (ExclusiveCount > 1)
 	{
 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running."));
