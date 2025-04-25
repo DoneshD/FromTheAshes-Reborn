@@ -11,6 +11,7 @@
 #include "FTAPlayerController.generated.h"
 
 
+class APlayerCharacter;
 class AFTAPlayerState;
 class UFTAInputComponent;
 class UAbilitySystemComponent;
@@ -34,7 +35,7 @@ protected:
 	TObjectPtr<UFTAInputConfig> FTAInputConfig;
 
 	UPROPERTY(VisibleDefaultsOnly)
-	TObjectPtr<ACharacter> PlayerCharacter;
+	TObjectPtr<APlayerCharacter> PlayerCharacter;
 
 public:
 	

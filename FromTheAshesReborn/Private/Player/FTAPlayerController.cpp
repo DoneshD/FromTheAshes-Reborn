@@ -90,6 +90,8 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	
 	PlayerCharacter->AddMovementInput(RightVector, InputDirection.X);
 
+	PlayerCharacter->HasMovementInput = true;
+
 	SendLocalInputToASC(true, EAbilityInputID::Move);
 
 }
@@ -97,6 +99,8 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 void AFTAPlayerController::HandleMoveActionReleased(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(false, EAbilityInputID::Move);
+	PlayerCharacter->HasMovementInput = false;
+	
 }
 
 void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputActionValue)
@@ -175,6 +179,7 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	FTAInputComponent->BindAbilityAction(FTAInputConfig, this, &AFTAPlayerController::InputAbilityInputTagPressed, &AFTAPlayerController::InputAbilityInputTagReleased, /*out*/ BindHandles);
 	
 	FTAInputComponent->BindNativeAction(FTAInputConfig, FGameplayTag::RequestGameplayTag("InputTag.Pressed.Move"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleMoveActionPressed);
+	FTAInputComponent->BindNativeAction(FTAInputConfig, FGameplayTag::RequestGameplayTag("InputTag.Released.Move"), ETriggerEvent::Completed, this, &AFTAPlayerController::HandleMoveActionReleased);
 	FTAInputComponent->BindNativeAction(FTAInputConfig,  FGameplayTag::RequestGameplayTag("InputTag.Pressed.Look.Mouse"), ETriggerEvent::Triggered, this, &AFTAPlayerController::HandleInputLookMouse);
 	
 }
