@@ -55,6 +55,12 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 			// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 			//Need to try to bind with a function that takes a ref
 			GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+
+			if(!MeleeAttackAssets.IsValidIndex(0) || MeleeAttackAssets.Num() < 1)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
+				return;
+			}
 			PerformMeleeAttack(MeleeAttackAssets);
 			return;
 		}
