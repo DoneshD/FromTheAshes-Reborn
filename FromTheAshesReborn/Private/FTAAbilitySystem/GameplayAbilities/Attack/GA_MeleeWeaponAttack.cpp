@@ -2,10 +2,14 @@
 #include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
 #include "DidItHitActorComponent.h"
+#include "MotionWarpingComponent.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
+
 #include "Weapon/MeleeWeaponInstance.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -115,6 +119,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> Mel
 		FTAChar->ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 
 		PlayAbilityAnimMontage(AttackMontageToPlay);
+		MotionWarpToTarget();
 	}
 
 	else
@@ -124,7 +129,56 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> Mel
 	}
 }
 
+void UGA_MeleeWeaponAttack::MotionWarpToTarget()
+{
+	Super::MotionWarpToTarget();
 
+	if(!WarpTargetName.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("WarpTargetName is Invalid"));
+		return;
+	}
+
+	FHitResult OutHit;
+	
+	FVector TraceDirection = UInputReadingFunctionLibrary::CheckInputVector(GetFTACharacterFromActorInfo()->GetCharacterMovement());
+	FVector TraceStartLocation = GetFTACharacterFromActorInfo()->GetActorLocation() + TraceDirection * 100;
+	FVector TraceEndLocation = GetFTACharacterFromActorInfo()->GetActorLocation() + TraceDirection * 800;
+	
+	TArray<AActor*> ActorArray;
+	ActorArray.Add(GetFTACharacterFromActorInfo());
+
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+	
+	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+		GetWorld(),
+		TraceStartLocation,
+		TraceEndLocation,
+		100.f,
+		ObjectTypes,
+		false,
+		ActorArray,
+		EDrawDebugTrace::None,
+		OutHit,
+		true,
+		FLinearColor::Red,
+		FLinearColor::Green,
+		5.0f
+	);
+
+	//TODO: Change later
+	AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(OutHit.GetActor());
+	if (bHit && EnemyActor)
+	{
+		FVector OffsetDirection = (GetFTACharacterFromActorInfo()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
+		
+		FVector WarpTargetLocation = OutHit.ImpactPoint + OffsetDirection * 100;
+		FRotator WarpTargetRotation = (EnemyActor->GetActorLocation() - GetFTACharacterFromActorInfo()->GetActorLocation()).Rotation();
+		
+		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
+	}
+}
 
 void UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting()
 {
@@ -190,6 +244,8 @@ void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> Anim
 void UGA_MeleeWeaponAttack::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCancelled(EventTag, EventData);
+	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
+
 	
 }
 
@@ -198,6 +254,7 @@ void UGA_MeleeWeaponAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayE
 	Super::OnMontageCompleted(EventTag, EventData);
 
 	ResetMeleeAttack();
+	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	
 }

@@ -72,6 +72,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
 	void PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> MeleeAttackDataAssets);
 
+	virtual void MotionWarpToTarget() override;
+
 protected:
 	struct FMeleeWeaponTraceData
 	{

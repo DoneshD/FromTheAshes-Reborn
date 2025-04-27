@@ -395,39 +395,6 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 
 void UFTAGameplayAbility::MotionWarpToTarget()
 {
-	if(!WarpTargetName.IsValid())
-	{
-		UE_LOG(LogTemp, Error, TEXT("WarpTargetName is Invalid"));
-		return;
-	}
-
-	FVector WarpTargetLocation;
-	FRotator WarpTargetRotation;
-
-	FHitResult OutHit;
-	FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
-	FVector Forward = GetFTACharacterFromActorInfo()->GetActorForwardVector();
-	FVector End = Start + Forward * 400;
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(GetFTACharacterFromActorInfo());
-
-	bool bHit = GetWorld()->LineTraceSingleByChannel(
-		OutHit, 
-		Start, 
-		End, 
-		ECC_Pawn, 
-		Params
-	);
-
-	AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(OutHit.GetActor());
-	if (bHit && EnemyActor)
-	{
-		WarpTargetLocation = OutHit.ImpactPoint;
-		WarpTargetRotation = (OutHit.Location - Start).Rotation();
-		DrawDebugSphere(GetWorld(), WarpTargetLocation, 20, 12, FColor::Red, true);
-		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
-	}
 	
 }
 
