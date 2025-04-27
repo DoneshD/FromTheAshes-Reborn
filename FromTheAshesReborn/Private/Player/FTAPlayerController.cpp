@@ -90,6 +90,7 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	
 	PlayerCharacter->AddMovementInput(RightVector, InputDirection.X);
 
+	//Move to controller
 	PlayerCharacter->HasMovementInput = true;
 
 	SendLocalInputToASC(true, EAbilityInputID::Move);
@@ -99,6 +100,8 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 void AFTAPlayerController::HandleMoveActionReleased(const FInputActionValue& InputActionValue)
 {
 	SendLocalInputToASC(false, EAbilityInputID::Move);
+	
+	//Move to controller
 	PlayerCharacter->HasMovementInput = false;
 	
 }

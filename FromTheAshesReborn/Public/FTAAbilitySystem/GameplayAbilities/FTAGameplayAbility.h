@@ -84,6 +84,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
 	FGameplayTag QueueWindowTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
+	FName WarpTargetName;
+
 public:
 	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
@@ -130,6 +133,8 @@ public:
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 
+	void MotionWarpToTarget();
+	
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage);
 
 	UFUNCTION()

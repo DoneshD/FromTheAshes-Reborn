@@ -3,6 +3,8 @@
 #include "AbilitySystemGlobals.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
+#include "MotionWarpingComponent.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
@@ -391,6 +393,44 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 	OutAbilitySource = Cast<IFTAAbilitySourceInterface>(SourceObject);
 }
 
+void UFTAGameplayAbility::MotionWarpToTarget()
+{
+	if(!WarpTargetName.IsValid())
+	{
+		UE_LOG(LogTemp, Error, TEXT("WarpTargetName is Invalid"));
+		return;
+	}
+
+	FVector WarpTargetLocation;
+	FRotator WarpTargetRotation;
+
+	FHitResult OutHit;
+	FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
+	FVector Forward = GetFTACharacterFromActorInfo()->GetActorForwardVector();
+	FVector End = Start + Forward * 400;
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetFTACharacterFromActorInfo());
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(
+		OutHit, 
+		Start, 
+		End, 
+		ECC_Pawn, 
+		Params
+	);
+
+	AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(OutHit.GetActor());
+	if (bHit && EnemyActor)
+	{
+		WarpTargetLocation = OutHit.ImpactPoint;
+		WarpTargetRotation = (OutHit.Location - Start).Rotation();
+		DrawDebugSphere(GetWorld(), WarpTargetLocation, 20, 12, FColor::Red, true);
+		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
+	}
+	
+}
+
 void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
 	MontageToPlay = AnimMontage;
@@ -403,6 +443,8 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 		PlayMontageTask->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
 		PlayMontageTask->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
 		PlayMontageTask->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
+
+		MotionWarpToTarget();
 		
 		PlayMontageTask->ReadyForActivation();
 	}
@@ -419,7 +461,7 @@ void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEve
 
 void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
+	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
 }
 
 void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)

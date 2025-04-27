@@ -177,19 +177,13 @@ void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 
 void UFTAAT_PlayMontageAndWaitForEvent::ExternalCancel()
 {
-	//check(AbilitySystemComponent);
-
 	OnAbilityCancelled();
-
 	Super::ExternalCancel();
 }
 
 void UFTAAT_PlayMontageAndWaitForEvent::OnDestroy(bool AbilityEnded)
 {
-	// Note: Clearing montage end delegate isn't necessary since its not a multicast and will be cleared when the next montage plays.
-	// (If we are destroyed, it will detect this and not do anything)
-
-	// This delegate, however, should be cleared as it is a multicast
+	
 	if (Ability)
 	{
 		Ability->OnGameplayAbilityCancelled.Remove(CancelledHandle);
