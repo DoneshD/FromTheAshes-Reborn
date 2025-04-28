@@ -122,7 +122,4 @@ public:
 	
 	// Version of function in AbilitySystemGlobals that returns correct type
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
-
-	
-	
 };
