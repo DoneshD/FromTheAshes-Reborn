@@ -179,6 +179,7 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 	if (bEnableTick)
 	{
 		TickTask = UFTAAT_OnTick::StartTicking(this);

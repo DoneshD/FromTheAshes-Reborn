@@ -205,7 +205,8 @@ void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc 
 				{
 					if(FTAAbilityInstance->CanBeCanceled())
 					{
-						
+						UE_LOG(LogTemp, Warning, TEXT("UFTAAbilitySystemComponent::CancelAbilitiesByFunc"));
+
 						FTAAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FTAAbilityInstance->GetCurrentActivationInfo(), false);
 					}
 					else
@@ -266,6 +267,8 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 		return;
 	}
 	
+	UE_LOG(LogTemp, Warning, TEXT("FTAAbility Name: %s"), *FTAAbility->GetName());
+	
 	ActivationGroupCount[(uint8)Group]++;
 	switch (Group)
 	{
@@ -295,6 +298,7 @@ void UFTAAbilitySystemComponent::CancelActivationGroupAbilities(EFTAAbilityActiv
 		return ((LyraAbility->GetActivationGroup() == Group) && (LyraAbility != IgnoreFTAAbility));
 	};
 
+
 	CancelAbilitiesByFunc(ShouldCancelFunc);
 }
 
@@ -305,11 +309,11 @@ void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityAct
 
 bool UFTAAbilitySystemComponent::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const
 {
-	if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
-	{
-		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
-		return false;
-	}
+	// if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
+	// 	return false;
+	// }
 
 	return true;
 }
@@ -327,6 +331,7 @@ bool UFTAAbilitySystemComponent::ChangeActivationGroup(EFTAAbilityActivationGrou
 		AddAbilityToActivationGroup(NewGroup, Ability);
 
 		Ability->ActivationGroup = NewGroup;
+
 	}
 	return true;
 }

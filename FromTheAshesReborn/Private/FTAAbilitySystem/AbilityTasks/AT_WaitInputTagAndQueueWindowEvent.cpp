@@ -107,17 +107,19 @@ void UAT_WaitInputTagAndQueueWindowEvent::RemoveQueueWindowTagEvent(FGameplayTag
 
 void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGameplayTag QueueWindowTag, int32 NewCount)
 {
+	
 	if (NewCount > 0 && FTAASC->HasMatchingGameplayTag(QueueWindowTag))
 	{
+		
 		TArray<UFTAGameplayAbility*> Abilities = *QueueableAbilities.Find(QueueWindowTag);
 
-		// for(UFTAGameplayAbility* FTAAbility : Abilities)
-		// {
-		// 	if (FTAAbility)
-		// 	{
-		// 		FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
-		// 	}
-		// }
+		for(UFTAGameplayAbility* FTAAbility : Abilities)
+		{
+			if (FTAAbility)
+			{
+				FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+			}
+		}
 		
 		TryActivateMatchingAbility(QueueWindowTag);
 	}
@@ -125,13 +127,13 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 	{
 		TArray<UFTAGameplayAbility*> Abilities = *QueueableAbilities.Find(QueueWindowTag);
 
-		// for(UFTAGameplayAbility* FTAAbility : Abilities)
-		// {
-		// 	if (FTAAbility)
-		// 	{
-		// 		FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
-		// 	}
-		// }
+		for(UFTAGameplayAbility* FTAAbility : Abilities)
+		{
+			if (FTAAbility)
+			{
+				FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
+			}
+		}
 	}
 }
 
@@ -143,13 +145,10 @@ void UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility(const FGame
 		{
 			if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 			{
-				//Change to tag relationship and activation policy
-				FTAASC->CancelAllAbilities();
-
+				UE_LOG(LogTemp, Warning, TEXT("UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility"));
 				bool IsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 				if (IsActivated)
 				{
-					// UE_LOG(LogTemp, Error, TEXT("TryActivateMatchingAbility: Activation failed for %s"), *FTAAbility->GetName());
 					QueuedInputTag = FGameplayTag::EmptyTag;
 					EndTask();
 				}
