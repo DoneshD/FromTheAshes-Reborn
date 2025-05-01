@@ -446,3 +446,26 @@ void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* Sourc
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
 }
 
+bool UFTAAbilitySystemComponent::IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const
+{
+	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void UFTAAbilitySystemComponent::CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass)
+		{
+			CancelAbilityHandle(Spec.Handle);
+			return;
+		}
+	}
+}

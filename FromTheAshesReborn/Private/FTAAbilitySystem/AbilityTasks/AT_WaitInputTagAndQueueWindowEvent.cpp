@@ -143,16 +143,23 @@ void UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility(const FGame
 		{
 			if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 			{
-				FTAASC->CancelAllAbilities();
-
-				bool IsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
-				if (IsActivated)
+				if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
 				{
-					// UE_LOG(LogTemp, Error, TEXT("TryActivateMatchingAbility: Activation failed for %s"), *FTAAbility->GetName());
+					FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
+				}
+
+				bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
+				if (bIsActivated)
+				{
 					QueuedInputTag = FGameplayTag::EmptyTag;
 					EndTask();
+				}
+				else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("TryActivateMatchingAbility: Failed to activate ability %s"), *FTAAbility->GetName());
 				}
 			}
 		}
 	}
 }
+

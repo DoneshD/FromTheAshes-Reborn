@@ -119,7 +119,9 @@ public:
 	
 	// Called from FTADamageExecCalculation. Broadcasts on ReceivedDamage whenever this ASC receives damage.
 	virtual void ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
-	
+	bool IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const;
+	void CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass);
+
 	// Version of function in AbilitySystemGlobals that returns correct type
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
 };
