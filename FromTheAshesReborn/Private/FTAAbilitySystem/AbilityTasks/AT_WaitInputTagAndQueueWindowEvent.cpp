@@ -107,10 +107,8 @@ void UAT_WaitInputTagAndQueueWindowEvent::RemoveQueueWindowTagEvent(FGameplayTag
 
 void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGameplayTag QueueWindowTag, int32 NewCount)
 {
-	
 	if (NewCount > 0 && FTAASC->HasMatchingGameplayTag(QueueWindowTag))
 	{
-		
 		TArray<UFTAGameplayAbility*> Abilities = *QueueableAbilities.Find(QueueWindowTag);
 
 		for(UFTAGameplayAbility* FTAAbility : Abilities)
@@ -145,10 +143,12 @@ void UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility(const FGame
 		{
 			if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility"));
+				FTAASC->CancelAllAbilities();
+
 				bool IsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 				if (IsActivated)
 				{
+					// UE_LOG(LogTemp, Error, TEXT("TryActivateMatchingAbility: Activation failed for %s"), *FTAAbility->GetName());
 					QueuedInputTag = FGameplayTag::EmptyTag;
 					EndTask();
 				}

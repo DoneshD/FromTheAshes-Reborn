@@ -26,7 +26,6 @@ protected:
 	TMap<FGameplayTag, FQueueWindowHandle> QueueWindowHandles;
 	TMap<FGameplayTag, TArray<UFTAGameplayAbility*>> QueueableAbilities;
 
-
 public:
 	UAT_WaitInputTagAndQueueWindowEvent(const FObjectInitializer& ObjectInitializer);
 
@@ -37,8 +36,6 @@ public:
 	virtual void ExternalCancel() override;
 	virtual FString GetDebugString() const override;
 	virtual void OnDestroy(bool AbilityEnded) override;
-
-	UFTAGameplayAbility* OwnerAbility;
 
 protected:
 	UFUNCTION()

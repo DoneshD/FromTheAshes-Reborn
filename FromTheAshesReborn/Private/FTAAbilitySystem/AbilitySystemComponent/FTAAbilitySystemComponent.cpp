@@ -205,8 +205,7 @@ void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc 
 				{
 					if(FTAAbilityInstance->CanBeCanceled())
 					{
-						UE_LOG(LogTemp, Warning, TEXT("UFTAAbilitySystemComponent::CancelAbilitiesByFunc"));
-
+						
 						FTAAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FTAAbilityInstance->GetCurrentActivationInfo(), false);
 					}
 					else
@@ -267,8 +266,6 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 		return;
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("FTAAbility Name: %s"), *FTAAbility->GetName());
-	
 	ActivationGroupCount[(uint8)Group]++;
 	switch (Group)
 	{
@@ -286,7 +283,7 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
 	if (ExclusiveCount > 1)
 	{
-		CancelAllAbilities();
+		// CancelAllAbilities();
 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running."));
 	}
 }
@@ -297,7 +294,6 @@ void UFTAAbilitySystemComponent::CancelActivationGroupAbilities(EFTAAbilityActiv
 	{
 		return ((LyraAbility->GetActivationGroup() == Group) && (LyraAbility != IgnoreFTAAbility));
 	};
-
 
 	CancelAbilitiesByFunc(ShouldCancelFunc);
 }
@@ -331,7 +327,6 @@ bool UFTAAbilitySystemComponent::ChangeActivationGroup(EFTAAbilityActivationGrou
 		AddAbilityToActivationGroup(NewGroup, Ability);
 
 		Ability->ActivationGroup = NewGroup;
-
 	}
 	return true;
 }
