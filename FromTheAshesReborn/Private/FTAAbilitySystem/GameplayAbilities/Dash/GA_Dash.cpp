@@ -4,6 +4,7 @@
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
+#include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 
 UGA_Dash::UGA_Dash()
 {
@@ -23,6 +24,26 @@ void UGA_Dash::OnAbilityTick(float DeltaTime)
 void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	ELockOnInputOrientationDirection InputDirection = ELockOnInputOrientationDirection::Forward;
+
+	AFTAPlayerState* PS = Cast<AFTAPlayerState>(ActorInfo->OwnerActor.Get());
+
+	if(PS->HardLockedTargetActor)
+	{
+		float AngleOfInput = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
+		InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleOfInput);
+	}
+
+	TObjectPtr<UDashAbilityDataAsset> MatchingDataAsset;
+	bool DataAssetFound = FindMatchingDashAssetToInputDirection(DashAbilityAssets, MatchingDataAsset, InputDirection);
+
+	if(!DataAssetFound)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Dash Asset not found"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
 	
 	DashElapsedTime = 0.0f;
 	DashStartTime = GetWorld()->GetTimeSeconds();
@@ -34,7 +55,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 
 	IsDashing = true;
 
-	PlayAbilityAnimMontage(DashMontage);
+	PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 	
 }
 
@@ -73,6 +94,22 @@ void UGA_Dash::UpdateDashMovement(float DeltaTime)
 void UGA_Dash::DashLocationReached()
 {
 	IsDashing = false;
+}
+
+bool UGA_Dash::FindMatchingDashAssetToInputDirection(const TArray<UDashAbilityDataAsset*>& DashAbilityDataAssets, TObjectPtr<UDashAbilityDataAsset>& OutMatchingAbilityDataAsset, ELockOnInputOrientationDirection InputDirection)
+{
+	for (UDashAbilityDataAsset* CurrentAsset : DashAbilityDataAssets)
+	{
+		if (CurrentAsset)
+		{
+			if (CurrentAsset->Direction == InputDirection)
+			{
+				OutMatchingAbilityDataAsset = CurrentAsset;
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 void UGA_Dash::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)

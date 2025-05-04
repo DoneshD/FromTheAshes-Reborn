@@ -2,8 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "../FTAGameplayAbility.h"
+#include "DataAsset/DashAbilityDataAsset.h"
 #include "GA_Dash.generated.h"
 
+class UDashAbilityDataAsset;
 class UFTAAbilityDataAsset;
 
 UCLASS()
@@ -23,7 +25,7 @@ protected:
 	float DashStartTime = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> DashAbilityAssets;
+	TArray<TObjectPtr<UDashAbilityDataAsset>> DashAbilityAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashDistance = 600.0f;
@@ -31,9 +33,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
 	float DashDuration = 0.20f;
 
-	//TODO: Temporary
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	TObjectPtr<UAnimMontage> DashMontage;
+	
 
 protected:
 
@@ -49,6 +49,8 @@ protected:
 	virtual void UpdateDashMovement(float DeltaTime);
 
 	virtual void DashLocationReached();
+	
+	bool FindMatchingDashAssetToInputDirection(const TArray<UDashAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UDashAbilityDataAsset>& OutMatchingAbilityDataAsset, ELockOnInputOrientationDirection InputDirection);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 
