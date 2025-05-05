@@ -283,8 +283,8 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
 	if (ExclusiveCount > 1)
 	{
-		// CancelAllAbilities();
-		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running."));
+		CancelAllAbilities();
+		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running. Canceling all abilities"));
 	}
 }
 

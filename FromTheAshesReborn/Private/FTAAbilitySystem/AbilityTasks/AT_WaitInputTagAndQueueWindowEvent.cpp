@@ -154,10 +154,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::TryActivateMatchingAbility(const FGame
 					QueuedInputTag = FGameplayTag::EmptyTag;
 					EndTask();
 				}
-				else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("TryActivateMatchingAbility: Failed to activate ability %s"), *FTAAbility->GetName());
-				}
 			}
 		}
 	}

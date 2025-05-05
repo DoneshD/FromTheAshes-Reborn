@@ -48,4 +48,7 @@ protected:
 
 	virtual void DashLocationReached() override;
 
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+
 };

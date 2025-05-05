@@ -1,5 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Dash/GA_Dash_Aerial.h"
 
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 UGA_Dash_Aerial::UGA_Dash_Aerial()
 {
 	
@@ -27,7 +30,18 @@ void UGA_Dash_Aerial::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 
 bool UGA_Dash_Aerial::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	{
+		return false;
+	}
+
+	ACharacter* Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
+	if (!Character)
+	{
+		return false;
+	}
+
+	return Character->GetCharacterMovement()->IsFalling();
 }
 
 void UGA_Dash_Aerial::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -75,5 +89,10 @@ void UGA_Dash_Aerial::DashLocationReached()
 	
 	IsDashing = false;
 	IsGliding = true;
+	
+}
+
+void UGA_Dash_Aerial::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
 	
 }

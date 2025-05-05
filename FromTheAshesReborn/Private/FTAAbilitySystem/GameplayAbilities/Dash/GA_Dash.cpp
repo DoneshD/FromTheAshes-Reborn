@@ -3,6 +3,7 @@
 #include "ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 
@@ -61,7 +62,19 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 
 bool UGA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	{
+		return false;
+	}
+
+	ACharacter* Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
+	if (!Character)
+	{
+		return false;
+	}
+
+	return !Character->GetCharacterMovement()->IsFalling() || !Character->GetCharacterMovement()->IsFlying();
+	
 }
 
 void UGA_Dash::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -130,6 +143,9 @@ void UGA_Dash::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData Even
 
 	GetFTACharacterFromActorInfo()->ComboManagerComponent->GetCurrentComboContainer().Reset();
 	GetFTACharacterFromActorInfo()->ComboManagerComponent->SetCurrentComboIndex(0);
+
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+
 	
 }
 
