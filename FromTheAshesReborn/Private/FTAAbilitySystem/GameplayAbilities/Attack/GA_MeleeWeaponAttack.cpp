@@ -4,6 +4,7 @@
 #include "DidItHitActorComponent.h"
 #include "MotionWarpingComponent.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
+#include "DataAsset/MeleeAbilityDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
@@ -105,10 +106,10 @@ void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 	FTAChar->ComboManagerComponent->SetCurrentComboIndex(0);
 }
 
-void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> MeleeAttackDataAssets)
+void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> MeleeAttackDataAssets)
 {
 
-	TObjectPtr<UFTAAbilityDataAsset> MatchingDataAsset;
+	TObjectPtr<UMeleeAbilityDataAsset> MatchingDataAsset;
 	bool DataAssetFound = FTAChar->ComboManagerComponent->FindMatchingAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
 	
 	if(!DataAssetFound)

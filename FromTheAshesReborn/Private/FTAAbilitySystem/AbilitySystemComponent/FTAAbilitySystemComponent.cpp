@@ -44,6 +44,21 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
+	for (const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
+	{
+		if (AbilitySpec.Ability && (AbilitySpec.DynamicAbilityTags.HasTagExact(InputTag)))
+		{
+			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
+			if(FTAAbility)
+			{
+				if (IsAbilityActive(AbilitySpec.Ability->GetClass()) && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable)
+				{
+					CancelAbilityByClass(AbilitySpec.Ability->GetClass());
+				}
+			}
+		}
+	}
+	
 	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
 	bool ReplaceableAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Replaceable] > 0;
 	if(BlockingAbilityActive || ReplaceableAbilityActive)
@@ -305,11 +320,11 @@ void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityAct
 
 bool UFTAAbilitySystemComponent::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const
 {
-	// if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
-	// 	return false;
-	// }
+	if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
+	{
+		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
+		return false;
+	}
 
 	return true;
 }

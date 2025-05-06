@@ -1,5 +1,6 @@
 ﻿#include "ComboManagerComponent.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
+#include "DataAsset/MeleeAbilityDataAsset.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 
@@ -37,7 +38,7 @@ void UComboManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 }
 
-bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UFTAAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UFTAAbilityDataAsset>& OutMatchingAbilityDataAsset)
+bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UMeleeAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingAbilityDataAsset)
 {
 	for (int32 Index = 0; Index < AbilityDataAssets.Num(); ++Index)
 	{

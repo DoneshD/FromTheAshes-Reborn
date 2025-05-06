@@ -19,12 +19,6 @@ public:
 	FGameplayTagContainer RequiredTags;
 
 	UPROPERTY(EditDefaultsOnly)
-	int RequiredIndex;
-
-	UPROPERTY(EditDefaultsOnly)
-	bool RequiredPause = false;
-
-	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAnimMontage> MontageToPlay;
 	
 };

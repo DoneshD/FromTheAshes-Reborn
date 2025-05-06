@@ -6,6 +6,7 @@
 #include "GA_MeleeWeaponAttack.generated.h"
 
 
+class UMeleeAbilityDataAsset;
 class UFTAAbilityDataAsset;
 class UMeleeAttackDataAsset;
 class AWeaponActorBase;
@@ -39,7 +40,7 @@ protected:
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> MeleeAttackAssets;
+	TArray<TObjectPtr<UMeleeAbilityDataAsset>> MeleeAttackAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Data")
 	FMeleeAttackTypes MeleeAttackTypes;
@@ -70,7 +71,7 @@ public:
 	void ResetMeleeAttack();
 	
 	UFUNCTION(BlueprintCallable, Category="FTA|Ability")
-	void PerformMeleeAttack(TArray<UFTAAbilityDataAsset*> MeleeAttackDataAssets);
+	void PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> MeleeAttackDataAssets);
 
 	virtual void MotionWarpToTarget() override;
 

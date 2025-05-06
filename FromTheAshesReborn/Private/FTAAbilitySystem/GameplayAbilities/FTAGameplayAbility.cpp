@@ -213,6 +213,8 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 		WaitInputTagAndQueueWindowEventTask = nullptr;
 	}
 
+	ActivationGroup = DefaultActivationGroup;
+
 }
 
 bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const

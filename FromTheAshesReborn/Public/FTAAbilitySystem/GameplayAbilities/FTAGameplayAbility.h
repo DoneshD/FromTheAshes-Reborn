@@ -47,6 +47,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	EFTAAbilityActivationGroup ActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
+	EFTAAbilityActivationGroup DefaultActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
@@ -69,7 +72,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
@@ -78,7 +81,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
 	bool bActivateOnInput;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags", Meta = (Categories = "AbilityTag"))
 	FGameplayTag UniqueIdentifierTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")

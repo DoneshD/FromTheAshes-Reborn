@@ -6,6 +6,7 @@
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "ComboManagerComponent.generated.h"
 
+class UMeleeAbilityDataAsset;
 class UFTAAbilityDataAsset;
 class UFTAAbilitySystemComponent;
 class UFTAGameplayAbility;
@@ -36,6 +37,6 @@ public:
 	int GetCurrentComboIndex();
 	void SetCurrentComboIndex(int Index);
 	
-	bool FindMatchingAssetToTagContainer(const TArray<UFTAAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UFTAAbilityDataAsset>& OutMatchingAbilityDataAsset);
+	bool FindMatchingAssetToTagContainer(const TArray<UMeleeAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingAbilityDataAsset);
 	
 };

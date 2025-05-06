@@ -6,7 +6,6 @@ bool UGA_MeleeWeaponAttack_Aerial::CanActivateAbility(const FGameplayAbilitySpec
 {
 	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Parent failed"));
 		return false;
 	}
 
