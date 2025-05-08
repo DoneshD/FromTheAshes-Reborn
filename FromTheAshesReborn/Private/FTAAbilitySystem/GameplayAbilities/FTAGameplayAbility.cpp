@@ -136,26 +136,53 @@ void UFTAGameplayAbility::InputReleased(const FGameplayAbilitySpecHandle Handle,
 	Super::InputReleased(Handle, ActorInfo, ActivationInfo);
 }
 
-bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
+	const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	if (!ActorInfo || !ActorInfo->AbilitySystemComponent.IsValid())
 	{
 		return false;
 	}
-	
+
 	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
 	{
 		return false;
 	}
 
 	UFTAAbilitySystemComponent* FTAASC = CastChecked<UFTAAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
-	if(FTAASC->IsActivationGroupBlocked(ActivationGroup))
+
+	if (FTAASC->IsActivationGroupBlocked(ActivationGroup))
 	{
 		return false;
 	}
+
+	bool bHasActiveAbilities = false;
+
+	for (const FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
+	{
+		if (Spec.IsActive())
+		{
+			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
+			if(FTAAbility && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Blocking)
+			{
+				bHasActiveAbilities = true;
+				break;
+			}
+		}
+	}
+
+	if (bHasActiveAbilities && QueueWindowTag.IsValid())
+	{
+		if (!FTAASC->HasMatchingGameplayTag(QueueWindowTag))
+		{
+			return false;
+		}
+	}
+
 	return true;
-	
 }
+
 
 void UFTAGameplayAbility::SetCanBeCanceled(bool bCanBeCanceled)
 {
