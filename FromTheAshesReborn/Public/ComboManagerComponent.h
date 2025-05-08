@@ -26,7 +26,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	int CurrentComboIndex = 0;
-	
+
 public:
 	
 	UComboManagerComponent();
@@ -38,5 +38,7 @@ public:
 	void SetCurrentComboIndex(int Index);
 	
 	bool FindMatchingAssetToTagContainer(const TArray<UMeleeAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingAbilityDataAsset);
+	
+
 	
 };

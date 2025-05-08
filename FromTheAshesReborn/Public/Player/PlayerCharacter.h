@@ -43,6 +43,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool HasMovementInput = false;
 
+
 public:
 
 	APlayerCharacter(const class FObjectInitializer& ObjectInitializer);

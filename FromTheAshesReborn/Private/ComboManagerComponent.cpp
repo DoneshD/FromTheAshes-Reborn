@@ -48,8 +48,23 @@ bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UMelee
 			{
 				if(AbilityDataAssets[Index]->RequiredIndex == GetCurrentComboIndex())
 				{
-					OutMatchingAbilityDataAsset = AbilityDataAssets[Index];
-					return true;
+					AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
+					if(FTAChar->NextAttackPaused)
+					{
+						if(AbilityDataAssets[Index]->RequiredPause)
+						{
+							OutMatchingAbilityDataAsset = AbilityDataAssets[Index];
+							return true;
+						}
+					}
+					else
+					{
+						if(!AbilityDataAssets[Index]->RequiredPause)
+						{
+							OutMatchingAbilityDataAsset = AbilityDataAssets[Index];
+							return true;
+						}
+					}
 				}
 			}
 		}
@@ -59,7 +74,6 @@ bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UMelee
 	OutMatchingAbilityDataAsset = AbilityDataAssets[0];
 	return true;	
 }
-
 
 FGameplayTagContainer& UComboManagerComponent::GetCurrentComboContainer()
 {

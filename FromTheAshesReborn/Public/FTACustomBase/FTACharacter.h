@@ -32,6 +32,8 @@ protected:
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 	
 public:
+	UPROPERTY(BlueprintReadWrite)
+	bool NextAttackPaused = false;
 	
 	UPROPERTY(EditAnywhere, Category = "Character | Abilities")
 	TObjectPtr<UFTACharacterData> CharacterAbilitySetData;

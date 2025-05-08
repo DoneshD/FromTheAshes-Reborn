@@ -104,6 +104,7 @@ void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 {
 	FTAChar->ComboManagerComponent->GetCurrentComboContainer().Reset();
 	FTAChar->ComboManagerComponent->SetCurrentComboIndex(0);
+	FTAChar->NextAttackPaused = false;
 }
 
 void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> MeleeAttackDataAssets)
