@@ -66,6 +66,7 @@ FGameplayTagContainer& UComboManagerComponent::GetCurrentComboContainer()
 	return CurrentComboTagContainer;
 }
 
+
 int UComboManagerComponent::GetCurrentComboIndex()
 {
 	return CurrentComboIndex;
