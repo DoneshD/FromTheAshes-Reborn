@@ -311,7 +311,7 @@ void UMeleeAttackLogicComponent::MeleeAttackWarpToTarget(EMeleeAttackRange Attac
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None ,
+		EDrawDebugTrace::None,
 		OutHit,
 		true,
 		FLinearColor::Red,

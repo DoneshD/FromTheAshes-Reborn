@@ -69,7 +69,7 @@ APlayableCharacter::APlayableCharacter(const FObjectInitializer& object_initiali
 
 	//Walk and crouch
 	GetCharacterMovement()->SetCrouchedHalfHeight(48.f);
-	GetCharacterMovement()->MaxWalkSpeed = 600.f;
+	GetCharacterMovement()->MaxWalkSpeed = 1000.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 
@@ -267,7 +267,7 @@ void APlayableCharacter::MoveCanceled()
 	HasMovementInput = false;
 	IsSprinting = false;
 	GetWorldTimerManager().ClearTimer(IsSprintingTimerHandle);
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 
 }
 
@@ -512,7 +512,7 @@ void APlayableCharacter::ClearSprintTimer()
 	
 	IsSprinting = false;
 	IsSprinting = false;
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 }
 
 //--------------------------------Damage System-------------------------------------

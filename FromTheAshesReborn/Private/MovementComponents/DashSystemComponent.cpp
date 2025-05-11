@@ -64,6 +64,8 @@ float UDashSystemComponent::GetAngleOfDash()
 	float TanVal = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct);
 
 	AngleOfDash = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
+
+	UE_LOG(LogTemp, Warning, TEXT("AngleOfDash: %f, "), AngleOfDash);
 	return AngleOfDash;
 }
 
