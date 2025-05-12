@@ -84,7 +84,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags", Meta = (Categories = "AbilityTag"))
 	FGameplayTag UniqueIdentifierTag;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Queue")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
