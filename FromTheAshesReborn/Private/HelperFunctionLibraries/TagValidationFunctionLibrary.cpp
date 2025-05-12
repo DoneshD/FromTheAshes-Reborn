@@ -18,7 +18,6 @@ bool UTagValidationFunctionLibrary::IsRegisteredGameplayTag(const FGameplayTag& 
 		return false;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Test commit"));
 	return true;
 
 }
