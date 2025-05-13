@@ -29,7 +29,6 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 
 	if (InOwnerActor)
 	{
-		// Check if the owner is a pawn and get its controller
 		if (APawn* OwnerPawn = Cast<APawn>(InOwnerActor))
 		{
 			PlayerController =  Cast<AFTAPlayerController>(OwnerPawn->GetController());
@@ -40,6 +39,11 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 		}
 	}
 	
+}
+
+UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent)
+{
+	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor, LookForComponent));
 }
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
@@ -346,6 +350,30 @@ bool UFTAAbilitySystemComponent::ChangeActivationGroup(EFTAAbilityActivationGrou
 	return true;
 }
 
+bool UFTAAbilitySystemComponent::IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const
+{
+	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void UFTAAbilitySystemComponent::CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass)
+{
+	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
+	{
+		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass)
+		{
+			CancelAbilityHandle(Spec.Handle);
+			return;
+		}
+	}
+}
+
 void UFTAAbilitySystemComponent::NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability)
 {
 	Super::NotifyAbilityActivated(Handle, Ability);
@@ -418,11 +446,6 @@ void UFTAAbilitySystemComponent::GetAdditionalActivationTagRequirements(const FG
 	}
 }
 
-UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent)
-{
-	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor, LookForComponent));
-}
-
 void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 {
 	// Consume the input if this InputID is overloaded with GenericConfirm/Cancel and the GenericConfim/Cancel callback is bound
@@ -459,28 +482,4 @@ void UFTAAbilitySystemComponent::K2_RemoveLooseGameplayTags(const FGameplayTagCo
 void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage)
 {
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
-}
-
-bool UFTAAbilitySystemComponent::IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const
-{
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	{
-		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-void UFTAAbilitySystemComponent::CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass)
-{
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	{
-		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass)
-		{
-			CancelAbilityHandle(Spec.Handle);
-			return;
-		}
-	}
 }

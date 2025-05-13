@@ -26,29 +26,28 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 {
 	GENERATED_BODY()
 
-//TODO: DEBUG REMOVE LATER
 
-protected:
-	int32 ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::MAX];
-	
 public:
+	FWaitQueueInputDelegate OnInputQueueReceived;
+	FReceivedDamageDelegate ReceivedDamage;
+
 	TObjectPtr<AWeaponActorBase> TestWeaponActor;
-
-public:
-
-	AFTAPlayerController* PlayerController;
 	
-	UPROPERTY()
-	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
+protected:
 
+	int32 ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::MAX];
+
+	UPROPERTY()
+	TObjectPtr<AFTAPlayerController> PlayerController;
+	
+	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
+	
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
-	FWaitQueueInputDelegate OnInputQueueReceived;
+	UPROPERTY(BlueprintReadOnly, Category = "Queue")
 	FGameplayTag QueuedInputTag;
-	
-	FReceivedDamageDelegate ReceivedDamage;
 	
 public:
 	
@@ -56,6 +55,7 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
+	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
 
 	virtual void AbilityLocalInputPressed(int32 InputID) override;
 
@@ -78,11 +78,11 @@ public:
 	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 
-	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
 	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const;
-
-	UFUNCTION(BlueprintCallable, Category = "FTA|Activation Group")
 	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability);
+
+	bool IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const;
+	void CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass);
 	
 	virtual void NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability) override;
 	virtual void NotifyAbilityFailed(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability, const FGameplayTagContainer& FailureReason) override;
@@ -90,38 +90,26 @@ public:
 	virtual void ApplyAbilityBlockAndCancelTags(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bEnableBlockTags, const FGameplayTagContainer& BlockTags, bool bExecuteCancelTags, const FGameplayTagContainer& CancelTags) override;
 	virtual void HandleChangeAbilityCanBeCanceled(const FGameplayTagContainer& AbilityTags, UGameplayAbility* RequestingAbility, bool bCanBeCanceled) override;
 	
-	// Uses a gameplay effect to add the specified dynamic granted tag.
 	void AddDynamicTagGameplayEffect(const FGameplayTag& Tag);
-
-	// Removes all active instances of the gameplay effect that was used to add the specified dynamic granted tag.
 	void RemoveDynamicTagGameplayEffect(const FGameplayTag& Tag);
 
-	/** Gets the ability target data associated with the given ability handle and activation info */
 	void GetAbilityTargetData(const FGameplayAbilitySpecHandle AbilityHandle, FGameplayAbilityActivationInfo ActivationInfo, FGameplayAbilityTargetDataHandle& OutTargetDataHandle);
 
-	/** Sets the current tag relationship mapping, if null it will clear it out */
 	void SetTagRelationshipMapping(UFTAAbilityTagRelationshipMapping* NewMapping);
-	
-	/** Looks at ability tags and gathers additional required and blocking tags */
 	void GetAdditionalActivationTagRequirements(const FGameplayTagContainer& AbilityTags, FGameplayTagContainer& OutActivationRequired, FGameplayTagContainer& OutActivationBlocked) const;
 
-	UFUNCTION(BlueprintCallable, Meta = (DisplayName = "AddLooseGameplayTag"))
+	UFUNCTION(BlueprintCallable, Category = "GameplayTags", Meta = (DisplayName = "AddLooseGameplayTag"))
 	void K2_AddLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count = 1);
 	
-	UFUNCTION(BlueprintCallable, Meta = (DisplayName = "AddLooseGameplayTags"))
+	UFUNCTION(BlueprintCallable, Category = "GameplayTags", Meta = (DisplayName = "AddLooseGameplayTags"))
 	void K2_AddLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count = 1);
 	
-	UFUNCTION(BlueprintCallable, Meta = (DisplayName = "RemoveLooseGameplayTag"))
+	UFUNCTION(BlueprintCallable, Category = "GameplayTags", Meta = (DisplayName = "RemoveLooseGameplayTag"))
 	void K2_RemoveLooseGameplayTag(const FGameplayTag& GameplayTag, int32 Count = 1);
 	
-	UFUNCTION(BlueprintCallable, Meta = (DisplayName = "RemoveLooseGameplayTags"))
+	UFUNCTION(BlueprintCallable, Category = "GameplayTags", Meta = (DisplayName = "RemoveLooseGameplayTags"))
 	void K2_RemoveLooseGameplayTags(const FGameplayTagContainer& GameplayTags, int32 Count = 1);
 	
-	// Called from FTADamageExecCalculation. Broadcasts on ReceivedDamage whenever this ASC receives damage.
 	virtual void ReceiveDamage(UFTAAbilitySystemComponent* SourceASC, float UnmitigatedDamage, float MitigatedDamage);
-	bool IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const;
-	void CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass);
-
-	// Version of function in AbilitySystemGlobals that returns correct type
-	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
+	
 };

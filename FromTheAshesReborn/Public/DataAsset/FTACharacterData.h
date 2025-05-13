@@ -17,15 +17,12 @@ public:
 	UFTACharacterData(const FObjectInitializer& ObjectInitializer);
 
 public:
-	// Class to instantiate for this pawn (should usually derive from ALyraPawn or ALyraCharacter).
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Pawn")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA Character Data")
 	TSubclassOf<ACharacter> CharacterClass;
 
-	// Ability sets to grant to this pawn's ability system.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA Character Data")
 	TArray<TObjectPtr<UFTAAbilitySet>> CharacterAbilitySets;
 
-	// What mapping of ability tags to use for actions taking by this pawn
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA|Abilities")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA Character Data")
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> CharacterTagRelationshipMapping;
 };
