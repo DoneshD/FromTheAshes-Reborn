@@ -142,13 +142,43 @@ void AFTACharacter::InitAbilitySystemComponent()
 
 void AFTACharacter::AddCharacterBaseAbilities() const
 {
-	for (const UFTAAbilitySet* AbilitySet : FTACharacterAbilitySetData->CharacterAbilitySets)
+	if (!FTACharacterAbilitySetData)
 	{
-		if (AbilitySet)
-		{
-			AbilitySet->GiveToAbilitySystem(FTAAbilitySystemComponent, nullptr);
-		}
+		UE_LOG(LogTemp, Error, TEXT("[%s] AddCharacterBaseAbilities: FTACharacterAbilitySetData is null"), *GetActorNameOrLabel());
+		return;
 	}
-	FTAAbilitySystemComponent->SetTagRelationshipMapping(FTACharacterAbilitySetData->CharacterTagRelationshipMapping);
+
+	if (FTACharacterAbilitySetData->CharacterAbilitySets.IsEmpty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] AddCharacterBaseAbilities: No AbilitySets defined"), *GetActorNameOrLabel());
+	}
+
+	for (const TObjectPtr<UFTAAbilitySet>& AbilitySet : FTACharacterAbilitySetData->CharacterAbilitySets)
+	{
+		if (!AbilitySet)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("[%s] AddCharacterBaseAbilities: Null AbilitySet in CharacterAbilitySets"), *GetActorNameOrLabel());
+			continue;
+		}
+
+		AbilitySet->GiveToAbilitySystem(FTAAbilitySystemComponent, nullptr);
+	}
+
+	if (!FTAAbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AddCharacterBaseAbilities: FTAAbilitySystemComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (FTACharacterAbilitySetData->CharacterTagRelationshipMapping)
+	{
+		FTAAbilitySystemComponent->SetTagRelationshipMapping(FTACharacterAbilitySetData->CharacterTagRelationshipMapping);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] AddCharacterBaseAbilities: TagRelationshipMapping is null"), *GetActorNameOrLabel());
+	}
 }
+
+
 
