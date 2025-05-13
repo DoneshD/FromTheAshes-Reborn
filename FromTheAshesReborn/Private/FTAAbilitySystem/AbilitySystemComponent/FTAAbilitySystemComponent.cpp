@@ -6,11 +6,10 @@
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
-#include "Player/FTAPlayerController.h"
 
-UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) :
+	Super(ObjectInitializer), ActivationGroupCount{}
 {
-	
 }
 
 void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -26,24 +25,25 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 	FGameplayAbilityActorInfo* ActorInfo = AbilityActorInfo.Get();
 	check(ActorInfo);
 	check(InOwnerActor);
-
-	if (InOwnerActor)
-	{
-		if (APawn* OwnerPawn = Cast<APawn>(InOwnerActor))
-		{
-			PlayerController =  Cast<AFTAPlayerController>(OwnerPawn->GetController());
-			if(!PlayerController)
-			{
-				UE_LOG(LogTemp, Error, TEXT("PlayerController is NULL"));
-			}
-		}
-	}
 	
 }
 
 UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent)
 {
 	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor, LookForComponent));
+}
+
+void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
+{
+	if (IsGenericConfirmInputBound(InputID))
+	{
+		InputConfirm();
+	}
+	
+	if (IsGenericCancelInputBound(InputID))
+	{
+		InputCancel();
+	}
 }
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
@@ -62,9 +62,10 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 			}
 		}
 	}
+
+	const bool BlockingAbilityActive = ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::Exclusive_Blocking)] > 0;
+	const bool ReplaceableAbilityActive = ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::Exclusive_Replaceable)] > 0;
 	
-	bool BlockingAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0;
-	bool ReplaceableAbilityActive = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Replaceable] > 0;
 	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
 		if (InputTag.IsValid())
@@ -109,7 +110,7 @@ void UFTAAbilitySystemComponent::AbilitySpecInputPressed(FGameplayAbilitySpec& S
 	
 	if (Spec.IsActive())
 	{
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputPressed, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+		
 	}
 }
 
@@ -119,13 +120,12 @@ void UFTAAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& 
 
 	if (Spec.IsActive())
 	{
-		InvokeReplicatedEvent(EAbilityGenericReplicatedEvent::InputReleased, Spec.Handle, Spec.ActivationInfo.GetActivationPredictionKey());
+		
 	}
 }
 
 void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)
 {
-
 	static TArray<FGameplayAbilitySpecHandle> AbilitiesToActivate;
 	AbilitiesToActivate.Reset();
 
@@ -443,22 +443,6 @@ void UFTAAbilitySystemComponent::GetAdditionalActivationTagRequirements(const FG
 	if (TagRelationshipMapping)
 	{
 		TagRelationshipMapping->GetRequiredAndBlockedActivationTags(AbilityTags, &OutActivationRequired, &OutActivationBlocked);
-	}
-}
-
-void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
-{
-	// Consume the input if this InputID is overloaded with GenericConfirm/Cancel and the GenericConfim/Cancel callback is bound
-	if (IsGenericConfirmInputBound(InputID))
-	{
-		InputConfirm();
-		return;
-	}
-	
-	if (IsGenericCancelInputBound(InputID))
-	{
-		InputCancel();
-		return;
 	}
 }
 

@@ -8,6 +8,7 @@
 #include "Input/FTAInputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameplayTagContainer.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 AFTAPlayerController::AFTAPlayerController(const FObjectInitializer& ObjectInitializer)
 {
@@ -189,19 +190,31 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 
 void AFTAPlayerController::InputAbilityInputTagPressed(FGameplayTag InputTag)
 {
+	bool IsTagValid = UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InputTag);
+	if(!IsTagValid)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTAPlayerController: InputAbilityInputTagPressed - Tag(s) is invalid"), *GetActorNameOrLabel());
+		return;
+	}
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
 	
-	if(!FTAPlayerState) { return; }
+	if(!FTAPlayerState)
+	{
+		return;
+	}
 	
-	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
-	AbilitySystemComponent->AbilityInputTagPressed(InputTag);
+	UFTAAbilitySystemComponent* FTAAbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
+	FTAAbilitySystemComponent->AbilityInputTagPressed(InputTag);
 }
 
 void AFTAPlayerController::InputAbilityInputTagReleased(FGameplayTag InputTag)
 {
 	AFTAPlayerState* FTAPlayerState = GetPlayerState<AFTAPlayerState>();
 	
-	if(!FTAPlayerState) { return; }
-	UFTAAbilitySystemComponent* AbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
-	AbilitySystemComponent->AbilityInputTagReleased(InputTag);
+	if(!FTAPlayerState)
+	{
+		return;
+	}
+	UFTAAbilitySystemComponent* FTAAbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
+	FTAAbilitySystemComponent->AbilityInputTagReleased(InputTag);
 }

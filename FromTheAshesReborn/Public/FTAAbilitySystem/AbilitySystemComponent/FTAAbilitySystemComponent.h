@@ -35,10 +35,7 @@ public:
 	
 protected:
 
-	int32 ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::MAX];
-
-	UPROPERTY()
-	TObjectPtr<AFTAPlayerController> PlayerController;
+	int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];
 	
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 	
