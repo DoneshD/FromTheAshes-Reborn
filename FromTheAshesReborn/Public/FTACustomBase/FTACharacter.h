@@ -7,17 +7,12 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
-class UWallRunningComponent;
-class UComboManagerComponent;
-class UMotionWarpingComponent;
-struct FGameplayEffectSpec;
-class UEquipmentManagerComponent;
-class UFTACharacterData;
-class UWeaponManagerComponent;
 class UFTAAbilitySystemComponent;
-// class UFTAAttributeSet;
-// class UFTAGameplayAbility;
-class UGameplayEffect;
+class UFTACharacterData;
+class UEquipmentManagerComponent;
+class UMotionWarpingComponent;
+class UComboManagerComponent;
+class UWallRunningComponent;
 class UDidItHitActorComponent;
 
 
@@ -32,22 +27,23 @@ protected:
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 	
 public:
+	
 	UPROPERTY(BlueprintReadWrite)
 	bool NextAttackPaused = false;
 	
-	UPROPERTY(EditAnywhere, Category = "Character | Abilities")
-	TObjectPtr<UFTACharacterData> CharacterAbilitySetData;
+	UPROPERTY(EditAnywhere, Category = "FTACharacter | Ability Set")
+	TObjectPtr<UFTACharacterData> FTACharacterAbilitySetData;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Character | Abilities")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "MotionWarping")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Combo")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Wallrunning")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UWallRunningComponent> WallRunningComponent;
 	
 public:
@@ -60,7 +56,7 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
-	TObjectPtr<UMotionWarpingComponent> GetMotionWarpingComponent();
+	TObjectPtr<UMotionWarpingComponent> GetMotionWarpingComponent() const;
 
 	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
 	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;
@@ -69,7 +65,7 @@ public:
 
 	virtual void InitAbilitySystemComponent();
 
-	void AddCharacterBaseAbilities();
+	void AddCharacterBaseAbilities() const;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void TempLaunchCharacter();
