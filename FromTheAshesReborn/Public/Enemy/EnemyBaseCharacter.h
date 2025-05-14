@@ -12,7 +12,7 @@ class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "AI")
 	TObjectPtr<UBehaviorTree> BehaviorTree;
 
 

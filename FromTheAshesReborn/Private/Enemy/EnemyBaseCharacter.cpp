@@ -1,7 +1,6 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
-
 AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {

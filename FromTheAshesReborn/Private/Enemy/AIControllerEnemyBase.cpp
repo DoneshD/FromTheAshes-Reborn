@@ -23,14 +23,21 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	AEnemyBaseCharacter* EnemyCharacter = Cast<AEnemyBaseCharacter>(InPawn);
-	if (EnemyCharacter)
+
+	if (!EnemyCharacter)
 	{
-		if (EnemyCharacter->BehaviorTree)
-		{
-			RunBehaviorTree(EnemyCharacter->BehaviorTree);
-		}
+		UE_LOG(LogTemp, Error, TEXT("[%s] AAIControllerEnemyBase::OnPossess - EnemyCharacter is null"), *GetActorNameOrLabel());
+		return;
 	}
 	
+	if (!EnemyCharacter->BehaviorTree)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AAIControllerEnemyBase::OnPossess - BehaviorTree is null"), *GetActorNameOrLabel());
+		return;
+	}
+	
+	RunBehaviorTree(EnemyCharacter->BehaviorTree);
+		
 }
 
 void AAIControllerEnemyBase::BeginPlay()

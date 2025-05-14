@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "Executions/FTADamageExecution.h"
-#include "FTAAbilitySystem/AttributeSets/DamageAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/WeaponAttributeSets/WeaponAttributeSet.h"
@@ -32,7 +31,11 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 {
 	const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
 	FFTAGameplayEffectContext* TypedContext = FFTAGameplayEffectContext::ExtractEffectContext(Spec.GetContext());
-	check(TypedContext);
+
+	if(!TypedContext)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTADamageExecution::Execute_Implementation - TypedContext is Null"))
+	}
 	
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
 	const FGameplayTagContainer* TargetTags = Spec.CapturedTargetTags.GetAggregatedTags();
@@ -44,8 +47,6 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	float BaseDamage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BaseDamageDef, EvaluateParameters, BaseDamage);
 	
-	const AActor* EffectCauser = TypedContext->GetEffectCauser();
-	const FHitResult* HitActorResult = TypedContext->GetHitResult();
 	
 	const float DamageDone = FMath::Max(BaseDamage, 0.0f);
 	
