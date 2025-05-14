@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 UAT_WaitInputTagAndQueueWindowEvent::UAT_WaitInputTagAndQueueWindowEvent(const FObjectInitializer& ObjectInitializer)
 {
@@ -13,10 +14,20 @@ UAT_WaitInputTagAndQueueWindowEvent* UAT_WaitInputTagAndQueueWindowEvent::WaitIn
 void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 {
 	Super::Activate();
-
-	FTAASC = Cast<UFTAAbilitySystemComponent>(AbilitySystemComponent);
+	
+	AFTAPlayerState* PS = Cast<AFTAPlayerState>(GetOwnerActor());
+	
+	if (!PS)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UAT_WaitInputTagAndQueueWindowEvent::Activate - PS is Null"));
+		return;
+	}
+	
+	FTAASC = PS->GetFTAAbilitySystemComponent();
+	
 	if (!FTAASC || !Ability)
 	{
+		UE_LOG(LogTemp, Error, TEXT("UAT_WaitInputTagAndQueueWindowEvent::Activate - FTAASC || Ability is Null"));
 		return;
 	}
 
@@ -31,7 +42,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 		{
 			if (UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec->Ability))
 			{
-				if (FTAAbility->QueueWindowTag.IsValid())
+				if (UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FTAAbility->QueueWindowTag))
 				{
 					TArray<UFTAGameplayAbility*>& Abilities = QueueableAbilities.FindOrAdd(FTAAbility->QueueWindowTag);
 
@@ -153,7 +164,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 		}
 	}
 }
-
 
 void UAT_WaitInputTagAndQueueWindowEvent::ExternalCancel()
 {

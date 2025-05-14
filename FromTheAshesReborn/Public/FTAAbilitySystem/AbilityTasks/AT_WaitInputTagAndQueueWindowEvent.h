@@ -27,17 +27,16 @@ protected:
 	TMap<FGameplayTag, TArray<UFTAGameplayAbility*>> QueueableAbilities;
 
 public:
-	UAT_WaitInputTagAndQueueWindowEvent(const FObjectInitializer& ObjectInitializer);
-
-	UFUNCTION()
 	static UAT_WaitInputTagAndQueueWindowEvent* WaitInputTagAndQueueWindowEvent(UGameplayAbility* OwningAbility);
+
+protected:
+	UAT_WaitInputTagAndQueueWindowEvent(const FObjectInitializer& ObjectInitializer);
 
 	virtual void Activate() override;
 	virtual void ExternalCancel() override;
 	virtual FString GetDebugString() const override;
 	virtual void OnDestroy(bool AbilityEnded) override;
 
-protected:
 	UFUNCTION()
 	void OnInputTagReceived(FGameplayTag InputTag);
 	
@@ -45,5 +44,4 @@ protected:
 	void RemoveQueueWindowTagEvent(FGameplayTag QueueWindowTag);
 	void OnQueueWindowTagChanged(const FGameplayTag QueueWindowTag, int32 NewCount);
 	
-	void TryActivateMatchingAbility(const FGameplayTag& QueueWindowTag);
 };
