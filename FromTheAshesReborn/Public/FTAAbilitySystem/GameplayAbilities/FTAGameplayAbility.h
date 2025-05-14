@@ -56,7 +56,7 @@ protected:
 
 	//TODO: change to TObject
 	UPROPERTY()
-	UFTAAT_OnTick* TickTask;
+	TObjectPtr<UFTAAT_OnTick> TickTask;
 
 	UPROPERTY()
 	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;

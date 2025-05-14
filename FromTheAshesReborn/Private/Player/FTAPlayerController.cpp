@@ -37,7 +37,7 @@ void AFTAPlayerController::Tick(float DeltaSeconds)
 void AFTAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	if (!InPawn->InputComponent)
+	if (InPawn->InputComponent != nullptr)
 	{
 		InitializePlayerInput(InPawn->InputComponent);
 	}
@@ -46,6 +46,7 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 void AFTAPlayerController::OnUnPossess()
 {
 	Super::OnUnPossess();
+	
 	EnhancedInputComponent->ClearActionBindings();
 }
 
@@ -161,7 +162,11 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 	// Use custom input component instead
 	
 	EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent);
-	if(!EnhancedInputComponent) { return; }
+	if (!EnhancedInputComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTAPlayerController::InitializePlayerInput - EnhancedInputComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
 	
 	UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	if(!InputSubsystem) { return; }
@@ -172,9 +177,9 @@ void AFTAPlayerController::InitializePlayerInput(UInputComponent* PlayerInputCom
 
 	UFTAInputComponent* FTAInputComponent = NewObject<UFTAInputComponent>(PlayerInputComponent);
 
-	if(!FTAInputComponent)
+	if (!FTAInputComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("FTAInputComponent is NULL"));
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTAPlayerController::InitializePlayerInput - FTAInputComponent is null"), *GetActorNameOrLabel());
 		return;
 	}
 	TArray<uint32> BindHandles;

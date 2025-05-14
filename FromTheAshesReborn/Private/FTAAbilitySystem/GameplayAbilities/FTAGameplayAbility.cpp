@@ -4,16 +4,13 @@
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
 #include "MotionWarpingComponent.h"
-#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
-#include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
-#include "Player/FTAPlayerState.h"
 
 
 UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)

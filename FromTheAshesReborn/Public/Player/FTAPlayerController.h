@@ -25,7 +25,6 @@ class FROMTHEASHESREBORN_API AFTAPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
 	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
