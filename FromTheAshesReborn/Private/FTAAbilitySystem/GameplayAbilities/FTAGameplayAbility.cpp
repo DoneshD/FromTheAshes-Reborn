@@ -57,22 +57,20 @@ AController* UFTAGameplayAbility::GetControllerFromActorInfo() const
 	{
 		return PC;
 	}
-	
-	// Look for a player controller or pawn in the owner chain.
-	AActor* TestActor = CurrentActorInfo->OwnerActor.Get();
-	while (TestActor)
+	AActor* OwningActor = CurrentActorInfo->OwnerActor.Get();
+	while (OwningActor)
 	{
-		if (AController* Controller = Cast<AController>(TestActor))
+		if (AController* Controller = Cast<AController>(OwningActor))
 		{
 			return Controller;
 		}
 
-		if (APawn* Pawn = Cast<APawn>(TestActor))
+		if (APawn* Pawn = Cast<APawn>(OwningActor))
 		{
 			return Pawn->GetController();
 		}
 
-		TestActor = TestActor->GetOwner();
+		OwningActor = OwningActor->GetOwner();
 	}
 	return nullptr;
 }
@@ -84,30 +82,18 @@ AFTACharacter* UFTAGameplayAbility::GetFTACharacterFromActorInfo() const
 
 void UFTAGameplayAbility::TryActivateAbilityOnSpawn(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) const
 {
-	// Try to activate if activation policy is on spawn.
 	if (ActorInfo && !Spec.IsActive() && ActivationPolicy == EFTAAbilityActivationPolicy::OnSpawn)
 	{
-		//Might cause problems if ASC is already a raw pointer
-		UAbilitySystemComponent* ASC = ActorInfo->AbilitySystemComponent.Get();
+		UFTAAbilitySystemComponent* FTAASC = GetFTAAbilitySystemComponentFromActorInfo();
 		const AActor* AvatarActor = ActorInfo->AvatarActor.Get();
 
-		if(!ASC)
+		if(!FTAASC)
 		{
-			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ASC is null"));
+			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::TryActivateAbilityOnSpawn - FTAASC is null"));
 			return;
 		}
-
-		if(!AvatarActor)
-		{
-			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::AvatarActor is null"));
-			return;
-		}
-
-		// If avatar actor is torn off or about to die, don't try to activate until we get the new one.
-		if (ASC && AvatarActor)
-		{
-			ASC->TryActivateAbility(Spec.Handle);
-		}
+		
+		FTAASC->TryActivateAbility(Spec.Handle);
 	}
 }
 
@@ -305,7 +291,7 @@ void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSp
 
 bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	// return Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, SourceTags, TargetTags, OptionalRelevantTags);
+	
 
 	bool IsBlocked = false;
 	bool IsMissing = false;
@@ -401,7 +387,7 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 		return false;
 	}
 
-	return true;
+	return Super::DoesAbilitySatisfyTagRequirements(AbilitySystemComponent, SourceTags, TargetTags, OptionalRelevantTags);;
 	
 }
 
@@ -413,7 +399,6 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 
 	OutEffectCauser = ActorInfo->AvatarActor.Get();
 
-	// If we were added by something that's an ability info source, use it
 	UObject* SourceObject = GetSourceObject(Handle, ActorInfo);
 
 	OutAbilitySource = Cast<IFTAAbilitySourceInterface>(SourceObject);
@@ -426,25 +411,25 @@ void UFTAGameplayAbility::MotionWarpToTarget()
 
 void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
-	MontageToPlay = AnimMontage;
-	if(MontageToPlay)
+	if(!AnimMontage)
 	{
-		PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, MontageToPlay, FGameplayTagContainer(),
-		1.0f, NAME_None, false, 1.0f);
-		// PlayMontageTask->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
-		PlayMontageTask->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
-		PlayMontageTask->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
-		PlayMontageTask->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
-		PlayMontageTask->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::PlayAbilityAnimMontage - Anim montage is invalid"));
+		return;
+	}
+	PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(),
+	1.0f, NAME_None, false, 1.0f);
 
-		MotionWarpToTarget();
-		
-		PlayMontageTask->ReadyForActivation();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No montage"));
-	}
+	
+	// PlayMontageTask->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
+	PlayMontageTask->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
+	PlayMontageTask->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
+	PlayMontageTask->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
+	PlayMontageTask->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
+	
+	MotionWarpToTarget();
+
+	PlayMontageTask->ReadyForActivation();
+
 }
 
 void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
