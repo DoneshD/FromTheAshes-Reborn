@@ -25,10 +25,8 @@ UFTAAbilitySystemComponent* AFTAPlayerController::GetFTAAbilitySystemComponent()
 
 AFTAPlayerState* AFTAPlayerController::GetFTAPlayerState()
 {
-	AFTAPlayerState* FTAPlayerState = CastChecked<AFTAPlayerState>(PlayerState);
-	return FTAPlayerState;
+	return CastChecked<AFTAPlayerState>(PlayerState);
 }
-
 
 void AFTAPlayerController::Tick(float DeltaSeconds)
 {
@@ -39,7 +37,7 @@ void AFTAPlayerController::Tick(float DeltaSeconds)
 void AFTAPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	if (InPawn->InputComponent != nullptr)
+	if (!InPawn->InputComponent)
 	{
 		InitializePlayerInput(InPawn->InputComponent);
 	}

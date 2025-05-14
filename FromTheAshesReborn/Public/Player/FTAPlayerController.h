@@ -25,7 +25,7 @@ class FROMTHEASHESREBORN_API AFTAPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
 	TObjectPtr<UEnhancedInputComponent> EnhancedInputComponent;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FTA | Input")
@@ -37,7 +37,12 @@ protected:
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<APlayerCharacter> PlayerCharacter;
 
-public:
+	//-----------------------------For debugging--------------------------//
+	TObjectPtr<UInputAction> Input_SlowTime;
+	bool IsTimeSlowed = false;
+
+
+protected:
 	
 	AFTAPlayerController(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
@@ -47,33 +52,24 @@ public:
 
 	virtual void PostProcessInput(const float DeltaTime, const bool bGamePaused) override;
 
-	UFUNCTION(BlueprintCallable, Category = "FTA|ASComponent")
+	UFUNCTION(BlueprintCallable, Category = "FTA | ASComponent")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const;
-
-	AFTAPlayerState* GetFTAPlayerState();
 	
 	virtual void InitializePlayerInput(UInputComponent* PlayerInputComponent);
-	void InputAbilityInputTagPressed(FGameplayTag InputTag);
-	void InputAbilityInputTagReleased(FGameplayTag InputTag);
-
-
-protected:
-
-	//-----------------------------For debugging--------------------------//
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UInputAction> Input_SlowTime;
-
-	bool IsTimeSlowed = false;
-	
-
 	void SendLocalInputToASC(bool, EAbilityInputID);
 
 	void HandleMoveActionPressed(const FInputActionValue& InputActionValue);
 	void HandleMoveActionReleased(const FInputActionValue& InputActionValue);
 	
 	void HandleInputLookMouse(const FInputActionValue& InputActionValue);
+
+	void InputAbilityInputTagPressed(FGameplayTag InputTag);
+	void InputAbilityInputTagReleased(FGameplayTag InputTag);
 	
 	void InputSlowTime(const FInputActionValue& InputActionValue);
+
+public:
+	AFTAPlayerState* GetFTAPlayerState();
 
 };

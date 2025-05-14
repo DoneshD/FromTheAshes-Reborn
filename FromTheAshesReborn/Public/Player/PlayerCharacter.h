@@ -4,10 +4,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "PlayerCharacter.generated.h"
 
-class UMotionWarpingComponent;
 class UParkourSystemComponent;
-class UGroundedMeleeComboComponent;
-class UGameplayEffect;
 class UTargetSystemComponent;
 
 UCLASS()
@@ -40,9 +37,9 @@ protected:
 	bool DisableRootMotion = false;
 
 public:
+	
 	UPROPERTY(BlueprintReadWrite)
 	bool HasMovementInput = false;
-
 
 public:
 

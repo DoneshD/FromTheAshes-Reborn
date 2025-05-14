@@ -7,8 +7,6 @@
 #include "FTAPlayerState.generated.h"
 
 class UFTAAbilitySystemComponent;
-class UFTAAttributeSet;
-class AFTAPlayerController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FFTAOnGameplayAttributeValueChangedDelegate, FGameplayAttribute, Attribute, float, NewValue, float, OldValue);
 
@@ -18,10 +16,12 @@ class FROMTHEASHESREBORN_API AFTAPlayerState : public APlayerState, public IAbil
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerState|ASComponent")
-	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
+	
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerState | ASComponent")
+	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
 public:
+	
 	TObjectPtr<AActor> HardLockedTargetActor = nullptr;
 	
 public:
@@ -30,8 +30,9 @@ public:
 	
 	virtual void BeginPlay() override;
 
-	UFUNCTION(BlueprintCallable, Category = "PlayerState|ASComponent")
-	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const { return AbilitySystemComponent; }
+	UFUNCTION(BlueprintCallable, Category = "PlayerState | ASComponent")
+	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const { return FTAAbilitySystemComponent; }
+	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 
 	// AActor Interface

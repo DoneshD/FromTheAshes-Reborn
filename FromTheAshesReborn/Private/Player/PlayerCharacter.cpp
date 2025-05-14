@@ -53,6 +53,12 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!ParkourSystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - ParkourSystemComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
 	ParkourSystemComponent->SetIntializeReference(this, SpringArmComp, CameraComp, MotionWarpingComponent);
 	
 }
@@ -60,6 +66,13 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+}
+
+void APlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	InitAbilitySystemComponent();
 }
 
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -80,10 +93,4 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	FTAAbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	FTAAbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
 	
-}
-
-void APlayerCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-	InitAbilitySystemComponent();
 }

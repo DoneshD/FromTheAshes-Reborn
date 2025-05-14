@@ -3,10 +3,9 @@
 
 AFTAPlayerState::AFTAPlayerState(const FObjectInitializer& ObjectInitializer)
 {
-	AbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
-	AbilitySystemComponent->SetIsReplicated(true);
-	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
-	// AttributeSet = CreateDefaultSubobject<UFTAAttributeSet>(TEXT("AttributeSet"));
+	FTAAbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("FTAAbilitySystemComponent"));
+	FTAAbilitySystemComponent->SetIsReplicated(true);
+	FTAAbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
 
 	NetUpdateFrequency = 100.0f;
 }
@@ -24,11 +23,7 @@ void AFTAPlayerState::PreInitializeComponents()
 void AFTAPlayerState::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	// check(AbilitySystemComponent);
-	// UE_LOG(LogTemp, Warning, TEXT("AFTAPlayerState InitAbilityActorInfo OwnerActor: %s"), *this->GetName())
-	// UE_LOG(LogTemp, Warning, TEXT("AFTAPlayerState InitAbilityActorInfo Avatar: %s"), *GetPawn->GetName())
-	// GetFTAAbilitySystemComponent()->InitAbilityActorInfo(this, GetPawn());
+	
 }
 
 void AFTAPlayerState::BeginPlay()
