@@ -8,10 +8,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagAddedRemoved, FGameplayTag, Tag);
 
-/**
- * Blueprint node to automatically register a listener for FGameplayTags added and removed.
- * Useful to use in Blueprint/UMG.
- */
+
 UCLASS(BlueprintType, meta = (ExposedAsyncProxy = AsyncTask))
 class FROMTHEASHESREBORN_API UAsyncTaskGameplayTagAddedRemoved : public UBlueprintAsyncActionBase
 {
@@ -24,12 +21,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnGameplayTagAddedRemoved OnTagRemoved;
 
-	// Listens for FGameplayTags added and removed.
 	UFUNCTION(BlueprintCallable, meta = (BlueprintInternalUseOnly = "true"))
 	static UAsyncTaskGameplayTagAddedRemoved* ListenForGameplayTagAddedOrRemoved(UAbilitySystemComponent* AbilitySystemComponent, FGameplayTagContainer Tags);
-
-	// You must call this function manually when you want the AsyncTask to end.
-	// For UMG Widgets, you would call it in the Widget's Destruct event.
+	
 	UFUNCTION(BlueprintCallable)
 	void EndTask();
 

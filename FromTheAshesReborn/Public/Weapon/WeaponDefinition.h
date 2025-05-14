@@ -36,15 +36,12 @@ public:
 
 	UWeaponDefinition(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	// Class to spawn
 	UPROPERTY(EditDefaultsOnly, Category=Equipment)
 	TSubclassOf<UWeaponInstance> InstanceType;
 
-	// Gameplay ability sets to grant when this is equipped
 	UPROPERTY(EditDefaultsOnly, Category=Equipment)
 	TArray<TObjectPtr<const UFTAAbilitySet>> AbilitySetsToGrant;
 
-	// Actors to spawn on the pawn when this is equipped
 	UPROPERTY(EditDefaultsOnly, Category=Equipment)
 	TArray<FEquipmentActorToSpawn> ActorsToSpawn;
 

@@ -12,19 +12,20 @@ class FROMTHEASHESREBORN_API UFTAAT_OnTick : public UAbilityTask
 {
 	GENERATED_BODY()
 	 
-
-public:
-	
-	UPROPERTY(BlueprintAssignable)
-	FOnTickTaskDelegate OnTick;
-
-	UFTAAT_OnTick(const FObjectInitializer& ObjectInitializer);
+protected:
 
 	virtual void Activate() override;
 	virtual void TickTask(float DeltaTime) override;
 
-	// This is the static function you use in your ability
-	UFUNCTION(BlueprintCallable, Category = "Ability|Tasks", meta = (DisplayName = "Start OnTick Task", HidePin = "OwningAbility", DefaultToSelf = "OwningAbility"))
+	UFTAAT_OnTick(const FObjectInitializer& ObjectInitializer);
+	
+public:
+	
+	UPROPERTY(BlueprintAssignable)
+	FOnTickTaskDelegate OnTick;
+	
+
+	UFUNCTION(BlueprintCallable, Category = "FTAAbilityTasks | Tasks", meta = (DisplayName = "Start OnTick Task"))
 	static UFTAAT_OnTick* StartTicking(UGameplayAbility* OwningAbility);
 
 protected:

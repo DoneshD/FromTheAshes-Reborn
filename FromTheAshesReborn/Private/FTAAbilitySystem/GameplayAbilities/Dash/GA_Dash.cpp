@@ -91,9 +91,9 @@ void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGamepl
 void UGA_Dash::UpdateDashMovement(float DeltaTime)
 {
 	DashElapsedTime += DeltaTime;
-		
-	float Alpha = FMath::Clamp(DashElapsedTime / DashDuration, 0.0f, 1.0f);
-	FVector NewLocation = FMath::Lerp(DashStartLocation, DashEndLocation, Alpha);
+
+	const float Alpha = FMath::Clamp(DashElapsedTime / DashDuration, 0.0f, 1.0f);
+	const FVector NewLocation = FMath::Lerp(DashStartLocation, DashEndLocation, Alpha);
 
 	FHitResult Hit;
 	CurrentActorInfo->AvatarActor->SetActorLocation(NewLocation, true, &Hit);

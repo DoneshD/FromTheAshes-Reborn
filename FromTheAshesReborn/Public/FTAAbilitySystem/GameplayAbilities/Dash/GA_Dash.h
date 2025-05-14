@@ -17,23 +17,20 @@ protected:
 
 	bool IsDashing = false;
 
-	// Dashing
 	FVector DashStartLocation;
 	FVector DashEndLocation;
 	
 	float DashElapsedTime = 0.0f;
 	float DashStartTime = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash Ability")
 	TArray<TObjectPtr<UDashAbilityDataAsset>> DashAbilityAssets;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash Ability")
 	float DashDistance = 600.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash Ability")
 	float DashDuration = 0.20f;
-
-	
 
 protected:
 
@@ -49,8 +46,8 @@ protected:
 	virtual void UpdateDashMovement(float DeltaTime);
 
 	virtual void DashLocationReached();
-	
-	bool FindMatchingDashAssetToInputDirection(const TArray<UDashAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UDashAbilityDataAsset>& OutMatchingAbilityDataAsset, ELockOnInputOrientationDirection InputDirection);
+
+	static bool FindMatchingDashAssetToInputDirection(const TArray<UDashAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UDashAbilityDataAsset>& OutMatchingAbilityDataAsset, ELockOnInputOrientationDirection InputDirection);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 

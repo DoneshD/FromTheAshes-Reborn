@@ -17,9 +17,9 @@ class FROMTHEASHESREBORN_API UComboManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:
+protected:
 	
-	UFTAAbilitySystemComponent* FTAASC;
+	TObjectPtr<UFTAAbilitySystemComponent> FTAASC;
 
 	UPROPERTY(BlueprintReadWrite)
 	FGameplayTagContainer CurrentComboTagContainer;
@@ -27,18 +27,18 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int CurrentComboIndex = 0;
 
-public:
+protected:
 	
 	UComboManagerComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+public:
 	
 	FGameplayTagContainer& GetCurrentComboContainer();
-	int GetCurrentComboIndex();
+	int GetCurrentComboIndex() const;
 	void SetCurrentComboIndex(int Index);
 	
 	bool FindMatchingAssetToTagContainer(const TArray<UMeleeAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingAbilityDataAsset);
-	
-
 	
 };

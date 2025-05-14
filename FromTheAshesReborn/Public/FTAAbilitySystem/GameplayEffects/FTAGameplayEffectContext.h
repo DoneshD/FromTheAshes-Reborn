@@ -30,7 +30,6 @@ struct FFTAGameplayEffectContext : public FGameplayEffectContext
 	}
 
 protected:
-	/** Ability Source object (should implement ILyraAbilitySourceInterface). NOT replicated currently */
 	UPROPERTY()
 	TWeakObjectPtr<const UObject> AbilitySourceObject;
 };

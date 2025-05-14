@@ -5,20 +5,19 @@
 #include "FTACustomBase/FTACharacter.h"
 
 
-UComboManagerComponent::UComboManagerComponent()
+UComboManagerComponent::UComboManagerComponent(): FTAASC(nullptr)
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
 }
 
 void UComboManagerComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
+	const AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
 	if(!FTAChar)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UComboManagerComponent: Owner is not FTAChar"));
+		UE_LOG(LogTemp, Error, TEXT("UComboManagerComponent::BeginPlay - Owner is not FTAChar"));
 		return;
 	}
 	
@@ -26,7 +25,7 @@ void UComboManagerComponent::BeginPlay()
 	
 	if(!FTAASC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UComboManagerComponent: No ASComponent found"));
+		UE_LOG(LogTemp, Error, TEXT("UComboManagerComponent::BeginPlay - No ASComponent found"));
 		return;
 	}
 
@@ -81,7 +80,7 @@ FGameplayTagContainer& UComboManagerComponent::GetCurrentComboContainer()
 }
 
 
-int UComboManagerComponent::GetCurrentComboIndex()
+int UComboManagerComponent::GetCurrentComboIndex() const
 {
 	return CurrentComboIndex;
 }

@@ -24,14 +24,12 @@ struct FFTAAppliedEquipmentItem
 public:
 	friend UEquipmentManagerComponent;
 
-	// The equipment class that got equipped
 	UPROPERTY()
 	TSubclassOf<UWeaponDefinition> EquipmentDefinition;
 
 	UPROPERTY()
 	TObjectPtr<UWeaponInstance> Instance = nullptr;
 
-	// Authority-only list of granted handles
 	FFTAAbilitySet_GrantedHandles GrantedHandles;
 };
 
@@ -47,9 +45,11 @@ public:
 	UPROPERTY()
 	TObjectPtr<UActorComponent> OwnerComponent;
 
+	UPROPERTY()
 	UWeaponInstance* CurrentEquippedWeaponInstance;
 
 public:
+	
 	UEquipmentManagerComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,

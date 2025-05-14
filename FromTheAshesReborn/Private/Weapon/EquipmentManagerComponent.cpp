@@ -1,15 +1,13 @@
 ﻿#include "Weapon/EquipmentManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "Player/FTAPlayerController.h"
 #include "Weapon/WeaponDefinition.h"
 #include "Weapon/WeaponInstance.h"
 
 
-UEquipmentManagerComponent::UEquipmentManagerComponent()
+UEquipmentManagerComponent::UEquipmentManagerComponent(): CurrentEquippedWeaponInstance(nullptr)
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	
 }
 
 void UEquipmentManagerComponent::BeginPlay()
@@ -18,14 +16,11 @@ void UEquipmentManagerComponent::BeginPlay()
 	
 }
 
-void UEquipmentManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-											   FActorComponentTickFunction* ThisTickFunction)
+void UEquipmentManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
-
-
 
 FString FFTAAppliedEquipmentItem::GetDebugString() const
 {
@@ -57,11 +52,7 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 		RemoveEquipmentItem(CurrentEquippedWeaponInstance);
 	}
 	
-	UWeaponInstance* Result = nullptr;
-
 	check(WeaponDefinition != nullptr);
-	// check(OwnerComponent);
-	// check(OwnerComponent->GetOwner()->HasAuthority());
 	
 	const UWeaponDefinition* WeaponCDO = GetDefault<UWeaponDefinition>(WeaponDefinition);
 
@@ -74,7 +65,7 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 	FFTAAppliedEquipmentItem& NewEntry = Entries.AddDefaulted_GetRef();
 	NewEntry.EquipmentDefinition = WeaponDefinition;
 	NewEntry.Instance = NewObject<UWeaponInstance>(GetOwner(), InstanceType);
-	Result = NewEntry.Instance;
+	UWeaponInstance* Result = NewEntry.Instance;
 
 	if (UFTAAbilitySystemComponent* ASC = GetAbilitySystemComponent())
 	{

@@ -10,18 +10,15 @@ UFTAAT_WaitReceiveDamage::UFTAAT_WaitReceiveDamage(const FObjectInitializer& Obj
 
 UFTAAT_WaitReceiveDamage* UFTAAT_WaitReceiveDamage::WaitReceiveDamage(UGameplayAbility* OwningAbility, bool InTriggerOnce)
 {
+	UFTAAT_WaitReceiveDamage* WaitDamageTask = NewAbilityTask<UFTAAT_WaitReceiveDamage>(OwningAbility);
+	WaitDamageTask->TriggerOnce = InTriggerOnce;
 	
-	UFTAAT_WaitReceiveDamage* MyObj = NewAbilityTask<UFTAAT_WaitReceiveDamage>(OwningAbility);
-	MyObj->TriggerOnce = InTriggerOnce;
-	
-	return MyObj;
+	return WaitDamageTask;
 }
 
 void UFTAAT_WaitReceiveDamage::Activate()
 {
-	UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(AbilitySystemComponent);
-
-	if (FTAASC)
+	if (UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(AbilitySystemComponent))
 	{
 		FTAASC->ReceivedDamage.AddDynamic(this, &UFTAAT_WaitReceiveDamage::OnDamageReceived);
 	}
@@ -29,9 +26,7 @@ void UFTAAT_WaitReceiveDamage::Activate()
 
 void UFTAAT_WaitReceiveDamage::OnDestroy(bool AbilityIsEnding)
 {
-	UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(AbilitySystemComponent);
-
-	if (FTAASC)
+	if (UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(AbilitySystemComponent))
 	{
 		FTAASC->ReceivedDamage.RemoveDynamic(this, &UFTAAT_WaitReceiveDamage::OnDamageReceived);
 	}

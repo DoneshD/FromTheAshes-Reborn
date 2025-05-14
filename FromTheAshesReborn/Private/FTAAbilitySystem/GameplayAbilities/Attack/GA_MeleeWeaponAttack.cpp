@@ -22,7 +22,7 @@ UGA_MeleeWeaponAttack::UGA_MeleeWeaponAttack(const FObjectInitializer&)
 
 UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
 {
-	return Cast<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
+	return CastChecked<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
 }
 
 bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -52,7 +52,15 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	if(!FTAChar)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack - Avatar Actor Not FTAChar"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - Avatar Actor Not FTAChar"));
+		return;
+	}
+	
+	ComboManagerComponent = FTAChar->ComboManagerComponent;
+
+	if(!ComboManagerComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - ComboManagerComponent is Null"));
 		return;
 	}
 
@@ -60,7 +68,6 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	
 	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
 	{
-		//Using interface to call toggle function
 		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
 		if(WeaponActor)
 		{
@@ -102,8 +109,8 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 
 void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 {
-	FTAChar->ComboManagerComponent->GetCurrentComboContainer().Reset();
-	FTAChar->ComboManagerComponent->SetCurrentComboIndex(0);
+	ComboManagerComponent->GetCurrentComboContainer().Reset();
+	ComboManagerComponent->SetCurrentComboIndex(0);
 	FTAChar->NextAttackPaused = false;
 }
 
@@ -111,7 +118,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> M
 {
 
 	TObjectPtr<UMeleeAbilityDataAsset> MatchingDataAsset;
-	bool DataAssetFound = FTAChar->ComboManagerComponent->FindMatchingAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
+	bool DataAssetFound = ComboManagerComponent->FindMatchingAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
 	
 	if(!DataAssetFound)
 	{
@@ -126,19 +133,17 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> M
 		ResetMeleeAttack();
 		return;
 	}
-
-	AttackMontageToPlay = MatchingDataAsset->MontageToPlay;
 	
-	if (AttackMontageToPlay)
+	if (MatchingDataAsset->MontageToPlay)
 	{
 		FGameplayTag TestTag = MatchingDataAsset->UniqueIdentifierTag;
 
-		int32 CurrentComboIndex = FTAChar->ComboManagerComponent->GetCurrentComboIndex();
+		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
 
-		FTAChar->ComboManagerComponent->GetCurrentComboContainer().AddTag(TestTag);
-		FTAChar->ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
+		ComboManagerComponent->GetCurrentComboContainer().AddTag(TestTag);
+		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 
-		PlayAbilityAnimMontage(AttackMontageToPlay);
+		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 		MotionWarpToTarget();
 	}
 
@@ -265,8 +270,6 @@ void UGA_MeleeWeaponAttack::OnMontageCancelled(FGameplayTag EventTag, FGameplayE
 {
 	Super::OnMontageCancelled(EventTag, EventData);
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
-
-	
 }
 
 void UGA_MeleeWeaponAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)

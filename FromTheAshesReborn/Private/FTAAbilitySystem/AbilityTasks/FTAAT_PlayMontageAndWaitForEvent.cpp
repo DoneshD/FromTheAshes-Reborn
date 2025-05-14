@@ -13,12 +13,12 @@ UFTAAT_PlayMontageAndWaitForEvent::UFTAAT_PlayMontageAndWaitForEvent(const FObje
 	bStopWhenAbilityEnds = true;
 }
 
-UFTAAbilitySystemComponent* UFTAAT_PlayMontageAndWaitForEvent::GetTargetASC()
+UFTAAbilitySystemComponent* UFTAAT_PlayMontageAndWaitForEvent::GetTargetASC() const
 {
 	return Cast<UFTAAbilitySystemComponent>(AbilitySystemComponent);
 }
 
-void UFTAAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted)
+void UFTAAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Montage, bool bInterrupted) const
 {
 	if (Ability && Ability->GetCurrentMontage() == MontageToPlay)
 	{
@@ -26,10 +26,8 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Monta
 		{
 			AbilitySystemComponent->ClearAnimatingAbility(Ability);
 
-			// Reset AnimRootMotionTranslationScale
 			ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
-			if (Character && (Character->GetLocalRole() == ROLE_Authority ||
-				(Character->GetLocalRole() == ROLE_AutonomousProxy && Ability->GetNetExecutionPolicy() == EGameplayAbilityNetExecutionPolicy::LocalPredicted)))
+			if(Character)
 			{
 				Character->SetAnimRootMotionTranslationScale(1.f);
 			}
@@ -54,11 +52,8 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnMontageBlendingOut(UAnimMontage* Monta
 
 void UFTAAT_PlayMontageAndWaitForEvent::OnAbilityCancelled()
 {
-	// TODO: Merge this fix back to engine, it was calling the wrong callback
-
 	if (StopPlayingMontage())
 	{
-		// Let the BP handle the interrupt as well
 		if (ShouldBroadcastAbilityTaskDelegates())
 		{
 			OnCancelled.Broadcast(FGameplayTag(), FGameplayEventData());
@@ -75,7 +70,6 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnMontageEnded(UAnimMontage* Montage, bo
 			OnCompleted.Broadcast(FGameplayTag(), FGameplayEventData());
 		}
 	}
-
 	EndTask();
 }
 
@@ -95,15 +89,21 @@ FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer Event
 {
 	UAbilitySystemGlobals::NonShipping_ApplyGlobalAbilityScaler_Rate(Rate);
 
-	UFTAAT_PlayMontageAndWaitForEvent* MyObj = NewAbilityTask<UFTAAT_PlayMontageAndWaitForEvent>(OwningAbility, TaskInstanceName);
-	MyObj->MontageToPlay = MontageToPlay;
-	MyObj->EventTags = EventTags;
-	MyObj->Rate = Rate;
-	MyObj->StartSection = StartSection;
-	MyObj->AnimRootMotionTranslationScale = AnimRootMotionTranslationScale;
-	MyObj->bStopWhenAbilityEnds = bStopWhenAbilityEnds;
+	UFTAAT_PlayMontageAndWaitForEvent* MontageTask = NewAbilityTask<UFTAAT_PlayMontageAndWaitForEvent>(OwningAbility, TaskInstanceName);
 
-	return MyObj;
+	if (!MontageTask)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent - MyObj FTACharacterAbilitySetData is null"));
+		return nullptr;
+	}
+	MontageTask->MontageToPlay = MontageToPlay;
+	MontageTask->EventTags = EventTags;
+	MontageTask->Rate = Rate;
+	MontageTask->StartSection = StartSection;
+	MontageTask->AnimRootMotionTranslationScale = AnimRootMotionTranslationScale;
+	MontageTask->bStopWhenAbilityEnds = bStopWhenAbilityEnds;
+
+	return MontageTask;
 }
 
 
@@ -115,22 +115,18 @@ void UFTAAT_PlayMontageAndWaitForEvent::Activate()
 	}
 
 	bool bPlayedMontage = false;
-	UFTAAbilitySystemComponent* FTAAbilitySystemComponent = GetTargetASC();
 
-	
-	if (FTAAbilitySystemComponent)
+
+	if (UFTAAbilitySystemComponent* FTAAbilitySystemComponent = GetTargetASC())
 	{
 		const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
 		UAnimInstance* AnimInstance = ActorInfo->GetAnimInstance();
 		if (AnimInstance != nullptr)
 		{
-			// Bind to event callback
 			EventHandle = FTAAbilitySystemComponent->AddGameplayEventTagContainerDelegate(EventTags, FGameplayEventTagMulticastDelegate::FDelegate::CreateUObject(this, &UFTAAT_PlayMontageAndWaitForEvent::OnGameplayEvent));
 			
 			if (FTAAbilitySystemComponent->PlayMontage(Ability, Ability->GetCurrentActivationInfo(), MontageToPlay, Rate, StartSection) > 0.f)
 			{
-			
-				// Playing a montage could potentially fire off a callback into game code which could kill this ability! Early out if we are  pending kill.
 				if (ShouldBroadcastAbilityTaskDelegates() == false)
 				{
 					return;
@@ -183,7 +179,6 @@ void UFTAAT_PlayMontageAndWaitForEvent::ExternalCancel()
 
 void UFTAAT_PlayMontageAndWaitForEvent::OnDestroy(bool AbilityEnded)
 {
-	
 	if (Ability)
 	{
 		Ability->OnGameplayAbilityCancelled.Remove(CancelledHandle);
@@ -193,8 +188,7 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnDestroy(bool AbilityEnded)
 		}
 	}
 
-	UFTAAbilitySystemComponent* FTAAbilitySystemComponent = GetTargetASC();
-	if (FTAAbilitySystemComponent)
+	if (UFTAAbilitySystemComponent* FTAAbilitySystemComponent = GetTargetASC())
 	{
 		FTAAbilitySystemComponent->RemoveGameplayEventTagContainerDelegate(EventTags, EventHandle);
 	}
@@ -203,7 +197,7 @@ void UFTAAT_PlayMontageAndWaitForEvent::OnDestroy(bool AbilityEnded)
 
 }
 
-bool UFTAAT_PlayMontageAndWaitForEvent::StopPlayingMontage()
+bool UFTAAT_PlayMontageAndWaitForEvent::StopPlayingMontage() const
 {
 	const FGameplayAbilityActorInfo* ActorInfo = Ability->GetCurrentActorInfo();
 	if (!ActorInfo)
@@ -216,9 +210,6 @@ bool UFTAAT_PlayMontageAndWaitForEvent::StopPlayingMontage()
 	{
 		return false;
 	}
-	
-	// Check if the montage is still playing
-	// The ability would have been interrupted, in which case we should automatically stop the montage
 
 	UFTAAbilitySystemComponent* FTAAbilitySystemComponent  = GetTargetASC();
 	if (!FTAAbilitySystemComponent)
@@ -231,7 +222,6 @@ bool UFTAAT_PlayMontageAndWaitForEvent::StopPlayingMontage()
 		if (FTAAbilitySystemComponent->GetAnimatingAbility() == Ability
 			&& FTAAbilitySystemComponent->GetCurrentMontage() == MontageToPlay)
 		{
-			// Unbind delegates so they don't get called as well
 			FAnimMontageInstance* MontageInstance = AnimInstance->GetActiveInstanceForMontage(MontageToPlay);
 			if (MontageInstance)
 			{
@@ -243,7 +233,6 @@ bool UFTAAT_PlayMontageAndWaitForEvent::StopPlayingMontage()
 			return true;
 		}
 	}
-
 	return false;
 }
 

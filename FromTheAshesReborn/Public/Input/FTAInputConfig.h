@@ -7,7 +7,6 @@
 
 class UInputAction;
 
-//Defines the input action and associated gameplay tag pairing
 USTRUCT(BlueprintType)
 struct FFTAInputAction
 {
@@ -37,14 +36,10 @@ public:
 	const UInputAction* FindAbilityInputActionForTag(const FGameplayTag& InputTag) const;
 
 public:
-
-	// Note: Meta = (TitleProperty = "InputAction") is a type of categorization in blueprint
-
-	//These input actions must be manually bound, in this instance in the player controller
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
 	TArray<FFTAInputAction> NativeInputActions;
 
-	//These will automatically bound based on the matching gameplay tag
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Meta = (TitleProperty = "InputAction"))
 	TArray<FFTAInputAction> AbilityInputActions;
 };
