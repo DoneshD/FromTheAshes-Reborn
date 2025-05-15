@@ -11,6 +11,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
+#include "Weapon/EquipmentManagerComponent.h"
 
 #include "Weapon/MeleeWeaponInstance.h"
 #include "Weapon/WeaponActorBase.h"
@@ -64,31 +65,28 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 
-	UMeleeWeaponInstance* WeaponData = GetMeleeWeaponInstance();
-	
-	for (AActor* SpawnedActor : WeaponData->GetSpawnedActors())
+	if(!FTAChar->EquipmentManagerComponent)
 	{
-		AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor);
-		if(WeaponActor)
-		{
-			// MeleeWeaponActor = WeaponActor;
-			// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
-			//Need to try to bind with a function that takes a ref
-			GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
-
-			if(!MeleeAttackAssets.IsValidIndex(0) || MeleeAttackAssets.Num() < 1)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
-				return;
-			}
-			PerformMeleeAttack(MeleeAttackAssets);
-			return;
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("NOT AWeaponActorBase"));
-		}
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - EquipmentManagerComponent is Null"));
+		return;
 	}
+	
+	MeleeWeaponActor = FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor();
+	
+	if(!MeleeWeaponActor)
+	{
+		return;
+	}
+	
+	MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+
+	if(!MeleeAttackAssets.IsValidIndex(0) || MeleeAttackAssets.Num() < 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
+		return;
+	}
+	PerformMeleeAttack(MeleeAttackAssets);
+		
 	
 }
 
@@ -102,8 +100,14 @@ void UGA_MeleeWeaponAttack::CancelAbility(const FGameplayAbilitySpecHandle Handl
 void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	if(!MeleeWeaponActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
+		return;
+	}
 	
-	GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
+	MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
 	
 }
 
@@ -203,30 +207,6 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		
 		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
 	}
-}
-
-void UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting()
-{
-	check(CurrentActorInfo);
-
-	if(!GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::StartMeleeWeaponTargeting - No Melee Weapon Actor"))
-		return;
-	}
-	
-	GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->ToggleTraceCheck(true);
-}
-
-void UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting()
-{
-	if(!GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndMeleeWeaponTargeting - No Melee Weapon Actor"))
-		return;
-	}
-	GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->ToggleTraceCheck(false);
-	GetFTAAbilitySystemComponentFromActorInfo()->TestWeaponActor->DidItHitActorComponent->ClearHitArray();
 }
 
 void UGA_MeleeWeaponAttack::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)

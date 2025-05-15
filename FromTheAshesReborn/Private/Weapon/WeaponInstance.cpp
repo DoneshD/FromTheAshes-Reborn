@@ -44,12 +44,6 @@ void UWeaponInstance::SpawnEquipmentActors(const TArray<FEquipmentActorToSpawn>&
 			NewActor->FinishSpawning(FTransform::Identity, /*bIsDefaultTransform=*/ true);
 			NewActor->SetActorRelativeTransform(SpawnInfo.AttachTransform);
 			NewActor->AttachToComponent(AttachTarget, FAttachmentTransformRules::KeepRelativeTransform, SpawnInfo.AttachSocket);
-			//DEBUG REMOVE LATER
-
-			AFTACharacter* AFTAChar = Cast<AFTACharacter>(GetPawn());
-			
-			UFTAAbilitySystemComponent* FTAASC = AFTAChar->GetFTAAbilitySystemComponent();
-			FTAASC->TestWeaponActor = Cast<AWeaponActorBase>(NewActor);
 			
 			SpawnedActors.Add(NewActor);
 		}

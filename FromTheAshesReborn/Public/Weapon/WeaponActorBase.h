@@ -24,4 +24,11 @@ public:
 	AWeaponActorBase();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	void StartWeaponTracing();
+
+	UFUNCTION(BlueprintCallable)
+	void EndWeaponTracing();
+	
 };

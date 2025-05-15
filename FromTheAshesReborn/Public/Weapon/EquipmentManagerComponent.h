@@ -6,6 +6,7 @@
 #include "FTAAbilitySystem/AbilitySets/FTAAbilitySet.h"
 #include "EquipmentManagerComponent.generated.h"
 
+class AWeaponActorBase;
 class UWeaponInstance;
 class UWeaponDefinition;
 class UFTAEquipmentInstance;
@@ -48,6 +49,9 @@ public:
 	UPROPERTY()
 	UWeaponInstance* CurrentEquippedWeaponInstance;
 
+	UPROPERTY()
+	TObjectPtr<AWeaponActorBase> CurrentEquippedWeaponActor;
+
 public:
 	
 	UEquipmentManagerComponent();
@@ -63,6 +67,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UWeaponInstance* GetEquippedWeaponInstance();
+
+	UFUNCTION(BlueprintCallable)
+	AWeaponActorBase* GetEquippedWeaponActor();
 
 	UFTAAbilitySystemComponent* GetAbilitySystemComponent() const;
 };

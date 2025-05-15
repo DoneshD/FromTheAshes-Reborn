@@ -38,7 +38,6 @@ public:
 
 	virtual void OnEquipped();
 	virtual void OnUnEquipped();
-	
 protected:
 	
 	UFUNCTION(BlueprintImplementableEvent, Category=Equipment, meta=(DisplayName="OnEquipped"))

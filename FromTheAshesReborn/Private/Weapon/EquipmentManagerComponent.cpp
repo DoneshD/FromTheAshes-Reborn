@@ -3,6 +3,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "Weapon/WeaponDefinition.h"
 #include "Weapon/WeaponInstance.h"
+#include "Weapon/WeaponActorBase.h"
 
 
 UEquipmentManagerComponent::UEquipmentManagerComponent(): CurrentEquippedWeaponInstance(nullptr)
@@ -82,10 +83,20 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 		UE_LOG(LogTemp, Error, TEXT("FFTAEquipmentList::AddEntry - ASC IS NULL"));
 	}
 
+	
+
 	Result->SpawnEquipmentActors(WeaponCDO->ActorsToSpawn);
 	Result->OnEquipped();
-	
 	CurrentEquippedWeaponInstance = Result;
+
+	for (AActor* SpawnedActor : CurrentEquippedWeaponInstance->GetSpawnedActors())
+	{
+		if(AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor))
+		{
+			CurrentEquippedWeaponActor = WeaponActor;
+		}
+	}
+	
 	return Result;
 }
 
@@ -96,6 +107,16 @@ UWeaponInstance* UEquipmentManagerComponent::GetEquippedWeaponInstance()
 		return CurrentEquippedWeaponInstance;
 	}
 	UE_LOG(LogTemp, Error, TEXT("No currently equipped instance"));
+	return nullptr;
+}
+
+AWeaponActorBase* UEquipmentManagerComponent::GetEquippedWeaponActor()
+{
+	if(CurrentEquippedWeaponActor)
+	{
+		return CurrentEquippedWeaponActor;
+	}
+	UE_LOG(LogTemp, Error, TEXT("No currently equipped actor"));
 	return nullptr;
 }
 

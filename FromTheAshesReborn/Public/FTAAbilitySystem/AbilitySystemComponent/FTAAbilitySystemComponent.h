@@ -30,8 +30,6 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 public:
 	FWaitQueueInputDelegate OnInputQueueReceived;
 	FReceivedDamageDelegate ReceivedDamage;
-
-	TObjectPtr<AWeaponActorBase> TestWeaponActor;
 	
 protected:
 

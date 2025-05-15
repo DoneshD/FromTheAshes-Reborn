@@ -85,12 +85,6 @@ protected:
 		
 	};
 	
-	UFUNCTION(BlueprintCallable)
-	void StartMeleeWeaponTargeting();
-
-	UFUNCTION(BlueprintCallable)
-	void EndMeleeWeaponTargeting();
-	
 	void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
 	
 	UFUNCTION()

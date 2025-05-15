@@ -54,7 +54,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
 
-	//TODO: change to TObject
 	UPROPERTY()
 	TObjectPtr<UFTAAT_OnTick> TickTask;
 
