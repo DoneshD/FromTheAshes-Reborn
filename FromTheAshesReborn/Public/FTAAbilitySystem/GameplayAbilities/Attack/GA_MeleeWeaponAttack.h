@@ -42,9 +42,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
 	TArray<TObjectPtr<UMeleeAbilityDataAsset>> MeleeAttackAssets;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
-	FMeleeAttackTypes MeleeAttackTypes;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;

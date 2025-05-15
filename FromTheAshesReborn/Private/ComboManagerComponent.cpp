@@ -1,7 +1,6 @@
 ﻿#include "ComboManagerComponent.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
-#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 
 

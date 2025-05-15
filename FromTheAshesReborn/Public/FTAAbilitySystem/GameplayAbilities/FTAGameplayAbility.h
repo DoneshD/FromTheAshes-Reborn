@@ -69,7 +69,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Meta = (Categories = "InputTag"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
@@ -83,6 +83,21 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Type"))
+	FGameplayTag AbilityTypeTag;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Weapon"))
+	FGameplayTag WeaponTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Strength"))
+	FGameplayTag StrengthTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Orientation"))
+	FGameplayTag OrientationTag;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Variant"))
+	FGameplayTag VariantTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
 	FName WarpTargetName;
