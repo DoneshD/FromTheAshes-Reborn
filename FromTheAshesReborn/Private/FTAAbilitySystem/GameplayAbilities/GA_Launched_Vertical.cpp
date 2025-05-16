@@ -1,6 +1,4 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_Launched_Vertical.h"
-
-#include "InterchangeResult.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 UGA_Launched_Vertical::UGA_Launched_Vertical()
