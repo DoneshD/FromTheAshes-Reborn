@@ -22,10 +22,10 @@ protected:
 	float LauncherElapsedTime = 0.0f;
 	float LauncherStartTime = 0.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Launcher Ability")
 	float LauncherVerticalDistance = 600.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Launcher Ability")
 	float LauncherDuration = 0.20f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
