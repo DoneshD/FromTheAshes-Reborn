@@ -12,6 +12,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
+#include "AbilitySystemBlueprintLibrary.h"
+
 
 #include "Weapon/MeleeWeaponInstance.h"
 #include "Weapon/WeaponActorBase.h"
@@ -220,6 +222,7 @@ void UGA_MeleeWeaponAttack::OnMeleeWeaponTargetDataReady(const FGameplayAbilityT
 		1,
 		1
 	);
+	
 }
 
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
@@ -237,6 +240,35 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 	TargetDataHandle.Add(TargetData);
 	
 	OnMeleeWeaponTargetDataReady(TargetDataHandle);
+		
+	AActor* TargetActor = LastItem.GetActor();
+
+	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	{
+		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
+		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		if (TargetASC)
+		{
+			FGameplayEventData EventData;
+			EventData.Instigator = GetAvatarActorFromActorInfo();
+			EventData.Target = TargetActor;
+			EventData.ContextHandle.AddHitResult(LastItem);
+			EventData.TargetData = TargetDataHandle;
+			EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("Event.Hit.React"));
+
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Target actor does not have a valid ASC"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Target actor does not implement IAbilitySystemInterface or is invalid: %s"), *GetNameSafe(TargetActor));
+	}
+	
 }
 
 

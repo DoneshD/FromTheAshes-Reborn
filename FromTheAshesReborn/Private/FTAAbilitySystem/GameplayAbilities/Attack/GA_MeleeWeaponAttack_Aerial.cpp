@@ -51,10 +51,8 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 
 void UGA_MeleeWeaponAttack_Aerial::EndAirStall()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Why"))
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = -100.0f;
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0f;
-
 }
 
 void UGA_MeleeWeaponAttack_Aerial::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

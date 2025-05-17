@@ -9,6 +9,7 @@
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
+#include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
 
@@ -254,8 +255,11 @@ FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGamep
 	// 	UE_LOG(LogTemp, Error, TEXT("Effect Context is Null"));
 	// 	return ContextHandle;
 	// }
-	// check(EffectContext);
-	// check(ActorInfo);
+	// if(!ActorInfo)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("ActorInfo is Null"));
+	// 	return ContextHandle;
+	// }
 	//
 	// AActor* EffectCauser = nullptr;
 	// const IFTAAbilitySourceInterface* AbilitySource = nullptr;
@@ -280,7 +284,7 @@ FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGamep
 	// EffectContext->SetAbilitySource(AbilitySource, SourceLevel);
 	// EffectContext->AddInstigator(Instigator, EffectCauser);
 	// EffectContext->AddSourceObject(SourceObject);
-	
+	//
 	return ContextHandle;
 }
 

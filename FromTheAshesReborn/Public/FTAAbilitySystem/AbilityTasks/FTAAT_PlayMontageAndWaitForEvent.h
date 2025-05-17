@@ -34,7 +34,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FFTAPlayMontageAndWaitForEventDelegate OnCancelled;
 
-	UPROPERTY(BlueprintCallable)
+	UPROPERTY(BlueprintAssignable)
 	FFTAPlayMontageAndWaitForEventDelegate EventReceived;
 
 	/**

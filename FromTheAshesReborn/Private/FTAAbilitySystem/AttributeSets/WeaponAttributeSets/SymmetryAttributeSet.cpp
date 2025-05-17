@@ -2,5 +2,5 @@
 
 USymmetryAttributeSet::USymmetryAttributeSet()
 {
-	BaseWeaponDamage = 50.0f;
+	BaseWeaponDamage = 5.0f;
 }
