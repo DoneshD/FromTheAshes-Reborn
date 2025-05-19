@@ -79,6 +79,6 @@ void UWeaponInstance::OnUnEquipped()
 
 TSubclassOf<UAnimInstance> UWeaponInstance::PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const
 {
-	const FAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnEquippedAnimSet);
+	const FFTAAnimLayerSelectionSet& SetToQuery = (bEquipped ? EquippedAnimSet : UnEquippedAnimSet);
 	return SetToQuery.SelectBestLayer(CosmeticTags);
 }

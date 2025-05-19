@@ -1,6 +1,6 @@
 ﻿#include "Animation/FTAAnimationLayersData.h"
 
-TSubclassOf<UAnimInstance> FAnimLayerSelectionSet::SelectBestLayer(const FGameplayTagContainer& CosmeticTags) const
+TSubclassOf<UAnimInstance> FFTAAnimLayerSelectionSet::SelectBestLayer(const FGameplayTagContainer& CosmeticTags) const
 {
 	for (const FAnimLayerMatchingTags& Rule : LayerRules)
 	{

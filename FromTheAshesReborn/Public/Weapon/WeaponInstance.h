@@ -55,10 +55,10 @@ public:
 	TArray<TObjectPtr<AActor>> SpawnedActors;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
-	FAnimLayerSelectionSet EquippedAnimSet;
+	FFTAAnimLayerSelectionSet EquippedAnimSet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
-	FAnimLayerSelectionSet UnEquippedAnimSet;
+	FFTAAnimLayerSelectionSet UnEquippedAnimSet;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
 	TObjectPtr<UAnimMontage> EquipWeaponMontage;

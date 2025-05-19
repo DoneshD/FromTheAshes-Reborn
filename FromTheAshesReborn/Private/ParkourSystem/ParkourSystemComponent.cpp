@@ -537,7 +537,7 @@ float UParkourSystemComponent::GetVerticalWallDetectStartHeight()
 	else if(ParkourStateTag.MatchesTag(ClimbTag))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UParkourSystemComponent::GetVerticalWallDetectStartHeight should not be here"))
-		return 0.0f;
+		
 		if(!ArrowActor)
 		{
 			UE_LOG(LogTemp, Error, TEXT("ArrowActor is NULL"))

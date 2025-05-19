@@ -10,10 +10,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbil
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitQueueInputDelegate, FGameplayTag, InputTag);
 
-
-//DEBUG REMOVE LATER
-class AWeaponActorBase;
-
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;
 class UFTAAbilityTagRelationshipMapping;

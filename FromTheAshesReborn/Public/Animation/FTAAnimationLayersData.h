@@ -21,7 +21,7 @@ struct FAnimLayerMatchingTags
 };
 
 USTRUCT(BlueprintType)
-struct FAnimLayerSelectionSet
+struct FFTAAnimLayerSelectionSet
 {
 	GENERATED_BODY()
 		
