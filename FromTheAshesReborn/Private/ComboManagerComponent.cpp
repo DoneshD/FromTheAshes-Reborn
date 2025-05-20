@@ -1,6 +1,7 @@
 ﻿#include "ComboManagerComponent.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
+#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "FTACustomBase/FTACharacter.h"
 
 
@@ -54,47 +55,55 @@ void UComboManagerComponent::PrintGameplayTagsInContainer(const FGameplayTagCont
 	UE_LOG(LogTemp, Log, TEXT("=========================================="));
 }
 
-bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UMeleeAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingAbilityDataAsset)
+
+bool UComboManagerComponent::FindMatchingAssetToTagContainer(const FMeleeAttackForms& TestAbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& TestOutMatchingAbilityDataAsset)
 {
-	for (int32 Index = 0; Index < AbilityDataAssets.Num(); ++Index)
+	TArray<TObjectPtr<UMeleeAbilityDataAsset>> CombinedAssets;
+	CombinedAssets.Append(TestAbilityDataAssets.NormalAttacks);
+	CombinedAssets.Append(TestAbilityDataAssets.PauseAttacks);
+	CombinedAssets.Append(TestAbilityDataAssets.VariantAttacks);
+
+	for (UMeleeAbilityDataAsset* Asset : CombinedAssets)
 	{
-		if (AbilityDataAssets[Index])
+		if (!Asset) continue;
+
+		if (GetCurrentComboContainer().HasAll(Asset->RequiredTags))
 		{
-			if (GetCurrentComboContainer().HasAll(AbilityDataAssets[Index]->RequiredTags))
+			PrintGameplayTagsInContainer(GetCurrentComboContainer());
+
+			if (Asset->RequiredIndex == GetCurrentComboIndex())
 			{
-				if(AbilityDataAssets[Index]->RequiredIndex == GetCurrentComboIndex())
+				if (PauseCurrentAttack)
 				{
-					if(PauseCurrentAttack)
+					if (Asset->RequiredPause)
 					{
-						if(AbilityDataAssets[Index]->RequiredPause)
-						{
-							OutMatchingAbilityDataAsset = AbilityDataAssets[Index];
-							return true;
-						}
+						TestOutMatchingAbilityDataAsset = Asset;
+						return true;
 					}
-					else
+				}
+				else
+				{
+					if (!Asset->RequiredPause)
 					{
-						if(!AbilityDataAssets[Index]->RequiredPause)
-						{
-							OutMatchingAbilityDataAsset = AbilityDataAssets[Index];
-							return true;
-						}
+						TestOutMatchingAbilityDataAsset = Asset;
+						return true;
 					}
 				}
 			}
 		}
 	}
+	
 	GetCurrentComboContainer().Reset();
 	SetCurrentComboIndex(0);
-	OutMatchingAbilityDataAsset = AbilityDataAssets[0];
-	return true;	
+	TestOutMatchingAbilityDataAsset = TestAbilityDataAssets.NormalAttacks[0];
+	return true;
 }
+
 
 FGameplayTagContainer& UComboManagerComponent::GetCurrentComboContainer()
 {
 	return CurrentComboTagContainer;
 }
-
 
 int UComboManagerComponent::GetCurrentComboIndex() const
 {
@@ -105,4 +114,3 @@ void UComboManagerComponent::SetCurrentComboIndex(int Index)
 {
 	CurrentComboIndex = Index;
 }
-

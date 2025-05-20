@@ -16,18 +16,18 @@ class UFTAAT_PlayMontageAndWaitForEvent;
 
 
 USTRUCT(BlueprintType)
-struct FMeleeAttackTypes
+struct FMeleeAttackForms
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Types")
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> NormalAttacks;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Forms")
+	TArray<TObjectPtr<UMeleeAbilityDataAsset>> NormalAttacks;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Types")
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> PauseAttacks;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Forms")
+	TArray<TObjectPtr<UMeleeAbilityDataAsset>> PauseAttacks;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Types")
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> SpecialAttacks;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Forms")
+	TArray<TObjectPtr<UMeleeAbilityDataAsset>> VariantAttacks;
 	
 };
 
@@ -41,7 +41,7 @@ protected:
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> MeleeAttackAssets;
+	FMeleeAttackForms MeleeAttackAssets;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
@@ -66,9 +66,9 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
 	void ResetMeleeAttack();
-	
+
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
-	void PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> MeleeAttackDataAssets);
+	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
 
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;

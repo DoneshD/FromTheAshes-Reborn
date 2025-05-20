@@ -95,8 +95,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Orientation"))
 	FGameplayTag OrientationTag;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Variant"))
-	FGameplayTag VariantTag;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Form"))
+	FGameplayTag FormTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
 	FName WarpTargetName;

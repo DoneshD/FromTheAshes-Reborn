@@ -84,11 +84,13 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	
 	MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 
-	if(!MeleeAttackAssets.IsValidIndex(0) || MeleeAttackAssets.Num() < 1)
+	if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
+	
 	PerformMeleeAttack(MeleeAttackAssets);
 		
 	
@@ -123,9 +125,8 @@ void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 	ComboManagerComponent->PauseCurrentAttack = false;
 }
 
-void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> MeleeAttackDataAssets)
+void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets)
 {
-
 	TObjectPtr<UMeleeAbilityDataAsset> MatchingDataAsset;
 	bool DataAssetFound = ComboManagerComponent->FindMatchingAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
 	
@@ -133,6 +134,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> M
 	{
 		UE_LOG(LogTemp, Error, TEXT("DA NOT found"));
 		ResetMeleeAttack();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 	
@@ -140,6 +142,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> M
 	{
 		UE_LOG(LogTemp, Error, TEXT("MatchingDataAsset is NULL"));
 		ResetMeleeAttack();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 	
