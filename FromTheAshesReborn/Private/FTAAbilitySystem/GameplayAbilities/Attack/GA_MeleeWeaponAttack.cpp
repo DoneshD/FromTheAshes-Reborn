@@ -259,18 +259,7 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
 		}
-		else
-		{
-			//TODO: Unnecessary checks
-			//UE_LOG(LogTemp, Warning, TEXT("Target actor does not have a valid ASC"));
-		}
 	}
-	else
-	{
-		//TODO: Unnecessary checks
-		//UE_LOG(LogTemp, Warning, TEXT("Target actor does not implement IAbilitySystemInterface or is invalid: %s"), *GetNameSafe(TargetActor));
-	}
-	
 }
 
 
