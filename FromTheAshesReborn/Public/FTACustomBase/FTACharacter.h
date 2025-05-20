@@ -29,9 +29,6 @@ protected:
 	
 public:
 	
-	UPROPERTY(BlueprintReadWrite)
-	bool NextAttackPaused = false;
-	
 	UPROPERTY(EditAnywhere, Category = "FTACharacter | Ability Set")
 	TObjectPtr<UFTACharacterData> FTACharacterAbilitySetData;
 

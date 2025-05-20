@@ -15,10 +15,10 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability Asset Tag", Meta = (Categories = "AbilityAssetTag"))
 	FGameplayTag UniqueIdentifierTag;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability Asset Tag", Meta = (Categories = "AbilityAssetTag"))
 	FGameplayTagContainer RequiredTags;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability Asset Tag")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 	
 };

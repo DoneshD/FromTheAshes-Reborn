@@ -64,8 +64,7 @@ bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UMelee
 			{
 				if(AbilityDataAssets[Index]->RequiredIndex == GetCurrentComboIndex())
 				{
-					AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
-					if(FTAChar->NextAttackPaused)
+					if(PauseCurrentAttack)
 					{
 						if(AbilityDataAssets[Index]->RequiredPause)
 						{

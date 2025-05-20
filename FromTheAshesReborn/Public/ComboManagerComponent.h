@@ -17,6 +17,10 @@ class FROMTHEASHESREBORN_API UComboManagerComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+public:
+	
+	bool PauseCurrentAttack = false;
+
 protected:
 	
 	TObjectPtr<UFTAAbilitySystemComponent> FTAASC;
@@ -42,7 +46,5 @@ public:
 	void SetCurrentComboIndex(int Index);
 	
 	bool FindMatchingAssetToTagContainer(const TArray<UMeleeAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingAbilityDataAsset);
-
-	
 	
 };

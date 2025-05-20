@@ -13,6 +13,7 @@
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 
 #include "Weapon/MeleeWeaponInstance.h"
@@ -119,7 +120,7 @@ void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 {
 	ComboManagerComponent->GetCurrentComboContainer().Reset();
 	ComboManagerComponent->SetCurrentComboIndex(0);
-	FTAChar->NextAttackPaused = false;
+	ComboManagerComponent->PauseCurrentAttack = false;
 }
 
 void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> MeleeAttackDataAssets)
@@ -148,6 +149,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> M
 
 		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
+		ComboManagerComponent->PauseCurrentAttack = false;
 
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 		MotionWarpToTarget();
@@ -262,7 +264,6 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 	}
 }
 
-
 void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
 	Super::PlayAbilityAnimMontage(AnimMontage);
@@ -288,5 +289,16 @@ void UGA_MeleeWeaponAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayE
 void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+	
+	if(!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(EventTag))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - EventTag is invalid"))
+		return;
+	}
+	
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("QueueTag.PauseCurrentAttack")))
+	{
+		ComboManagerComponent->PauseCurrentAttack = true;
+	}
 
 }

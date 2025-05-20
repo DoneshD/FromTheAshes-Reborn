@@ -3,6 +3,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"
 
@@ -118,6 +119,12 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 {
 	Super::EventMontageReceived(EventTag, EventData);
 
+	if(!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(EventTag))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::EventMontageReceived - EventTag is invalid"))
+		return;
+	}
+	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LauncherTag.Montage.Launch")))
 	{
 		IsLaunching = true;
