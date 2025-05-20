@@ -16,10 +16,12 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 	Super::Activate();
 	
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(GetOwnerActor());
+
 	
 	if (!PS)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UAT_WaitInputTagAndQueueWindowEvent::Activate - PS is Null"));
+		//TODO: Unnecessary checks
+		//UE_LOG(LogTemp, Error, TEXT("UAT_WaitInputTagAndQueueWindowEvent::Activate - PS is Null"));
 		return;
 	}
 	
@@ -34,6 +36,8 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 	FTAASC->OnInputQueueReceived.AddDynamic(this, &UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived);
 
 	TArray<FGameplayAbilitySpecHandle> SpecArray;
+
+	//TODO:Get cancelable abilities rather than all abilities
 	FTAASC->GetAllAbilities(SpecArray);
 
 	for (FGameplayAbilitySpecHandle& Handle : SpecArray)

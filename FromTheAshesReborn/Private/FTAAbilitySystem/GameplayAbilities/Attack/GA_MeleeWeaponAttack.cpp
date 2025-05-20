@@ -77,6 +77,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	
 	if(!MeleeWeaponActor)
 	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
 		return;
 	}
 	
@@ -105,7 +106,8 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 
 	if(!MeleeWeaponActor)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
+		//TODO: Printing incorrectly, fix later
+		//UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
 		return;
 	}
 	
@@ -142,11 +144,9 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(TArray<UMeleeAbilityDataAsset*> M
 	
 	if (MatchingDataAsset->MontageToPlay)
 	{
-		FGameplayTag TestTag = MatchingDataAsset->UniqueIdentifierTag;
-
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
 
-		ComboManagerComponent->GetCurrentComboContainer().AddTag(TestTag);
+		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
@@ -261,12 +261,14 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Target actor does not have a valid ASC"));
+			//TODO: Unnecessary checks
+			//UE_LOG(LogTemp, Warning, TEXT("Target actor does not have a valid ASC"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Target actor does not implement IAbilitySystemInterface or is invalid: %s"), *GetNameSafe(TargetActor));
+		//TODO: Unnecessary checks
+		//UE_LOG(LogTemp, Warning, TEXT("Target actor does not implement IAbilitySystemInterface or is invalid: %s"), *GetNameSafe(TargetActor));
 	}
 	
 }

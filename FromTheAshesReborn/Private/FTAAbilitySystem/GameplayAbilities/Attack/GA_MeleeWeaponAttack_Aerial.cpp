@@ -36,7 +36,6 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = 0.0f;
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0f;
-
 }
 
 void UGA_MeleeWeaponAttack_Aerial::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -47,6 +46,8 @@ void UGA_MeleeWeaponAttack_Aerial::CancelAbility(const FGameplayAbilitySpecHandl
 void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	
+	//TODO: This is being called from a grounded attack, check later 
 }
 
 void UGA_MeleeWeaponAttack_Aerial::EndAirStall()

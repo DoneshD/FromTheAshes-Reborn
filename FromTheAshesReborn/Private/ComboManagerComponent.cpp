@@ -36,6 +36,24 @@ void UComboManagerComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 }
 
+void UComboManagerComponent::PrintGameplayTagsInContainer(const FGameplayTagContainer& Container)
+{
+	if (Container.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PrintGameplayTagsInContainer - Container is empty."));
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("========== GameplayTagContainer Contents =========="));
+
+	for (const FGameplayTag& Tag : Container)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *Tag.ToString());
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("=========================================="));
+}
+
 bool UComboManagerComponent::FindMatchingAssetToTagContainer(const TArray<UMeleeAbilityDataAsset*>& AbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingAbilityDataAsset)
 {
 	for (int32 Index = 0; Index < AbilityDataAssets.Num(); ++Index)

@@ -12,7 +12,7 @@ class FROMTHEASHESREBORN_API UFTAAbilityDataAsset : public UPrimaryDataAsset
 
 public:
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability Asset Tag", Meta = (Categories = "AbilityAssetTag"))
 	FGameplayTag UniqueIdentifierTag;
 
 	UPROPERTY(EditDefaultsOnly)

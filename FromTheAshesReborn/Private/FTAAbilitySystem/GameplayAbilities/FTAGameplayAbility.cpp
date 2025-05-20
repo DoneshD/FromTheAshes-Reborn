@@ -199,7 +199,8 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			TickTask->ReadyForActivation();
 		}
 	}
-	
+
+	//TODO: check if owner is player first
 	WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
 	if (WaitInputTagAndQueueWindowEventTask)
 	{
@@ -307,7 +308,7 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 	FGameplayTagContainer BlockContainer;
 	AbilitySystemComponent.GetBlockedAbilityTags(BlockContainer);
 
-	if (AbilitySystemComponent.AreAbilityTagsBlocked(AbilityTags))
+	if (AbilitySystemComponent.AreAbilityTagsBlocked(GetAssetTags()))
 	{
 		IsBlocked = true;
 	}
@@ -321,7 +322,7 @@ bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystem
 
 	if (FTAASC)
 	{
-		FTAASC->GetAdditionalActivationTagRequirements(AbilityTags, AllRequiredTags, AllBlockedTags);
+		FTAASC->GetAdditionalActivationTagRequirements(GetAssetTags(), AllRequiredTags, AllBlockedTags);
 	}
 	
 	if (AllBlockedTags.Num() || AllRequiredTags.Num())

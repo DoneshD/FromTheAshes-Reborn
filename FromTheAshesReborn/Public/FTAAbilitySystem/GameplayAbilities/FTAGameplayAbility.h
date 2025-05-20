@@ -77,25 +77,25 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
 	bool bActivateOnInput;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Tags", Meta = (Categories = "AbilityTag"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gameplay Ability Tag", Meta = (Categories = "GameplayAbilityTag"))
 	FGameplayTag UniqueIdentifierTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Type"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Type"))
 	FGameplayTag AbilityTypeTag;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Weapon"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Weapon"))
 	FGameplayTag WeaponTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Strength"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Strength"))
 	FGameplayTag StrengthTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Orientation"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Orientation"))
 	FGameplayTag OrientationTag;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Descriptor Tags", Meta = (Categories = "AbilityDescriptorTag.Variant"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Variant"))
 	FGameplayTag VariantTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
