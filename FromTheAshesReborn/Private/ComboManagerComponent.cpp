@@ -56,12 +56,12 @@ void UComboManagerComponent::PrintGameplayTagsInContainer(const FGameplayTagCont
 }
 
 
-bool UComboManagerComponent::FindMatchingAssetToTagContainer(const FMeleeAttackForms& TestAbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& TestOutMatchingAbilityDataAsset)
+bool UComboManagerComponent::FindMatchingMeleeAssetToTagContainer(const FMeleeAttackForms& MeleeAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingMeleeAsset)
 {
 	TArray<TObjectPtr<UMeleeAbilityDataAsset>> CombinedAssets;
-	CombinedAssets.Append(TestAbilityDataAssets.NormalAttacks);
-	CombinedAssets.Append(TestAbilityDataAssets.PauseAttacks);
-	CombinedAssets.Append(TestAbilityDataAssets.VariantAttacks);
+	CombinedAssets.Append(MeleeAssets.NormalAttacks);
+	CombinedAssets.Append(MeleeAssets.PauseAttacks);
+	CombinedAssets.Append(MeleeAssets.VariantAttacks);
 
 	for (UMeleeAbilityDataAsset* Asset : CombinedAssets)
 	{
@@ -69,15 +69,13 @@ bool UComboManagerComponent::FindMatchingAssetToTagContainer(const FMeleeAttackF
 
 		if (GetCurrentComboContainer().HasAll(Asset->RequiredTags))
 		{
-			PrintGameplayTagsInContainer(GetCurrentComboContainer());
-
 			if (Asset->RequiredIndex == GetCurrentComboIndex())
 			{
 				if (PauseCurrentAttack)
 				{
 					if (Asset->RequiredPause)
 					{
-						TestOutMatchingAbilityDataAsset = Asset;
+						OutMatchingMeleeAsset = Asset;
 						return true;
 					}
 				}
@@ -85,7 +83,7 @@ bool UComboManagerComponent::FindMatchingAssetToTagContainer(const FMeleeAttackF
 				{
 					if (!Asset->RequiredPause)
 					{
-						TestOutMatchingAbilityDataAsset = Asset;
+						OutMatchingMeleeAsset = Asset;
 						return true;
 					}
 				}
@@ -95,7 +93,7 @@ bool UComboManagerComponent::FindMatchingAssetToTagContainer(const FMeleeAttackF
 	
 	GetCurrentComboContainer().Reset();
 	SetCurrentComboIndex(0);
-	TestOutMatchingAbilityDataAsset = TestAbilityDataAssets.NormalAttacks[0];
+	OutMatchingMeleeAsset = MeleeAssets.NormalAttacks[0];
 	return true;
 }
 

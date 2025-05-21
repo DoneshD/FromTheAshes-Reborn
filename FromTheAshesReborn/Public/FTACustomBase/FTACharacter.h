@@ -65,5 +65,7 @@ public:
 	virtual void InitAbilitySystemComponent();
 
 	void AddCharacterBaseAbilities() const;
+
+	virtual void Landed(const FHitResult& Hit) override;
 	
 };

@@ -10,6 +10,13 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Aerial : public UGA_MeleeWeap
 {
 	GENERATED_BODY()
 
+protected:
+
+	bool bDescend = false; 
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aerial Ability")
+	float DescentSpeed = 100;
+
 
 public:
 
@@ -22,6 +29,8 @@ public:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
+	void UpdateAerialDescentMovement(float DeltaTime);
+	
 	void EndAirStall();
 	
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;

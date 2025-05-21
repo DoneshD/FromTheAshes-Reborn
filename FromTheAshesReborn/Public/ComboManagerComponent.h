@@ -20,6 +20,8 @@ class FROMTHEASHESREBORN_API UComboManagerComponent : public UActorComponent
 
 public:
 	
+	int32 AerialAttacksCounter = 0;
+
 	bool PauseCurrentAttack = false;
 
 protected:
@@ -30,7 +32,10 @@ protected:
 	FGameplayTagContainer CurrentComboTagContainer;
 
 	UPROPERTY(BlueprintReadWrite)
-	int CurrentComboIndex = 0;
+	int32 CurrentComboIndex = 0;
+
+
+	FTimerHandle AerialAttacksTimerHandle;
 
 protected:
 	
@@ -38,7 +43,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void PrintGameplayTagsInContainer(const FGameplayTagContainer& Container);
+	static void PrintGameplayTagsInContainer(const FGameplayTagContainer& Container);
 
 public:
 	
@@ -46,6 +51,6 @@ public:
 	int GetCurrentComboIndex() const;
 	void SetCurrentComboIndex(int Index);
 
-	bool FindMatchingAssetToTagContainer(const FMeleeAttackForms& TestAbilityDataAssets, TObjectPtr<UMeleeAbilityDataAsset>& TestOutMatchingAbilityDataAsset);
+	bool FindMatchingMeleeAssetToTagContainer(const FMeleeAttackForms& MeleeAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingMeleeAsset);
 	
 };

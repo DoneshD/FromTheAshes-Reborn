@@ -128,7 +128,7 @@ void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets)
 {
 	TObjectPtr<UMeleeAbilityDataAsset> MatchingDataAsset;
-	bool DataAssetFound = ComboManagerComponent->FindMatchingAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
+	bool DataAssetFound = ComboManagerComponent->FindMatchingMeleeAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
 	
 	if(!DataAssetFound)
 	{

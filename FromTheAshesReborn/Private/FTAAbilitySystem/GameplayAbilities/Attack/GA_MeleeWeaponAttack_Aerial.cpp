@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_Aerial.h"
 
+#include "ComboManagerComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -11,7 +12,11 @@ UGA_MeleeWeaponAttack_Aerial::UGA_MeleeWeaponAttack_Aerial()
 void UGA_MeleeWeaponAttack_Aerial::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
-	
+
+	if(bDescend)
+	{
+		UpdateAerialDescentMovement(DeltaTime);
+	}
 }
 
 bool UGA_MeleeWeaponAttack_Aerial::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -34,8 +39,12 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	ComboManagerComponent->AerialAttacksCounter += 1;
+
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = 0.0f;
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0f;
+	bDescend = true;
+	
 }
 
 void UGA_MeleeWeaponAttack_Aerial::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -50,10 +59,29 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 	//TODO: This is being called from a grounded attack, check later 
 }
 
+void UGA_MeleeWeaponAttack_Aerial::UpdateAerialDescentMovement(float DeltaTime)
+{
+	FHitResult Hit;
+	
+	FVector CurrentLocation = GetFTACharacterFromActorInfo()->GetActorLocation();
+	FVector MoveDelta = FVector(0.0f, 0.0f, -1.0f).GetSafeNormal() * (DescentSpeed * FMath::Square(ComboManagerComponent->AerialAttacksCounter)) * DeltaTime;
+	
+	FVector NewLocation = CurrentLocation + MoveDelta;
+
+	GetFTACharacterFromActorInfo()->SetActorLocation(NewLocation, true, &Hit);
+
+	if (Hit.bBlockingHit)
+	{
+		EndAirStall();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	}
+}
+
 void UGA_MeleeWeaponAttack_Aerial::EndAirStall()
 {
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = -100.0f;
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0f;
+	bDescend = false;
 }
 
 void UGA_MeleeWeaponAttack_Aerial::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

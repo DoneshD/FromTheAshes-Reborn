@@ -12,12 +12,12 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_GroundPound : public UGA_Mele
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundPound Ability")
-	float DescentSpeed = 6000;
+	float GroundPoundSpeed = 6000;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundPound Ability")
 	float TraceVerticalDownwardDistance = 3000;
 	
-	bool IsDescending = false;
+	bool IsGroundPounding = false;
 
 	FVector TraceStartLocation;
 	FVector TraceEndLocation;

@@ -4,16 +4,17 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 
-UGA_MeleeWeaponAttack_GroundPound::UGA_MeleeWeaponAttack_GroundPound(const FObjectInitializer&)
+UGA_MeleeWeaponAttack_GroundPound::UGA_MeleeWeaponAttack_GroundPound(const FObjectInitializer&): TraceStartLocation(),
+	TraceEndLocation(),
+	GroundPoundEndLocation()
 {
-	
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
 
-	if(IsDescending)
+	if(IsGroundPounding)
 	{
 		UpdateGroundPoundMovement(DeltaTime);
 	}
@@ -85,7 +86,7 @@ void UGA_MeleeWeaponAttack_GroundPound::UpdateGroundPoundMovement(float DeltaTim
 	FHitResult Hit;
 	
 	FVector CurrentLocation = GetFTACharacterFromActorInfo()->GetActorLocation();
-	FVector MoveDelta = FVector(0.0f, 0.0f, -1.0f).GetSafeNormal() * DescentSpeed * DeltaTime;
+	FVector MoveDelta = FVector(0.0f, 0.0f, -1.0f).GetSafeNormal() * GroundPoundSpeed * DeltaTime;
 	FVector NewLocation = CurrentLocation + MoveDelta;
 
 	if (FVector::DistSquared(NewLocation, TraceStartLocation) >= FVector::DistSquared(GroundPoundEndLocation, TraceStartLocation))
@@ -109,7 +110,7 @@ void UGA_MeleeWeaponAttack_GroundPound::UpdateGroundPoundMovement(float DeltaTim
 
 void UGA_MeleeWeaponAttack_GroundPound::GroundPoundLocationReached()
 {
-	IsDescending = false;
+	IsGroundPounding = false;
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0f;
 }
 
@@ -127,6 +128,6 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 {
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LauncherTag.Montage.Descend")))
 	{
-		IsDescending = true;
+		IsGroundPounding = true;
 	}
 }

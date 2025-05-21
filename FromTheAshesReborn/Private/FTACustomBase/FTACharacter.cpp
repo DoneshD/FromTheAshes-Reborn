@@ -180,5 +180,11 @@ void AFTACharacter::AddCharacterBaseAbilities() const
 	}
 }
 
+void AFTACharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	ComboManagerComponent->AerialAttacksCounter = 0;
+}
+
 
 
