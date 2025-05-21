@@ -1,12 +1,11 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GA_MeleeWeaponAttack.h"
-#include "GA_MeleeWeaponAttack_Aerial.generated.h"
-
+#include "FTAGameplayAbility.h"
+#include "GA_AerialHit_Suspended.generated.h"
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Aerial : public UGA_MeleeWeaponAttack
+class FROMTHEASHESREBORN_API UGA_AerialHit_Suspended : public UFTAGameplayAbility
 {
 	GENERATED_BODY()
 
@@ -14,13 +13,17 @@ protected:
 
 	bool bDescend = false; 
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aerial Ability")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Air Suspend Ability")
 	float DescentSpeed = 10;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Air Suspend Ability")
+	float SuspendTimerSpeed = 0.1;
+	
+	FTimerHandle AerialSuspensionTimer;
 
 public:
 
-	UGA_MeleeWeaponAttack_Aerial();
+	UGA_AerialHit_Suspended();
 
 	virtual void OnAbilityTick(float DeltaTime) override;
 	
@@ -36,5 +39,4 @@ public:
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
-
 };

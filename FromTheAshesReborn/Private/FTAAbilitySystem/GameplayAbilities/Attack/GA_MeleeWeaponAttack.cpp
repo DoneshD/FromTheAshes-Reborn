@@ -13,7 +13,9 @@
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 #include "Weapon/MeleeWeaponInstance.h"
@@ -51,6 +53,8 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	check(ASC);
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	
 
 	FTAChar = Cast<AFTACharacter>(GetAvatarActorFromActorInfo());
 
@@ -174,10 +178,27 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		UE_LOG(LogTemp, Error, TEXT("WarpTargetName is Invalid"));
 		return;
 	}
-
-	FHitResult OutHit;
 	
-	FVector TraceDirection = UInputReadingFunctionLibrary::CheckInputVector(GetFTACharacterFromActorInfo()->GetCharacterMovement());
+
+	AFTAPlayerState* PS = Cast<AFTAPlayerState>(CurrentActorInfo->OwnerActor.Get());
+	if(!PS)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Owner actor not player state"))
+		return;
+	}
+	
+	FVector TraceDirection;
+	
+	if(!PS->HardLockedTargetActor)
+	{
+		TraceDirection = UInputReadingFunctionLibrary::CheckInputVector(GetFTACharacterFromActorInfo()->GetCharacterMovement());
+	}
+	else
+	{
+		TraceDirection = (PS->HardLockedTargetActor->GetActorLocation() - GetFTACharacterFromActorInfo()->GetActorLocation()).GetSafeNormal();
+	}
+	
+	FHitResult OutHit;
 	FVector TraceStartLocation = GetFTACharacterFromActorInfo()->GetActorLocation() + TraceDirection * 100;
 	FVector TraceEndLocation = GetFTACharacterFromActorInfo()->GetActorLocation() + TraceDirection * 800;
 	
