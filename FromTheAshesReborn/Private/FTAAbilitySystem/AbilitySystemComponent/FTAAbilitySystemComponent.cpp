@@ -393,7 +393,7 @@ void UFTAAbilitySystemComponent::NotifyAbilityEnded(FGameplayAbilitySpecHandle H
 	Super::NotifyAbilityEnded(Handle, Ability, bWasCancelled);
 
 	UFTAGameplayAbility* FTAAbility = CastChecked<UFTAGameplayAbility>(Ability);
-
+	
 	RemoveAbilityFromActivationGroup(FTAAbility->GetActivationGroup(), FTAAbility);
 }
 

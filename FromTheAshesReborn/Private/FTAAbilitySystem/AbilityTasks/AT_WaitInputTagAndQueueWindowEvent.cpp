@@ -4,11 +4,13 @@
 
 UAT_WaitInputTagAndQueueWindowEvent::UAT_WaitInputTagAndQueueWindowEvent(const FObjectInitializer& ObjectInitializer)
 {
+	
 }
 
 UAT_WaitInputTagAndQueueWindowEvent* UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(UGameplayAbility* OwningAbility)
 {
-	return NewAbilityTask<UAT_WaitInputTagAndQueueWindowEvent>(OwningAbility);
+	UAT_WaitInputTagAndQueueWindowEvent* Task = NewAbilityTask<UAT_WaitInputTagAndQueueWindowEvent>(OwningAbility);
+	return Task;
 }
 
 void UAT_WaitInputTagAndQueueWindowEvent::Activate()
@@ -176,11 +178,23 @@ void UAT_WaitInputTagAndQueueWindowEvent::ExternalCancel()
 
 FString UAT_WaitInputTagAndQueueWindowEvent::GetDebugString() const
 {
-	return Super::GetDebugString();
+	FString DebugString = TEXT("WaitInputTagAndQueueWindowEvent: ");
+
+	if (!QueuedInputTag.IsValid())
+	{
+		DebugString += TEXT("Waiting for any input tag");
+	}
+	else
+	{
+		DebugString += FString::Printf(TEXT("Waiting for input tag: %s"), *QueuedInputTag.ToString());
+	}
+
+	return DebugString;
 }
 
 void UAT_WaitInputTagAndQueueWindowEvent::OnDestroy(bool AbilityEnded)
 {
+	
 	if (FTAASC)
 	{
 		FTAASC->OnInputQueueReceived.RemoveDynamic(this, &UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived);
@@ -194,6 +208,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnDestroy(bool AbilityEnded)
 		QueueWindowHandles.Empty();
 		FTAASC->RemoveLooseGameplayTag(QueuedInputTag);
 	}
-
+	
 	Super::OnDestroy(AbilityEnded);
 }

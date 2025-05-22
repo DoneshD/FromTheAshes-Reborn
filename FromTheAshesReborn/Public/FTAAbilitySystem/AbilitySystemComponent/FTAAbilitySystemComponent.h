@@ -26,7 +26,7 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 public:
 	FWaitQueueInputDelegate OnInputQueueReceived;
 	FReceivedDamageDelegate ReceivedDamage;
-	
+
 protected:
 
 	int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];

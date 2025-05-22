@@ -28,6 +28,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FTAAbilityTasks | Tasks", meta = (DisplayName = "Start OnTick Task"))
 	static UFTAAT_OnTick* StartTicking(UGameplayAbility* OwningAbility);
 
+	virtual FString GetDebugString() const override;
+
 protected:
 	virtual void OnDestroy(bool AbilityEnded) override;
 		

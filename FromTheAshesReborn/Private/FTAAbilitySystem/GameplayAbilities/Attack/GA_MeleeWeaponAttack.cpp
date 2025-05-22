@@ -23,13 +23,14 @@
 
 UGA_MeleeWeaponAttack::UGA_MeleeWeaponAttack(const FObjectInitializer&)
 {
-	
+	ActivationGroup = DefaultActivationGroup;
 }
 
 UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
 {
 	return CastChecked<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
 }
+
 
 bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
@@ -53,8 +54,6 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	check(ASC);
 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	
 
 	FTAChar = Cast<AFTACharacter>(GetAvatarActorFromActorInfo());
 

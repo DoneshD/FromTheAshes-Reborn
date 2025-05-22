@@ -27,6 +27,11 @@ UFTAAT_OnTick* UFTAAT_OnTick::StartTicking(UGameplayAbility* OwningAbility)
 	return MyTask;
 }
 
+FString UFTAAT_OnTick::GetDebugString() const
+{
+	return TEXT("TickTask: UFTAAT_Tick running");
+}
+
 void UFTAAT_OnTick::OnDestroy(bool AbilityEnded)
 {
 	Super::OnDestroy(AbilityEnded);

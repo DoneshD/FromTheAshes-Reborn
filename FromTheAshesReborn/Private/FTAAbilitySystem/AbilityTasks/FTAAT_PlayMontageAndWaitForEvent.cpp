@@ -93,7 +93,7 @@ FName TaskInstanceName, UAnimMontage* MontageToPlay, FGameplayTagContainer Event
 
 	if (!MontageTask)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent - MyObj FTACharacterAbilitySetData is null"));
+		UE_LOG(LogTemp, Error, TEXT("UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent - MontageTask is null"));
 		return nullptr;
 	}
 	MontageTask->MontageToPlay = MontageToPlay;
