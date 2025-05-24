@@ -184,6 +184,12 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	ComboManagerComponent->AerialAttacksCounter = 0;
+	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail"));
+}
+
+bool AFTACharacter::HasFlailTag() const
+{
+	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail"));
 }
 
 

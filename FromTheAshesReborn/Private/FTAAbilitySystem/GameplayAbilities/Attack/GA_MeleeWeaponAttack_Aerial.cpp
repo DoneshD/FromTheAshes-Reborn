@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_Aerial.h"
 
+#include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
@@ -82,6 +83,32 @@ void UGA_MeleeWeaponAttack_Aerial::EndAirStall()
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = -100.0f;
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0f;
 	bDescend = false;
+}
+
+void UGA_MeleeWeaponAttack_Aerial::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
+{
+	Super::OnMeleeWeaponTargetDataReady(TargetData);
+}
+
+void UGA_MeleeWeaponAttack_Aerial::OnHitAdded(FHitResult LastItem)
+{
+	Super::OnHitAdded(LastItem);
+
+	AActor* TargetActor = LastItem.GetActor();
+
+	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	{
+		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
+		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		if (TargetASC)
+		{
+			if(!TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail")))
+			{
+				TargetASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail"));
+			}
+		}
+	}
 }
 
 void UGA_MeleeWeaponAttack_Aerial::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

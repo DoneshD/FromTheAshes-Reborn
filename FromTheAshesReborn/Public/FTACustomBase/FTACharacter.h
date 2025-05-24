@@ -67,5 +67,8 @@ public:
 	void AddCharacterBaseAbilities() const;
 
 	virtual void Landed(const FHitResult& Hit) override;
+
+	UFUNCTION(BlueprintPure)
+	bool HasFlailTag() const;
 	
 };

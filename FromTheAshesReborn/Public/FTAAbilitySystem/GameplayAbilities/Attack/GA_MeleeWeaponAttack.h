@@ -84,10 +84,10 @@ protected:
 		
 	};
 	
-	void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
+	virtual void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
 	
 	UFUNCTION()
-	void OnHitAdded(FHitResult LastItem);
+	virtual void OnHitAdded(FHitResult LastItem);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 
