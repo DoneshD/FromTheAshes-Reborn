@@ -1,5 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_Launcher.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "LaunchInfoObject.h"
+#include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
@@ -56,6 +59,12 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 	LauncherStartLocation = ActorInfo->AvatarActor->GetActorLocation();
 	LauncherEndLocation = ActorInfo->AvatarActor->GetActorLocation() + FVector(0.0f, 0.0f, LauncherVerticalDistance);
 
+	// LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(this);
+	// if (LaunchTask)
+	// {
+	// 	
+	// 	LaunchTask->ReadyForActivation();
+	// }
 }
 
 void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -103,6 +112,46 @@ void UGA_MeleeWeaponAttack_Launcher::EndAirStall()
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 
+}
+
+void UGA_MeleeWeaponAttack_Launcher::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
+{
+	Super::OnMeleeWeaponTargetDataReady(TargetData);
+}
+
+void UGA_MeleeWeaponAttack_Launcher::OnHitAdded(FHitResult LastItem)
+{
+	Super::OnHitAdded(LastItem);
+
+	AActor* TargetActor = LastItem.GetActor();
+
+	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	{
+		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
+		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		if (TargetASC)
+		{
+			FGameplayEventData EventData;
+			
+			EventData.Instigator = GetAvatarActorFromActorInfo();
+			EventData.Target = TargetActor;
+			EventData.ContextHandle.AddHitResult(LastItem);
+			EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("AbilityTag.Launched"));
+
+			//------------------------------------------------------------------------------------------------
+
+			ULaunchInfoObject* LaunchInfoObj = NewObject<ULaunchInfoObject>(this);
+			LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
+			LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
+			LaunchInfoObj->LaunchData.StallDuration = StallDuration;
+
+			EventData.OptionalObject = LaunchInfoObj;
+			
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
+
+		}
+	}
 }
 
 void UGA_MeleeWeaponAttack_Launcher::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

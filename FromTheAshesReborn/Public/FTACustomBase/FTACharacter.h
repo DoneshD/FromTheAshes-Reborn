@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class ULauncherComponent;
 class AWeaponActorBase;
 class UFTAAbilitySystemComponent;
 class UFTACharacterData;
@@ -43,7 +44,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UWallRunningComponent> WallRunningComponent;
-
 	
 public:
 	

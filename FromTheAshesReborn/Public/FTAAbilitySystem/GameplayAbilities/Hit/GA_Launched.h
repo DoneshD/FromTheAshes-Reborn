@@ -5,10 +5,38 @@
 #include "GA_Launched.generated.h"
 
 
+class UAT_LaunchCharacterAndWait;
+class ULauncherComponent;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_Launched : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
+
+public:
+	
+	bool IsLaunched = false;
+
+protected:
+
+	FVector LauncherStartLocation;
+	FVector LauncherEndLocation;
+	
+	float LauncherElapsedTime = 0.0f;
+	float LauncherStartTime = 0.0f;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
+	float LauncherVerticalDistance;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
+	float LauncherDuration;
+
+	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
+	float StallDuration;
+
+	FTimerHandle AerialStallTimerHandle;
+
+	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
 
 public:
 
@@ -20,9 +48,8 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-	
-	
-	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
-	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
-	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	UFUNCTION()
+	void OnLaunchComplete();
 };
+

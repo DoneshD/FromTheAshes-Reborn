@@ -1,4 +1,5 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_Launched_Vertical.h"
+
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -34,11 +35,12 @@ void UGA_Launched_Vertical::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	
 	LaunchedElapsedTime = 0.0f;
 	LaunchedStartTime = GetWorld()->GetTimeSeconds();
-
+	
 	LaunchedStartLocation = ActorInfo->AvatarActor->GetActorLocation();
 	LaunchedEndLocation = ActorInfo->AvatarActor->GetActorLocation() + FVector(0.0f, 0.0f, LaunchedVerticalDistance);
 
 	IsLaunched = true;
+
 
 }
 
@@ -76,8 +78,6 @@ void UGA_Launched_Vertical::LaunchedLocationReached()
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0f;
 
 	GetWorld()->GetTimerManager().SetTimer(AerialStallTimerHandle, this, &UGA_Launched_Vertical::EndAirStall, StallDuration, false);
-
-	
 }
 
 void UGA_Launched_Vertical::EndAirStall()

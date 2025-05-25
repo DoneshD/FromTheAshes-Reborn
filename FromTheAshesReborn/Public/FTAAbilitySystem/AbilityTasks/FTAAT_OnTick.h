@@ -23,7 +23,6 @@ public:
 	
 	UPROPERTY(BlueprintAssignable)
 	FOnTickTaskDelegate OnTick;
-	
 
 	UFUNCTION(BlueprintCallable, Category = "FTAAbilityTasks | Tasks", meta = (DisplayName = "Start OnTick Task"))
 	static UFTAAT_OnTick* StartTicking(UGameplayAbility* OwningAbility);

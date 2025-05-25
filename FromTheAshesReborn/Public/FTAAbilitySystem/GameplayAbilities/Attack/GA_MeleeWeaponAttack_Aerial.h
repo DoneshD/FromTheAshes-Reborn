@@ -34,7 +34,6 @@ public:
 	void EndAirStall();
 
 	virtual void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData) override;
-	
 	virtual void OnHitAdded(FHitResult LastItem) override;
 	
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;

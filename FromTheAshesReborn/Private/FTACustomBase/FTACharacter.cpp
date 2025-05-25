@@ -33,7 +33,7 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	
 	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
 	this->AddOwnedComponent(WallRunningComponent);
-
+	
 }
 
 void AFTACharacter::BeginPlay()

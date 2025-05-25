@@ -4,6 +4,7 @@
 #include "GA_MeleeWeaponAttack.h"
 #include "GA_MeleeWeaponAttack_Launcher.generated.h"
 
+class UAT_LaunchCharacterAndWait;
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Launcher : public UGA_MeleeWeaponAttack
@@ -33,6 +34,8 @@ protected:
 
 	FTimerHandle AerialStallTimerHandle;
 
+	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
+
 protected:
 	
 	UGA_MeleeWeaponAttack_Launcher();
@@ -49,8 +52,13 @@ protected:
 	void LauncherLocationReached();
 
 	void EndAirStall();
+
+	virtual void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData) override;
+	virtual void OnHitAdded(FHitResult LastItem) override;
 	
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	
 };

@@ -5,6 +5,7 @@
 #include "GA_Launched_Vertical.generated.h"
 
 
+
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_Launched_Vertical : public UFTAGameplayAbility
 {
@@ -30,6 +31,7 @@ protected:
 	float StallDuration = 0.25f;
 
 	FTimerHandle AerialStallTimerHandle;
+
 
 protected:
 	
