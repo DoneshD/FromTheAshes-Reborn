@@ -19,10 +19,6 @@ void UGA_MeleeWeaponAttack_Launcher::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
 
-	if(IsLaunching)
-	{
-		UpdateLauncherMovement(DeltaTime);
-	}
 }
 bool UGA_MeleeWeaponAttack_Launcher::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
@@ -53,18 +49,10 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	LauncherElapsedTime = 0.0f;
-	LauncherStartTime = GetWorld()->GetTimeSeconds();
-
-	LauncherStartLocation = ActorInfo->AvatarActor->GetActorLocation();
-	LauncherEndLocation = ActorInfo->AvatarActor->GetActorLocation() + FVector(0.0f, 0.0f, LauncherVerticalDistance);
-
-	// LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(this);
-	// if (LaunchTask)
-	// {
-	// 	
-	// 	LaunchTask->ReadyForActivation();
-	// }
+	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(this,
+		LauncherVerticalDistance,
+		LauncherDuration,
+		StallDuration);
 }
 
 void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -75,43 +63,6 @@ void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHan
 void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-}
-
-void UGA_MeleeWeaponAttack_Launcher::UpdateLauncherMovement(float DeltaTime)
-{
-	LauncherElapsedTime += DeltaTime;
-
-	const float Alpha = FMath::Clamp(LauncherElapsedTime / LauncherDuration, 0.0f, 1.0f);
-	const FVector NewLocation = FMath::Lerp(LauncherStartLocation, LauncherEndLocation, Alpha);
-
-	FHitResult Hit;
-	CurrentActorInfo->AvatarActor->SetActorLocation(NewLocation, true, &Hit);
-
-	if (Alpha >= 1.0f || Hit.bBlockingHit)
-	{
-		LauncherLocationReached();
-	}
-}
-
-void UGA_MeleeWeaponAttack_Launcher::LauncherLocationReached()
-{
-	IsLaunching = false;
-	
-	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = 0.0f;
-	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0f;
-
-	GetWorld()->GetTimerManager().SetTimer(AerialStallTimerHandle, this, &UGA_MeleeWeaponAttack_Launcher::EndAirStall, StallDuration, false);
-
-}
-
-void UGA_MeleeWeaponAttack_Launcher::EndAirStall()
-{
-	
-	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = -100.0f;
-	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0f;
-
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-
 }
 
 void UGA_MeleeWeaponAttack_Launcher::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
@@ -176,7 +127,16 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("EffectTag.ReceiveHit.Grounded.Launched.Vertical")))
 	{
-		IsLaunching = true;
+		if (LaunchTask)
+		{
+			LaunchTask->OnLaunchComplete.AddDynamic(this, &UGA_MeleeWeaponAttack_Launcher::OnLaunchComplete);
+			LaunchTask->ReadyForActivation();
+		}
 	}
-	
+}
+
+void UGA_MeleeWeaponAttack_Launcher::OnLaunchComplete()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Launcher ability ending"));
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

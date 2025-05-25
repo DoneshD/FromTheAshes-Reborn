@@ -13,18 +13,8 @@ class FROMTHEASHESREBORN_API UGA_Launched : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
 
-public:
-	
-	bool IsLaunched = false;
-
 protected:
-
-	FVector LauncherStartLocation;
-	FVector LauncherEndLocation;
 	
-	float LauncherElapsedTime = 0.0f;
-	float LauncherStartTime = 0.0f;
-
 	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
 	float LauncherVerticalDistance;
 
@@ -33,8 +23,6 @@ protected:
 
 	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
 	float StallDuration;
-
-	FTimerHandle AerialStallTimerHandle;
 
 	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
 

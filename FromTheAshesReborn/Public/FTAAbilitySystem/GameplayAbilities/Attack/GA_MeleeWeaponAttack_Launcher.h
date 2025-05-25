@@ -11,18 +11,8 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Launcher : public UGA_MeleeWe
 {
 	GENERATED_BODY()
 
-public:
-	
-	bool IsLaunching = false;
-
 protected:
-
-	FVector LauncherStartLocation;
-	FVector LauncherEndLocation;
 	
-	float LauncherElapsedTime = 0.0f;
-	float LauncherStartTime = 0.0f;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Launcher Ability")
 	float LauncherVerticalDistance = 600.0f;
 
@@ -31,8 +21,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
 	float StallDuration = 0.25f;
-
-	FTimerHandle AerialStallTimerHandle;
 
 	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
 
@@ -47,18 +35,15 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	void UpdateLauncherMovement(float DeltaTime);
-
-	void LauncherLocationReached();
-
-	void EndAirStall();
-
 	virtual void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData) override;
 	virtual void OnHitAdded(FHitResult LastItem) override;
 	
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	UFUNCTION()
+	void OnLaunchComplete();
 
 	
 };

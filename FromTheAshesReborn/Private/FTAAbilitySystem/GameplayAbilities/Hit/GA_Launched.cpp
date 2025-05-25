@@ -31,7 +31,7 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(this,
 		LaunchInfoObject->LaunchData.VerticalDistance,
 		LaunchInfoObject->LaunchData.LaunchDuration,
-		LaunchInfoObject->LaunchData.StallDuration);
+		LaunchInfoObject->LaunchData.StallDuration + 0.2f);
 	
 	if (LaunchTask)
 	{
@@ -53,7 +53,6 @@ void UGA_Launched::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 
 void UGA_Launched::OnLaunchComplete()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Launch ability ending"));
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 
 }
