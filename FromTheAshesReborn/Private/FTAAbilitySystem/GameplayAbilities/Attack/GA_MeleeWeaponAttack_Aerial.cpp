@@ -93,22 +93,7 @@ void UGA_MeleeWeaponAttack_Aerial::OnMeleeWeaponTargetDataReady(const FGameplayA
 void UGA_MeleeWeaponAttack_Aerial::OnHitAdded(FHitResult LastItem)
 {
 	Super::OnHitAdded(LastItem);
-
-	AActor* TargetActor = LastItem.GetActor();
-
-	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
-	{
-		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
-		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
-
-		if (TargetASC)
-		{
-			if(!TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail")))
-			{
-				TargetASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail"));
-			}
-		}
-	}
+	
 }
 
 void UGA_MeleeWeaponAttack_Aerial::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

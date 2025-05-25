@@ -46,6 +46,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
+	TSubclassOf<UGameplayEffect> MeleeAttackHitEffect;
+
 	TObjectPtr<AFTACharacter> FTAChar;
 
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;

@@ -125,7 +125,7 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 		return;
 	}
 	
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LauncherTag.Montage.Launch")))
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("EffectTag.ReceiveHit.Grounded.Launched.Vertical")))
 	{
 		IsLaunching = true;
 	}

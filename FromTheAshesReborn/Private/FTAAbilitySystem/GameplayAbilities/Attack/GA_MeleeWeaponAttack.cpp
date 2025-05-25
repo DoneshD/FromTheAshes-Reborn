@@ -238,12 +238,22 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 
 void UGA_MeleeWeaponAttack::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
 {
-	TArray<FActiveGameplayEffectHandle> AppliedEffects = ApplyGameplayEffectToTarget(
+	TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
 		CurrentActivationInfo,
 		TargetData,
 		MeleeAttackDamageEffect, 
+		1,
+		1
+	);
+
+	TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		TargetData,
+		MeleeAttackHitEffect, 
 		1,
 		1
 	);
@@ -265,26 +275,6 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 	TargetDataHandle.Add(TargetData);
 	
 	OnMeleeWeaponTargetDataReady(TargetDataHandle);
-		
-	AActor* TargetActor = LastItem.GetActor();
-
-	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
-	{
-		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
-		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
-
-		if (TargetASC)
-		{
-			FGameplayEventData EventData;
-			EventData.Instigator = GetAvatarActorFromActorInfo();
-			EventData.Target = TargetActor;
-			EventData.ContextHandle.AddHitResult(LastItem);
-			EventData.TargetData = TargetDataHandle;
-			EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("Event.Hit.React"));
-
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
-		}
-	}
 }
 
 void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)

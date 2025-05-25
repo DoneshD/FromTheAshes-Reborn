@@ -184,12 +184,26 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	ComboManagerComponent->AerialAttacksCounter = 0;
-	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail"));
+	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Flail"));
+	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Grounded.Launched.Vertical"));
+	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Slammed"));
 }
 
 bool AFTACharacter::HasFlailTag() const
 {
-	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AnimStateTag.Aerial.Combat.Flail"));
+	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Flail"));
+}
+
+bool AFTACharacter::HasLaunchedTag() const
+{
+	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Grounded.Launched.Vertical"));
+
+}
+
+bool AFTACharacter::HasSlammedTag() const
+{
+	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Slammed"));
+
 }
 
 

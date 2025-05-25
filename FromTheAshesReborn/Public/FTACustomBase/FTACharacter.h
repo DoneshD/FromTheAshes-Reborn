@@ -70,5 +70,11 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	bool HasFlailTag() const;
+
+	UFUNCTION(BlueprintPure)
+	bool HasLaunchedTag() const;
+
+	UFUNCTION(BlueprintPure)
+	bool HasSlammedTag() const;
 	
 };
