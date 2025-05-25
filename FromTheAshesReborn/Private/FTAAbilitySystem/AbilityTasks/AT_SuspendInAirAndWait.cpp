@@ -50,6 +50,7 @@ void UAT_SuspendInAirAndWait::Activate()
 
 	CMC->Velocity.Z = 0.0f;
 	CMC->GravityScale = 0.0f;
+	
 	bDescend = true;
 }
 
@@ -84,6 +85,7 @@ void UAT_SuspendInAirAndWait::EndStall()
 void UAT_SuspendInAirAndWait::ExternalCancel()
 {
 	Super::ExternalCancel();
+
 }
 
 FString UAT_SuspendInAirAndWait::GetDebugString() const
@@ -94,4 +96,9 @@ FString UAT_SuspendInAirAndWait::GetDebugString() const
 void UAT_SuspendInAirAndWait::OnDestroy(bool AbilityEnded)
 {
 	Super::OnDestroy(AbilityEnded);
+	
+	CMC->Velocity.Z = -100.0f;
+	CMC->GravityScale = 4.0f;
+
+	OnSuspendComplete.Broadcast();
 }

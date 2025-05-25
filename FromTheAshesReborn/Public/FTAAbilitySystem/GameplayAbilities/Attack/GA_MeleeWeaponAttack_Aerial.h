@@ -5,6 +5,8 @@
 #include "GA_MeleeWeaponAttack_Aerial.generated.h"
 
 
+class UAT_SuspendInAirAndWait;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Aerial : public UGA_MeleeWeaponAttack
 {
@@ -17,7 +19,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aerial Ability")
 	float DescentSpeed = 10;
 
-
+	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
 public:
 
 	UGA_MeleeWeaponAttack_Aerial();
@@ -28,11 +30,7 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-
-	void UpdateAerialDescentMovement(float DeltaTime);
 	
-	void EndAirStall();
-
 	virtual void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData) override;
 	virtual void OnHitAdded(FHitResult LastItem) override;
 	
