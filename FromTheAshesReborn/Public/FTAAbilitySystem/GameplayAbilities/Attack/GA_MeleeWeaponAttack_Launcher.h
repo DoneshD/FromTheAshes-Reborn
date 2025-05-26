@@ -44,6 +44,5 @@ protected:
 
 	UFUNCTION()
 	void OnLaunchComplete();
-
 	
 };

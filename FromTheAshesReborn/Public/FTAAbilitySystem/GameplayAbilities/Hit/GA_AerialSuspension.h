@@ -13,6 +13,9 @@ class FROMTHEASHESREBORN_API UGA_AerialSuspension : public UGA_ReceiveHit
 	
 	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAnimMontage> HitMontage;
+
 public:
 
 	UGA_AerialSuspension();
@@ -23,7 +26,9 @@ public:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-	
+
+	UFUNCTION()
+	void OnSuspendComplete();
 	
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
