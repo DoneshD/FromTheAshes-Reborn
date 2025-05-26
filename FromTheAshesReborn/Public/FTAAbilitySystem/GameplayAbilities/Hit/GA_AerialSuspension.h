@@ -4,10 +4,14 @@
 #include "GA_ReceiveHit.h"
 #include "GA_AerialSuspension.generated.h"
 
+class UAT_SuspendInAirAndWait;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_AerialSuspension : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
+	
+	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
 
 public:
 

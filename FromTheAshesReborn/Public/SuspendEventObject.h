@@ -7,10 +7,7 @@ struct FSuspendInfo
 {
 	GENERATED_BODY()
 
-	float VerticalDistance;
-	float LaunchDuration;
-	float StallDuration;
-	
+	float DescentSpeed;
 };
 
 UCLASS()

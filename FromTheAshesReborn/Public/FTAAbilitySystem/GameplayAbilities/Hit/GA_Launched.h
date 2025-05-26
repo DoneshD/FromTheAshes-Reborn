@@ -14,15 +14,6 @@ class FROMTHEASHESREBORN_API UGA_Launched : public UGA_ReceiveHit
 	GENERATED_BODY()
 
 protected:
-	
-	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
-	float LauncherVerticalDistance;
-
-	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
-	float LauncherDuration;
-
-	UPROPERTY(VisibleDefaultsOnly, Category = "Launched Ability")
-	float StallDuration;
 
 	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
 
