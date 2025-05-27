@@ -26,6 +26,17 @@ UGA_MeleeWeaponAttack::UGA_MeleeWeaponAttack(const FObjectInitializer&)
 	ActivationGroup = DefaultActivationGroup;
 }
 
+void UGA_MeleeWeaponAttack::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+{
+	Super::OnGiveAbility(ActorInfo, Spec);
+
+	if(UGA_MeleeWeaponAttack* MeleeCDO = Cast<UGA_MeleeWeaponAttack>(Spec.Ability))
+	{
+		MeleeCDO->ActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
+		MeleeCDO->DefaultActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
+	}
+}
+
 UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
 {
 	return CastChecked<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
