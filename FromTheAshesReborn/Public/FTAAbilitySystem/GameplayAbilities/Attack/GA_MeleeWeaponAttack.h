@@ -53,6 +53,8 @@ protected:
 
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
+	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
+
 
 protected:
 

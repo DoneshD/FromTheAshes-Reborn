@@ -16,4 +16,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	bool RequiredPause = false;
+
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag HitReaction;
 };

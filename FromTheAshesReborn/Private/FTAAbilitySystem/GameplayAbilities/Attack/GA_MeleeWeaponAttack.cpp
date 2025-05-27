@@ -151,6 +151,8 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 	
 	if (MatchingDataAsset->MontageToPlay)
 	{
+		MeleeAbilityAsset = MatchingDataAsset;
+		
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
 
 		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
@@ -275,6 +277,41 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 	TargetDataHandle.Add(TargetData);
 	
 	OnMeleeWeaponTargetDataReady(TargetDataHandle);
+
+	
+	if(!MeleeAbilityAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::OnHitAdded - MeleeAbilityAsset is Null"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+
+	
+	AActor* TargetActor = LastItem.GetActor();
+
+	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	{
+		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
+		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		if (TargetASC)
+		{
+			FGameplayEventData EventData;
+			
+			EventData.Instigator = GetAvatarActorFromActorInfo();
+			EventData.Target = TargetActor;
+			EventData.ContextHandle.AddHitResult(LastItem);
+
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAbilityAsset->HitReaction))
+			{
+				FGameplayTag HitReactionTag = MeleeAbilityAsset->HitReaction;
+				EventData.EventTag = HitReactionTag;
+			}
+			
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
+
+		}
+	}
 }
 
 void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
