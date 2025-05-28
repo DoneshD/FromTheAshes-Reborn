@@ -1,5 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 
+#include "DataAsset/HitReactionDataAsset.h"
+
 UGA_ReceiveHit::UGA_ReceiveHit()
 {
 }
@@ -21,6 +23,23 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	if(HitAbilityAsset)
+	{
+		if(HitAbilityAsset->MontageToPlay)
+		{
+			PlayAbilityAnimMontage(HitAbilityAsset->MontageToPlay);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("MontageToPlay null"))
+
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HitAbilityAsset null"))
+	}
 }
 
 void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -43,6 +62,9 @@ void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventDat
 void UGA_ReceiveHit::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
+
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+
 }
 
 void UGA_ReceiveHit::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)

@@ -50,7 +50,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
 	TSubclassOf<UGameplayEffect> MeleeAttackHitReactionEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects", Meta = (Categories = "HitTag"))
 	FGameplayTag GameplayEventTagOnHit;
 
 	FGameplayEventData OnHitEventData;
