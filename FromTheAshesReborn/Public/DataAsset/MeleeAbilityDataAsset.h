@@ -17,6 +17,6 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	bool RequiredPause = false;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Meta = (Categories = "HitTag"))
 	FGameplayTag HitReaction;
 };

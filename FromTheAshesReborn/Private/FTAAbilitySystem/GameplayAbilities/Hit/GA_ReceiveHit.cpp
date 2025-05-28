@@ -24,22 +24,24 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if(HitAbilityAsset)
-	{
-		if(HitAbilityAsset->MontageToPlay)
-		{
-			PlayAbilityAnimMontage(HitAbilityAsset->MontageToPlay);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MontageToPlay null"))
+	// if(HitAbilityAsset)
+	// {
+	// 	if(HitAbilityAsset->MontageToPlay)
+	// 	{
+	// 		PlayAbilityAnimMontage(HitAbilityAsset->MontageToPlay);
+	// 	}
+	// 	else
+	// 	{
+	// 		UE_LOG(LogTemp, Warning, TEXT("MontageToPlay null"))
+	//
+	// 	}
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("HitAbilityAsset null"))
+	// }
 
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HitAbilityAsset null"))
-	}
+	
 }
 
 void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

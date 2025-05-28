@@ -17,6 +17,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UHitReactionDataAsset> HitAbilityAsset;
 
+	UPROPERTY(EditAnywhere)
+	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
+
 public:
 
 	UGA_ReceiveHit();
