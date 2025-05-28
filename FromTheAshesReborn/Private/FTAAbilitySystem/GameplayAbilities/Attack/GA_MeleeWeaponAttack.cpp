@@ -326,9 +326,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastIte
 				OnHitEventData.EventTag = GameplayEventTagOnHit;
 			}
 			
-			
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
-
 		}
 	}
 }
