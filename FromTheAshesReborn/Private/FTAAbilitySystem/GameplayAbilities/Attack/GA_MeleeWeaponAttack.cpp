@@ -165,10 +165,15 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		MeleeAbilityAsset = MatchingDataAsset;
 		
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
+		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MatchingDataAsset->HitReaction))
+		{
+			GameplayEventTagOnHit = MatchingDataAsset->HitReaction;
+		}
 
 		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 		ComboManagerComponent->PauseCurrentAttack = false;
+		
 
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 		MotionWarpToTarget();
@@ -249,7 +254,35 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 	}
 }
 
-void UGA_MeleeWeaponAttack::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
+
+
+void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
+{
+	FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
+	if(TargetHitDataHandle.Num() > 0)
+	{
+		ApplyMeleeHitEffects(TargetHitDataHandle);
+		SendMeleeHitGameplayEvents(LastItem);
+	}
+}
+
+FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData(const FHitResult& LastItem)
+{
+	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
+	TargetData->HitResult = LastItem;
+	
+	if(!TargetData)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Target Data"))
+	}
+	
+	FGameplayAbilityTargetDataHandle TargetDataHandle;
+	TargetDataHandle.Add(TargetData);
+	return TargetDataHandle;
+	
+}
+
+void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetData)
 {
 	TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
@@ -266,38 +299,14 @@ void UGA_MeleeWeaponAttack::OnMeleeWeaponTargetDataReady(const FGameplayAbilityT
 		CurrentActorInfo,
 		CurrentActivationInfo,
 		TargetData,
-		MeleeAttackHitEffect, 
+		MeleeAttackHitReactionEffect, 
 		1,
 		1
 	);
-	
 }
 
-void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
+void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
 {
-	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
-	TargetData->HitResult = LastItem;
-	
-	if(!TargetData)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Target Data"))
-		return;
-	}
-	
-	FGameplayAbilityTargetDataHandle TargetDataHandle;
-	TargetDataHandle.Add(TargetData);
-	
-	OnMeleeWeaponTargetDataReady(TargetDataHandle);
-
-	
-	if(!MeleeAbilityAsset)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::OnHitAdded - MeleeAbilityAsset is Null"))
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-
-	
 	AActor* TargetActor = LastItem.GetActor();
 
 	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
@@ -313,11 +322,11 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 			EventData.Target = TargetActor;
 			EventData.ContextHandle.AddHitResult(LastItem);
 
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAbilityAsset->HitReaction))
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(GameplayEventTagOnHit))
 			{
-				FGameplayTag HitReactionTag = MeleeAbilityAsset->HitReaction;
-				EventData.EventTag = HitReactionTag;
+				EventData.EventTag = GameplayEventTagOnHit;
 			}
+			
 			
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
 

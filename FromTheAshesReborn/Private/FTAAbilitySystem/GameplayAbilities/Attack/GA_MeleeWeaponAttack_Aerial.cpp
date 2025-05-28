@@ -61,11 +61,6 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 }
 
 
-void UGA_MeleeWeaponAttack_Aerial::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
-{
-	Super::OnMeleeWeaponTargetDataReady(TargetData);
-}
-
 void UGA_MeleeWeaponAttack_Aerial::OnHitAdded(FHitResult LastItem)
 {
 	Super::OnHitAdded(LastItem);

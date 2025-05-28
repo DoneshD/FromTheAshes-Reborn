@@ -38,16 +38,20 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 
 protected:
 
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attacka")
 	FMeleeAttackForms MeleeAttackAssets;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attack")
-	TSubclassOf<UGameplayEffect> MeleeAttackHitEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	TSubclassOf<UGameplayEffect> MeleeAttackHitReactionEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	FGameplayTag GameplayEventTagOnHit;
 
 	TObjectPtr<AFTACharacter> FTAChar;
 
@@ -80,21 +84,13 @@ public:
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
 
 protected:
-	struct FMeleeWeaponTraceData
-	{
-		FVector StartTrace;
-		FVector EndTrace;
-
-		UMeleeWeaponInstance* WeaponData = nullptr;
-
-		FMeleeWeaponTraceData() : StartTrace(ForceInitToZero), EndTrace(ForceInitToZero){}
-		
-	};
-	
-	virtual void OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData);
 	
 	UFUNCTION()
 	virtual void OnHitAdded(FHitResult LastItem);
+
+	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
+	virtual void SendMeleeHitGameplayEvents(const FHitResult& LastItem);
+	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetData);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 

@@ -65,11 +65,6 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UGA_MeleeWeaponAttack_Launcher::OnMeleeWeaponTargetDataReady(const FGameplayAbilityTargetDataHandle& TargetData)
-{
-	Super::OnMeleeWeaponTargetDataReady(TargetData);
-}
-
 void UGA_MeleeWeaponAttack_Launcher::OnHitAdded(FHitResult LastItem)
 {
 	Super::OnHitAdded(LastItem);
