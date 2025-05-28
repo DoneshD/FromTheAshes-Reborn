@@ -60,39 +60,16 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 	//TODO: This is being called from a grounded attack, check later 
 }
 
-
-void UGA_MeleeWeaponAttack_Aerial::OnHitAdded(FHitResult LastItem)
+void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
 {
-	Super::OnHitAdded(LastItem);
-
-	AActor* TargetActor = LastItem.GetActor();
-
-	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
-	{
-		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
-		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
-
-		if (TargetASC)
-		{
-			FGameplayEventData EventData;
-			
-			EventData.Instigator = GetAvatarActorFromActorInfo();
-			EventData.Target = TargetActor;
-			EventData.ContextHandle.AddHitResult(LastItem);
-			EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("AbilityTag.Suspend"));
-
-			//------------------------------------------------------------------------------------------------
-
-			USuspendEventObject* SuspendEventObj = NewObject<USuspendEventObject>(this);
-			SuspendEventObj->SuspendData.DescentSpeed = DescentSpeed;
-
-			EventData.OptionalObject = SuspendEventObj;
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
-
-		}
-	}
+	USuspendEventObject* LaunchInfoObj = NewObject<USuspendEventObject>(this);
+	LaunchInfoObj->SuspendData.DescentSpeed = DescentSpeed;
+	
+	OnHitEventData.OptionalObject = LaunchInfoObj;
+	
+	Super::SendMeleeHitGameplayEvents(LastItem);
 }
+
 
 void UGA_MeleeWeaponAttack_Aerial::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {

@@ -65,40 +65,19 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UGA_MeleeWeaponAttack_Launcher::OnHitAdded(FHitResult LastItem)
+void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
 {
-	Super::OnHitAdded(LastItem);
+	ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
+	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
+	LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
+	LaunchInfoObj->LaunchData.StallDuration = StallDuration;
 
-	AActor* TargetActor = LastItem.GetActor();
-
-	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
-	{
-		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
-		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
-
-		if (TargetASC)
-		{
-			FGameplayEventData EventData;
-			
-			EventData.Instigator = GetAvatarActorFromActorInfo();
-			EventData.Target = TargetActor;
-			EventData.ContextHandle.AddHitResult(LastItem);
-			EventData.EventTag = FGameplayTag::RequestGameplayTag(FName("AbilityTag.Launched"));
-
-			//------------------------------------------------------------------------------------------------
-
-			ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
-			LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
-			LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
-			LaunchInfoObj->LaunchData.StallDuration = StallDuration;
-
-			EventData.OptionalObject = LaunchInfoObj;
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
-
-		}
-	}
+	OnHitEventData.OptionalObject = LaunchInfoObj;
+	
+	Super::SendMeleeHitGameplayEvents(LastItem);
+	
 }
+
 
 void UGA_MeleeWeaponAttack_Launcher::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {

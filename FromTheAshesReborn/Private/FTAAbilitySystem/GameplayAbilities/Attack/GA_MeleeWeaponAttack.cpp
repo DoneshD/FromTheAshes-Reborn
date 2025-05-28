@@ -316,19 +316,18 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastIte
 
 		if (TargetASC)
 		{
-			FGameplayEventData EventData;
 			
-			EventData.Instigator = GetAvatarActorFromActorInfo();
-			EventData.Target = TargetActor;
-			EventData.ContextHandle.AddHitResult(LastItem);
+			OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
+			OnHitEventData.Target = TargetActor;
+			OnHitEventData.ContextHandle.AddHitResult(LastItem);
 
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(GameplayEventTagOnHit))
 			{
-				EventData.EventTag = GameplayEventTagOnHit;
+				OnHitEventData.EventTag = GameplayEventTagOnHit;
 			}
 			
 			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, EventData.EventTag, EventData);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 
 		}
 	}

@@ -53,6 +53,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
 	FGameplayTag GameplayEventTagOnHit;
 
+	FGameplayEventData OnHitEventData;
+
 	TObjectPtr<AFTACharacter> FTAChar;
 
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
@@ -86,7 +88,7 @@ public:
 protected:
 	
 	UFUNCTION()
-	virtual void OnHitAdded(FHitResult LastItem);
+	void OnHitAdded(FHitResult LastItem);
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
 	virtual void SendMeleeHitGameplayEvents(const FHitResult& LastItem);
