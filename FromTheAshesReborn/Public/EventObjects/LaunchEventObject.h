@@ -1,7 +1,8 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "LaunchInfoObject.generated.h"
+#include "UObject/Object.h"
+#include "LaunchEventObject.generated.h"
 
 USTRUCT(BlueprintType)
 struct FLaunchInfo
@@ -16,8 +17,8 @@ struct FLaunchInfo
 	
 };
 
-UCLASS(BlueprintType)
-class FROMTHEASHESREBORN_API ULaunchInfoObject : public UObject
+UCLASS()
+class FROMTHEASHESREBORN_API ULaunchEventObject : public UObject
 {
 	GENERATED_BODY()
 

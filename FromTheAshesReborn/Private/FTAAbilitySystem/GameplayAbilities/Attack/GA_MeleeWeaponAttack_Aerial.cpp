@@ -3,7 +3,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
-#include "SuspendEventObject.h"
+#include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"

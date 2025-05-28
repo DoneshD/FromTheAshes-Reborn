@@ -1,6 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Launched.h"
 
-#include "LaunchInfoObject.h"
+#include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
 
 UGA_Launched::UGA_Launched()
@@ -21,7 +21,7 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	const ULaunchInfoObject* LaunchInfoObject = Cast<ULaunchInfoObject>(CurrentEventData.OptionalObject);
+	const ULaunchEventObject* LaunchInfoObject = Cast<ULaunchEventObject>(CurrentEventData.OptionalObject);
 
 	if(!LaunchInfoObject)
 	{

@@ -1,6 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_AerialSuspension.h"
 
-#include "SuspendEventObject.h"
+#include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 
 UGA_AerialSuspension::UGA_AerialSuspension()

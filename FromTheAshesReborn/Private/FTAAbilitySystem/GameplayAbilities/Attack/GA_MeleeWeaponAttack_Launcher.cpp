@@ -1,7 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_Launcher.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "LaunchInfoObject.h"
+#include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -92,7 +92,7 @@ void UGA_MeleeWeaponAttack_Launcher::OnHitAdded(FHitResult LastItem)
 
 			//------------------------------------------------------------------------------------------------
 
-			ULaunchInfoObject* LaunchInfoObj = NewObject<ULaunchInfoObject>(this);
+			ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
 			LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
 			LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
 			LaunchInfoObj->LaunchData.StallDuration = StallDuration;
