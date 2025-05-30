@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 
 #include "DataAsset/HitReactionDataAsset.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 UGA_ReceiveHit::UGA_ReceiveHit()
 {

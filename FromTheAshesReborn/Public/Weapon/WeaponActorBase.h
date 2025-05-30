@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraComponent.h"
 #include "WeaponActorBase.generated.h"
 
 class UDidItHitActorComponent;
@@ -19,6 +20,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	TObjectPtr<UNiagaraComponent> NS_SwordTrail;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
+	TObjectPtr<UNiagaraSystem> SwordTrail;
+
+	UPROPERTY()
+	UNiagaraComponent* NC;
+
 public:
 	
 	AWeaponActorBase();
@@ -30,5 +40,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EndWeaponTracing();
+
+	UFUNCTION(BlueprintCallable)
+	void StartWeaponTrail();
+
+	UFUNCTION(BlueprintCallable)
+	void EndWeaponTrail();
 	
 };

@@ -351,6 +351,7 @@ void UGA_MeleeWeaponAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayE
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	
+	
 }
 
 void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -366,6 +367,22 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("QueueTag.PauseCurrentAttack")))
 	{
 		ComboManagerComponent->PauseCurrentAttack = true;
+	}
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Begin Slash"))
+
+		FGameplayEffectContextHandle EffectContext;
+		GetFTAAbilitySystemComponentFromActorInfo()->AddGameplayCue(FGameplayTag::RequestGameplayTag(FName("GameplayCue.Melee.Slash")), EffectContext);
+	}
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("End Slash"))
+
+		FGameplayEffectContextHandle EffectContext;
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveGameplayCue(FGameplayTag::RequestGameplayTag(FName("GameplayCue.Melee.Slash")));
 	}
 
 }
