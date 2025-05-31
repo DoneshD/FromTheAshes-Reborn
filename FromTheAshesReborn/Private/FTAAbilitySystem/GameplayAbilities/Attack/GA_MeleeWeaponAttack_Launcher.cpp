@@ -111,6 +111,5 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 
 void UGA_MeleeWeaponAttack_Launcher::OnLaunchComplete()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Launcher ability ending"));
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

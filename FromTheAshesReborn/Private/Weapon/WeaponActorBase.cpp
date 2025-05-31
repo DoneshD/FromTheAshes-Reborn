@@ -22,6 +22,7 @@ void AWeaponActorBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	
 }
 
 void AWeaponActorBase::Tick(float DeltaTime)
@@ -39,27 +40,24 @@ void AWeaponActorBase::EndWeaponTracing()
 	
 	DidItHitActorComponent->ToggleTraceCheck(false);
 	DidItHitActorComponent->ClearHitArray();
+
 }
 
 void AWeaponActorBase::StartWeaponTrail()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Start trail"))
 	FVector StartLocation = SkeletalMesh->GetSocketLocation("VFX_Slash_Start");
 	FVector EndLocation = SkeletalMesh->GetSocketLocation("VFX_Slash_End");
 
-	FVector SpawnLocation = (StartLocation + EndLocation) / 2.0f;
-	FRotator SpawnRotation = UKismetMathLibrary::MakeRotFromZ(StartLocation - EndLocation);
+	SpawnTrailLocation = (StartLocation + EndLocation) / 2.0f;
+	SpawnTrailRotation = UKismetMathLibrary::MakeRotFromZ(StartLocation - EndLocation);
+	TrailLength = (StartLocation - EndLocation).Length();
 	
-	NC = UNiagaraFunctionLibrary::SpawnSystemAttached(SwordTrail, SkeletalMesh, FName(), SpawnLocation, SpawnRotation,EAttachLocation::KeepWorldPosition, false);
-
-	float Length = (StartLocation - EndLocation).Length();
-	NC->SetFloatParameter("TrailWidth", Length);
+	TrailComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(SwordTrail, SkeletalMesh, FName(), SpawnTrailLocation, SpawnTrailRotation,EAttachLocation::KeepWorldPosition, false);
+	TrailComponent->SetFloatParameter("TrailWidth", TrailLength);
 }
 
 void AWeaponActorBase::EndWeaponTrail()
 {
-	UE_LOG(LogTemp, Warning, TEXT("end trail"))
-
-	NC->Deactivate();
+	TrailComponent->Deactivate();
 }
 

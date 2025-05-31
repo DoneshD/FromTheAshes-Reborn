@@ -467,3 +467,18 @@ void UFTAAbilitySystemComponent::ReceiveDamage(UFTAAbilitySystemComponent* Sourc
 {
 	ReceivedDamage.Broadcast(SourceASC, UnmitigatedDamage, MitigatedDamage);
 }
+
+void UFTAAbilitySystemComponent::AddGameplayCueLocal(const FGameplayTag GameplayCueTag,
+	const FGameplayCueParameters& GameplayCueParameters)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AddGameplayCueLocal"))
+	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::OnActive, GameplayCueParameters);
+	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::WhileActive, GameplayCueParameters);
+}
+
+void UFTAAbilitySystemComponent::RemoveGameplayCueLocal(const FGameplayTag GameplayCueTag,
+	const FGameplayCueParameters& GameplayCueParameters)
+{
+	UE_LOG(LogTemp, Warning, TEXT("RemoveGameplayCueLocal"))
+	UAbilitySystemGlobals::Get().GetGameplayCueManager()->HandleGameplayCue(GetOwner(), GameplayCueTag, EGameplayCueEvent::Type::Removed, GameplayCueParameters);
+}

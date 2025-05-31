@@ -371,17 +371,18 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Begin Slash"))
+		
+		FGameplayEffectContextHandle ContextHandle = MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
+		
+		GetFTAAbilitySystemComponentFromActorInfo()->AddGameplayCue(
+			FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Slash"), ContextHandle);
 
-		FGameplayEffectContextHandle EffectContext;
-		GetFTAAbilitySystemComponentFromActorInfo()->AddGameplayCue(FGameplayTag::RequestGameplayTag(FName("GameplayCue.Melee.Slash")), EffectContext);
 	}
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("End Slash"))
+		FGameplayEffectContextHandle ContextHandle = MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
 
-		FGameplayEffectContextHandle EffectContext;
 		GetFTAAbilitySystemComponentFromActorInfo()->RemoveGameplayCue(FGameplayTag::RequestGameplayTag(FName("GameplayCue.Melee.Slash")));
 	}
 

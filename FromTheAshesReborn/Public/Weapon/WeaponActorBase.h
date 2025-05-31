@@ -27,7 +27,12 @@ public:
 	TObjectPtr<UNiagaraSystem> SwordTrail;
 
 	UPROPERTY()
-	UNiagaraComponent* NC;
+	UNiagaraComponent* TrailComponent;
+
+	FVector SpawnTrailLocation;
+	FRotator SpawnTrailRotation;
+
+	float TrailLength;
 
 public:
 	
