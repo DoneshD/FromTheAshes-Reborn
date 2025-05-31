@@ -6,6 +6,8 @@
 
 struct FGameplayEffectModCallbackData;
 
+
+
 UCLASS()
 class FROMTHEASHESREBORN_API UHealthAttributeSet : public UFTAAttributeSet
 {
@@ -21,7 +23,7 @@ public:
 	ATTRIBUTE_ACCESSORS(UHealthAttributeSet, IncomingDamage);
 
 	// Delegate to broadcast when the health attribute reaches zero.
-	mutable FLyraAttributeEvent OnOutOfHealth;
+	mutable FFTAAttributeEvent OnOutOfHealth;
 
 protected:
 	virtual bool PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data) override;

@@ -13,7 +13,7 @@ GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 
 class UFTAAbilitySystemComponent;
-DECLARE_MULTICAST_DELEGATE_FourParams(FLyraAttributeEvent, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/,
+DECLARE_MULTICAST_DELEGATE_FourParams(FFTAAttributeEvent, AActor* /*EffectInstigator*/, AActor* /*EffectCauser*/,
                                       const FGameplayEffectSpec& /*EffectSpec*/, float /*EffectMagnitude*/);
 
 

@@ -122,7 +122,6 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 	for (int32 SetIndex = 0; SetIndex < GrantedAttributes.Num(); ++SetIndex)
 	{
 		const FFTAAbilitySet_AttributeSet& SetToGrant = GrantedAttributes[SetIndex];
-	
 		if (!IsValid(SetToGrant.AttributeSet))
 		{
 			UE_LOG(LogTemp, Error, TEXT("GrantedAttributes[%d] on ability set [%s] is not valid"), SetIndex, *GetNameSafe(this));
@@ -131,10 +130,11 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 	
 		UFTAAttributeSet* NewSet = NewObject<UFTAAttributeSet>(FTAASC->GetOwner(), SetToGrant.AttributeSet);
 		FTAASC->AddAttributeSetSubobject(NewSet);
-	
+
 		if (OutGrantedHandles)
 		{
 			OutGrantedHandles->AddAttributeSet(NewSet);
+
 		}
 	}
 }

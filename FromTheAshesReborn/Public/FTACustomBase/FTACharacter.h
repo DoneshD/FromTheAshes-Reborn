@@ -48,6 +48,7 @@ public:
 public:
 	
 	AFTACharacter(const FObjectInitializer& ObjectInitializer);
+	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")
