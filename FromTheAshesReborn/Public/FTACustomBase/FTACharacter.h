@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UHealthComponent;
 class ULauncherComponent;
 class AWeaponActorBase;
 class UFTAAbilitySystemComponent;
@@ -36,6 +37,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lyra|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHealthComponent> HealthComponent;
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
@@ -48,7 +52,6 @@ public:
 public:
 	
 	AFTACharacter(const FObjectInitializer& ObjectInitializer);
-	void OnHealthChanged(const FOnAttributeChangeData& OnAttributeChangeData);
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")

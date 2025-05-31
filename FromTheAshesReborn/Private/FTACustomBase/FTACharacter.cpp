@@ -1,5 +1,6 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "ComboManagerComponent.h"
+#include "HealthComponent.h"
 #include "MotionWarpingComponent.h"
 #include "WallRunningComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
@@ -7,6 +8,7 @@
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "Components/CapsuleComponent.h"
 #include "DataAsset/FTACharacterData.h"
+#include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
 
@@ -21,9 +23,14 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	bAlwaysRelevant = true;
 
 	FTAAbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+
+	CreateDefaultSubobject<UHealthAttributeSet>(TEXT("HealthSet"));
 	
 	EquipmentManagerComponent = CreateDefaultSubobject<UEquipmentManagerComponent>("EquipmentManagerComponent");
 	this->AddOwnedComponent(EquipmentManagerComponent);
+
+	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
+	this->AddOwnedComponent(HealthComponent);
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	this->AddOwnedComponent(MotionWarpingComponent);
