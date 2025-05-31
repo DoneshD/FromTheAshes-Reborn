@@ -6,6 +6,7 @@
 #include "GA_MeleeWeaponAttack.generated.h"
 
 
+class UNiagaraSystem;
 class UComboManagerComponent;
 class UMeleeAbilityDataAsset;
 class UFTAAbilityDataAsset;
@@ -50,8 +51,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
 	TSubclassOf<UGameplayEffect> MeleeAttackHitReactionEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	TSubclassOf<UGameplayEffect> MeleeAttackSlashEffect;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects", Meta = (Categories = "HitTag"))
 	FGameplayTag GameplayEventTagOnHit;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	TObjectPtr<UNiagaraSystem> SlashFX;
 
 	FGameplayEventData OnHitEventData;
 
@@ -84,6 +91,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
+
+	UFUNCTION(BlueprintImplementableEvent, Category="FTAAbility")
+	void CallCue();
+
 
 protected:
 	

@@ -4,6 +4,8 @@
 #include "FTAAbilityDataAsset.h"
 #include "MeleeAbilityDataAsset.generated.h"
 
+class UNiagaraSystem;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UFTAAbilityDataAsset
 {
@@ -19,4 +21,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Meta = (Categories = "HitTag"))
 	FGameplayTag HitReaction;
+	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem> SlashFX;
 };

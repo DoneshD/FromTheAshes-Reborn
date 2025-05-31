@@ -47,7 +47,7 @@ public:
 	void EndWeaponTracing();
 
 	UFUNCTION(BlueprintCallable)
-	void StartWeaponTrail();
+	void StartWeaponTrail(UNiagaraSystem* TestSystem);
 
 	UFUNCTION(BlueprintCallable)
 	void EndWeaponTrail();
