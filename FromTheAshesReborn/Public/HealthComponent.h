@@ -23,9 +23,8 @@ class FROMTHEASHESREBORN_API UHealthComponent : public UActorComponent
 public:
 
 	UHealthComponent(const FObjectInitializer& ObjectInitializer);
-
-	UFUNCTION(BlueprintCallable)
-
+	
+	UFUNCTION(BlueprintPure)
 	static UHealthComponent* FindHealthComponent(const AActor* Actor) { return (Actor ? Actor->FindComponentByClass<UHealthComponent>() : nullptr); }
 
 	UFUNCTION(BlueprintCallable)

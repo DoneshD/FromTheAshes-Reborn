@@ -90,7 +90,6 @@ static AActor* GetInstigatorFromAttrChangeData(const FOnAttributeChangeData& Cha
 void UHealthComponent::HandleCurrentHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
 	OnHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, GetInstigatorFromAttrChangeData(ChangeData));
-
 }
 
 void UHealthComponent::HandleMaxHealthChanged(const FOnAttributeChangeData& ChangeData)

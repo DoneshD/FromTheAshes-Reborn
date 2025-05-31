@@ -294,6 +294,16 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 	);
 
+	//TEMP DEBUGGING
+	FActiveGameplayEffectHandle DamageSelf = ApplyGameplayEffectToOwner(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		MeleeAttackDamageEffect.GetDefaultObject(),
+		1,
+		1
+	);
+
 	TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,

@@ -49,6 +49,7 @@ void AFTACharacter::BeginPlay()
 	
 	InitAbilitySystemComponent();
 	AddCharacterBaseAbilities();
+	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 }
 
 
