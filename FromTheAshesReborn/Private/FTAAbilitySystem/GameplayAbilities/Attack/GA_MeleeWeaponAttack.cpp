@@ -371,16 +371,9 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
-		
 		FGameplayEffectContextHandle ContextHandle = MakeEffectContext(CurrentSpecHandle, CurrentActorInfo);
-		//
-		// GetFTAAbilitySystemComponentFromActorInfo()->AddGameplayCue(
-		// 	FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Slash"), ContextHandle);
-		// CallCue();
-		FGameplayCueParameters Test;
-		Test.AbilityLevel = 34;
-		K2_AddGameplayCueWithParams(FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Slash"), Test);
 
+		MeleeSlashGameplayCue();
 	}
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
@@ -389,5 +382,4 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 		
 		GetFTAAbilitySystemComponentFromActorInfo()->RemoveGameplayCue(FGameplayTag::RequestGameplayTag(FName("GameplayCue.Melee.Slash")));
 	}
-
 }

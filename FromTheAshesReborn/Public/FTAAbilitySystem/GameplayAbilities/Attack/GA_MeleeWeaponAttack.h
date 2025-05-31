@@ -42,8 +42,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attacka")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attacks")
 	FMeleeAttackForms MeleeAttackAssets;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Melee Attacks")
+	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
@@ -65,8 +68,6 @@ protected:
 	TObjectPtr<AFTACharacter> FTAChar;
 
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
-
-	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
 
 
 protected:
@@ -93,7 +94,7 @@ public:
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="FTAAbility")
-	void CallCue();
+	void MeleeSlashGameplayCue();
 
 
 protected:
