@@ -39,30 +39,25 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetHealthNormalized() const;
 
-
 public:
+	
 	UPROPERTY(BlueprintAssignable)
 	FHealth_AttributeChanged OnHealthChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FHealth_AttributeChanged OnMaxHealthChanged;
 
-
 protected:
-
 	
 	virtual void HandleCurrentHealthChanged(const FOnAttributeChangeData& ChangeData);
 	virtual void HandleMaxHealthChanged(const FOnAttributeChangeData& ChangeData);
 	virtual void HandleOutOfHealth(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude);
 
-
 protected:
 
-	// Ability system used by this component.
 	UPROPERTY()
 	TObjectPtr<UFTAAbilitySystemComponent> AbilitySystemComponent;
 
-	// Health set used by this component.
 	UPROPERTY()
 	TObjectPtr<const UHealthAttributeSet> HealthSet;
 

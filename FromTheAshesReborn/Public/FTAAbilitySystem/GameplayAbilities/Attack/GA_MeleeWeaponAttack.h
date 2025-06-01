@@ -42,25 +42,25 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Attacks")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
 	FMeleeAttackForms MeleeAttackAssets;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Melee Attacks")
+	UPROPERTY(BlueprintReadWrite, Category = "Attacks")
 	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> MeleeAttackHitReactionEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> MeleeAttackSlashEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects", Meta = (Categories = "HitTag"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
 	FGameplayTag GameplayEventTagOnHit;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee Effects")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
 
 	FGameplayEventData OnHitEventData;
@@ -68,7 +68,6 @@ protected:
 	TObjectPtr<AFTACharacter> FTAChar;
 
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
-
 
 protected:
 

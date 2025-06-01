@@ -74,7 +74,6 @@ float UHealthComponent::GetHealthNormalized() const
 	return 0.0f;
 }
 
-
 static AActor* GetInstigatorFromAttrChangeData(const FOnAttributeChangeData& ChangeData)
 {
 	if (ChangeData.GEModData != nullptr)
@@ -86,10 +85,8 @@ static AActor* GetInstigatorFromAttrChangeData(const FOnAttributeChangeData& Cha
 	return nullptr;
 }
 
-
 void UHealthComponent::HandleCurrentHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Health Change"))
 	OnHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, GetInstigatorFromAttrChangeData(ChangeData));
 }
 
