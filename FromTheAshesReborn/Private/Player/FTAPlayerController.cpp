@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameplayTagContainer.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "TargetingSystem/TargetingSystemComponent.h"
 
 AFTAPlayerController::AFTAPlayerController(const FObjectInitializer& ObjectInitializer)
 {
@@ -114,17 +115,17 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 	AddPitchInput(LookAxisVector.Y);
 
 	//This is costly, refactor later
-	UTargetSystemComponent* TargetSystemComponent = GetPawn()->FindComponentByClass<UTargetSystemComponent>();
-	if(!TargetSystemComponent)
+	UTargetingSystemComponent* TargetingSystemComponent = GetPawn()->FindComponentByClass<UTargetingSystemComponent>();
+	if(!TargetingSystemComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
 		return;
 	}
-	if(!TargetSystemComponent->GetLockedOnTargetActor())
+	if(!TargetingSystemComponent->GetLockedOnTargetActor())
 	{
 		return;
 	}
-	TargetSystemComponent->TargetActorWithAxisInput(LookAxisVector.X);
+	TargetingSystemComponent->TargetActorWithAxisInput(LookAxisVector.X);
 }
 
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)

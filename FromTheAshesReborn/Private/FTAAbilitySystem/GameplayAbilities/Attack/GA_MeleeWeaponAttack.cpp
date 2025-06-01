@@ -16,6 +16,7 @@
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "TracingComponent/TracingComponent.h"
 
 
 #include "Weapon/MeleeWeaponInstance.h"
@@ -96,7 +97,9 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 	
-	MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+	// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+
 
 	if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
 	{
@@ -128,8 +131,9 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 		return;
 	}
 	
-	MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
-	
+	// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
+	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
+
 }
 
 void UGA_MeleeWeaponAttack::ResetMeleeAttack()

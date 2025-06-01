@@ -21,7 +21,9 @@ enum class ETraceType : uint8
 	SphereTrace			UMETA(DisplayName = "Sphere Trace")
 };
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded, FHitResult, LastItem);
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnItemAdded, FHitResult, LastItem);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTraceItemAdded, FHitResult, LastItem);
+
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent, DisplayName = "AC_DidItHit"))
 class FROMTHEASHESREBORN_API UTracingComponent : public UActorComponent
@@ -30,9 +32,8 @@ class FROMTHEASHESREBORN_API UTracingComponent : public UActorComponent
 
 public:
 	UPROPERTY(BlueprintAssignable, Category = "AC_DidItHit")
-		FOnItemAdded OnItemAdded;
-
-
+	FOnTraceItemAdded OnItemAdded;
+	
 	// Sets default values for this component's properties
 	UTracingComponent();
 

@@ -6,6 +6,7 @@
 #include "TargetSystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
+#include "TargetingSystem/TargetingSystemComponent.h"
 
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -42,7 +43,9 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
-	TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
+	// TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
+
+	TargetingSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>("TargetingSystemComponent");
 
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
 	this->AddOwnedComponent(ParkourSystemComponent);

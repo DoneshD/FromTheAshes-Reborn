@@ -14,8 +14,11 @@ class UUserWidget;
 class UWidgetComponent;
 class APlayerController;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentOnTargetLockedOnOff, AActor*, TargetActor);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FComponentSetRotation, AActor*, TargetActor, FRotator, ControlRotation);
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentOnTargetLockedOnOff, AActor*, TargetActor);
+// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FComponentSetRotation, AActor*, TargetActor, FRotator, ControlRotation);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceComponentOnTargetLockedOnOff, AActor*, TargetActor);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTraceComponentSetRotation, AActor*, TargetActor, FRotator, ControlRotation);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 	class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
@@ -148,18 +151,18 @@ public:
 
 	// Called when a target is locked off, either if it is out of reach (based on MinimumDistanceToEnable) or behind an Object.
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
-	FComponentOnTargetLockedOnOff OnTargetLockedOff;
+	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
 
 	// Called when a target is locked on
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
-	FComponentOnTargetLockedOnOff OnTargetLockedOn;
+	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
 
 	// Setup the control rotation on Tick when a target is locked on.
 	//
 	// If not implemented, will fallback to default implementation.
 	// If this event is implemented, it lets you control the rotation of the character.
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
-	FComponentSetRotation OnTargetSetRotation;
+	FTraceComponentSetRotation OnTargetSetRotation;
 
 	// Returns the reference to currently targeted Actor if any
 	UFUNCTION(BlueprintCallable, Category = "Target System")

@@ -5,6 +5,7 @@
 #include "NiagaraComponent.h"
 #include "WeaponActorBase.generated.h"
 
+class UTracingComponent;
 class UDidItHitActorComponent;
 
 UCLASS()
@@ -14,8 +15,11 @@ class FROMTHEASHESREBORN_API AWeaponActorBase : public AActor
 	
 public:
 
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tracing")
+	// TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tracing")
-	TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
+	TObjectPtr<UTracingComponent> TracingComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Mesh")
 	TObjectPtr<USkeletalMeshComponent> SkeletalMesh;

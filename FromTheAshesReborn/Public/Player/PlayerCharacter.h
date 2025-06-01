@@ -4,6 +4,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+class UTargetingSystemComponent;
 class UParkourSystemComponent;
 class UTargetSystemComponent;
 
@@ -14,8 +15,11 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 
 protected:
 
+	// UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Targeting")
+	// TObjectPtr<UTargetSystemComponent> TargetSystemComponent;
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Targeting")
-	TObjectPtr<UTargetSystemComponent> TargetSystemComponent;
+	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "ParkourSystem")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;

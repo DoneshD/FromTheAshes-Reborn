@@ -3,6 +3,7 @@
 #include "TargetSystemComponent.h"
 #include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"
+#include "TargetingSystem/TargetingSystemComponent.h"
 
 UGA_LockOn::UGA_LockOn()
 {
@@ -13,19 +14,19 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
-	UTargetSystemComponent* TargetSystemComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UTargetSystemComponent>();
+	UTargetingSystemComponent* TargetingSystemComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UTargetingSystemComponent>();
 	
 	AFTAPlayerState* PS = GetFTAPlayerControllerFromActorInfo()->GetFTAPlayerState();
 
-	if(!TargetSystemComponent)
+	if(!TargetingSystemComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
+		// UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 	
 	if(IsTargeting)
 	{
-		TargetSystemComponent->TargetLockOff();
+		TargetingSystemComponent->TargetLockOff();
 		IsTargeting = false;
 		LockedOnTarget = nullptr;
 		PS->HardLockedTargetActor = nullptr;
@@ -33,7 +34,7 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	}
 	else
 	{
-		LockedOnTarget = TargetSystemComponent->TargetActor(IsTargeting);
+		LockedOnTarget = TargetingSystemComponent->TargetActor(IsTargeting);
 		if(LockedOnTarget)
 		{
 			PS->HardLockedTargetActor = LockedOnTarget;
