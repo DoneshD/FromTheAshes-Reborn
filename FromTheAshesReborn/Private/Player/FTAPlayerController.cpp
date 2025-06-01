@@ -3,7 +3,6 @@
 #include "Player/PlayerCharacter.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "TargetSystemComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "Input/FTAInputComponent.h"
 #include "Kismet/GameplayStatics.h"

@@ -1,6 +1,5 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_LockOn.h"
 
-#include "TargetSystemComponent.h"
 #include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"
 #include "TargetingSystem/TargetingSystemComponent.h"

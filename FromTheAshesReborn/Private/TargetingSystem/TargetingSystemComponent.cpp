@@ -1,6 +1,5 @@
 ﻿#include "TargetingSystem/TargetingSystemComponent.h"
 #include "EngineUtils.h"
-#include "TargetSystemLog.h"
 #include "TargetingSystem/TargetingSystemTargetableInterface.h"
 #include "TimerManager.h"
 #include "Camera/CameraComponent.h"
@@ -26,14 +25,14 @@ void UTargetingSystemComponent::BeginPlay()
 	OwnerActor = GetOwner();
 	if (!OwnerActor)
 	{
-		TS_LOG(Error, TEXT("[%s] TargetSystemComponent: Cannot get Owner reference ..."), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Cannot get Owner reference ..."), *GetName());
 		return;
 	}
 
 	OwnerPawn = Cast<APawn>(OwnerActor);
 	if (!ensure(OwnerPawn))
 	{
-		TS_LOG(Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to Pawn only ..."), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to Pawn only ..."), *GetName());
 		return;
 	}
 
@@ -387,7 +386,7 @@ void UTargetingSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent(AAc
 {
 	if (!LockedOnWidgetClass)
 	{
-		TS_LOG(Error, TEXT("TargetSystemComponent: Cannot get LockedOnWidgetClass, please ensure it is a valid reference in the Component Properties."));
+		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent: Cannot get LockedOnWidgetClass, please ensure it is a valid reference in the Component Properties."));
 		return;
 	}
 
@@ -442,7 +441,7 @@ void UTargetingSystemComponent::SetupLocalPlayerController()
 {
 	if (!IsValid(OwnerPawn))
 	{
-		TS_LOG(Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to Pawn only ..."), *GetName());
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to Pawn only ..."), *GetName());
 		return;
 	}
 
@@ -543,13 +542,13 @@ bool UTargetingSystemComponent::LineTrace(FHitResult& OutHitResult, const AActor
 {
 	if (!IsValid(OwnerActor))
 	{
-		UE_LOG(LogTargetSystem, Warning, TEXT("UTargetSystemComponent::LineTrace - Called with invalid OwnerActor: %s"), *GetNameSafe(OwnerActor))
+		UE_LOG(LogTemp, Error, TEXT("UTargetSystemComponent::LineTrace - Called with invalid OwnerActor: %s"), *GetNameSafe(OwnerActor))
 		return false;
 	}
 	
 	if (!IsValid(OtherActor))
 	{
-		UE_LOG(LogTargetSystem, Warning, TEXT("UTargetSystemComponent::LineTrace - Called with invalid OtherActor: %s"), *GetNameSafe(OtherActor))
+		UE_LOG(LogTemp, Error, TEXT("UTargetSystemComponent::LineTrace - Called with invalid OtherActor: %s"), *GetNameSafe(OtherActor))
 		return false;
 	}
 	
@@ -572,7 +571,7 @@ bool UTargetingSystemComponent::LineTrace(FHitResult& OutHitResult, const AActor
 		);
 	}
 
-	UE_LOG(LogTargetSystem, Warning, TEXT("UTargetSystemComponent::LineTrace - Called with invalid World: %s"), *GetNameSafe(GetWorld()))
+	UE_LOG(LogTemp, Error, TEXT("UTargetSystemComponent::LineTrace - Called with invalid World: %s"), *GetNameSafe(GetWorld()))
 	return false;
 }
 
@@ -591,7 +590,7 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 {
 	if (!IsValid(OwnerPlayerController))
 	{
-		TS_LOG(Warning, TEXT("UTargetSystemComponent::GetControlRotationOnTarget - OwnerPlayerController is not valid ..."))
+		UE_LOG(LogTemp, Error, TEXT("UTargetSystemComponent::GetControlRotationOnTarget - OwnerPlayerController is not valid ..."))
 		return FRotator::ZeroRotator;
 	}
 

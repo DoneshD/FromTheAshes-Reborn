@@ -21,8 +21,6 @@ public class FromTheAshesReborn : ModuleRules
 			"AnimGraphRuntime", 
 			"MotionWarping", 
 			"Niagara",
-			"TargetSystem",
-			"DidItHit",
 			"UMG"
 		});
 	}
