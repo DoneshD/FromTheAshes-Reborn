@@ -1,11 +1,12 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
+
+#include "HealthComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 
 AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
 	
 }
 

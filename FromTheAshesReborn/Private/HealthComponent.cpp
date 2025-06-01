@@ -89,6 +89,7 @@ static AActor* GetInstigatorFromAttrChangeData(const FOnAttributeChangeData& Cha
 
 void UHealthComponent::HandleCurrentHealthChanged(const FOnAttributeChangeData& ChangeData)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Health Change"))
 	OnHealthChanged.Broadcast(this, ChangeData.OldValue, ChangeData.NewValue, GetInstigatorFromAttrChangeData(ChangeData));
 }
 
