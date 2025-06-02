@@ -19,6 +19,9 @@ void UGA_KnockDown::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	UE_LOG(LogTemp, Warning, TEXT("UGA_KnockDown Active Ability"));
+
+
 	if(KnockDownAbilityAsset)
 	{
 		if(KnockDownAbilityAsset->MontageToPlay)
@@ -33,7 +36,7 @@ void UGA_KnockDown::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Revover null"))
+		UE_LOG(LogTemp, Warning, TEXT("down null"))
 	}
 }
 
@@ -45,6 +48,9 @@ void UGA_KnockDown::CancelAbility(const FGameplayAbilitySpecHandle Handle, const
 void UGA_KnockDown::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	UE_LOG(LogTemp, Warning, TEXT("End down"))
+
+	
 }
 
 void UGA_KnockDown::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -56,6 +62,8 @@ void UGA_KnockDown::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData
 {
 	Super::OnMontageCompleted(EventTag, EventData);
 
+	UE_LOG(LogTemp, Warning, TEXT("Apply"))
+	
 	FActiveGameplayEffectHandle AppliedDmgEffects = ApplyGameplayEffectToOwner(
 		CurrentSpecHandle,
 		CurrentActorInfo,
@@ -64,6 +72,7 @@ void UGA_KnockDown::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData
 		1,
 		1
 	);
+	
 }
 
 void UGA_KnockDown::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)

@@ -23,6 +23,7 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	UE_LOG(LogTemp, Warning, TEXT("UGA_Recover Active Ability"));
 	if(RecoverAbilityAsset)
 	{
 		if(RecoverAbilityAsset->MontageToPlay)
@@ -37,7 +38,7 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Revover null"))
+		UE_LOG(LogTemp, Warning, TEXT("Recover null"))
 	}
 }
 

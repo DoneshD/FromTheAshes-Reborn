@@ -337,6 +337,10 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastIte
 			{
 				OnHitEventData.EventTag = GameplayEventTagOnHit;
 			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No Tag"));
+			}
 			
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 		}
