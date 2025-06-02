@@ -1,0 +1,95 @@
+# The form data below was edited by doneshd
+# A Perforce Server Specification.
+#
+#  ServerID:    The server identifier.
+#  Type:        The server type: server/broker/proxy/
+#                   connector
+#  Name:        The P4NAME used by this server (optional).
+#  Address:     The P4PORT used by this server (optional).
+#  ExternalAddress:
+#               For an edge server, this optional field contains its
+#               external address for connections from the commit server.
+#               This field is required for distributed parallel submit.
+#  UpdateCachedRepos:
+#               For a git-connector, this optional field contains a
+#               list of graph repos which will be updated from Helix
+#               by 'gconn poll-repos', typically called by a cron process.
+#  Description: A short description of the server (optional).
+#  Services:    Services provided by this server.
+#               One of the following (grouped by server type):
+#        Type 'server':
+#               standard: standard Perforce server
+#               replica: read-only replica server
+#               commit-server: central server in distributed installation
+#               edge-server: node in distributed installation
+#               forwarding-replica: replica which forwards update commands
+#               build-server: replica which supports build farm integration
+#               P4AUTH: server which provides central authentication
+#               P4CHANGE: server which provides central change numbers
+#               standby: read-only replica server which uses journalcopy
+#               forwarding-standby: forwarding-replica which uses journalcopy
+#               local: personal server created by init
+#               distribution-server: content distribution server
+#        Type 'broker':
+#               broker: p4broker process
+#        Type 'proxy':
+#               proxy: p4p caching proxy
+#        Type 'connector':
+#               git-connector: p4gconn caching proxy
+#
+#  Options:     Server options: [no]mandatory.
+#  ReplicatingFrom:
+#               Server ID of the server from which this server is
+#               replicating or journalcopy'ing. This field is required
+#               when the server is a standby or forwarding-standby
+#               server and the mandatory option is set for either.
+#  User:        The service user which will be used by this server
+#  AllowedAddresses:
+#               A list of addresses that are valid this server.  At security
+#               level 6 this field is used to associate intermediary
+#               servers with specified service users.  Connections through
+#               intermediary servers without matching server specs will be
+#               blocked.
+#  ClientDataFilter:
+#               For a replica server, this optional field can contain one
+#               or more patterns describing how active client data is to
+#               be filtered. Active client data includes have lists,
+#               working records, and pending resolves.
+#  RevisionDataFilter:
+#               For a replica server, this optional field can contain one
+#               or more patterns describing how submitted revision data is
+#               to be filtered. Submitted revision data includes revision
+#               records, integration records, label contents, and the files
+#               listed in submitted changelists.
+#  ArchiveDataFilter:
+#               For a replica server, this optional field can contain one
+#               or more patterns describing the policy for automatically
+#               scheduling the replication of file content. If this field
+#               is present, only those files described by the pattern are
+#               automatically transferred to the replica; other files will
+#               not be transferred until they are referenced by a replica
+#               command which needs the file content.
+#  DistributedConfig:
+#               This optional field shows configuration settings relevant
+#               to this server. When invoked with the -c flag, the
+#               configuration values are populated with currently
+#               configured values, recommended default values if unset,
+#               or 'unset' for unset values with no default. If this
+#               field is present when invoked with -c, the configuration
+#               commands in this field are run on the current server
+#               using the scope of the ServerID server.
+#
+# Use 'p4 help server' to see more about server ids, services, and options.
+
+ServerID:	perforceservice
+
+Type:	server
+
+Address:	ssl:174.138.38.187:1666
+
+Services:	commit-server
+
+Options:	nomandatory
+
+Description:
+	Created configure-helix-p4d.sh
