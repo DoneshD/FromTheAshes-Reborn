@@ -107,6 +107,7 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 			LaunchTask->ReadyForActivation();
 		}
 	}
+	
 }
 
 void UGA_MeleeWeaponAttack_Launcher::OnLaunchComplete()

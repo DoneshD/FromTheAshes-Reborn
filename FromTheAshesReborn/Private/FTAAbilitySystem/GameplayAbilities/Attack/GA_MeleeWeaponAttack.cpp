@@ -327,7 +327,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastIte
 
 		if (TargetASC)
 		{
-			
 			OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
 			OnHitEventData.Target = TargetActor;
 			OnHitEventData.ContextHandle.AddHitResult(LastItem);
@@ -338,7 +337,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastIte
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("No Tag"));
+				UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack -  GameplayEventTagOnHit is NULL"));
 			}
 			
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);

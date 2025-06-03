@@ -4,7 +4,10 @@
 
 UGA_Recover::UGA_Recover(const FObjectInitializer&)
 {
-	
+	FAbilityTriggerData TriggerData;
+	TriggerData.TriggerTag = FGameplayTag::RequestGameplayTag("EffectTag.GrantRecovery.GetUp");
+	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::OwnedTagAdded;
+	AbilityTriggers.Add(TriggerData);
 }
 
 void UGA_Recover::OnAbilityTick(float DeltaTime)
