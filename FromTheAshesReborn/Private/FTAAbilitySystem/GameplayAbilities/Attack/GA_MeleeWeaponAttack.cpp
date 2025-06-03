@@ -261,12 +261,25 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 {
-	FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
-	if(TargetHitDataHandle.Num() > 0)
+	AActor* TargetActor = LastItem.GetActor();
+
+	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
 	{
-		ApplyMeleeHitEffects(TargetHitDataHandle);
-		SendMeleeHitGameplayEvents(LastItem);
+		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
+		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		if (TargetASC)
+		{
+			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
+			if(TargetHitDataHandle.Num() > 0)
+			{
+				ApplyMeleeHitEffects(TargetHitDataHandle);
+				SendMeleeHitGameplayEvents(LastItem);
+			}
+		}
 	}
+	
+	
 }
 
 FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData(const FHitResult& LastItem)
@@ -283,21 +296,18 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	//TODO: Temp code
 
 	AActor* TargetActor = LastItem.GetActor();
-
-	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	
+	if (HitFX)
 	{
-		if (HitFX)
+		if (UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitFXCueTag))
 		{
-			if (UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitFXCueTag))
-			{
-				HitActorFX = TargetActor;
-				HitFXLocation = LastItem.ImpactPoint;
-				MeleeHitGameplayCue();
-			}
+			HitActorFX = TargetActor;
+			HitFXLocation = LastItem.ImpactPoint;
+			MeleeHitGameplayCue();
 		}
 	}
-
 	
+
 	
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
 	TargetDataHandle.Add(TargetData);
@@ -334,35 +344,30 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
+
+	//TODO: Placeholder
+	GetFTACharacterFromActorInfo()->StartHitStop(0.2f);
 }
 
 void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
 {
 	AActor* TargetActor = LastItem.GetActor();
+	
+	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnHitEventData.Target = TargetActor;
+	OnHitEventData.ContextHandle.AddHitResult(LastItem);
 
-	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(GameplayEventTagOnHit))
 	{
-		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
-		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
-
-		if (TargetASC)
-		{
-			OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
-			OnHitEventData.Target = TargetActor;
-			OnHitEventData.ContextHandle.AddHitResult(LastItem);
-
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(GameplayEventTagOnHit))
-			{
-				OnHitEventData.EventTag = GameplayEventTagOnHit;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack -  GameplayEventTagOnHit is NULL"));
-			}
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
-		}
+		OnHitEventData.EventTag = GameplayEventTagOnHit;
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack -  GameplayEventTagOnHit is NULL"));
+	}
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	
 }
 
 void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)

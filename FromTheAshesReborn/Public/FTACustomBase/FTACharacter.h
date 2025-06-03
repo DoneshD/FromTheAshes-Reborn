@@ -72,6 +72,7 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 
+	//TODO: Allplaceholder below
 	UFUNCTION(BlueprintPure)
 	bool HasFlailTag() const;
 
@@ -80,5 +81,11 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	bool HasSlammedTag() const;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartHitStop(float Duration);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void EndHitStop();
 	
 };
