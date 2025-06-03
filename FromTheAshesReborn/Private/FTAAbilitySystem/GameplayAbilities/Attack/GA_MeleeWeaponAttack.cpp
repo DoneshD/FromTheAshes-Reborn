@@ -287,7 +287,9 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetData)
 {
-	TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
+	if(MeleeAttackDamageEffect)
+	{
+		TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
 		CurrentActivationInfo,
@@ -295,18 +297,13 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		MeleeAttackDamageEffect, 
 		1,
 		1
-	);
-
-	// FActiveGameplayEffectHandle AppliedDmgEffects = ApplyGameplayEffectToOwner(
-	// 	CurrentSpecHandle,
-	// 	CurrentActorInfo,
-	// 	CurrentActivationInfo,
-	// 	MeleeAttackDamageEffect.GetDefaultObject(),
-	// 	1,
-	// 	1
-	// );
-
-	TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
+		);
+	}
+	
+	
+	if (MeleeAttackHitReactionEffect)
+	{
+		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
 		CurrentActivationInfo,
@@ -314,7 +311,9 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		MeleeAttackHitReactionEffect, 
 		1,
 		1
-	);
+		);
+	}
+	
 }
 
 void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastItem)

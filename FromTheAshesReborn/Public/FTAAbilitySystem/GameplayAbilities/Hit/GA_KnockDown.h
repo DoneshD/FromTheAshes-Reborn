@@ -21,6 +21,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> GetUpAbilityEffect;
 
+	UPROPERTY(EditAnywhere)
+	FGameplayTag RecoveryTag;
+
 protected:
 
 	UGA_KnockDown();
@@ -35,4 +38,5 @@ protected:
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData) override;
 };

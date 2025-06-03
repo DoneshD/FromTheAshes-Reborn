@@ -163,6 +163,9 @@ public:
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
+	virtual void OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 	
 	

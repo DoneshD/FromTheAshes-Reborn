@@ -1,5 +1,9 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_KnockDown.h"
+
+#include "AbilitySystemBlueprintLibrary.h"
 #include "DataAsset/HitReactionDataAsset.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 UGA_KnockDown::UGA_KnockDown()
 {
@@ -18,9 +22,6 @@ bool UGA_KnockDown::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 void UGA_KnockDown::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	UE_LOG(LogTemp, Warning, TEXT("UGA_KnockDown Active Ability"));
-
 
 	if(KnockDownAbilityAsset)
 	{
@@ -48,8 +49,6 @@ void UGA_KnockDown::CancelAbility(const FGameplayAbilitySpecHandle Handle, const
 void UGA_KnockDown::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	UE_LOG(LogTemp, Warning, TEXT("End down"))
-
 	
 }
 
@@ -62,20 +61,39 @@ void UGA_KnockDown::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData
 {
 	Super::OnMontageCompleted(EventTag, EventData);
 
-	UE_LOG(LogTemp, Warning, TEXT("Apply"))
-	
-	FActiveGameplayEffectHandle AppliedDmgEffects = ApplyGameplayEffectToOwner(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		GetUpAbilityEffect.GetDefaultObject(),
-		1,
-		1
-	);
-	
 }
 
 void UGA_KnockDown::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+}
+
+void UGA_KnockDown::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageBlendingOut(EventTag, EventData);
+
+	// FGameplayEffectContextHandle ContextHandle;
+	// FGameplayEffectSpecHandle SpecHandle = GetFTAAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(GetUpAbilityEffect, 1, ContextHandle);
+	//
+	// FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
+	// 	CurrentSpecHandle,
+	// 	CurrentActorInfo,
+	// 	CurrentActivationInfo,
+	// 	SpecHandle);
+	
+	FGameplayEventData RecoverEventData;
+	
+	RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
+	RecoverEventData.Target = GetAvatarActorFromActorInfo();
+	
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(RecoveryTag))
+	{
+		RecoverEventData.EventTag = RecoveryTag;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
+	}
+		
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
 }

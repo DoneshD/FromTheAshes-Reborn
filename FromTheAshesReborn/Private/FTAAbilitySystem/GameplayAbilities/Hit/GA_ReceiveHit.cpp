@@ -39,7 +39,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("HitAbilityAsset null"))
+		// UE_LOG(LogTemp, Warning, TEXT("HitAbilityAsset null"))
 	}
 
 	

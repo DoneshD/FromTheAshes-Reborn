@@ -1,12 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
+﻿#include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
 
 #include "DataAsset/RecoverAbilityDataAsset.h"
 
 UGA_Recover::UGA_Recover(const FObjectInitializer&)
 {
+	
 }
 
 void UGA_Recover::OnAbilityTick(float DeltaTime)
@@ -23,7 +21,6 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	UE_LOG(LogTemp, Warning, TEXT("UGA_Recover Active Ability"));
 	if(RecoverAbilityAsset)
 	{
 		if(RecoverAbilityAsset->MontageToPlay)
