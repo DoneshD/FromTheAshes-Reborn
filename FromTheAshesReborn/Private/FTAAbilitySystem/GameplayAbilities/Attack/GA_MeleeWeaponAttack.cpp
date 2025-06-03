@@ -272,12 +272,32 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData(const FHitResult& LastItem)
 {
 	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
-	TargetData->HitResult = LastItem;
-	
+
 	if(!TargetData)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Target Data"))
 	}
+	
+	TargetData->HitResult = LastItem;
+
+	//TODO: Temp code
+
+	AActor* TargetActor = LastItem.GetActor();
+
+	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	{
+		if (HitFX)
+		{
+			if (UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitFXCueTag))
+			{
+				HitActorFX = TargetActor;
+				HitFXLocation = LastItem.ImpactPoint;
+				MeleeHitGameplayCue();
+			}
+		}
+	}
+
+	
 	
 	FGameplayAbilityTargetDataHandle TargetDataHandle;
 	TargetDataHandle.Add(TargetData);
@@ -287,6 +307,7 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetData)
 {
+	
 	if(MeleeAttackDamageEffect)
 	{
 		TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
@@ -313,7 +334,6 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
-	
 }
 
 void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastItem)

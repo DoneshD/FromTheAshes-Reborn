@@ -63,6 +63,18 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> HitFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	FGameplayTag HitFXCueTag;
+
+	UPROPERTY(BlueprintReadWrite, Category = "VFX")
+	FVector HitFXLocation;
+
+	UPROPERTY(BlueprintReadWrite, Category = "VFX")
+	TObjectPtr<AActor> HitActorFX;
+
 	FGameplayEventData OnHitEventData;
 
 	TObjectPtr<AFTACharacter> FTAChar;
@@ -94,6 +106,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category="FTAAbility")
 	void MeleeSlashGameplayCue();
+
+	UFUNCTION(BlueprintImplementableEvent, Category="FTAAbility")
+	void MeleeHitGameplayCue();
 
 
 protected:
