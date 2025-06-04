@@ -62,12 +62,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
-
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX", Meta = (Categories = "GameplayCue"))
+	FGameplayTag SlashVfxCueTag;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> HitFX;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
-	FGameplayTag HitFXCueTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX", Meta = (Categories = "GameplayCue"))
+	FGameplayTag HitVfxCueTag;
 
 	UPROPERTY(BlueprintReadWrite, Category = "VFX")
 	FVector HitFXLocation;
@@ -103,13 +106,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
-
-	UFUNCTION(BlueprintImplementableEvent, Category="FTAAbility")
-	void MeleeSlashGameplayCue();
-
-	UFUNCTION(BlueprintImplementableEvent, Category="FTAAbility")
-	void MeleeHitGameplayCue();
-
 
 protected:
 	
