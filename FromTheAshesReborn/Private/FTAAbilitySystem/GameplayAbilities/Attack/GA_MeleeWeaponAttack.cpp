@@ -168,11 +168,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		MeleeAbilityAsset = MatchingDataAsset;
 		
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
-		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MatchingDataAsset->HitReaction))
-		{
-			GameplayEventTagOnHit = MatchingDataAsset->HitReaction;
-		}
-
+		
 		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 		ComboManagerComponent->PauseCurrentAttack = false;
@@ -271,10 +267,9 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 		if (TargetASC)
 		{
 			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
-			if(TargetHitDataHandle.Num() > 0)
+			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 			{
-				ApplyMeleeHitEffects(TargetHitDataHandle);
-				SendMeleeHitGameplayEvents(LastItem);
+				ExecuteMeleeHitLogic(TargetHitDataHandle);
 			}
 		}
 	}
@@ -289,6 +284,8 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	if(!TargetData)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Target Data"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return nullptr;
 	}
 	
 	TargetData->HitResult = LastItem;
@@ -297,6 +294,13 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	TargetDataHandle.Add(TargetData);
 	return TargetDataHandle;
 	
+}
+
+void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	ApplyMeleeHitEffects(TargetDataHandle);
+	SendMeleeHitGameplayEvents(TargetDataHandle);
+	AddMeleeHitCues(TargetDataHandle);
 }
 
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -327,11 +331,34 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
+	
+}
 
-	//TODO: Temp code
+void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
+	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnHitEventData.Target = TargetActor;
+	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
+
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
+	{
+		OnHitEventData.EventTag = HitReactionTag;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - HitReactionTag is NULL"));
+	}
 	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	
+}
+
+void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	if(!HitFX)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - HitFX is NULL. Owner: %s"), *GetOwningActorFromActorInfo()->GetName());
@@ -345,28 +372,6 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 	HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
 		
 	K2_AddGameplayCueWithParams(FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Hit"), HitCueParams);
-}
-
-void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
-{
-	
-	AActor* TargetActor = LastItem.GetActor();
-	
-	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	OnHitEventData.Target = TargetActor;
-	OnHitEventData.ContextHandle.AddHitResult(LastItem);
-
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(GameplayEventTagOnHit))
-	{
-		OnHitEventData.EventTag = GameplayEventTagOnHit;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack -  GameplayEventTagOnHit is NULL"));
-	}
-	
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
-	
 }
 
 void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)

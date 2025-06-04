@@ -60,14 +60,14 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 	//TODO: This is being called from a grounded attack, check later 
 }
 
-void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
+void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	USuspendEventObject* LaunchInfoObj = NewObject<USuspendEventObject>(this);
 	LaunchInfoObj->SuspendData.DescentSpeed = DescentSpeed;
 	
 	OnHitEventData.OptionalObject = LaunchInfoObj;
 	
-	Super::SendMeleeHitGameplayEvents(LastItem);
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle);
 }
 
 

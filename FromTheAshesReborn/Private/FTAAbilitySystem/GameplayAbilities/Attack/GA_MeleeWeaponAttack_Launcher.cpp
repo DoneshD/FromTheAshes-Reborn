@@ -65,7 +65,7 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
+void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
@@ -74,7 +74,7 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FHitResult
 
 	OnHitEventData.OptionalObject = LaunchInfoObj;
 	
-	Super::SendMeleeHitGameplayEvents(LastItem);
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle);
 	
 }
 
