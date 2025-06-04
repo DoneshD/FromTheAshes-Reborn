@@ -344,6 +344,7 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
+	
 
 	//TODO: Placeholder
 	GetFTACharacterFromActorInfo()->StartHitStop(0.2f);
@@ -351,6 +352,7 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 
 void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FHitResult& LastItem)
 {
+	
 	AActor* TargetActor = LastItem.GetActor();
 	
 	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();

@@ -5,6 +5,7 @@
 #include "GameplayCueManager.h"
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
+#include "InterchangeResult.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) :
@@ -302,6 +303,27 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
 	if (ExclusiveCount > 1)
 	{
+
+		for(FGameplayAbilitySpec Spec : GetActivatableAbilities())
+		{
+			if(Spec.Ability)
+			{
+				UFTAGameplayAbility* CurrentFTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
+				if(CurrentFTAAbility)
+				{
+					switch (CurrentFTAAbility->GetActivationGroup())
+					{
+					case EFTAAbilityActivationGroup::Exclusive_Replaceable:
+						UE_LOG(LogTemp, Warning, TEXT("CurrentFTAAbility Name: %s"), *CurrentFTAAbility->GetName());
+						break;
+					default:
+						UE_LOG(LogTemp, Warning, TEXT("Unknown"));
+						break;
+					}
+					
+				}
+			}
+		}
 		CancelAllAbilities();
 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running. Canceling all abilities"));
 	}
