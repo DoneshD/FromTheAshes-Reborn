@@ -273,8 +273,6 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 			}
 		}
 	}
-	
-	
 }
 
 FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData(const FHitResult& LastItem)
@@ -299,34 +297,34 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	ApplyMeleeHitEffects(TargetDataHandle);
-	SendMeleeHitGameplayEvents(TargetDataHandle);
+	// SendMeleeHitGameplayEvents(TargetDataHandle);
 	AddMeleeHitCues(TargetDataHandle);
 }
 
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	
-	if(MeleeAttackDamageEffect)
+	if(DamageEffect)
 	{
 		TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
 		CurrentActivationInfo,
 		TargetDataHandle,
-		MeleeAttackDamageEffect, 
+		DamageEffect, 
 		1,
 		1
 		);
 	}
 	
-	if (MeleeAttackHitReactionEffect)
+	if (HitReactionEffect)
 	{
 		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
 		CurrentActivationInfo,
 		TargetDataHandle,
-		MeleeAttackHitReactionEffect, 
+		HitReactionEffect, 
 		1,
 		1
 		);
@@ -336,23 +334,22 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 
 void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	
-	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
-	
-	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	OnHitEventData.Target = TargetActor;
-	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
-
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
-	{
-		OnHitEventData.EventTag = HitReactionTag;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - HitReactionTag is NULL"));
-	}
-	
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	// AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	//
+	// OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	// OnHitEventData.Target = TargetActor;
+	// OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
+	//
+	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
+	// {
+	// 	OnHitEventData.EventTag = HitReactionTag;
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - HitReactionTag is NULL"));
+	// }
+	//
+	// UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 	
 }
 
@@ -377,6 +374,11 @@ void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHand
 void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
 	Super::PlayAbilityAnimMontage(AnimMontage);
+	
+}
+
+void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
+{
 	
 }
 

@@ -49,13 +49,13 @@ protected:
 	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> MeleeAttackDamageEffect;
+	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> MeleeAttackHitReactionEffect;
+	TSubclassOf<UGameplayEffect> HitReactionEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
-	FGameplayTag HitReactionTag;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
+	// FGameplayTag HitReactionTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
@@ -116,6 +116,8 @@ protected:
 	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
+
+	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);
 
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
