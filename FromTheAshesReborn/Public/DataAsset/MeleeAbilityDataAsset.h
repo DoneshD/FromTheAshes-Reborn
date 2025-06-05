@@ -4,6 +4,7 @@
 #include "FTAAbilityDataAsset.h"
 #include "MeleeAbilityDataAsset.generated.h"
 
+class UGameplayEffect;
 class UNiagaraSystem;
 
 UCLASS()
@@ -19,8 +20,11 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	bool RequiredPause = false;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Meta = (Categories = "HitTag"))
-	FGameplayTag HitReaction;
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UGameplayEffect> HitEffect;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UNiagaraSystem> HitVFxImpact;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> SlashFX;

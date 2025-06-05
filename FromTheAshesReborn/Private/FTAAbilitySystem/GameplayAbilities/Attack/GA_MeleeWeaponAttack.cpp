@@ -12,6 +12,7 @@
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "NiagaraSystem.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -123,6 +124,7 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
+	UE_LOG(LogTemp, Warning, TEXT("END"))
 	if(!MeleeWeaponActor)
 	{
 		//TODO: Printing incorrectly, fix later
@@ -130,7 +132,6 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 		return;
 	}
 	
-	// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.RemoveAll(this);
 	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 
 }
@@ -162,22 +163,20 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
+
+	ExtractMeleeAssetProperties(MatchingDataAsset);
 	
 	if (MatchingDataAsset->MontageToPlay)
 	{
-		MeleeAbilityAsset = MatchingDataAsset;
-		
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
 		
 		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 		ComboManagerComponent->PauseCurrentAttack = false;
-		
 
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 		MotionWarpToTarget();
 	}
-
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
@@ -329,6 +328,10 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("gsdfgdsgsd"))
+	}
 	
 }
 
@@ -356,19 +359,13 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
-	if(!HitFX)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - HitFX is NULL. Owner: %s"), *GetOwningActorFromActorInfo()->GetName());
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-		
+	
 	FGameplayCueParameters HitCueParams;
 	HitCueParams.SourceObject = static_cast<const UObject*>(HitFX);
 	HitCueParams.EffectCauser = TargetActor;
 	HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
 		
-	K2_AddGameplayCueWithParams(FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Hit"), HitCueParams);
+	K2_AddGameplayCueWithParams(HitVfxCueTag, HitCueParams);
 }
 
 void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
@@ -379,6 +376,24 @@ void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> Anim
 
 void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
 {
+	HitReactionEffect = nullptr;
+	HitFX = nullptr;
+	SlashFX = nullptr;
+	
+	if(MeleeAsset->HitEffect)
+	{
+		HitReactionEffect = MeleeAsset->HitEffect;
+	}
+
+	if(MeleeAsset->HitVFxImpact)
+	{
+		HitFX = MeleeAsset->HitVFxImpact;
+	}
+
+	if(MeleeAsset->SlashFX)
+	{
+		SlashFX = MeleeAsset->SlashFX;
+	}
 	
 }
 
@@ -414,20 +429,13 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
-		if(!SlashFX)
-		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFX is NULL. Owner: %s"), *GetOwningActorFromActorInfo()->GetName());
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-			return;
-		}
-		
 		FGameplayCueParameters SlashCueParams;
 		SlashCueParams.SourceObject = static_cast<const UObject*>(SlashFX);
-		K2_AddGameplayCueWithParams(FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Slash"), SlashCueParams);
+		K2_AddGameplayCueWithParams(SlashVfxCueTag, SlashCueParams);
 	}
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
-		K2_RemoveGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Slash"));
+		K2_RemoveGameplayCue(SlashVfxCueTag);
 	}
 }

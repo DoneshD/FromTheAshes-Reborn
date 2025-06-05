@@ -1,5 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Knockback.h"
 
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+
 UGA_Knockback::UGA_Knockback()
 {
 }
@@ -20,6 +22,7 @@ void UGA_Knockback::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 	const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("HitTag.Grounded.Knockback")));
 
 	if(!KnockbackMontage)
 	{

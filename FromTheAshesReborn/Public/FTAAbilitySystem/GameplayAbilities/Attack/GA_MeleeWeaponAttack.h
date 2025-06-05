@@ -53,10 +53,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> HitReactionEffect;
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
-	// FGameplayTag HitReactionTag;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
 	
@@ -68,13 +65,7 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX", Meta = (Categories = "GameplayCue"))
 	FGameplayTag HitVfxCueTag;
-
-	UPROPERTY(BlueprintReadWrite, Category = "VFX")
-	FVector HitFXLocation;
-
-	UPROPERTY(BlueprintReadWrite, Category = "VFX")
-	TObjectPtr<AActor> HitActorFX;
-
+	
 	FGameplayEventData OnHitEventData;
 
 	TObjectPtr<AFTACharacter> FTAChar;
