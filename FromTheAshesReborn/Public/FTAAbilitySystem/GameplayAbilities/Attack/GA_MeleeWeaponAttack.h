@@ -54,7 +54,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> HitReactionEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
 	FGameplayTag HitReactionTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")

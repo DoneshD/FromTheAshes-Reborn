@@ -207,7 +207,6 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
-	
 }
 
 void UFTAGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

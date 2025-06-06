@@ -30,16 +30,13 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	UE_LOG(LogTemp, Warning, TEXT("UGA_ReceiveHit ActivateAbility"));
 	
 	if(!CurrentEventData.OptionalObject)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
 		
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CurrentEventData.OptionalObject name: %s"), *CurrentEventData.OptionalObject->GetName())
 	}
 	
 	const UHitEventObject* HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
@@ -51,13 +48,15 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 	
-	if(HitInfoObject->HitData.Instigator)
+	if(!HitInfoObject->HitData.Instigator)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s: "), *HitInfoObject->HitData.Instigator->GetName());
+		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - HitInfoObject is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
 	}
 	
-	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation();      // Location of this actor
-	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation(); // Location of the target actor
+	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
+	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation(); 
 
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
