@@ -1,10 +1,15 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 
 #include "DataAsset/HitReactionDataAsset.h"
+#include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 UGA_ReceiveHit::UGA_ReceiveHit()
 {
+	FAbilityTriggerData TriggerData;
+	TriggerData.TriggerTag = FGameplayTag::RequestGameplayTag("TestTag.Tag6");
+	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::GameplayEvent;
+	AbilityTriggers.Add(TriggerData);
 }
 
 void UGA_ReceiveHit::OnAbilityTick(float DeltaTime)
@@ -24,6 +29,26 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	// if(!CurrentEventData.OptionalObject)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
+	// 	
+	// }
+	//
+	// const UHitEventObject* HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
+	//
+	// if(!HitInfoObject)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - HitInfoObject is Null"));
+	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	// 	return;
+	// }
+	//
+	// if(HitInfoObject->HitData.Instigator)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Actor name: %s: "), *HitInfoObject->HitData.Instigator->GetName());
+	// }
 
 	if(HitAbilityAsset)
 	{

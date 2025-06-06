@@ -13,6 +13,7 @@
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "NiagaraSystem.h"
+#include "EventObjects/HitEventObject.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -294,7 +295,7 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	ApplyMeleeHitEffects(TargetDataHandle);
-	// SendMeleeHitGameplayEvents(TargetDataHandle);
+	SendMeleeHitGameplayEvents(TargetDataHandle);
 	AddMeleeHitCues(TargetDataHandle);
 }
 
@@ -352,6 +353,20 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	OnHitEventData.Target = TargetActor;
 	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
 	
+	// UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
+	// HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
+	//
+	// OnHitEventData.OptionalObject = HitInfoObj;
+	
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag6")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Test Tag.Tag6"));
+		OnHitEventData.EventTag = FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Flail");
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - HitReactionTag is NULL"));
+	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 	

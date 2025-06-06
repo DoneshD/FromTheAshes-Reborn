@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
 #include "EventObjects/SuspendEventObject.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
@@ -38,6 +39,9 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Flail")));
+	
+
 	ComboManagerComponent->AerialAttacksCounter += 1;
 
 	SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
@@ -62,10 +66,10 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 
 void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	USuspendEventObject* LaunchInfoObj = NewObject<USuspendEventObject>(this);
-	LaunchInfoObj->SuspendData.DescentSpeed = DescentSpeed;
+	USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
+	SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
 	
-	OnHitEventData.OptionalObject = LaunchInfoObj;
+	OnHitEventData.OptionalObject = SuspendInfoObj;
 	
 	Super::SendMeleeHitGameplayEvents(TargetDataHandle);
 }

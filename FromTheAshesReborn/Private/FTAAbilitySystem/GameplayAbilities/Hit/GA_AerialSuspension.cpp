@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_AerialSuspension.h"
 
+#include "MaterialHLSLTree.h"
 #include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 
@@ -21,11 +22,16 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	UE_LOG(LogTemp, Log, TEXT("UGA_AerialSuspension - Active Ability"));
+
 	const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
 
 	if(!SuspendEventObj)
 	{
-		UE_LOG(LogTemp, Error, TEXT("LaunchInfoObject is Null"));
+		UE_LOG(LogTemp, Error, TEXT("SuspendEventObj is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+		
 	}
 
 	SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
