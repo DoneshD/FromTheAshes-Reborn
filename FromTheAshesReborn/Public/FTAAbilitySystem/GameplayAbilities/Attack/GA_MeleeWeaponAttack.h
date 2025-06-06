@@ -72,6 +72,16 @@ protected:
 
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
+	UPROPERTY()
+	TSubclassOf<UGameplayEffect> CurrentHitReactionEffect = nullptr;
+	
+	UPROPERTY()
+	TObjectPtr<UNiagaraSystem> CurrentHitFX = nullptr;
+	
+	UPROPERTY()
+	TObjectPtr<UNiagaraSystem> CurrentSlashFX = nullptr;
+
+
 protected:
 
 	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());

@@ -43,7 +43,6 @@ UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
 	return CastChecked<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
 }
 
-
 bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
@@ -124,7 +123,6 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	UE_LOG(LogTemp, Warning, TEXT("END"))
 	if(!MeleeWeaponActor)
 	{
 		//TODO: Printing incorrectly, fix later
@@ -315,44 +313,47 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
-	
-	if (HitReactionEffect)
+
+	if(CurrentHitReactionEffect)
 	{
 		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
 		CurrentActivationInfo,
 		TargetDataHandle,
-		HitReactionEffect, 
+		CurrentHitReactionEffect, 
 		1,
 		1
 		);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("gsdfgdsgsd"))
+		if(HitReactionEffect)
+		{
+			TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
+			CurrentSpecHandle,
+			CurrentActorInfo,
+			CurrentActivationInfo,
+			TargetDataHandle,
+			HitReactionEffect, 
+			1,
+			1
+			);
+		}
 	}
 	
 }
 
 void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	// AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
-	//
-	// OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	// OnHitEventData.Target = TargetActor;
-	// OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
-	//
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
-	// {
-	// 	OnHitEventData.EventTag = HitReactionTag;
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - HitReactionTag is NULL"));
-	// }
-	//
-	// UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	
+	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnHitEventData.Target = TargetActor;
+	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
+	
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 	
 }
 
@@ -361,7 +362,14 @@ void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHand
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
 	FGameplayCueParameters HitCueParams;
-	HitCueParams.SourceObject = static_cast<const UObject*>(HitFX);
+	if(CurrentHitFX)
+	{
+		HitCueParams.SourceObject = static_cast<const UObject*>(CurrentHitFX);
+	}
+	else
+	{
+		HitCueParams.SourceObject = static_cast<const UObject*>(HitFX);
+	}
 	HitCueParams.EffectCauser = TargetActor;
 	HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
 		
@@ -376,25 +384,24 @@ void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> Anim
 
 void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
 {
-	HitReactionEffect = nullptr;
-	HitFX = nullptr;
-	SlashFX = nullptr;
+	CurrentHitReactionEffect = nullptr;
+	CurrentHitFX = nullptr;
+	CurrentSlashFX = nullptr;
 	
 	if(MeleeAsset->HitEffect)
 	{
-		HitReactionEffect = MeleeAsset->HitEffect;
+		CurrentHitReactionEffect = MeleeAsset->HitEffect;
 	}
 
 	if(MeleeAsset->HitVFxImpact)
 	{
-		HitFX = MeleeAsset->HitVFxImpact;
+		CurrentHitFX = MeleeAsset->HitVFxImpact;
 	}
 
 	if(MeleeAsset->SlashFX)
 	{
-		SlashFX = MeleeAsset->SlashFX;
+		CurrentHitFX = MeleeAsset->SlashFX;
 	}
-	
 }
 
 void UGA_MeleeWeaponAttack::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -430,7 +437,14 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		FGameplayCueParameters SlashCueParams;
-		SlashCueParams.SourceObject = static_cast<const UObject*>(SlashFX);
+		if(CurrentSlashFX)
+		{
+			SlashCueParams.SourceObject = static_cast<const UObject*>(CurrentSlashFX);
+		}
+		else
+		{
+			SlashCueParams.SourceObject = static_cast<const UObject*>(SlashFX);
+		}
 		K2_AddGameplayCueWithParams(SlashVfxCueTag, SlashCueParams);
 	}
 
