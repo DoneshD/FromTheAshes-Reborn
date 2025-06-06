@@ -353,19 +353,19 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	OnHitEventData.Target = TargetActor;
 	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
 	
-	// UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
-	// HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
-	//
-	// OnHitEventData.OptionalObject = HitInfoObj;
+	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
+	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag6")))
+	OnHitEventData.OptionalObject = HitInfoObj;
+	
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag1")))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Test Tag.Tag6"));
-		OnHitEventData.EventTag = FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Flail");
+		UE_LOG(LogTemp, Warning, TEXT("Test Tag.Tag1"));
+		OnHitEventData.EventTag = FGameplayTag::RequestGameplayTag("TestTag.Tag1");
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - HitReactionTag is NULL"));
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - TestTag.Tag1 is NULL"));
 	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);

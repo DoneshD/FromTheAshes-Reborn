@@ -2,19 +2,18 @@
 
 #include "DataAsset/HitReactionDataAsset.h"
 #include "EventObjects/HitEventObject.h"
+
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 UGA_ReceiveHit::UGA_ReceiveHit()
 {
-	FAbilityTriggerData TriggerData;
-	TriggerData.TriggerTag = FGameplayTag::RequestGameplayTag("TestTag.Tag6");
-	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::GameplayEvent;
-	AbilityTriggers.Add(TriggerData);
+	
 }
 
 void UGA_ReceiveHit::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
+	
 }
 
 bool UGA_ReceiveHit::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -29,11 +28,16 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
+	UE_LOG(LogTemp, Log, TEXT("UGA_ReceiveHit ActivateAbility"));
+	//
 	// if(!CurrentEventData.OptionalObject)
 	// {
 	// 	UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
 	// 	
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("CurrentEventData.OptionalObject name: %s"), *CurrentEventData.OptionalObject->GetName())
 	// }
 	//
 	// const UHitEventObject* HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);

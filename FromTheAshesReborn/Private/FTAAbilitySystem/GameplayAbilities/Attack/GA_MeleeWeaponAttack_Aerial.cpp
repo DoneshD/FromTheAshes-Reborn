@@ -4,11 +4,11 @@
 #include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
 #include "EventObjects/SuspendEventObject.h"
-#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 UGA_MeleeWeaponAttack_Aerial::UGA_MeleeWeaponAttack_Aerial()
 {
@@ -39,9 +39,6 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Flail")));
-	
-
 	ComboManagerComponent->AerialAttacksCounter += 1;
 
 	SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
@@ -68,10 +65,29 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 {
 	USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
 	SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
+
+	FGameplayEventData OnAerialHitEventData;
+	OnAerialHitEventData.OptionalObject = SuspendInfoObj;
+
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
-	OnHitEventData.OptionalObject = SuspendInfoObj;
+	OnAerialHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnAerialHitEventData.Target = TargetActor;
+	OnAerialHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
 	
-	Super::SendMeleeHitGameplayEvents(TargetDataHandle);
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("AbilityTag.Suspend")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AbilityTag.Suspend"));
+		OnAerialHitEventData.EventTag = FGameplayTag::RequestGameplayTag("AbilityTag.Suspend");
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - AbilityTag.Suspend is NULL"));
+	}
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnAerialHitEventData.EventTag, OnAerialHitEventData);
+	
+	// Super::SendMeleeHitGameplayEvents(TargetDataHandle);
 }
 
 

@@ -2,6 +2,7 @@
 
 #include "MaterialHLSLTree.h"
 #include "EventObjects/SuspendEventObject.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 
 UGA_AerialSuspension::UGA_AerialSuspension()
@@ -23,6 +24,8 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	UE_LOG(LogTemp, Log, TEXT("UGA_AerialSuspension - Active Ability"));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("EffectTag.ReceiveHit.Aerial.Flail")));
+	
 
 	const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
 

@@ -4,7 +4,6 @@
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "GA_ReceiveHit.generated.h"
 
-
 class UHitReactionDataAsset;
 
 UCLASS()
