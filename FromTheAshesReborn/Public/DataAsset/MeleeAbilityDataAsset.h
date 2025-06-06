@@ -24,6 +24,9 @@ public:
 	TSubclassOf<UGameplayEffect> HitEffect;
 
 	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag HitReactionTag;
+
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> HitVFxImpact;
 	
 	UPROPERTY(EditDefaultsOnly)

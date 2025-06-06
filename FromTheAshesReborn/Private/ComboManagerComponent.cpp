@@ -71,7 +71,8 @@ bool UComboManagerComponent::FindMatchingMeleeAssetToTagContainer(const FMeleeAt
 		{
 			if (Asset->RequiredIndex == GetCurrentComboIndex())
 			{
-				if (PauseCurrentAttack)
+				// if (PauseCurrentAttack)
+				if (false)
 				{
 					if (Asset->RequiredPause)
 					{

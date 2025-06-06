@@ -97,7 +97,6 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 	
-	// MeleeWeaponActor->DidItHitActorComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 
 
@@ -358,18 +357,20 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag1")))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Test Tag.Tag1"));
-		OnHitEventData.EventTag = FGameplayTag::RequestGameplayTag("TestTag.Tag1");
+		OnHitEventData.EventTag = CurrentHitReactionTag;
+	}
+	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
+	{
+		OnHitEventData.EventTag = HitReactionTag;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - TestTag.Tag1 is NULL"));
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - Not a valid Gameplay Tag"));
 	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
-	
 }
 
 void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -402,6 +403,7 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	CurrentHitReactionEffect = nullptr;
 	CurrentHitFX = nullptr;
 	CurrentSlashFX = nullptr;
+	CurrentHitReactionTag = FGameplayTag::EmptyTag;
 	
 	if(MeleeAsset->HitEffect)
 	{
@@ -416,6 +418,11 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	if(MeleeAsset->SlashFX)
 	{
 		CurrentHitFX = MeleeAsset->SlashFX;
+	}
+
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->HitReactionTag))
+	{
+		CurrentHitReactionTag = MeleeAsset->HitReactionTag;
 	}
 }
 

@@ -53,6 +53,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> HitReactionEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	FGameplayTag HitReactionTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
@@ -80,6 +83,9 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<UNiagaraSystem> CurrentSlashFX = nullptr;
+
+	UPROPERTY()
+	FGameplayTag CurrentHitReactionTag = FGameplayTag::EmptyTag;
 
 
 protected:

@@ -78,16 +78,20 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 	OnAerialHitEventData.Target = TargetActor;
 	OnAerialHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("AbilityTag.Suspend")))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AbilityTag.Suspend"));
-		OnAerialHitEventData.EventTag = FGameplayTag::RequestGameplayTag("AbilityTag.Suspend");
+		OnAerialHitEventData.EventTag = CurrentHitReactionTag;
+	}
+	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
+	{
+		OnAerialHitEventData.EventTag = HitReactionTag;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack - AbilityTag.Suspend is NULL"));
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - Not a valid Gameplay Tag"));
 	}
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("Test23232"))
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnAerialHitEventData.EventTag, OnAerialHitEventData);
 	
 }

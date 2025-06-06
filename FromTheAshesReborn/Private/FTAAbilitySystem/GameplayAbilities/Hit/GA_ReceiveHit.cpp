@@ -4,6 +4,8 @@
 #include "EventObjects/HitEventObject.h"
 
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTACustomBase/FTACharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UGA_ReceiveHit::UGA_ReceiveHit()
 {
@@ -28,7 +30,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	UE_LOG(LogTemp, Log, TEXT("UGA_ReceiveHit ActivateAbility"));
+	UE_LOG(LogTemp, Warning, TEXT("UGA_ReceiveHit ActivateAbility"));
 	
 	if(!CurrentEventData.OptionalObject)
 	{
@@ -53,6 +55,15 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s: "), *HitInfoObject->HitData.Instigator->GetName());
 	}
+	
+	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation();      // Location of this actor
+	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation(); // Location of the target actor
+
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+
+	GetFTACharacterFromActorInfo()->SetActorRotation(LookAtRotation);
+	
+
 
 	if(HitAbilityAsset)
 	{
