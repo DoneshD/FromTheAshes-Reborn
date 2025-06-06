@@ -29,30 +29,30 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	UE_LOG(LogTemp, Log, TEXT("UGA_ReceiveHit ActivateAbility"));
-	//
-	// if(!CurrentEventData.OptionalObject)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
-	// 	
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("CurrentEventData.OptionalObject name: %s"), *CurrentEventData.OptionalObject->GetName())
-	// }
-	//
-	// const UHitEventObject* HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
-	//
-	// if(!HitInfoObject)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - HitInfoObject is Null"));
-	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-	// 	return;
-	// }
-	//
-	// if(HitInfoObject->HitData.Instigator)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Actor name: %s: "), *HitInfoObject->HitData.Instigator->GetName());
-	// }
+	
+	if(!CurrentEventData.OptionalObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CurrentEventData.OptionalObject name: %s"), *CurrentEventData.OptionalObject->GetName())
+	}
+	
+	const UHitEventObject* HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
+	
+	if(!HitInfoObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - HitInfoObject is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	if(HitInfoObject->HitData.Instigator)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s: "), *HitInfoObject->HitData.Instigator->GetName());
+	}
 
 	if(HitAbilityAsset)
 	{

@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
+#include "HitEventObject.h"
 #include "SuspendEventObject.generated.h"
 
 USTRUCT(BlueprintType)
@@ -11,7 +12,7 @@ struct FSuspendInfo
 };
 
 UCLASS()
-class FROMTHEASHESREBORN_API USuspendEventObject : public UObject
+class FROMTHEASHESREBORN_API USuspendEventObject : public UHitEventObject
 {
 	GENERATED_BODY()
 
