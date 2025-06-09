@@ -15,8 +15,8 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 
 public:
 	
-	UPROPERTY(EditAnywhere, Category = "Camera")
-	TObjectPtr<UStaticMeshComponent> SpringArmAttachmentMesh;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
+	USceneComponent* TargetCameraAnchor;
 	
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	class USpringArmComponent* SpringArmComp;

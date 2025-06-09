@@ -71,11 +71,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		TargetLockOff();
 		return;
 	}
-
-	// EnableMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	UpdateMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	SetControlRotationOnTarget(LockedOnTargetActor);
-	// ControlCameraOffset(DeltaTime);
+	ControlCameraOffset(DeltaTime);
 	SetOwnerActorRotation();
 	
 	
@@ -354,9 +352,9 @@ void UTargetingSystemComponent::UpdateMidPointControlRotation(APlayerCharacter* 
 
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, DesiredMidpoint, GetWorld()->GetDeltaSeconds(), InterpSpeed);
 
-	if (IsValid(PlayerOwner->SpringArmAttachmentMesh))
+	if (IsValid(PlayerOwner->TargetCameraAnchor))
 	{
-		PlayerOwner->SpringArmAttachmentMesh->SetWorldLocation(SmoothedMidPoint);
+		PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
 	}
 
 	if (IsValid(PlayerOwner->SpringArmComp))
@@ -368,36 +366,10 @@ void UTargetingSystemComponent::UpdateMidPointControlRotation(APlayerCharacter* 
 	}
 }
 
-void UTargetingSystemComponent::EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
-{
-	if (TargetActor)
-	{
-		if (PlayerOwner->GetDistanceTo(TargetActor) < 3000.0f)
-		{
-			MidPoint = CalculateMidpoint(GetOwner()->GetActorLocation(), TargetActor->GetActorLocation());
-			Radius = (CalculateDistance(GetOwner()->GetActorLocation(), TargetActor->GetActorLocation())) / 2;
-
-			PlayerOwner->SpringArmAttachmentMesh->SetWorldLocation(MidPoint);
-			PlayerOwner->SpringArmComp->TargetArmLength = Radius + 300.0f;
-
-			FVector TargetLocation = TargetActor->GetActorLocation();
-			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayerOwner->GetActorLocation(), TargetLocation);
-			FRotator InterpRot = FMath::RInterpTo(PlayerOwner->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
-
-			PlayerOwner->SetActorRotation(InterpRot);
-		}
-		else
-		{
-			// DisableLockOn();
-		}
-	}
-}
-
 void UTargetingSystemComponent::DisableMidPointControlRotation()
 {
-	PlayerCharacter->SpringArmAttachmentMesh->SetRelativeLocation(PlayerCharacter->InitialSpringMeshLocation);
+	PlayerCharacter->TargetCameraAnchor->SetRelativeLocation(PlayerCharacter->InitialSpringMeshLocation);
 	PlayerCharacter->SpringArmComp->TargetArmLength = 400.0f;
-	
 }
 
 void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
@@ -478,7 +450,6 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	// Recast PlayerController in case it wasn't already setup on Begin Play (local split screen)
 	SetupLocalPlayerController();
 
-	bJustLockedOn = true; 
 	bTargetLocked = true;
 	if (bShouldDrawLockedOnWidget)
 	{
@@ -494,7 +465,7 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	{
 		if (IsValid(OwnerPlayerController))
 		{
-			OwnerPlayerController->SetIgnoreLookInput(false);
+			OwnerPlayerController->SetIgnoreLookInput(true);
 		}
 	}
 

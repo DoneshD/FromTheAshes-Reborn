@@ -246,13 +246,11 @@ private:
 	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;
 
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
-
 	
 	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
 	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
+	
 	void UpdateMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
-
-	void EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	void DisableMidPointControlRotation();
 	
 	void ControlCameraOffset(float DeltaTime);
@@ -280,9 +278,7 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<APlayerCharacter> PlayerCharacter;
-
-	bool bJustLockedOn = false;
-
+	
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 
 	
