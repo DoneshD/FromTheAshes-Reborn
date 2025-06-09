@@ -9,6 +9,9 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "Player/PlayerCharacter.h"
 
 UTargetingSystemComponent::UTargetingSystemComponent()
 {
@@ -33,6 +36,13 @@ void UTargetingSystemComponent::BeginPlay()
 	if (!ensure(OwnerPawn))
 	{
 		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to Pawn only ..."), *GetName());
+		return;
+	}
+
+	PlayerCharacter = Cast<APlayerCharacter>(OwnerPawn);
+	if (!ensure(PlayerCharacter))
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to PlayerCharacter only ..."), *GetName());
 		return;
 	}
 
@@ -269,6 +279,48 @@ float UTargetingSystemComponent::GetAngleUsingCharacterRotation(const AActor* Ac
 FRotator UTargetingSystemComponent::FindLookAtRotation(const FVector Start, const FVector Target)
 {
 	return FRotationMatrix::MakeFromX(Target - Start).Rotator();
+}
+
+FVector UTargetingSystemComponent::CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation)
+{
+	FVector Midpoint = (PlayerLocation + TargetLocation) / 2.0f;
+
+	return Midpoint;
+}
+
+float UTargetingSystemComponent::CalculateDistance(FVector PlayerLocation, FVector TargetLocation)
+{
+	float CalculateX = FMath::Square(abs((PlayerLocation.X - TargetLocation.X)));
+	float CalculateY = FMath::Square(abs((PlayerLocation.Y - TargetLocation.Y)));
+	float CalculateZ = FMath::Square(abs((PlayerLocation.Z - TargetLocation.Z)));
+
+	return FMath::Sqrt(CalculateX + CalculateY + CalculateZ);
+
+}
+
+void UTargetingSystemComponent::EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+{
+	if (IsTargeting && TargetActor)
+	{
+		if (PlayerOwner->GetDistanceTo(TargetActor) < 3000.0f)
+		{
+			MidPoint = CalculateMidpoint(GetOwner()->GetActorLocation(), TargetActor->GetActorLocation());
+			Radius = (CalculateDistance(GetOwner()->GetActorLocation(), TargetActor->GetActorLocation())) / 2;
+
+			PlayerOwner->SpringArmAttachmentMesh->SetWorldLocation(MidPoint);
+			PlayerOwner->SpringArmComp->TargetArmLength = Radius + 300.0f;
+
+			FVector TargetLocation = TargetActor->GetActorLocation();
+			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayerOwner->GetActorLocation(), TargetLocation);
+			FRotator InterpRot = FMath::RInterpTo(PlayerOwner->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
+
+			PlayerOwner->SetActorRotation(TargetRotation);
+		}
+		else
+		{
+			// DisableLockOn();
+		}
+	}
 }
 
 void UTargetingSystemComponent::ResetIsSwitchingTarget()

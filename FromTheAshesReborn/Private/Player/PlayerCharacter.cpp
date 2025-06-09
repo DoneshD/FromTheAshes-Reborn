@@ -11,8 +11,11 @@
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
+	SpringArmAttachmentMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SprintArmAttachmentMesh"));
+	SpringArmAttachmentMesh->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
-	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->SetupAttachment(SpringArmAttachmentMesh);
 
 	SpringArmComp->TargetArmLength = 400.0f;
 	SpringArmComp->bUsePawnControlRotation = true;
@@ -62,6 +65,11 @@ void APlayerCharacter::BeginPlay()
 	}
 
 	ParkourSystemComponent->SetIntializeReference(this, SpringArmComp, CameraComp, MotionWarpingComponent);
+
+	if (SpringArmAttachmentMesh)
+	{
+		InitialSpringMeshLocation = SpringArmAttachmentMesh->GetRelativeLocation();
+	}
 	
 }
 

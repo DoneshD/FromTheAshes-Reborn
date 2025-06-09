@@ -10,6 +10,7 @@
 #endif
 #include "TargetingSystemComponent.generated.h"
 
+class APlayerCharacter;
 class UUserWidget;
 class UWidgetComponent;
 class APlayerController;
@@ -229,6 +230,11 @@ private:
 	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;
 
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
+
+	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
+	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
+
+	void EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	
 	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
 	
@@ -237,7 +243,6 @@ private:
 	bool ShouldSwitchTargetActor(float AxisValue);
 
 	static bool TargetIsTargetable(const AActor* Actor);
-
 	
 	 void SetupLocalPlayerController();
 
@@ -245,4 +250,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool IsTargeting = false;
+
+	FVector MidPoint;
+	float Radius;
+
+	UPROPERTY()
+	TObjectPtr<APlayerCharacter> PlayerCharacter;
 };
