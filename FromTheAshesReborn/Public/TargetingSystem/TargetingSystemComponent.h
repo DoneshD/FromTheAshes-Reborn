@@ -235,6 +235,7 @@ private:
 	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
 
 	void EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
+	void DisableMidPointControlRotation();
 	
 	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
 	

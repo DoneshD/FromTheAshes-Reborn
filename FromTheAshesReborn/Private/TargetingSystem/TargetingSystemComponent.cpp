@@ -64,8 +64,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		return;
 	}
 
-	SetControlRotationOnTarget(LockedOnTargetActor);
-	SetOwnerActorRotation();
+	// SetControlRotationOnTarget(LockedOnTargetActor);
+	// SetOwnerActorRotation();
+	EnableMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	
 	// Target Locked Off based on Distance
 	if (GetDistanceFromCharacter(LockedOnTargetActor) > MinimumDistanceToEnable)
@@ -300,7 +301,7 @@ float UTargetingSystemComponent::CalculateDistance(FVector PlayerLocation, FVect
 
 void UTargetingSystemComponent::EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
 {
-	if (IsTargeting && TargetActor)
+	if (TargetActor)
 	{
 		if (PlayerOwner->GetDistanceTo(TargetActor) < 3000.0f)
 		{
@@ -314,13 +315,20 @@ void UTargetingSystemComponent::EnableMidPointControlRotation(APlayerCharacter* 
 			FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(PlayerOwner->GetActorLocation(), TargetLocation);
 			FRotator InterpRot = FMath::RInterpTo(PlayerOwner->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 5.0f);
 
-			PlayerOwner->SetActorRotation(TargetRotation);
+			PlayerOwner->SetActorRotation(InterpRot);
 		}
 		else
 		{
 			// DisableLockOn();
 		}
 	}
+}
+
+void UTargetingSystemComponent::DisableMidPointControlRotation()
+{
+	PlayerCharacter->SpringArmAttachmentMesh->SetRelativeLocation(PlayerCharacter->InitialSpringMeshLocation);
+	PlayerCharacter->SpringArmComp->TargetArmLength = 400.0f;
+	
 }
 
 void UTargetingSystemComponent::ResetIsSwitchingTarget()
@@ -392,7 +400,7 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	{
 		if (IsValid(OwnerPlayerController))
 		{
-			OwnerPlayerController->SetIgnoreLookInput(true);
+			OwnerPlayerController->SetIgnoreLookInput(false);
 		}
 	}
 
@@ -431,6 +439,7 @@ void UTargetingSystemComponent::TargetLockOff()
 		}
 	}
 
+	DisableMidPointControlRotation();
 	LockedOnTargetActor = nullptr;
 }
 

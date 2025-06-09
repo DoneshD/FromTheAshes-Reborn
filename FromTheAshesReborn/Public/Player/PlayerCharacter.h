@@ -44,7 +44,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	bool DisableRootMotion = false;
 
-	FVector InitialSpringMeshLocation;
 
 public:
 	
@@ -64,4 +63,5 @@ public:
 
 	virtual void InitAbilitySystemComponent() override;
 
+	FVector InitialSpringMeshLocation;
 };
