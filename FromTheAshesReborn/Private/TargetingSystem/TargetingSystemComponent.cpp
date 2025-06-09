@@ -72,11 +72,12 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		return;
 	}
 
+	// EnableMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
+	UpdateMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	SetControlRotationOnTarget(LockedOnTargetActor);
-	ControlCameraOffset(DeltaTime);
+	// ControlCameraOffset(DeltaTime);
 	SetOwnerActorRotation();
 	
-	// EnableMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	
 	// Target Locked Off based on Distance
 	if (GetDistanceFromCharacter(LockedOnTargetActor) > MinimumDistanceToEnable)
@@ -309,6 +310,49 @@ float UTargetingSystemComponent::CalculateDistance(FVector PlayerLocation, FVect
 
 }
 
+void UTargetingSystemComponent::UpdateMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+{
+	if (!IsValid(PlayerOwner) || !IsValid(TargetActor)) return;
+
+	const FVector PlayerLoc = PlayerOwner->GetActorLocation();
+	const FVector TargetLoc = TargetActor->GetActorLocation();
+
+	FVector DesiredMidpoint = FMath::Lerp(PlayerLoc, TargetLoc, 0.5f);
+	float Distance = FVector::Dist(PlayerLoc, TargetLoc);
+	float DesiredRadius = Distance / 2.0f;
+
+	if (SmoothedMidPoint.IsZero())
+	{
+		SmoothedMidPoint = DesiredMidpoint;
+	}
+
+	const float DistanceToDesired = FVector::Dist(SmoothedMidPoint, DesiredMidpoint);
+	const float MinSpeed = 4.0f;
+	const float MaxSpeed = 20.0f;
+	const float SpeedThreshold = 600.0f; 
+
+	float InterpSpeed = FMath::GetMappedRangeValueClamped(
+		FVector2D(0.0f, SpeedThreshold),
+		FVector2D(MinSpeed, MaxSpeed),
+		DistanceToDesired
+	);
+
+	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, DesiredMidpoint, GetWorld()->GetDeltaSeconds(), InterpSpeed);
+
+	if (IsValid(PlayerOwner->SpringArmAttachmentMesh))
+	{
+		PlayerOwner->SpringArmAttachmentMesh->SetWorldLocation(SmoothedMidPoint);
+	}
+
+	if (IsValid(PlayerOwner->SpringArmComp))
+	{
+		float CurrentArmLength = PlayerOwner->SpringArmComp->TargetArmLength;
+		float NewArmLength = FMath::FInterpTo(CurrentArmLength, DesiredRadius + 300.0f, GetWorld()->GetDeltaSeconds(), 6.0f);
+		PlayerOwner->SpringArmComp->TargetArmLength = NewArmLength;
+	}
+}
+
+
 void UTargetingSystemComponent::EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
 {
 	if (TargetActor)
@@ -345,7 +389,6 @@ void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
 {
 	if (bEnableSoftLockCameraOffset && OwnerPlayerController && bTargetLocked)
 	{
-		// Get mouse/stick delta input
 		float YawInput = 0.0f;
 		float PitchInput = 0.0f;
 
@@ -355,14 +398,12 @@ void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
 		YawInput *= InputScale;
 		PitchInput *= InputScale;
 
-		// Apply and clamp offset
 		CurrentCameraOffset.Yaw += YawInput;
 		CurrentCameraOffset.Pitch += PitchInput;
 
 		CurrentCameraOffset.Yaw = FMath::Clamp(CurrentCameraOffset.Yaw, -MaxSoftYawOffset, MaxSoftYawOffset);
 		CurrentCameraOffset.Pitch = FMath::Clamp(CurrentCameraOffset.Pitch, -MaxSoftPitchOffset, MaxSoftPitchOffset);
 
-		// Smooth decay when no input
 		const float DecayRate = SoftLockDecayRate * DeltaTime;
 		CurrentCameraOffset = FMath::RInterpTo(CurrentCameraOffset, FRotator::ZeroRotator, DeltaTime, SoftLockDecayRate);
 	}
@@ -422,6 +463,7 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	// Recast PlayerController in case it wasn't already setup on Begin Play (local split screen)
 	SetupLocalPlayerController();
 
+	bJustLockedOn = true; 
 	bTargetLocked = true;
 	if (bShouldDrawLockedOnWidget)
 	{
@@ -451,7 +493,7 @@ void UTargetingSystemComponent::TargetLockOff()
 {
 	// Recast PlayerController in case it wasn't already setup on Begin Play (local split screen)
 	SetupLocalPlayerController();
-
+	SmoothedMidPoint = FVector::ZeroVector;
 	bTargetLocked = false;
 	if (TargetLockedOnWidgetComponent)
 	{
@@ -476,7 +518,7 @@ void UTargetingSystemComponent::TargetLockOff()
 		}
 	}
 
-	// DisableMidPointControlRotation();
+	DisableMidPointControlRotation();
 	LockedOnTargetActor = nullptr;
 }
 

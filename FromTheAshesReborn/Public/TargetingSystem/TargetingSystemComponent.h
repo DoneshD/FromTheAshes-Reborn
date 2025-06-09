@@ -250,7 +250,8 @@ private:
 	
 	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
 	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
-	
+	void UpdateMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
+
 	void EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	void DisableMidPointControlRotation();
 	
@@ -279,5 +280,10 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<APlayerCharacter> PlayerCharacter;
+
+	bool bJustLockedOn = false;
+
+	FVector SmoothedMidPoint = FVector::ZeroVector;
+
 	
 };
