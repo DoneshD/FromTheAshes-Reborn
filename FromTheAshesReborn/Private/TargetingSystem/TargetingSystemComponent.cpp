@@ -325,17 +325,32 @@ void UTargetingSystemComponent::UpdateMidPointControlRotation(APlayerCharacter* 
 	{
 		SmoothedMidPoint = DesiredMidpoint;
 	}
+	
+	float InterpSpeed = 8.0f; 
+	const float CatchupInterpSpeed = 18.0f;
+	const float ScreenEdgeCatchupThreshold = 0.35f; 
 
-	const float DistanceToDesired = FVector::Dist(SmoothedMidPoint, DesiredMidpoint);
-	const float MinSpeed = 4.0f;
-	const float MaxSpeed = 20.0f;
-	const float SpeedThreshold = 600.0f; 
+	if (IsValid(OwnerPlayerController))
+	{
+		FVector2D PlayerScreenPosition;
+		if (OwnerPlayerController->ProjectWorldLocationToScreen(PlayerOwner->GetActorLocation(), PlayerScreenPosition))
+		{
+			FVector2D ViewportSize;
+			GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
 
-	float InterpSpeed = FMath::GetMappedRangeValueClamped(
-		FVector2D(0.0f, SpeedThreshold),
-		FVector2D(MinSpeed, MaxSpeed),
-		DistanceToDesired
-	);
+			FVector2D ScreenCenter = ViewportSize * 0.5f;
+			FVector2D DistanceFromCenter = PlayerScreenPosition - ScreenCenter;
+
+			FVector2D NormalizedOffset = DistanceFromCenter / ViewportSize;
+
+			float OffsetMagnitude = FVector2D(FMath::Abs(NormalizedOffset.X), FMath::Abs(NormalizedOffset.Y)).Size();
+
+			if (OffsetMagnitude > ScreenEdgeCatchupThreshold)
+			{
+				InterpSpeed = CatchupInterpSpeed;
+			}
+		}
+	}
 
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, DesiredMidpoint, GetWorld()->GetDeltaSeconds(), InterpSpeed);
 
@@ -347,11 +362,11 @@ void UTargetingSystemComponent::UpdateMidPointControlRotation(APlayerCharacter* 
 	if (IsValid(PlayerOwner->SpringArmComp))
 	{
 		float CurrentArmLength = PlayerOwner->SpringArmComp->TargetArmLength;
-		float NewArmLength = FMath::FInterpTo(CurrentArmLength, DesiredRadius + 300.0f, GetWorld()->GetDeltaSeconds(), 6.0f);
+		float TargetArmLength = DesiredRadius + 300.0f;
+		float NewArmLength = FMath::FInterpTo(CurrentArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 6.0f);
 		PlayerOwner->SpringArmComp->TargetArmLength = NewArmLength;
 	}
 }
-
 
 void UTargetingSystemComponent::EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
 {

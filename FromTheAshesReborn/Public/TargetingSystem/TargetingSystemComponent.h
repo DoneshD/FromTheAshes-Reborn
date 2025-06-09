@@ -38,7 +38,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Offset")
 	float CameraInputScale = 1.5f;
-
+	
 	FRotator CurrentCameraOffset;
 
 
