@@ -15,9 +15,6 @@ class UUserWidget;
 class UWidgetComponent;
 class APlayerController;
 
-// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FComponentOnTargetLockedOnOff, AActor*, TargetActor);
-// DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FComponentSetRotation, AActor*, TargetActor, FRotator, ControlRotation);
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceComponentOnTargetLockedOnOff, AActor*, TargetActor);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTraceComponentSetRotation, AActor*, TargetActor, FRotator, ControlRotation);
 
@@ -25,6 +22,25 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 	class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, Category = "Offset")
+	bool bEnableSoftLockCameraOffset = true;
+
+	UPROPERTY(EditAnywhere, Category = "Offset")
+	float MaxSoftYawOffset = 25.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Offset")
+	float MaxSoftPitchOffset = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Offset")
+	float SoftLockDecayRate = 0.75f;
+
+	UPROPERTY(EditAnywhere, Category = "Offset")
+	float CameraInputScale = 1.5f;
+
+	FRotator CurrentCameraOffset;
+
 
 public:
 	UTargetingSystemComponent();
@@ -231,11 +247,14 @@ private:
 
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
 
+	
 	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
 	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
-
+	
 	void EnableMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	void DisableMidPointControlRotation();
+	
+	void ControlCameraOffset(float DeltaTime);
 	
 	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
 	
@@ -260,4 +279,5 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<APlayerCharacter> PlayerCharacter;
+	
 };

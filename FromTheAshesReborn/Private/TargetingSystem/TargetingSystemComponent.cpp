@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/PlayerInput.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/PlayerCharacter.h"
@@ -20,6 +21,13 @@ UTargetingSystemComponent::UTargetingSystemComponent()
 	LockedOnWidgetClass = StaticLoadClass(UObject::StaticClass(), nullptr, TEXT("/TargetSystem/UI/WBP_LockOn.WBP_LockOn_C"));
 	TargetableActors = APawn::StaticClass();
 	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
+
+	bEnableSoftLockCameraOffset = true;
+	MaxSoftYawOffset = 25.0f;
+	MaxSoftPitchOffset = 10.0f;
+	SoftLockDecayRate = 3.0f;
+	CurrentCameraOffset = FRotator::ZeroRotator;
+
 }
 
 void UTargetingSystemComponent::BeginPlay()
@@ -64,9 +72,11 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		return;
 	}
 
-	// SetControlRotationOnTarget(LockedOnTargetActor);
-	// SetOwnerActorRotation();
-	EnableMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
+	SetControlRotationOnTarget(LockedOnTargetActor);
+	ControlCameraOffset(DeltaTime);
+	SetOwnerActorRotation();
+	
+	// EnableMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	
 	// Target Locked Off based on Distance
 	if (GetDistanceFromCharacter(LockedOnTargetActor) > MinimumDistanceToEnable)
@@ -331,6 +341,33 @@ void UTargetingSystemComponent::DisableMidPointControlRotation()
 	
 }
 
+void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
+{
+	if (bEnableSoftLockCameraOffset && OwnerPlayerController && bTargetLocked)
+	{
+		// Get mouse/stick delta input
+		float YawInput = 0.0f;
+		float PitchInput = 0.0f;
+
+		OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
+
+		const float InputScale = CameraInputScale;
+		YawInput *= InputScale;
+		PitchInput *= InputScale;
+
+		// Apply and clamp offset
+		CurrentCameraOffset.Yaw += YawInput;
+		CurrentCameraOffset.Pitch += PitchInput;
+
+		CurrentCameraOffset.Yaw = FMath::Clamp(CurrentCameraOffset.Yaw, -MaxSoftYawOffset, MaxSoftYawOffset);
+		CurrentCameraOffset.Pitch = FMath::Clamp(CurrentCameraOffset.Pitch, -MaxSoftPitchOffset, MaxSoftPitchOffset);
+
+		// Smooth decay when no input
+		const float DecayRate = SoftLockDecayRate * DeltaTime;
+		CurrentCameraOffset = FMath::RInterpTo(CurrentCameraOffset, FRotator::ZeroRotator, DeltaTime, SoftLockDecayRate);
+	}
+}
+
 void UTargetingSystemComponent::ResetIsSwitchingTarget()
 {
 	bIsSwitchingTarget = false;
@@ -439,7 +476,7 @@ void UTargetingSystemComponent::TargetLockOff()
 		}
 	}
 
-	DisableMidPointControlRotation();
+	// DisableMidPointControlRotation();
 	LockedOnTargetActor = nullptr;
 }
 
@@ -691,7 +728,15 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 		}
 	}
 
-	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
+	FRotator BlendedTargetRotation = TargetRotation;
+
+	if (bEnableSoftLockCameraOffset)
+	{
+		BlendedTargetRotation += CurrentCameraOffset;
+	}
+
+	return FMath::RInterpTo(ControlRotation, BlendedTargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
+
 }
 
 void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) const
