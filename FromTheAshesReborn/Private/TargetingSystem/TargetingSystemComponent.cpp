@@ -9,9 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
-#include "GameFramework/PlayerInput.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/KismetMathLibrary.h"
 #include "Player/PlayerCharacter.h"
 
 UTargetingSystemComponent::UTargetingSystemComponent()

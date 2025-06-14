@@ -44,14 +44,10 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
-
-	// TargetSystemComponent = CreateDefaultSubobject<UTargetSystemComponent>("TargetSystemComponent");
-
-	TargetingSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>("TargetingSystemComponent");
-
+	
+	TargetingSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>(TEXT("TargetingSystemComponent"));
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
-	this->AddOwnedComponent(ParkourSystemComponent);
-
+	
 }
 
 void APlayerCharacter::BeginPlay()
@@ -61,6 +57,12 @@ void APlayerCharacter::BeginPlay()
 	if (!ParkourSystemComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - ParkourSystemComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (!TargetingSystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - TargetingSystemComponent is null"), *GetActorNameOrLabel());
 		return;
 	}
 

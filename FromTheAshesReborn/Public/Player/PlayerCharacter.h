@@ -23,10 +23,10 @@ public:
 
 protected:
 	
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Targeting")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "ParkourSystem")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")

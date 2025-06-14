@@ -117,7 +117,7 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 	UTargetingSystemComponent* TargetingSystemComponent = GetPawn()->FindComponentByClass<UTargetingSystemComponent>();
 	if(!TargetingSystemComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
+		UE_LOG(LogTemp, Error, TEXT("AFTAPlayerController::HandleInputLookMouse - TargetSystemComponent is NULL"));
 		return;
 	}
 	if(!TargetingSystemComponent->GetLockedOnTargetActor())

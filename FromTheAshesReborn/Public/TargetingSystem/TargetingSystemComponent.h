@@ -2,12 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "Runtime/Launch/Resources/Version.h"
-#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 1
-#include "Engine/HitResult.h"
-#else
-#include "Engine/EngineTypes.h"
-#endif
 #include "TargetingSystemComponent.generated.h"
 
 class APlayerCharacter;
@@ -19,7 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FTraceComponentOnTargetLockedOnOff, 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FTraceComponentSetRotation, AActor*, TargetActor, FRotator, ControlRotation);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-	class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
+class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
