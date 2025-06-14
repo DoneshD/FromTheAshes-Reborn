@@ -19,7 +19,7 @@ class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 
 public:
 	UPROPERTY(EditAnywhere, Category = "Offset")
-	bool bEnableSoftLockCameraOffset = true;
+	bool EnableSoftLockCameraOffset = true;
 
 	UPROPERTY(EditAnywhere, Category = "Offset")
 	float MaxSoftYawOffset = 25.0f;
@@ -42,7 +42,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float MinimumDistanceToEnable = 4000.0f;
 
-	// The AActor Subclass to search for targetable Actors.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	TSubclassOf<AActor> TargetableActors;
 
@@ -55,53 +54,33 @@ public:
 	//
 	// Set it to true if you want the character to rotate around the locked on target to enable you to setup strafe animations.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	bool bShouldControlRotation = false;
+	bool ShouldControlRotation = false;
 
-	// Whether to accept pitch input when bAdjustPitchBasedOnDistanceToTarget is disabled
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	bool bIgnoreLookInput = true;
+	bool IgnoreLookInput = true;
 
-	// The amount of time to break line of sight when actor gets behind an Object.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float BreakLineOfSightDelay = 2.0f;
 
-	// Lower this value is, easier it will be to switch new target on right or left. Must be < 1.0f if controlling with gamepad stick
-	//
-	// When using Sticky Feeling feature, it has no effect (see StickyRotationThreshold)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float StartRotatingThreshold = 0.85f;
-
-	// Whether or not the Target LockOn Widget indicator should be drawn and attached automatically.
-	//
-	// When set to false, this allow you to manually draw the widget for further control on where you'd like it to appear.
-	//
-	// OnTargetLockedOn and OnTargetLockedOff events can be used for this.
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	bool bShouldDrawLockedOnWidget = true;
-
-	// The Widget Class to use when locked on Target. If not defined, will fallback to a Text-rendered
-	// widget with a single O character.
+	bool ShouldDrawLockedOnWidget = true;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	TSubclassOf<UUserWidget> LockedOnWidgetClass;
 
-	// The Widget Draw Size for the Widget class to use when locked on Target.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	float LockedOnWidgetDrawSize = 32.0f;
-
-	// The Socket name to attach the LockedOn Widget.
-	//
-	// You should use this to configure the Bone or Socket name the widget should be attached to, and allow
-	// the widget to move with target character's animation (Ex: spine_03)
-	//
-	// Set it to None to attach the Widget Component to the Root Component instead of the Mesh.
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	FName LockedOnWidgetParentSocket = FName("spine_03");
 
 	// The Relative Location to apply on Target LockedOn Widget when attached to a target.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
-
-
+	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Rotation Offset")
 	float MaxDistance = 1000.0f;
@@ -110,76 +89,52 @@ public:
 	float MinDistance = 100.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
-	bool bAdjustPitchBasedOnDistanceToTarget = true;
+	bool ShouldAdjustPitchBasedOnDistanceToTarget = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
 	float MaxPitchOffset = -20.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Yaw Offset")
-	bool bAdjustYawBasedOnDistanceToTarget = true;
+	bool ShouldAdjustYawBasedOnDistanceToTarget = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Yaw Offset")
 	float MaxYawOffset = -35.0f;
+
 	
-
-	// Set it to true / false whether you want a sticky feeling when switching target
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
-	bool bEnableStickyTarget = false;
-
-	// This value gets multiplied to the AxisValue to check against StickyRotationThreshold.
-	//
-	// Only used when Sticky Target is enabled.
+	bool EnableStickyTarget = false;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
 	float AxisMultiplier = 1.0f;
 
-	// Lower this value is, easier it will be to switch new target on right or left.
-	//
-	// This is similar to StartRotatingThreshold, but you should set this to a much higher value.
-	//
-	// Only used when Sticky Target is enabled.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
 	float StickyRotationThreshold = 30.0f;
 
-	// Function to call to target a new actor.
+	//GA_Lock entry point
 	UFUNCTION(BlueprintCallable, Category = "Target System")
-	AActor* TargetActor(bool& bSuccess);
+	AActor* TargetActor(bool& IsSuccess);
 
-	// Function to call to manually untarget.
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetLockOff();
-
-	/**
-	* Function to call to switch with X-Axis mouse / controller stick movement.
-	*
-	* @param AxisValue Pass in the float value of your Input Axis
-	*/
+	
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetActorWithAxisInput(float AxisValue);
 
-	// Function to get TargetLocked private variable status
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool GetTargetLockedStatus();
 
-	// Called when a target is locked off, either if it is out of reach (based on MinimumDistanceToEnable) or behind an Object.
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
 
-	// Called when a target is locked on
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
-
-	// Setup the control rotation on Tick when a target is locked on.
-	//
-	// If not implemented, will fallback to default implementation.
-	// If this event is implemented, it lets you control the rotation of the character.
+	
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
 	FTraceComponentSetRotation OnTargetSetRotation;
 
-	// Returns the reference to currently targeted Actor if any
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	AActor* GetLockedOnTargetActor() const;
 
-	// Returns true / false whether the system is targeting an actor
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsLocked() const;
 
@@ -202,12 +157,12 @@ private:
 	FTimerHandle LineOfSightBreakTimerHandle;
 	FTimerHandle SwitchingTargetTimerHandle;
 
-	bool bIsBreakingLineOfSight = false;
-	bool bIsSwitchingTarget = false;
-	bool bTargetLocked = false;
+	bool IsBreakingLineOfSight = false;
+	bool IsSwitchingTarget = false;
+	bool IsTargetLocked = false;
 	float ClosestTargetDistance = 0.0f;
 
-	bool bDesireToSwitch = false;
+	bool DesireToSwitch = false;
 	float StartRotatingStack = 0.0f;
 	
 

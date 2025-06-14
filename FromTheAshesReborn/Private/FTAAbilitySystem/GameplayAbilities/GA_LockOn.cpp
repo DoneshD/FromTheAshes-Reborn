@@ -37,8 +37,6 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		if(LockedOnTarget)
 		{
 			PS->HardLockedTargetActor = LockedOnTarget;
-			UE_LOG(LogTemp, Warning, TEXT("GALOCKON:: LockedOnTarget success"))
-
 		}
 	}
 }

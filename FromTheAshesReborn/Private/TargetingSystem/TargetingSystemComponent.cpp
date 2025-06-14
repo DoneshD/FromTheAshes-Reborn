@@ -20,7 +20,7 @@ UTargetingSystemComponent::UTargetingSystemComponent()
 	TargetableActors = APawn::StaticClass();
 	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
 
-	bEnableSoftLockCameraOffset = true;
+	EnableSoftLockCameraOffset = true;
 	MaxSoftYawOffset = 25.0f;
 	MaxSoftPitchOffset = 10.0f;
 	SoftLockDecayRate = 3.0f;
@@ -59,7 +59,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (!bTargetLocked || !LockedOnTargetActor)
+	if (!IsTargetLocked || !LockedOnTargetActor)
 	{
 		return;
 	}
@@ -69,9 +69,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		TargetLockOff();
 		return;
 	}
-	UpdateMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
+	// UpdateMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	SetControlRotationOnTarget(LockedOnTargetActor);
-	ControlCameraOffset(DeltaTime);
+	// ControlCameraOffset(DeltaTime);
 	SetOwnerActorRotation();
 	
 	
@@ -81,7 +81,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		TargetLockOff();
 	}
 
-	if (ShouldBreakLineOfSight() && !bIsBreakingLineOfSight)
+	if (ShouldBreakLineOfSight() && !IsBreakingLineOfSight)
 	{
 		if (BreakLineOfSightDelay <= 0)
 		{
@@ -89,7 +89,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		}
 		else
 		{
-			bIsBreakingLineOfSight = true;
+			IsBreakingLineOfSight = true;
 			GetWorld()->GetTimerManager().SetTimer(
 				LineOfSightBreakTimerHandle,
 				this,
@@ -100,33 +100,30 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 }
 
-AActor* UTargetingSystemComponent::TargetActor(bool& bSuccess)
+AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
 {
-	FVector2D CenterVec = FindCenterOfViewPort();
-	
 	ClosestTargetDistance = MinimumDistanceToEnable;
-	if (bTargetLocked)
+	
+	if (IsTargetLocked)
 	{
 		TargetLockOff();
-		bSuccess = false;
+		IsSuccess = false;
 		return nullptr;
 	}
-	else
-	{
-		const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
-		LockedOnTargetActor = FindNearestTargetToCenterViewport(Actors);
-		
-		TargetLockOn(LockedOnTargetActor);
-		bSuccess = true;
-		return LockedOnTargetActor;
-		
-	}
+	
+	const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
+	LockedOnTargetActor = FindNearestTargetToCenterViewport(Actors);
+	
+	TargetLockOn(LockedOnTargetActor);
+	
+	IsSuccess = true;
+	return LockedOnTargetActor;
 }
 
 void UTargetingSystemComponent::TargetActorWithAxisInput(const float AxisValue)
 {
 	// If we're not locked on, do nothing
-	if (!bTargetLocked)
+	if (!IsTargetLocked)
 	{
 		return;
 	}
@@ -143,7 +140,7 @@ void UTargetingSystemComponent::TargetActorWithAxisInput(const float AxisValue)
 	}
 
 	// If we're switching target, do nothing for a set amount of time
-	if (bIsSwitchingTarget)
+	if (IsSwitchingTarget)
 	{
 		return;
 	}
@@ -161,7 +158,6 @@ void UTargetingSystemComponent::TargetActorWithAxisInput(const float AxisValue)
 	// Get All Actors of Class
 	TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
 
-	// For each of these actors, check line trace and ignore Current Target and build the list of actors to look from
 	TArray<AActor*> ActorsToLook;
 
 	TArray<AActor*> ActorsToIgnore;
@@ -211,16 +207,16 @@ void UTargetingSystemComponent::TargetActorWithAxisInput(const float AxisValue)
 			this,
 			&UTargetingSystemComponent::ResetIsSwitchingTarget,
 			// Less sticky if still switching
-			bIsSwitchingTarget ? 0.25f : 0.5f
+			IsSwitchingTarget ? 0.25f : 0.5f
 		);
 
-		bIsSwitchingTarget = true;
+		IsSwitchingTarget = true;
 	}
 }
 
 bool UTargetingSystemComponent::GetTargetLockedStatus()
 {
-	return bTargetLocked;
+	return IsTargetLocked;
 }
 
 AActor* UTargetingSystemComponent::GetLockedOnTargetActor() const
@@ -230,7 +226,7 @@ AActor* UTargetingSystemComponent::GetLockedOnTargetActor() const
 
 bool UTargetingSystemComponent::IsLocked() const
 {
-	return bTargetLocked && LockedOnTargetActor;
+	return IsTargetLocked && LockedOnTargetActor;
 }
 
 TArray<AActor*> UTargetingSystemComponent::FindTargetsInRange(TArray<AActor*> ActorsToLook, const float RangeMin, const float RangeMax) const
@@ -372,7 +368,7 @@ void UTargetingSystemComponent::DisableMidPointControlRotation()
 
 void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
 {
-	if (bEnableSoftLockCameraOffset && OwnerPlayerController && bTargetLocked)
+	if (EnableSoftLockCameraOffset && OwnerPlayerController && IsTargetLocked)
 	{
 		float YawInput = 0.0f;
 		float PitchInput = 0.0f;
@@ -396,14 +392,13 @@ void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
 
 void UTargetingSystemComponent::ResetIsSwitchingTarget()
 {
-	bIsSwitchingTarget = false;
-	bDesireToSwitch = false;
+	IsSwitchingTarget = false;
+	DesireToSwitch = false;
 }
 
 bool UTargetingSystemComponent::ShouldSwitchTargetActor(const float AxisValue)
 {
-	// Sticky feeling computation
-	if (bEnableStickyTarget)
+	if (EnableStickyTarget)
 	{
 		StartRotatingStack += (AxisValue != 0) ? AxisValue * AxisMultiplier : (StartRotatingStack > 0 ? -AxisMultiplier : AxisMultiplier);
 
@@ -412,14 +407,12 @@ bool UTargetingSystemComponent::ShouldSwitchTargetActor(const float AxisValue)
 			StartRotatingStack = 0.0f;
 		}
 
-		// If Axis value does not exceeds configured threshold, do nothing
 		if (FMath::Abs(StartRotatingStack) < StickyRotationThreshold)
 		{
-			bDesireToSwitch = false;
+			DesireToSwitch = false;
 			return false;
 		}
 
-		//Sticky when switching target.
 		if (StartRotatingStack * AxisValue > 0)
 		{
 			StartRotatingStack = StartRotatingStack > 0 ? StickyRotationThreshold : -StickyRotationThreshold;
@@ -429,7 +422,7 @@ bool UTargetingSystemComponent::ShouldSwitchTargetActor(const float AxisValue)
 			StartRotatingStack = StartRotatingStack * -1.0f;
 		}
 
-		bDesireToSwitch = true;
+		DesireToSwitch = true;
 
 		return true;
 	}
@@ -442,24 +435,25 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 {
 	if (!IsValid(TargetToLockOn))
 	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::TargetLockOn - TargetToLockOn is invalid"));
 		return;
 	}
 
-	// Recast PlayerController in case it wasn't already setup on Begin Play (local split screen)
 	SetupLocalPlayerController();
 
-	bTargetLocked = true;
-	if (bShouldDrawLockedOnWidget)
+	IsTargetLocked = true;
+	
+	if (ShouldDrawLockedOnWidget)
 	{
 		CreateAndAttachTargetLockedOnWidgetComponent(TargetToLockOn);
 	}
 
-	if (bShouldControlRotation)
+	if (ShouldControlRotation)
 	{
 		ControlRotation(true);
 	}
 
-	if (bAdjustPitchBasedOnDistanceToTarget || bIgnoreLookInput)
+	if (ShouldAdjustPitchBasedOnDistanceToTarget || IgnoreLookInput)
 	{
 		if (IsValid(OwnerPlayerController))
 		{
@@ -478,7 +472,7 @@ void UTargetingSystemComponent::TargetLockOff()
 	// Recast PlayerController in case it wasn't already setup on Begin Play (local split screen)
 	SetupLocalPlayerController();
 	SmoothedMidPoint = FVector::ZeroVector;
-	bTargetLocked = false;
+	IsTargetLocked = false;
 	if (TargetLockedOnWidgetComponent)
 	{
 		TargetLockedOnWidgetComponent->DestroyComponent();
@@ -486,7 +480,7 @@ void UTargetingSystemComponent::TargetLockOff()
 
 	if (LockedOnTargetActor)
 	{
-		if (bShouldControlRotation)
+		if (ShouldControlRotation)
 		{
 			ControlRotation(false);
 		}
@@ -613,7 +607,6 @@ AActor* UTargetingSystemComponent::FindNearestTargetToCenterViewport(TArray<AAct
 {
 	TArray<AActor*> ActorsHit;
 
-	// Find all actors we can line trace to
 	for (AActor* Actor : Actors)
 	{
 		TArray<AActor*> ActorsToIgnore;
@@ -624,7 +617,6 @@ AActor* UTargetingSystemComponent::FindNearestTargetToCenterViewport(TArray<AAct
 		}
 	}
 
-	// From the hit actors, check distance and return the nearest
 	if (ActorsHit.Num() == 0)
 	{
 		return nullptr;
@@ -730,7 +722,7 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 	
 	FRotator TargetRotation;
 	
-	if (bAdjustYawBasedOnDistanceToTarget || bAdjustPitchBasedOnDistanceToTarget)
+	if (ShouldAdjustYawBasedOnDistanceToTarget || ShouldAdjustPitchBasedOnDistanceToTarget)
 	{
 		const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
 		
@@ -744,7 +736,7 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 	}
 	else
 	{
-		if (bIgnoreLookInput)
+		if (IgnoreLookInput)
 		{
 			TargetRotation = FRotator(LookRotation.Pitch, Yaw, ControlRotation.Roll);
 		}
@@ -756,7 +748,7 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 
 	FRotator BlendedTargetRotation = TargetRotation;
 
-	if (bEnableSoftLockCameraOffset)
+	if (EnableSoftLockCameraOffset)
 	{
 		BlendedTargetRotation += CurrentCameraOffset;
 	}
@@ -769,6 +761,7 @@ void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) 
 {
 	if (!IsValid(OwnerPlayerController))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UTargetingSystemComponent::SetControlRotationOnTarget - OwnerPlayerController is invalid"))
 		return;
 	}
 
@@ -819,26 +812,26 @@ bool UTargetingSystemComponent::ShouldBreakLineOfSight() const
 
 void UTargetingSystemComponent::BreakLineOfSight()
 {
-	bIsBreakingLineOfSight = false;
+	IsBreakingLineOfSight = false;
 	if (ShouldBreakLineOfSight())
 	{
 		TargetLockOff();
 	}
 }
 
-void UTargetingSystemComponent::ControlRotation(const bool ShouldControlRotation) const
+void UTargetingSystemComponent::ControlRotation(const bool InShouldControlRotation) const
 {
 	if (!IsValid(OwnerPawn))
 	{
 		return;
 	}
 
-	OwnerPawn->bUseControllerRotationYaw = ShouldControlRotation;
+	OwnerPawn->bUseControllerRotationYaw = InShouldControlRotation;
 
 	UCharacterMovementComponent* CharacterMovementComponent = OwnerPawn->FindComponentByClass<UCharacterMovementComponent>();
 	if (CharacterMovementComponent)
 	{
-		CharacterMovementComponent->bOrientRotationToMovement = !ShouldControlRotation;
+		CharacterMovementComponent->bOrientRotationToMovement = !InShouldControlRotation;
 	}
 }
 
