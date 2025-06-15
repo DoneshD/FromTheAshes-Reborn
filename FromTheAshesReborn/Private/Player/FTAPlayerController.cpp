@@ -124,7 +124,7 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 	{
 		return;
 	}
-	TargetingSystemComponent->TargetActorWithAxisInput(LookAxisVector.X);
+	// TargetingSystemComponent->TargetActorWithAxisInput(LookAxisVector.X);
 }
 
 void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionValue)

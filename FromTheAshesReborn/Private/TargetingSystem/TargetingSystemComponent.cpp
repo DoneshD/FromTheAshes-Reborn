@@ -10,6 +10,7 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/PlayerCharacter.h"
 
 UTargetingSystemComponent::UTargetingSystemComponent()
@@ -70,7 +71,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		return;
 	}
 	// UpdateMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
-	SetControlRotationOnTarget(LockedOnTargetActor);
+	// SetControlRotationOnTarget(LockedOnTargetActor);
+	UpdateCameraControlRotationToTarget(PlayerCharacter, LockedOnTargetActor);
+	DrawCameraAnchor();
 	// ControlCameraOffset(DeltaTime);
 	SetOwnerActorRotation();
 	
@@ -98,6 +101,21 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 			);
 		}
 	}
+}
+
+void UTargetingSystemComponent::DrawCameraAnchor()
+{
+	DrawDebugSphere(
+	GetWorld(),
+	PlayerCharacter->TargetCameraAnchor->GetComponentLocation(),
+	15.0f,              // radius
+	12,                 // segments
+	FColor::Red,        // color
+	false,              // persistent lines
+	-1.0f,              // lifetime
+	0                   // depth priority
+	);
+
 }
 
 AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
@@ -453,7 +471,7 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 		ControlRotation(true);
 	}
 
-	if (ShouldAdjustPitchBasedOnDistanceToTarget || IgnoreLookInput)
+	if (IgnoreLookInput)
 	{
 		if (IsValid(OwnerPlayerController))
 		{
@@ -775,6 +793,29 @@ void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) 
 		OwnerPlayerController->SetControlRotation(ControlRotation);
 	}
 }
+
+void UTargetingSystemComponent::UpdateCameraControlRotationToTarget(APlayerCharacter* PlayerOwner, AActor* TargetActor)
+{
+	if (!IsValid(PlayerOwner) || !IsValid(TargetActor) || !IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UpdateCameraControlRotationToTarget: Invalid parameters"));
+		return;
+	}
+
+	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
+	const FVector TargetLocation = TargetActor->GetActorLocation();
+
+	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
+
+	const FRotator TargetControlRotation = FRotator(LookAtRotation.Pitch, LookAtRotation.Yaw, 0.f);
+	const FRotator CurrentControlRotation = OwnerPlayerController->GetControlRotation();
+
+	const float InterpSpeed = 8.0f;
+	const FRotator NewControlRotation = FMath::RInterpTo(CurrentControlRotation, TargetControlRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
+
+	OwnerPlayerController->SetControlRotation(NewControlRotation);
+}
+
 
 float UTargetingSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor) const
 {

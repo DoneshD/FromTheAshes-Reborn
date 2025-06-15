@@ -189,6 +189,7 @@ private:
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 	FRotator GetControlRotationOnTarget(const AActor* OtherActor) const;
 	void SetControlRotationOnTarget(AActor* TargetActor) const;
+	void UpdateCameraControlRotationToTarget(APlayerCharacter* PlayerOwner, AActor* TargetActor);
 	void ControlRotation(bool ShouldControlRotation) const;
 
 	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
@@ -218,6 +219,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void DrawCameraAnchor();
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsTargeting = false;
