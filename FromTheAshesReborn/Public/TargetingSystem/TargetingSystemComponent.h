@@ -185,11 +185,9 @@ protected:
 	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;
 
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
-	
-	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
-	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
 
-	bool CompareDistanceToScreen(FVector PlayerLocation, FVector TargetLocation);
+	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
+	bool CompareDistanceToScreen(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	
 	void DisableMidPointControlRotation();
 	

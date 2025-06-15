@@ -302,26 +302,31 @@ FRotator UTargetingSystemComponent::FindLookAtRotation(const FVector Start, cons
 	return FRotationMatrix::MakeFromX(Target - Start).Rotator();
 }
 
-FVector UTargetingSystemComponent::CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation)
+float UTargetingSystemComponent::GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* ActorToCheck)
 {
-	FVector Midpoint = (PlayerLocation + TargetLocation) / 2.0f;
+	if(!PlayerController || !ActorToCheck)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::GetWorldDistanceFromCamera - Invalid Actors"));
+		return 0.0f;
+	}
+	FVector CameraLocation;
+	FRotator CameraRotation;
 
-	return Midpoint;
+	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+	return FVector::Distance(CameraLocation, ActorToCheck->GetActorLocation());
 }
 
-float UTargetingSystemComponent::CalculateDistance(FVector PlayerLocation, FVector TargetLocation)
+bool UTargetingSystemComponent::CompareDistanceToScreen(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
 {
-	float CalculateX = FMath::Square(abs((PlayerLocation.X - TargetLocation.X)));
-	float CalculateY = FMath::Square(abs((PlayerLocation.Y - TargetLocation.Y)));
-	float CalculateZ = FMath::Square(abs((PlayerLocation.Z - TargetLocation.Z)));
+	float PlayerDistance = GetWorldDistanceFromCamera(OwnerPlayerController, PlayerOwner);
+	float TargetDistance = GetWorldDistanceFromCamera(OwnerPlayerController, TargetActor);
 
-	return FMath::Sqrt(CalculateX + CalculateY + CalculateZ);
-
-}
-
-bool UTargetingSystemComponent::CompareDistanceToScreen(FVector PlayerLocation, FVector TargetLocation)
-{
-	
+	UE_LOG(LogTemp, Warning, TEXT("Player Distance: %f"), PlayerDistance);
+	UE_LOG(LogTemp, Warning, TEXT("TargetDistance Distance: %f"), TargetDistance);
+	if(PlayerDistance < TargetDistance)
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -813,6 +818,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		PlayerOwner->SpringArmComp->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComp->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 6.0f);
 	}
 
+	ShouldUpdateControllerRotation = CompareDistanceToScreen(PlayerOwner, TargetActor);
 	if (ShouldUpdateControllerRotation)
 	{
 		FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
