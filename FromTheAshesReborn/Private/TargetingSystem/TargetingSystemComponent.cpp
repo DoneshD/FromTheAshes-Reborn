@@ -71,8 +71,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		return;
 	}
 	// UpdateMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
-	// SetControlRotationOnTarget(LockedOnTargetActor);
-	UpdateCameraControlRotationToTarget(PlayerCharacter, LockedOnTargetActor);
+	SetControlRotationOnTarget(LockedOnTargetActor);
 	DrawCameraAnchor();
 	// ControlCameraOffset(DeltaTime);
 	SetOwnerActorRotation();
@@ -793,30 +792,6 @@ void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) 
 		OwnerPlayerController->SetControlRotation(ControlRotation);
 	}
 }
-
-void UTargetingSystemComponent::UpdateCameraControlRotationToTarget(APlayerCharacter* PlayerOwner, AActor* TargetActor)
-{
-	if (!IsValid(PlayerOwner) || !IsValid(TargetActor) || !IsValid(OwnerPlayerController))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UpdateCameraControlRotationToTarget: Invalid parameters"));
-		return;
-	}
-
-	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
-	const FVector TargetLocation = TargetActor->GetActorLocation();
-
-	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
-
-	const FRotator TargetControlRotation = FRotator(LookAtRotation.Pitch, LookAtRotation.Yaw, 0.f);
-	const FRotator CurrentControlRotation = OwnerPlayerController->GetControlRotation();
-
-	const float InterpSpeed = 8.0f;
-	const FRotator NewControlRotation = FMath::RInterpTo(CurrentControlRotation, TargetControlRotation, GetWorld()->GetDeltaSeconds(), InterpSpeed);
-
-	OwnerPlayerController->SetControlRotation(NewControlRotation);
-}
-
-
 float UTargetingSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor) const
 {
 	return OwnerActor->GetDistanceTo(OtherActor);

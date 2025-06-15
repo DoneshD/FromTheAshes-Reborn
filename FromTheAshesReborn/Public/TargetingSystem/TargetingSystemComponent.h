@@ -189,7 +189,6 @@ private:
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 	FRotator GetControlRotationOnTarget(const AActor* OtherActor) const;
 	void SetControlRotationOnTarget(AActor* TargetActor) const;
-	void UpdateCameraControlRotationToTarget(APlayerCharacter* PlayerOwner, AActor* TargetActor);
 	void ControlRotation(bool ShouldControlRotation) const;
 
 	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
