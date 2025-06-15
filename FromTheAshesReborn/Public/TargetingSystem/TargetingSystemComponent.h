@@ -17,21 +17,97 @@ class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
+
+
 public:
-	UPROPERTY(EditAnywhere, Category = "Offset")
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	float MinimumDistanceToEnable = 4000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	TSubclassOf<AActor> TargetableActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	bool ShouldControlRotation = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	bool IgnoreLookInput = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	float BreakLineOfSightDelay = 2.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	float StartRotatingThreshold = 0.85f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	bool ShouldDrawLockedOnWidget = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	TSubclassOf<UUserWidget> LockedOnWidgetClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	float LockedOnWidgetDrawSize = 32.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	FName LockedOnWidgetParentSocket = FName("spine_03");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Distance")
+	float MaxDistance = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Distance")
+	float MinDistance = 100.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Pitch Offset")
+	bool ShouldAdjustPitchBasedOnDistanceToTarget = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Pitch Offset")
+	float MaxPitchOffset = -20.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Yaw Offset")
+	bool ShouldAdjustYawBasedOnDistanceToTarget = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Yaw Offset")
+	float MaxYawOffset = -35.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sticky Switch")
+	bool EnableStickyTarget = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sticky Switch")
+	float AxisMultiplier = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sticky Switch")
+	float StickyRotationThreshold = 30.0f;
+
+	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
+	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
+
+	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
+	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
+	
+	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
+	FTraceComponentSetRotation OnTargetSetRotation;
+
+public:
+	UPROPERTY(EditAnywhere, Category = "Rotation Offset | Control Offset")
 	bool EnableSoftLockCameraOffset = true;
 
-	UPROPERTY(EditAnywhere, Category = "Offset")
-	float MaxSoftYawOffset = 25.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Offset")
-	float MaxSoftPitchOffset = 10.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Offset")
+	UPROPERTY(EditAnywhere, Category = "Rotation Offset | Control Offset")
 	float SoftLockDecayRate = 0.75f;
 
-	UPROPERTY(EditAnywhere, Category = "Offset")
+	UPROPERTY(EditAnywhere, Category = "Rotation Offset | Control Offset")
 	float CameraInputScale = 1.5f;
+	
+	UPROPERTY(EditAnywhere, Category = "Control Offset | Yaw Offset")
+	float MaxSoftYawOffset = 25.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Control Offset | Pitch Offset")
+	float MaxSoftPitchOffset = 10.0f;
 	
 	FRotator CurrentCameraOffset;
 
@@ -40,89 +116,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool IsTargeting = false;
-
-	FVector MidPoint;
-	float Radius;
-
-	UPROPERTY()
-	TObjectPtr<APlayerCharacter> PlayerCharacter;
-	
-	FVector SmoothedMidPoint = FVector::ZeroVector;
-
-public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	float MinimumDistanceToEnable = 4000.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	TSubclassOf<AActor> TargetableActors;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	bool ShouldControlRotation = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	bool IgnoreLookInput = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	float BreakLineOfSightDelay = 2.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	float StartRotatingThreshold = 0.85f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	bool ShouldDrawLockedOnWidget = true;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	TSubclassOf<UUserWidget> LockedOnWidgetClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	float LockedOnWidgetDrawSize = 32.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	FName LockedOnWidgetParentSocket = FName("spine_03");
-
-	// The Relative Location to apply on Target LockedOn Widget when attached to a target.
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
-	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Rotation Offset")
-	float MaxDistance = 1000.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Rotation Offset")
-	float MinDistance = 100.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
-	bool ShouldAdjustPitchBasedOnDistanceToTarget = true;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Pitch Offset")
-	float MaxPitchOffset = -20.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Yaw Offset")
-	bool ShouldAdjustYawBasedOnDistanceToTarget = true;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Yaw Offset")
-	float MaxYawOffset = -35.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
-	bool EnableStickyTarget = false;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
-	float AxisMultiplier = 1.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
-	float StickyRotationThreshold = 30.0f;
-
-	UPROPERTY(BlueprintAssignable, Category = "Target System")
-	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
-
-	UPROPERTY(BlueprintAssignable, Category = "Target System")
-	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
-	
-	UPROPERTY(BlueprintAssignable, Category = "Target System")
-	FTraceComponentSetRotation OnTargetSetRotation;
 
 private:
 	UPROPERTY()
@@ -133,6 +126,9 @@ private:
 
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;
+
+	UPROPERTY()
+	TObjectPtr<APlayerCharacter> PlayerCharacter;
 
 	UPROPERTY()
 	UWidgetComponent* TargetLockedOnWidgetComponent;
@@ -150,6 +146,10 @@ private:
 
 	bool DesireToSwitch = false;
 	float StartRotatingStack = 0.0f;
+	
+	FVector MidPoint;
+	float Radius;
+	FVector SmoothedMidPoint = FVector::ZeroVector;
 
 protected:
 
