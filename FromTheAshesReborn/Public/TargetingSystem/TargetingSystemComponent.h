@@ -35,6 +35,8 @@ public:
 	
 	FRotator CurrentCameraOffset;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	bool ShouldUpdateControllerRotation = false;
 
 public:
 	UTargetingSystemComponent();
@@ -189,6 +191,7 @@ private:
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 	FRotator GetControlRotationOnTarget(const AActor* OtherActor) const;
 	void SetControlRotationOnTarget(AActor* TargetActor) const;
+	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	void ControlRotation(bool ShouldControlRotation) const;
 
 	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
