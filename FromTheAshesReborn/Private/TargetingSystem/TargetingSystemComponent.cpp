@@ -316,18 +316,22 @@ float UTargetingSystemComponent::GetWorldDistanceFromCamera(APlayerController* P
 	return FVector::Distance(CameraLocation, ActorToCheck->GetActorLocation());
 }
 
-bool UTargetingSystemComponent::CompareDistanceToScreen(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+float UTargetingSystemComponent::CompareDistanceToScreen(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
 {
-	float PlayerDistance = GetWorldDistanceFromCamera(OwnerPlayerController, PlayerOwner);
-	float TargetDistance = GetWorldDistanceFromCamera(OwnerPlayerController, TargetActor);
+	float PlayerDistanceToScreen = GetWorldDistanceFromCamera(OwnerPlayerController, PlayerOwner);
+	float TargetDistanceToScreen = GetWorldDistanceFromCamera(OwnerPlayerController, TargetActor);
 
-	UE_LOG(LogTemp, Warning, TEXT("Player Distance: %f"), PlayerDistance);
-	UE_LOG(LogTemp, Warning, TEXT("TargetDistance Distance: %f"), TargetDistance);
-	if(PlayerDistance < TargetDistance)
-	{
-		return true;
-	}
-	return false;
+	UE_LOG(LogTemp, Warning, TEXT("TargetDistance - PlayerDistance: %f"), TargetDistanceToScreen - PlayerDistanceToScreen);
+	
+	float DistanceToScreenDifference = TargetDistanceToScreen - PlayerDistanceToScreen;
+
+
+	float TestMax = 1000.0f;
+	float TestMin = 10.0f;
+
+	float DistanceFactor = 1.0f - FMath::Clamp((DistanceToScreenDifference - TestMin) / (TestMax - TestMin), 0.0f, 1.0f);
+	return FMath::Lerp(0.0f, 20, DistanceFactor);
+
 }
 
 void UTargetingSystemComponent::DisableMidPointControlRotation()
@@ -786,12 +790,12 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	DrawDebugSphere(
 			GetWorld(),
 			MidpointAnchorLocation,
-			15.0f,              // radius
-			12,                 // segments
-			FColor::Yellow,        // color
-			false,              // persistent lines
-			-1.0f,              // lifetime
-			0                   // depth priority
+			15.0f,          
+			12,               
+			FColor::Yellow,      
+			false,              
+			-1.0f,             
+			0                  
 			);
 
 	if (SmoothedMidPoint.IsZero())
@@ -818,11 +822,13 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		PlayerOwner->SpringArmComp->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComp->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 6.0f);
 	}
 
-	ShouldUpdateControllerRotation = CompareDistanceToScreen(PlayerOwner, TargetActor);
-	if (ShouldUpdateControllerRotation)
+	float Speed = CompareDistanceToScreen(PlayerOwner, TargetActor);
+	UE_LOG(LogTemp, Warning, TEXT("Final Speed: %f"), Speed);
+	//ShouldUpdateControllerRotation
+	if (true)
 	{
 		FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
-		FRotator FinalRot = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), LookRot, GetWorld()->GetDeltaSeconds(), 9.0f);
+		FRotator FinalRot = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), LookRot, GetWorld()->GetDeltaSeconds(), .2);
 		OwnerPlayerController->SetControlRotation(FinalRot);
 	}
 }
