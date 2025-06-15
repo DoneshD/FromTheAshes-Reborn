@@ -316,22 +316,23 @@ float UTargetingSystemComponent::GetWorldDistanceFromCamera(APlayerController* P
 	return FVector::Distance(CameraLocation, ActorToCheck->GetActorLocation());
 }
 
-float UTargetingSystemComponent::CompareDistanceToScreen(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+float UTargetingSystemComponent::CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool &InShouldUpdateControlRotation)
 {
 	float PlayerDistanceToScreen = GetWorldDistanceFromCamera(OwnerPlayerController, PlayerOwner);
 	float TargetDistanceToScreen = GetWorldDistanceFromCamera(OwnerPlayerController, TargetActor);
-
-	UE_LOG(LogTemp, Warning, TEXT("TargetDistance - PlayerDistance: %f"), TargetDistanceToScreen - PlayerDistanceToScreen);
 	
 	float DistanceToScreenDifference = TargetDistanceToScreen - PlayerDistanceToScreen;
-
-
-	float TestMax = 1000.0f;
-	float TestMin = 10.0f;
-
-	float DistanceFactor = 1.0f - FMath::Clamp((DistanceToScreenDifference - TestMin) / (TestMax - TestMin), 0.0f, 1.0f);
-	return FMath::Lerp(0.0f, 20, DistanceFactor);
-
+	if(DistanceToScreenDifference < 0.0f)
+	{
+		InShouldUpdateControlRotation = false;
+	}
+	else
+	{
+		InShouldUpdateControlRotation = true;
+	}
+	
+	float DistanceFactor = FMath::Clamp((DistanceToScreenDifference) / 100, 0.0f, 10.0f);
+	return FMath::Lerp(0.0f, 1.0f, DistanceFactor);
 }
 
 void UTargetingSystemComponent::DisableMidPointControlRotation()
@@ -822,13 +823,12 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		PlayerOwner->SpringArmComp->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComp->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 6.0f);
 	}
 
-	float Speed = CompareDistanceToScreen(PlayerOwner, TargetActor);
-	UE_LOG(LogTemp, Warning, TEXT("Final Speed: %f"), Speed);
-	//ShouldUpdateControllerRotation
-	if (true)
+	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
+	UE_LOG(LogTemp, Warning, TEXT("Final Speed: %f"), ControlRotationInterpSpeed);
+	if (ShouldUpdateControllerRotation)
 	{
 		FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
-		FRotator FinalRot = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), LookRot, GetWorld()->GetDeltaSeconds(), .2);
+		FRotator FinalRot = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), LookRot, GetWorld()->GetDeltaSeconds(), ControlRotationInterpSpeed);
 		OwnerPlayerController->SetControlRotation(FinalRot);
 	}
 }

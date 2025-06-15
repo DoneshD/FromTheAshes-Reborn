@@ -187,7 +187,7 @@ protected:
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
 
 	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
-	float CompareDistanceToScreen(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
+	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
 	
 	void DisableMidPointControlRotation();
 	
