@@ -38,8 +38,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	bool ShouldUpdateControllerRotation = false;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool IsTargeting = false;
+
+	FVector MidPoint;
+	float Radius;
+
+	UPROPERTY()
+	TObjectPtr<APlayerCharacter> PlayerCharacter;
+	
+	FVector SmoothedMidPoint = FVector::ZeroVector;
+
 public:
-	UTargetingSystemComponent();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float MinimumDistanceToEnable = 4000.0f;
@@ -49,12 +59,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel;
-
-	// Whether or not the character rotation should be controlled when Target is locked on.
-	//
-	// If true, it'll set the value of bUseControllerRotationYaw and bOrientationToMovement variables on Target locked on / off.
-	//
-	// Set it to true if you want the character to rotate around the locked on target to enable you to setup strafe animations.
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	bool ShouldControlRotation = false;
 
@@ -83,7 +88,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Widget")
 	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
 	
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Rotation Offset")
 	float MaxDistance = 1000.0f;
 
@@ -101,7 +105,6 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Yaw Offset")
 	float MaxYawOffset = -35.0f;
-
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
 	bool EnableStickyTarget = false;
@@ -112,19 +115,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System|Sticky Feeling on Target Switch")
 	float StickyRotationThreshold = 30.0f;
 
-	//GA_Lock entry point
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	AActor* TargetActor(bool& IsSuccess);
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void TargetLockOff();
-	
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void TargetActorWithAxisInput(float AxisValue);
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	bool GetTargetLockedStatus();
-
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
 
@@ -133,12 +123,6 @@ public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "Target System")
 	FTraceComponentSetRotation OnTargetSetRotation;
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	AActor* GetLockedOnTargetActor() const;
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	bool IsLocked() const;
 
 private:
 	UPROPERTY()
@@ -166,7 +150,16 @@ private:
 
 	bool DesireToSwitch = false;
 	float StartRotatingStack = 0.0f;
+
+protected:
+
+	UTargetingSystemComponent();
 	
+	virtual void BeginPlay() override;
+
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void DrawCameraAnchor();
 
 	TArray<AActor*> GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const;
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
@@ -215,25 +208,27 @@ private:
 
 	static bool TargetIsTargetable(const AActor* Actor);
 	
-	 void SetupLocalPlayerController();
+	void SetupLocalPlayerController();
 
-protected:
-	virtual void BeginPlay() override;
+public:
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	AActor* GetLockedOnTargetActor() const;
 
-	void DrawCameraAnchor();
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	bool IsLocked() const;
 
-	UPROPERTY(BlueprintReadWrite)
-	bool IsTargeting = false;
+	//GA_Lock entry point
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	AActor* TargetActor(bool& IsSuccess);
 
-	FVector MidPoint;
-	float Radius;
-
-	UPROPERTY()
-	TObjectPtr<APlayerCharacter> PlayerCharacter;
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	void TargetLockOff();
 	
-	FVector SmoothedMidPoint = FVector::ZeroVector;
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	void TargetActorWithAxisInput(float AxisValue);
 
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	bool GetTargetLockedStatus();
 	
 };
