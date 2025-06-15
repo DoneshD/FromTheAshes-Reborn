@@ -70,7 +70,6 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		TargetLockOff();
 		return;
 	}
-	// UpdateMidPointControlRotation(PlayerCharacter, LockedOnTargetActor);
 	// SetControlRotationOnTarget(LockedOnTargetActor);
 	UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
 	DrawCameraAnchor();
@@ -320,62 +319,10 @@ float UTargetingSystemComponent::CalculateDistance(FVector PlayerLocation, FVect
 
 }
 
-void UTargetingSystemComponent::UpdateMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+bool UTargetingSystemComponent::CompareDistanceToScreen(FVector PlayerLocation, FVector TargetLocation)
 {
-	if (!IsValid(PlayerOwner) || !IsValid(TargetActor)) return;
-
-	const FVector PlayerLoc = PlayerOwner->GetActorLocation();
-	const FVector TargetLoc = TargetActor->GetActorLocation();
-
-	FVector DesiredMidpoint = FMath::Lerp(PlayerLoc, TargetLoc, 0.5f);
-	float Distance = FVector::Dist(PlayerLoc, TargetLoc);
-	float DesiredRadius = Distance / 2.0f;
-
-	if (SmoothedMidPoint.IsZero())
-	{
-		SmoothedMidPoint = DesiredMidpoint;
-	}
 	
-	float InterpSpeed = 8.0f; 
-	const float CatchupInterpSpeed = 18.0f;
-	const float ScreenEdgeCatchupThreshold = 0.35f; 
-
-	if (IsValid(OwnerPlayerController))
-	{
-		FVector2D PlayerScreenPosition;
-		if (OwnerPlayerController->ProjectWorldLocationToScreen(PlayerOwner->GetActorLocation(), PlayerScreenPosition))
-		{
-			FVector2D ViewportSize;
-			GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
-
-			FVector2D ScreenCenter = ViewportSize * 0.5f;
-			FVector2D DistanceFromCenter = PlayerScreenPosition - ScreenCenter;
-
-			FVector2D NormalizedOffset = DistanceFromCenter / ViewportSize;
-
-			float OffsetMagnitude = FVector2D(FMath::Abs(NormalizedOffset.X), FMath::Abs(NormalizedOffset.Y)).Size();
-
-			if (OffsetMagnitude > ScreenEdgeCatchupThreshold)
-			{
-				InterpSpeed = CatchupInterpSpeed;
-			}
-		}
-	}
-
-	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, DesiredMidpoint, GetWorld()->GetDeltaSeconds(), InterpSpeed);
-
-	if (IsValid(PlayerOwner->TargetCameraAnchor))
-	{
-		PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
-	}
-
-	if (IsValid(PlayerOwner->SpringArmComp))
-	{
-		float CurrentArmLength = PlayerOwner->SpringArmComp->TargetArmLength;
-		float TargetArmLength = DesiredRadius + 300.0f;
-		float NewArmLength = FMath::FInterpTo(CurrentArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 6.0f);
-		PlayerOwner->SpringArmComp->TargetArmLength = NewArmLength;
-	}
+	return false;
 }
 
 void UTargetingSystemComponent::DisableMidPointControlRotation()
@@ -794,32 +741,19 @@ void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) 
 	}
 }
 
-void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+float UTargetingSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed)
 {
-	if (!IsValid(PlayerOwner) || !IsValid(TargetActor) || !IsValid(OwnerPlayerController)) return;
-
-	const FVector PlayerLoc = PlayerOwner->GetActorLocation();
-	const FVector TargetLoc = TargetActor->GetActorLocation();
-	FVector DesiredMidpoint = FMath::Lerp(PlayerLoc, TargetLoc, 0.5f);
-	float Distance = FVector::Dist(PlayerLoc, TargetLoc);
-	float DesiredRadius = Distance / 2.0f;
-
-	if (SmoothedMidPoint.IsZero())
-	{
-		SmoothedMidPoint = DesiredMidpoint;
-	}
-
-	float InterpSpeed = 8.0f;
-	const float CatchupInterpSpeed = 18.0f;
+	float InterpSpeed = InInterpSpeed;
 	const float ScreenEdgeCatchupThreshold = 0.35f;
 
-	FVector2D PlayerScreenPos;
-	if (OwnerPlayerController->ProjectWorldLocationToScreen(PlayerLoc, PlayerScreenPos))
+	FVector2D PlayerScreenPosition;
+	if (OwnerPlayerController->ProjectWorldLocationToScreen(PlayerLocation, PlayerScreenPosition))
 	{
 		FVector2D ViewportSize;
 		GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
 		FVector2D ScreenCenter = ViewportSize * 0.5f;
-		FVector2D Offset = PlayerScreenPos - ScreenCenter;
+		FVector2D Offset = PlayerScreenPosition - ScreenCenter;
+		
 		float OffsetMagnitude = (Offset / ViewportSize).Size();
 
 		if (OffsetMagnitude > ScreenEdgeCatchupThreshold)
@@ -827,14 +761,48 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 			InterpSpeed = CatchupInterpSpeed;
 		}
 	}
+	return InterpSpeed;
+}
 
-	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, DesiredMidpoint, GetWorld()->GetDeltaSeconds(), InterpSpeed);
+void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+{
+	if (!PlayerOwner || !TargetActor || !OwnerPlayerController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation - Invalid Access"))
+		return;
+	}
+	
+	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
+	const FVector TargetLocation = TargetActor->GetActorLocation();
+	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, 0.5f);
+	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
+	float DesiredRadius = Distance / 2.0f;
+
+	DrawDebugSphere(
+			GetWorld(),
+			MidpointAnchorLocation,
+			15.0f,              // radius
+			12,                 // segments
+			FColor::Yellow,        // color
+			false,              // persistent lines
+			-1.0f,              // lifetime
+			0                   // depth priority
+			);
+
+	if (SmoothedMidPoint.IsZero())
+	{
+		SmoothedMidPoint = MidpointAnchorLocation;
+	}
+
+	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
+
+	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
 
 	if (IsValid(PlayerOwner->TargetCameraAnchor))
 	{
 		PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
 
-		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLoc);
+		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
 		const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->TargetCameraAnchor->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 8.0f);
 		PlayerOwner->TargetCameraAnchor->SetWorldRotation(NewRotation);
 	}
@@ -847,7 +815,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 
 	if (ShouldUpdateControllerRotation)
 	{
-		FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerLoc, TargetLoc);
+		FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
 		FRotator FinalRot = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), LookRot, GetWorld()->GetDeltaSeconds(), 9.0f);
 		OwnerPlayerController->SetControlRotation(FinalRot);
 	}

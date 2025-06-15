@@ -17,8 +17,6 @@ class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-
-
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
@@ -108,14 +106,13 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Control Offset | Pitch Offset")
 	float MaxSoftPitchOffset = 10.0f;
+
+	float CatchupInterpSpeed = 8.0f;
 	
 	FRotator CurrentCameraOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	bool ShouldUpdateControllerRotation = false;
-
-	UPROPERTY(BlueprintReadWrite)
-	bool IsTargeting = false;
 
 private:
 	UPROPERTY()
@@ -147,16 +144,12 @@ private:
 	bool DesireToSwitch = false;
 	float StartRotatingStack = 0.0f;
 	
-	FVector MidPoint;
-	float Radius;
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 
 protected:
 
 	UTargetingSystemComponent();
-	
 	virtual void BeginPlay() override;
-
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void DrawCameraAnchor();
@@ -184,6 +177,7 @@ protected:
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 	FRotator GetControlRotationOnTarget(const AActor* OtherActor) const;
 	void SetControlRotationOnTarget(AActor* TargetActor) const;
+	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
 	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	void ControlRotation(bool ShouldControlRotation) const;
 
@@ -194,8 +188,9 @@ protected:
 	
 	FVector CalculateMidpoint(FVector PlayerLocation, FVector TargetLocation);
 	float CalculateDistance(FVector PlayerLocation, FVector TargetLocation);
+
+	bool CompareDistanceToScreen(FVector PlayerLocation, FVector TargetLocation);
 	
-	void UpdateMidPointControlRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	void DisableMidPointControlRotation();
 	
 	void ControlCameraOffset(float DeltaTime);
@@ -218,7 +213,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsLocked() const;
 
-	//GA_Lock entry point
+	//GA_LockOn entry point
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	AActor* TargetActor(bool& IsSuccess);
 
