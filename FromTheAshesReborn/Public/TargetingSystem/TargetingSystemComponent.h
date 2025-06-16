@@ -28,18 +28,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
-	bool ShouldControlRotation = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	bool IgnoreLookInput = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	float BreakLineOfSightDelay = 2.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
-	float StartRotatingThreshold = 0.85f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	bool ShouldDrawLockedOnWidget = true;
@@ -63,26 +57,11 @@ public:
 	float MinDistance = 100.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Pitch Offset")
-	bool ShouldAdjustPitchBasedOnDistanceToTarget = true;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Pitch Offset")
 	float MaxPitchOffset = -20.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Yaw Offset")
-	bool ShouldAdjustYawBasedOnDistanceToTarget = true;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Yaw Offset")
 	float MaxYawOffset = -35.0f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sticky Switch")
-	bool EnableStickyTarget = false;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sticky Switch")
-	float AxisMultiplier = 1.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sticky Switch")
-	float StickyRotationThreshold = 30.0f;
-
 	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
 
@@ -133,7 +112,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<AFTAPlayerCameraManger> FTAPlayerCameraManger;
 
-
 	UPROPERTY()
 	UWidgetComponent* TargetLockedOnWidgetComponent;
 
@@ -144,12 +122,8 @@ private:
 	FTimerHandle SwitchingTargetTimerHandle;
 
 	bool IsBreakingLineOfSight = false;
-	bool IsSwitchingTarget = false;
 	bool IsTargetLocked = false;
 	float ClosestTargetDistance = 0.0f;
-
-	bool DesireToSwitch = false;
-	float StartRotatingStack = 0.0f;
 	
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 
@@ -179,7 +153,7 @@ protected:
 	FVector2D FindCenterOfViewPort() const;
 
 	float GetDistanceFromCharacter(const AActor* OtherActor) const;
-
+	
 	void SetOwnerActorRotation();
 
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
@@ -207,9 +181,6 @@ protected:
 	
 	void TargetLockOn(AActor* TargetToLockOn);
 
-	void ResetIsSwitchingTarget();
-	bool ShouldSwitchTargetActor(float AxisValue);
-
 	static bool TargetIsTargetable(const AActor* Actor);
 	
 	void SetupLocalPlayerController();
@@ -228,9 +199,6 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetLockOff();
-	
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void TargetActorWithAxisInput(float AxisValue);
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool GetTargetLockedStatus();

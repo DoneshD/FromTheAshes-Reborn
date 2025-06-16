@@ -145,99 +145,6 @@ AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
 	return LockedOnTargetActor;
 }
 
-void UTargetingSystemComponent::TargetActorWithAxisInput(const float AxisValue)
-{
-	// If we're not locked on, do nothing
-	if (!IsTargetLocked)
-	{
-		return;
-	}
-
-	if (!LockedOnTargetActor)
-	{
-		return;
-	}
-
-	// If we're not allowed to switch target, do nothing
-	if (!ShouldSwitchTargetActor(AxisValue))
-	{
-		return;
-	}
-
-	// If we're switching target, do nothing for a set amount of time
-	if (IsSwitchingTarget)
-	{
-		return;
-	}
-
-	// Lock off target
-	AActor* CurrentTarget = LockedOnTargetActor;
-
-	// Depending on Axis Value negative / positive, set Direction to Look for (negative: left, positive: right)
-	const float RangeMin = AxisValue < 0 ? 0 : 180;
-	const float RangeMax = AxisValue < 0 ? 180 : 360;
-
-	// Reset Closest Target Distance to Minimum Distance to Enable
-	ClosestTargetDistance = MinimumDistanceToEnable;
-
-	// Get All Actors of Class
-	TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
-
-	TArray<AActor*> ActorsToLook;
-
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(CurrentTarget);
-	for (AActor* Actor : Actors)
-	{
-		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
-		if (bHit && IsInViewport(Actor))
-		{
-			ActorsToLook.Add(Actor);
-		}
-	}
-
-	// Find Targets in Range (left or right, based on Character and CurrentTarget)
-	TArray<AActor*> TargetsInRange = FindTargetsInRange(ActorsToLook, RangeMin, RangeMax);
-
-	// For each of these targets in range, get the closest one to current target
-	AActor* ActorToTarget = nullptr;
-	for (AActor* Actor : TargetsInRange)
-	{
-		// and filter out any character too distant from minimum distance to enable
-		const float Distance = GetDistanceFromCharacter(Actor);
-		if (Distance < MinimumDistanceToEnable)
-		{
-			const float RelativeActorsDistance = CurrentTarget->GetDistanceTo(Actor);
-			if (RelativeActorsDistance < ClosestTargetDistance)
-			{
-				ClosestTargetDistance = RelativeActorsDistance;
-				ActorToTarget = Actor;
-			}
-		}
-	}
-
-	if (ActorToTarget)
-	{
-		if (SwitchingTargetTimerHandle.IsValid())
-		{
-			SwitchingTargetTimerHandle.Invalidate();
-		}
-
-		TargetLockOff();
-		LockedOnTargetActor = ActorToTarget;
-		TargetLockOn(ActorToTarget);
-
-		GetWorld()->GetTimerManager().SetTimer(
-			SwitchingTargetTimerHandle,
-			this,
-			&UTargetingSystemComponent::ResetIsSwitchingTarget,
-			// Less sticky if still switching
-			IsSwitchingTarget ? 0.25f : 0.5f
-		);
-
-		IsSwitchingTarget = true;
-	}
-}
 
 bool UTargetingSystemComponent::GetTargetLockedStatus()
 {
@@ -388,47 +295,6 @@ void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
 	}
 }
 
-void UTargetingSystemComponent::ResetIsSwitchingTarget()
-{
-	IsSwitchingTarget = false;
-	DesireToSwitch = false;
-}
-
-bool UTargetingSystemComponent::ShouldSwitchTargetActor(const float AxisValue)
-{
-	if (EnableStickyTarget)
-	{
-		StartRotatingStack += (AxisValue != 0) ? AxisValue * AxisMultiplier : (StartRotatingStack > 0 ? -AxisMultiplier : AxisMultiplier);
-
-		if (AxisValue == 0 && FMath::Abs(StartRotatingStack) <= AxisMultiplier)
-		{
-			StartRotatingStack = 0.0f;
-		}
-
-		if (FMath::Abs(StartRotatingStack) < StickyRotationThreshold)
-		{
-			DesireToSwitch = false;
-			return false;
-		}
-
-		if (StartRotatingStack * AxisValue > 0)
-		{
-			StartRotatingStack = StartRotatingStack > 0 ? StickyRotationThreshold : -StickyRotationThreshold;
-		}
-		else if (StartRotatingStack * AxisValue < 0)
-		{
-			StartRotatingStack = StartRotatingStack * -1.0f;
-		}
-
-		DesireToSwitch = true;
-
-		return true;
-	}
-
-	// Non Sticky feeling, check Axis value exceeds threshold
-	return FMath::Abs(AxisValue) > StartRotatingThreshold;
-}
-
 
 void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 {
@@ -447,11 +313,7 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	{
 		CreateAndAttachTargetLockedOnWidgetComponent(TargetToLockOn);
 	}
-
-	if (ShouldControlRotation)
-	{
-		ControlRotation(true);
-	}
+	
 
 	if (IgnoreLookInput)
 	{
@@ -479,11 +341,6 @@ void UTargetingSystemComponent::TargetLockOff()
 
 	if (LockedOnTargetActor)
 	{
-		if (ShouldControlRotation)
-		{
-			ControlRotation(false);
-		}
-
 		if (IsValid(OwnerPlayerController))
 		{
 			OwnerPlayerController->ResetIgnoreLookInput();
@@ -730,40 +587,35 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 	const FRotator LookRotation = FindLookAtRotation(CharacterLocation,OtherActorLocation);
 	float Yaw = LookRotation.Yaw;
 	float Pitch = LookRotation.Pitch;
+
+	const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
+	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, MaxPitchOffset);
+	float DesiredYaw = 0.0;
 	
-	FRotator TargetRotation;
-	
-	if (ShouldAdjustYawBasedOnDistanceToTarget || ShouldAdjustPitchBasedOnDistanceToTarget)
+	if(PlayerSideRelativeToActorOnScreen(OtherActor))
 	{
-		const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
-		float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, MaxPitchOffset);
-		float DesiredYaw = 0.0;
-		
-		if(PlayerSideRelativeToActorOnScreen(OtherActor))
-		{
-			DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, MaxYawOffset);
-		}
-		else
-		{
-			DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, MaxYawOffset);
-		}
-		
-		Pitch = Pitch + DesiredPitch;
-		Yaw = Yaw + DesiredYaw;
-			
-		TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
+		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, MaxYawOffset);
 	}
 	else
 	{
-		if (IgnoreLookInput)
-		{
-			TargetRotation = FRotator(LookRotation.Pitch, Yaw, ControlRotation.Roll);
-		}
-		else
-		{
-			TargetRotation = FRotator(ControlRotation.Pitch, LookRotation.Yaw, ControlRotation.Roll);
-		}
+		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, MaxYawOffset);
 	}
+	
+	Pitch = Pitch + DesiredPitch;
+	Yaw = Yaw + DesiredYaw;
+		
+	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
+	
+
+	if (IgnoreLookInput)
+	{
+		TargetRotation = FRotator(LookRotation.Pitch, Yaw, ControlRotation.Roll);
+	}
+	else
+	{
+		TargetRotation = FRotator(ControlRotation.Pitch, LookRotation.Yaw, ControlRotation.Roll);
+	}
+	
 
 	FRotator BlendedTargetRotation = TargetRotation;
 
