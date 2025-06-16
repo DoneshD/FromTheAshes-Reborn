@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
+class AFTAPlayerCameraManger;
 class APlayerCharacter;
 class UUserWidget;
 class UWidgetComponent;
@@ -128,6 +129,10 @@ private:
 	TObjectPtr<APlayerCharacter> PlayerCharacter;
 
 	UPROPERTY()
+	TObjectPtr<AFTAPlayerCameraManger> FTAPlayerCameraManger;
+
+
+	UPROPERTY()
 	UWidgetComponent* TargetLockedOnWidgetComponent;
 
 	UPROPERTY()
@@ -149,6 +154,7 @@ private:
 protected:
 
 	UTargetingSystemComponent();
+	
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

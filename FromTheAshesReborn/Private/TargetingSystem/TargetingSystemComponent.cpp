@@ -11,6 +11,7 @@
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/FTAPlayerCameraManger.h"
 #include "Player/PlayerCharacter.h"
 
 UTargetingSystemComponent::UTargetingSystemComponent()
@@ -134,6 +135,7 @@ AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
 	TargetLockOn(LockedOnTargetActor);
 	
 	IsSuccess = true;
+	FTAPlayerCameraManger->ViewPitchMax = 10;
 	return LockedOnTargetActor;
 }
 
@@ -444,8 +446,6 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 
 void UTargetingSystemComponent::TargetLockOff()
 {
-	// Recast PlayerController in case it wasn't already setup on Begin Play (local split screen)
-	SetupLocalPlayerController();
 	SmoothedMidPoint = FVector::ZeroVector;
 	IsTargetLocked = false;
 	if (TargetLockedOnWidgetComponent)
@@ -470,7 +470,7 @@ void UTargetingSystemComponent::TargetLockOff()
 			OnTargetLockedOff.Broadcast(LockedOnTargetActor);
 		}
 	}
-
+	FTAPlayerCameraManger->ViewPitchMax = 30.0f;
 	DisableMidPointControlRotation();
 	LockedOnTargetActor = nullptr;
 }
@@ -539,6 +539,20 @@ void UTargetingSystemComponent::SetupLocalPlayerController()
 	}
 
 	OwnerPlayerController = Cast<APlayerController>(OwnerPawn->GetController());
+
+	if (!IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::SetupLocalPlayerController() - OwnerPlayerController is invalid"));
+		return;
+	}
+
+	FTAPlayerCameraManger = Cast<AFTAPlayerCameraManger>(OwnerPlayerController->PlayerCameraManager);
+
+	if (!IsValid(FTAPlayerCameraManger))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::SetupLocalPlayerController() - FTAPlayerCameraManger is invalid"));
+	}
+
 }
 
 AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Actors) const
@@ -824,7 +838,6 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	}
 
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
-	UE_LOG(LogTemp, Warning, TEXT("Final Speed: %f"), ControlRotationInterpSpeed);
 	if (ShouldUpdateControllerRotation)
 	{
 		FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
@@ -832,7 +845,6 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		OwnerPlayerController->SetControlRotation(FinalRot);
 	}
 }
-
 
 float UTargetingSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor) const
 {
