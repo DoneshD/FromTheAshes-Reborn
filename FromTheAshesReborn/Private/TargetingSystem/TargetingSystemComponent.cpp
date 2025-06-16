@@ -68,9 +68,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		// ControlCameraOffset(DeltaTime);
+		ControlCameraOffset(DeltaTime);
 		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
-		DrawCameraAnchor();
+		// DrawCameraAnchor();
 		SetOwnerActorRotation();
 	}
 
@@ -831,17 +831,6 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, 0.5f);
 	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
 	float DesiredRadius = Distance / 2.0f;
-
-	DrawDebugSphere(
-		GetWorld(),
-		MidpointAnchorLocation,
-		15.0f,          
-		12,               
-		FColor::Yellow,      
-		false,              
-		-1.0f,             
-		0                  
-	);
 
 	if (bIsLockingOn)
 	{
