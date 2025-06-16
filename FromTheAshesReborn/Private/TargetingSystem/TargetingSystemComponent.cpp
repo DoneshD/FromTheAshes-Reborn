@@ -838,6 +838,8 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		bIsLockingOn = false; 
 	}
 
+	DrawCameraAnchor();
+
 	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
 

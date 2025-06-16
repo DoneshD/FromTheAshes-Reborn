@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "HitEventObject.h"
 #include "UObject/Object.h"
 #include "LaunchEventObject.generated.h"
 
@@ -18,7 +19,7 @@ struct FLaunchInfo
 };
 
 UCLASS()
-class FROMTHEASHESREBORN_API ULaunchEventObject : public UObject
+class FROMTHEASHESREBORN_API ULaunchEventObject : public UHitEventObject
 {
 	GENERATED_BODY()
 

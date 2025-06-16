@@ -71,10 +71,31 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
 	LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
 	LaunchInfoObj->LaunchData.StallDuration = StallDuration;
-
-	OnHitEventData.OptionalObject = LaunchInfoObj;
+	LaunchInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
 	
-	Super::SendMeleeHitGameplayEvents(TargetDataHandle);
+	FGameplayEventData OnLaunchHitEventData;
+	OnLaunchHitEventData.OptionalObject = LaunchInfoObj;
+
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	
+	OnLaunchHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnLaunchHitEventData.Target = TargetActor;
+	OnLaunchHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
+	
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
+	{
+		OnLaunchHitEventData.EventTag = CurrentHitReactionTag;
+	}
+	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
+	{
+		OnLaunchHitEventData.EventTag = HitReactionTag;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - Not a valid Gameplay Tag"));
+	}
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnLaunchHitEventData.EventTag, OnLaunchHitEventData);
 	
 }
 
@@ -99,7 +120,7 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 		return;
 	}
 	
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("EffectTag.ReceiveHit.Grounded.Launched.Vertical")))
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LaunchTag.Launched.Vertical")))
 	{
 		if (LaunchTask)
 		{
@@ -107,6 +128,7 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 			LaunchTask->ReadyForActivation();
 		}
 	}
+	
 	
 }
 
