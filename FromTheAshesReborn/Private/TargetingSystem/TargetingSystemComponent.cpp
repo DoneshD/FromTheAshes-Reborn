@@ -68,10 +68,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		// SetControlRotationOnTarget(LockedOnTargetActor);
+		// ControlCameraOffset(DeltaTime);
 		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
 		DrawCameraAnchor();
-		// ControlCameraOffset(DeltaTime);
 		SetOwnerActorRotation();
 	}
 
@@ -86,7 +85,6 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		return;
 	}
 	
-	// Target Locked Off based on Distance
 	if (GetDistanceFromCharacter(LockedOnTargetActor) > MinimumDistanceToEnable)
 	{
 		TargetLockOff();
@@ -116,12 +114,12 @@ void UTargetingSystemComponent::DrawCameraAnchor()
 	DrawDebugSphere(
 	GetWorld(),
 	PlayerCharacter->TargetCameraAnchor->GetComponentLocation(),
-	15.0f,              // radius
-	12,                 // segments
-	FColor::Red,        // color
-	false,              // persistent lines
-	-1.0f,              // lifetime
-	0                   // depth priority
+	15.0f,           
+	12,                 
+	FColor::Red,        
+	false,              
+	-1.0f,              
+	0                   
 	);
 
 }
@@ -341,7 +339,7 @@ float UTargetingSystemComponent::CompareDistanceToScreenAndGetInterpSpeed(APlaye
 		InShouldUpdateControlRotation = true;
 	}
 	
-	float DistanceFactor = FMath::Clamp((DistanceToScreenDifference) / 100, 0.0f, 10.0f);
+	float DistanceFactor = FMath::Clamp((DistanceToScreenDifference), 0.0f, 10.0f);
 	return FMath::Lerp(0.0f, 1.0f, DistanceFactor);
 }
 
@@ -729,7 +727,6 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 	const FVector CharacterLocation = OwnerActor->GetActorLocation();
 	const FVector OtherActorLocation = OtherActor->GetActorLocation();
 
-	// Find look at rotation
 	const FRotator LookRotation = FindLookAtRotation(CharacterLocation,OtherActorLocation);
 	float Yaw = LookRotation.Yaw;
 	float Pitch = LookRotation.Pitch;
@@ -865,9 +862,9 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
 	if (ShouldUpdateControllerRotation)
 	{
-		FRotator LookRot = UKismetMathLibrary::FindLookAtRotation(PlayerLocation, TargetLocation);
-		FRotator FinalRot = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), LookRot, GetWorld()->GetDeltaSeconds(), ControlRotationInterpSpeed);
-		OwnerPlayerController->SetControlRotation(FinalRot);
+		const FRotator ControlRotation = GetControlRotationOnTarget(TargetActor);
+		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, GetWorld()->GetDeltaSeconds(), ControlRotationInterpSpeed * 5);
+		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
 }
 
