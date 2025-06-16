@@ -189,6 +189,8 @@ protected:
 	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	void ControlRotation(bool ShouldControlRotation) const;
 
+	bool PlayerSideRelativeToActorOnScreen(const AActor* OtherActor) const;
+
 	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
 	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;
 

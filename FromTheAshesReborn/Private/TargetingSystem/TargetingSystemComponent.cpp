@@ -736,13 +736,21 @@ FRotator UTargetingSystemComponent::GetControlRotationOnTarget(const AActor* Oth
 	if (ShouldAdjustYawBasedOnDistanceToTarget || ShouldAdjustPitchBasedOnDistanceToTarget)
 	{
 		const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
-		
 		float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, MaxPitchOffset);
-		float DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, MaxYawOffset);
+		float DesiredYaw = 0.0;
+		
+		if(PlayerSideRelativeToActorOnScreen(OtherActor))
+		{
+			DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, MaxYawOffset);
+		}
+		else
+		{
+			DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, MaxYawOffset);
+		}
 		
 		Pitch = Pitch + DesiredPitch;
 		Yaw = Yaw + DesiredYaw;
-		
+			
 		TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
 	}
 	else
@@ -926,6 +934,23 @@ void UTargetingSystemComponent::ControlRotation(const bool InShouldControlRotati
 	{
 		CharacterMovementComponent->bOrientRotationToMovement = !InShouldControlRotation;
 	}
+}
+
+bool UTargetingSystemComponent::PlayerSideRelativeToActorOnScreen(const AActor* OtherActor) const
+{
+	FVector2D ViewportSize;
+	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
+
+	FVector2D PlayerScreenLocation;
+	OwnerPlayerController->ProjectWorldLocationToScreen(PlayerCharacter->GetActorLocation(), PlayerScreenLocation);
+
+	FVector2D TargetScreenLocation;
+	OwnerPlayerController->ProjectWorldLocationToScreen(OtherActor->GetActorLocation(), TargetScreenLocation);
+
+	const float PlayerX = PlayerScreenLocation.X;
+	const float TargetX = TargetScreenLocation.X;
+	
+	return PlayerX < TargetX;
 }
 
 bool UTargetingSystemComponent::IsInViewport(const AActor* TargetActor) const
