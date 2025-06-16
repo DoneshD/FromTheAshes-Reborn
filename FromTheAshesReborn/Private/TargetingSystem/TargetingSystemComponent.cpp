@@ -408,6 +408,7 @@ bool UTargetingSystemComponent::ShouldSwitchTargetActor(const float AxisValue)
 	return FMath::Abs(AxisValue) > StartRotatingThreshold;
 }
 
+
 void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 {
 	if (!IsValid(TargetToLockOn))
@@ -417,7 +418,8 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	}
 
 	SetupLocalPlayerController();
-
+	
+	bIsLockingOn = true;
 	IsTargetLocked = true;
 	
 	if (ShouldDrawLockedOnWidget)
@@ -442,6 +444,11 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	{
 		OnTargetLockedOn.Broadcast(TargetToLockOn);
 	}
+}
+
+void UTargetingSystemComponent::TranistionLockOff()
+{
+	
 }
 
 void UTargetingSystemComponent::TargetLockOff()
@@ -792,7 +799,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 {
 	if (!PlayerOwner || !TargetActor || !OwnerPlayerController)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation - Invalid Access"))
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation - Invalid Access"));
 		return;
 	}
 	
@@ -803,23 +810,23 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	float DesiredRadius = Distance / 2.0f;
 
 	DrawDebugSphere(
-			GetWorld(),
-			MidpointAnchorLocation,
-			15.0f,          
-			12,               
-			FColor::Yellow,      
-			false,              
-			-1.0f,             
-			0                  
-			);
+		GetWorld(),
+		MidpointAnchorLocation,
+		15.0f,          
+		12,               
+		FColor::Yellow,      
+		false,              
+		-1.0f,             
+		0                  
+	);
 
-	if (SmoothedMidPoint.IsZero())
+	if (bIsLockingOn)
 	{
-		SmoothedMidPoint = MidpointAnchorLocation;
+		SmoothedMidPoint = PlayerOwner->TargetCameraAnchor->GetComponentLocation();
+		bIsLockingOn = false; 
 	}
 
 	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
-
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
 
 	if (IsValid(PlayerOwner->TargetCameraAnchor))
@@ -845,6 +852,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		OwnerPlayerController->SetControlRotation(FinalRot);
 	}
 }
+
 
 float UTargetingSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor) const
 {

@@ -114,6 +114,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	bool ShouldUpdateControllerRotation = false;
+	bool bIsLockingOn = false;
 
 private:
 	UPROPERTY()
@@ -202,6 +203,8 @@ protected:
 	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
 	
 	void TargetLockOn(AActor* TargetToLockOn);
+
+	void TranistionLockOff();
 	void ResetIsSwitchingTarget();
 	bool ShouldSwitchTargetActor(float AxisValue);
 
