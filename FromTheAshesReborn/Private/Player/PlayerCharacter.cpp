@@ -13,6 +13,9 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 {
 	TargetCameraAnchor = CreateDefaultSubobject<USceneComponent>(TEXT("TargetCameraAnchor"));
 	TargetCameraAnchor->SetupAttachment(RootComponent);
+	TargetCameraAnchor->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+	DefaultCameraAnchorRelativeLocation = TargetCameraAnchor->GetRelativeLocation();
+	DefaultCameraAnchorRelativeRotation = TargetCameraAnchor->GetRelativeRotation();
 	
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	SpringArmComp->SetupAttachment(TargetCameraAnchor);
@@ -66,11 +69,6 @@ void APlayerCharacter::BeginPlay()
 
 	ParkourSystemComponent->SetIntializeReference(this, SpringArmComp, CameraComp, MotionWarpingComponent);
 
-	if (TargetCameraAnchor)
-	{
-		InitialSpringMeshLocation = TargetCameraAnchor->GetRelativeLocation();
-	}
-	
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)

@@ -61,6 +61,20 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	
+	if (!IsTargetLocked || !LockedOnTargetActor)
+	{
+		DisableMidPointControlRotation();
+	}
+	else
+	{
+		// SetControlRotationOnTarget(LockedOnTargetActor);
+		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
+		DrawCameraAnchor();
+		// ControlCameraOffset(DeltaTime);
+		SetOwnerActorRotation();
+	}
+
 	if (!IsTargetLocked || !LockedOnTargetActor)
 	{
 		return;
@@ -71,12 +85,6 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		TargetLockOff();
 		return;
 	}
-	// SetControlRotationOnTarget(LockedOnTargetActor);
-	UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
-	DrawCameraAnchor();
-	// ControlCameraOffset(DeltaTime);
-	SetOwnerActorRotation();
-	
 	
 	// Target Locked Off based on Distance
 	if (GetDistanceFromCharacter(LockedOnTargetActor) > MinimumDistanceToEnable)
@@ -339,8 +347,23 @@ float UTargetingSystemComponent::CompareDistanceToScreenAndGetInterpSpeed(APlaye
 
 void UTargetingSystemComponent::DisableMidPointControlRotation()
 {
-	PlayerCharacter->TargetCameraAnchor->SetRelativeLocation(PlayerCharacter->InitialSpringMeshLocation);
-	PlayerCharacter->SpringArmComp->TargetArmLength = 400.0f;
+	if (!PlayerCharacter || !PlayerCharacter->TargetCameraAnchor) return;
+
+	const FVector CurrentAnchorLocation = PlayerCharacter->TargetCameraAnchor->GetRelativeLocation();
+	const FVector TargetAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
+	const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
+
+	PlayerCharacter->TargetCameraAnchor->SetRelativeLocation(NewLocation);
+
+	const FRotator CurrentAnchorRotation = PlayerCharacter->TargetCameraAnchor->GetRelativeRotation();
+	const FRotator TargetAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
+	const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
+
+	PlayerCharacter->TargetCameraAnchor->SetRelativeRotation(NewRotation);
+	
+	const float CurrentTargetArmLength = PlayerCharacter->SpringArmComp->TargetArmLength;
+	PlayerCharacter->SpringArmComp->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, 400, GetWorld()->GetDeltaSeconds(), 2.0f);
+	
 }
 
 void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
@@ -446,15 +469,11 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	}
 }
 
-void UTargetingSystemComponent::TranistionLockOff()
-{
-	
-}
-
 void UTargetingSystemComponent::TargetLockOff()
 {
 	SmoothedMidPoint = FVector::ZeroVector;
 	IsTargetLocked = false;
+	
 	if (TargetLockedOnWidgetComponent)
 	{
 		TargetLockedOnWidgetComponent->DestroyComponent();
@@ -478,7 +497,6 @@ void UTargetingSystemComponent::TargetLockOff()
 		}
 	}
 	FTAPlayerCameraManger->ViewPitchMax = 30.0f;
-	DisableMidPointControlRotation();
 	LockedOnTargetActor = nullptr;
 }
 
@@ -834,14 +852,14 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
-		const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->TargetCameraAnchor->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 8.0f);
+		const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->TargetCameraAnchor->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
 		PlayerOwner->TargetCameraAnchor->SetWorldRotation(NewRotation);
 	}
 
 	if (IsValid(PlayerOwner->SpringArmComp))
 	{
 		const float TargetArmLength = DesiredRadius + 300.0f;
-		PlayerOwner->SpringArmComp->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComp->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 6.0f);
+		PlayerOwner->SpringArmComp->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComp->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
 	}
 
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);

@@ -63,5 +63,10 @@ public:
 
 	virtual void InitAbilitySystemComponent() override;
 
-	FVector InitialSpringMeshLocation;
+	FVector GetDefaultCameraAnchorRelativeLocation() const { return DefaultCameraAnchorRelativeLocation; }
+	FRotator GetDefaultCameraAnchorRelativeRotation() const { return DefaultCameraAnchorRelativeRotation; }
+
+	FVector DefaultCameraAnchorRelativeLocation;
+	FRotator DefaultCameraAnchorRelativeRotation;
+
 };
