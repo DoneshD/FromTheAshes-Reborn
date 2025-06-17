@@ -9,6 +9,11 @@ USTRUCT(BlueprintType)
 struct FSlamInfo
 {
 	GENERATED_BODY()
+
+	float DownwardDistance;
+	float Speed;
+	float Duration;
+	FVector Location;
 	
 };
 

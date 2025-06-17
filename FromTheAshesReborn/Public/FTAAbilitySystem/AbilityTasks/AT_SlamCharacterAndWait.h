@@ -18,14 +18,26 @@ protected:
 	TObjectPtr<UCharacterMovementComponent> CMC;
 	
 	bool IsSlamming = false;
+	FVector SlamLocation;
+	float SlamSpeed;
+	float SlamDuration;
+
+	float SlamDownwardDistance;
+
+	float SlamElapsedTime = 0.0f;
+	float SlamStartTime = 0.0f;
+
+	FVector SlamStartLocation;
+	FVector SlamEndLocation;
 
 public:
 	
 	UPROPERTY(BlueprintAssignable)
-	FOnSlamComplete OnLaunchComplete;
+	FOnSlamComplete OnSlamComplete;
+	
 public:
 	
-	static UAT_SlamCharacterAndWait* AT_SlamCharacterAndWait(UGameplayAbility* OwningAbility);
+	static UAT_SlamCharacterAndWait* AT_SlamCharacterAndWait(UGameplayAbility* OwningAbility, FVector SlamLocation, float Speed, float Duration);
 
 protected:
 	

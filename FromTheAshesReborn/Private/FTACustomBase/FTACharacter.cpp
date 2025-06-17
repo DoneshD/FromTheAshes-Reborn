@@ -214,5 +214,10 @@ bool AFTACharacter::HasSlammedTag() const
 
 }
 
+bool AFTACharacter::HasSlammingTag() const
+{
+	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slamming"));
+}
+
 
 

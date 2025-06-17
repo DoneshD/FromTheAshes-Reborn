@@ -20,6 +20,7 @@ protected:
 	float DescentSpeed = 10;
 
 	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
+	
 public:
 
 	UGA_MeleeWeaponAttack_Aerial();

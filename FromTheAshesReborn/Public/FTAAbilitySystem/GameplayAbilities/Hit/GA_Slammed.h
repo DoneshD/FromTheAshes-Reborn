@@ -2,25 +2,23 @@
 
 #include "CoreMinimal.h"
 #include "GA_ReceiveHit.h"
-#include "GA_Launched.generated.h"
+#include "GA_Slammed.generated.h"
 
-
-class UAT_LaunchCharacterAndWait;
-class ULauncherComponent;
+class UAT_SlamCharacterAndWait;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_Launched : public UGA_ReceiveHit
+class FROMTHEASHESREBORN_API UGA_Slammed : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
 
 protected:
 
 	UPROPERTY()
-	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
+	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
 
 public:
 
-	UGA_Launched();
+	UGA_Slammed();
 
 	virtual void OnAbilityTick(float DeltaTime) override;
 	
@@ -30,6 +28,5 @@ public:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	UFUNCTION()
-	void OnLaunchComplete();
+	void OnSlamComplete();
 };
-

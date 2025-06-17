@@ -11,9 +11,7 @@ struct FLaunchInfo
 	GENERATED_BODY()
 
 	float VerticalDistance;
-
 	float LaunchDuration;
-
 	float StallDuration;
 	
 };

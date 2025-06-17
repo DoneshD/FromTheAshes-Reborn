@@ -82,6 +82,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool HasSlammedTag() const;
 
+	UFUNCTION(BlueprintPure)
+	bool HasSlammingTag() const;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartHitStop(float Duration);
 

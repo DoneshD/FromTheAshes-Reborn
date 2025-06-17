@@ -4,13 +4,10 @@
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"
-#include "TracingComponent/TracingComponent.h"
-#include "Weapon/WeaponActorBase.h"
 
 UGA_MeleeWeaponAttack_Launcher::UGA_MeleeWeaponAttack_Launcher()
 {
