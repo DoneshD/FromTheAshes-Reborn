@@ -30,14 +30,41 @@ public:
 	TEnumAsByte<ECollisionChannel> TargetableCollisionChannel;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
-	bool IgnoreLookInput = true;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	float BreakLineOfSightDelay = 2.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Catch up")
+	float CatchupInterpSpeed = 8.0f;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float MaxDistance = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float MinDistance = 100.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float DistanceBasedMaxPitchOffset = -20.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float DistanceBasedMaxYawOffset = -35.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	bool EnableInputBasedOffset = true;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputOffsetDecayRate = 0.75f;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputOffsetScale = 1.5f;
+	
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputBasedMaxYawOffset = 25.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputBasedMaxPitchOffset = 10.0f;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	bool ShouldDrawLockedOnWidget = true;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	TSubclassOf<UUserWidget> LockedOnWidgetClass;
 
@@ -49,19 +76,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Distance")
-	float MaxDistance = 1000.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Distance")
-	float MinDistance = 100.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Pitch Offset")
-	float MaxPitchOffset = -20.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rotation Offset | Yaw Offset")
-	float MaxYawOffset = -35.0f;
-	
 	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
 
@@ -71,30 +86,9 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
 	FTraceComponentSetRotation OnTargetSetRotation;
 
-public:
-	UPROPERTY(EditAnywhere, Category = "Rotation Offset | Control Offset")
-	bool EnableSoftLockCameraOffset = true;
-
-	UPROPERTY(EditAnywhere, Category = "Rotation Offset | Control Offset")
-	float SoftLockDecayRate = 0.75f;
-
-	UPROPERTY(EditAnywhere, Category = "Rotation Offset | Control Offset")
-	float CameraInputScale = 1.5f;
-	
-	UPROPERTY(EditAnywhere, Category = "Control Offset | Yaw Offset")
-	float MaxSoftYawOffset = 25.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Control Offset | Pitch Offset")
-	float MaxSoftPitchOffset = 10.0f;
-
-	float CatchupInterpSpeed = 8.0f;
-	
-	FRotator CurrentCameraOffset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	bool IgnoreLookInput = false;
 	bool ShouldUpdateControllerRotation = false;
 	bool bIsLockingOn = false;
-	bool IsLockingOff = false;
 
 private:
 	UPROPERTY()
@@ -126,6 +120,7 @@ private:
 	float ClosestTargetDistance = 0.0f;
 	
 	FVector SmoothedMidPoint = FVector::ZeroVector;
+	FRotator CurrentCameraOffset;
 
 protected:
 
@@ -136,6 +131,29 @@ protected:
 
 	void DrawCameraAnchor();
 
+	void TargetLockOn(AActor* TargetToLockOn);
+	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
+	void SetupLocalPlayerController();
+	static bool TargetIsTargetable(const AActor* Actor);
+
+	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
+
+	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
+	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor) const;
+	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
+	void ControlCameraOffset(float DeltaTime);
+
+	bool PlayerSideRelativeToActorOnScreen(const AActor* OtherActor) const;
+	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
+	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
+
+	float GetDistanceFromCharacter(const AActor* OtherActor) const;
+	void SetOwnerActorRotation();
+	void EnableControlRotation(bool ShouldControlRotation) const;
+	// void SetControlRotationOnTarget(AActor* TargetActor) const;
+
+	void DisableMidPointControlRotation();
+	
 	TArray<AActor*> GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const;
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
 
@@ -152,55 +170,25 @@ protected:
 	float FindDistanceFromCenterOfViewport(const AActor* TargetActor) const;
 	FVector2D FindCenterOfViewPort() const;
 
-	float GetDistanceFromCharacter(const AActor* OtherActor) const;
-	
-	void SetOwnerActorRotation();
-
-	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
-	FRotator GetControlRotationOnTarget(const AActor* OtherActor) const;
-	void SetControlRotationOnTarget(AActor* TargetActor) const;
-	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
-	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
-	void ControlRotation(bool ShouldControlRotation) const;
-
-	bool PlayerSideRelativeToActorOnScreen(const AActor* OtherActor) const;
-
 	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
 	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;
-
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
-
-	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
-	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
-	
-	void DisableMidPointControlRotation();
-	
-	void ControlCameraOffset(float DeltaTime);
-	
-	void CreateAndAttachTargetLockedOnWidgetComponent(AActor* TargetActor);
-	
-	void TargetLockOn(AActor* TargetToLockOn);
-
-	static bool TargetIsTargetable(const AActor* Actor);
-	
-	void SetupLocalPlayerController();
 
 public:
 
+	//GA_LockOn entry point
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	AActor* TargetActor(bool& IsSuccess);
+	
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	AActor* GetLockedOnTargetActor() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool IsLocked() const;
-
-	//GA_LockOn entry point
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	AActor* TargetActor(bool& IsSuccess);
-
-	UFUNCTION(BlueprintCallable, Category = "Target System")
-	void TargetLockOff();
-
+	
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	bool GetTargetLockedStatus();
 	
+	UFUNCTION(BlueprintCallable, Category = "Target System")
+	void TargetLockOff();
 };
