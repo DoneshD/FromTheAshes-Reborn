@@ -46,6 +46,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Attacks")
 	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attacks")
+	float BoxHalfSize;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> DamageEffect;

@@ -56,11 +56,13 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	}
 	
 	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
-	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation(); 
+	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
+
+	FRotator CurrentRotation = GetFTACharacterFromActorInfo()->GetActorRotation();
 
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
-
-	GetFTACharacterFromActorInfo()->SetActorRotation(LookAtRotation);
+	
+	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(CurrentRotation.Pitch, LookAtRotation.Yaw, CurrentRotation.Roll));
 	
 
 
