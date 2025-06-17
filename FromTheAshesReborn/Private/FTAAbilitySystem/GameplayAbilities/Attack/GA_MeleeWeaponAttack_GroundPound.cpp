@@ -126,7 +126,7 @@ void UGA_MeleeWeaponAttack_GroundPound::OnMontageCompleted(FGameplayTag EventTag
 
 void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LauncherTag.Montage.Descend")))
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LaunchTag.Slammed.Vertical")))
 	{
 		IsGroundPounding = true;
 	}
