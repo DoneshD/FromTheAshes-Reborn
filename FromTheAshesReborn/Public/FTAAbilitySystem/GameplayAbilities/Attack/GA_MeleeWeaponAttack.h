@@ -5,7 +5,6 @@
 #include "../GA_FromEquipment.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
-
 class UNiagaraSystem;
 class UComboManagerComponent;
 class UMeleeAbilityDataAsset;

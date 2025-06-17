@@ -9,6 +9,8 @@
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"
+#include "TracingComponent/TracingComponent.h"
+#include "Weapon/WeaponActorBase.h"
 
 UGA_MeleeWeaponAttack_Launcher::UGA_MeleeWeaponAttack_Launcher()
 {
@@ -53,6 +55,8 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 		LauncherVerticalDistance,
 		LauncherDuration,
 		StallDuration);
+
+	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(75.0f, 75.0f, 75.0f);
 }
 
 void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

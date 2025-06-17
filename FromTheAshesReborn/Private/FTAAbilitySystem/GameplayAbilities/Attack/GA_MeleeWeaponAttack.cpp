@@ -131,6 +131,7 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	}
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
+	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(20.0f, 20.0f, 20.0f);
 
 }
 

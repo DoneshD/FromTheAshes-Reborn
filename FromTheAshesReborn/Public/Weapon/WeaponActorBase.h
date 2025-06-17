@@ -15,9 +15,6 @@ class FROMTHEASHESREBORN_API AWeaponActorBase : public AActor
 	
 public:
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tracing")
-	// TObjectPtr<UDidItHitActorComponent> DidItHitActorComponent;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tracing")
 	TObjectPtr<UTracingComponent> TracingComponent;
 

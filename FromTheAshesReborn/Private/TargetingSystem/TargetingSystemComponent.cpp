@@ -246,9 +246,24 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
 
+	DrawDebugSphere(
+	GetWorld(),
+	MidpointAnchorLocation,
+	15.0f,           
+	12,                 
+	FColor::Yellow,        
+	false,              
+	-1.0f,              
+	0                   
+	);
+
 	if (IsValid(PlayerOwner->TargetCameraAnchor))
 	{
-		PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
+		//TODO: Fix later
+		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
+		
+		PlayerOwner->TargetCameraAnchor->SetWorldLocation(MidpointAnchorLocation);
+		
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
 		const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->TargetCameraAnchor->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
