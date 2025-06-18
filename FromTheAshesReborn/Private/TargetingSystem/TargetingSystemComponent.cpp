@@ -260,9 +260,9 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	if (IsValid(PlayerOwner->TargetCameraAnchor))
 	{
 		//TODO: Fix later
-		PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
+		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
 		
-		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(MidpointAnchorLocation);
+		PlayerOwner->TargetCameraAnchor->SetWorldLocation(MidpointAnchorLocation);
 		
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
