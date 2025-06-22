@@ -21,7 +21,8 @@ protected:
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
 public:
-	
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "PlayerState")
 	TObjectPtr<AActor> HardLockedTargetActor = nullptr;
 	
 public:

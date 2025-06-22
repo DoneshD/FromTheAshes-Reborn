@@ -104,14 +104,20 @@ void UGA_MeleeWeaponAttack_Aerial::OnMontageCancelled(FGameplayTag EventTag, FGa
 void UGA_MeleeWeaponAttack_Aerial::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
-
-	if(SuspendTask)
-	{
-		SuspendTask->EndTask();
-	}
+	
 }
 
 void UGA_MeleeWeaponAttack_Aerial::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+}
+
+void UGA_MeleeWeaponAttack_Aerial::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageBlendingOut(EventTag, EventData);
+
+	if(SuspendTask)
+	{
+		SuspendTask->EndTask();
+	}
 }

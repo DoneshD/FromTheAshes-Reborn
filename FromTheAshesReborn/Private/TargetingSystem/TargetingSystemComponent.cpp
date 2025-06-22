@@ -241,21 +241,21 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		bIsLockingOn = false; 
 	}
 
-	DrawCameraAnchor();
+	// DrawCameraAnchor();
 
 	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
 
-	DrawDebugSphere(
-	GetWorld(),
-	MidpointAnchorLocation,
-	15.0f,           
-	12,                 
-	FColor::Yellow,        
-	false,              
-	-1.0f,              
-	0                   
-	);
+	// DrawDebugSphere(
+	// GetWorld(),
+	// MidpointAnchorLocation,
+	// 15.0f,           
+	// 12,                 
+	// FColor::Yellow,        
+	// false,              
+	// -1.0f,              
+	// 0                   
+	// );
 
 	if (IsValid(PlayerOwner->TargetCameraAnchor))
 	{
@@ -263,7 +263,6 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
 		
 		PlayerOwner->TargetCameraAnchor->SetWorldLocation(MidpointAnchorLocation);
-		
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
 		const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->TargetCameraAnchor->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
