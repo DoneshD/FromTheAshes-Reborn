@@ -68,7 +68,7 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 	
 	DrawDebugLine(GetWorld(), TraceStartLocation, TraceEndLocation, FColor::Red, false, 2.0f, 0, 2.0f);
 
-	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slamming"));
+	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
 
 	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(
 		this,
@@ -106,17 +106,13 @@ void UGA_MeleeWeaponAttack_GroundPound::OnMontageCancelled(FGameplayTag EventTag
 
 void UGA_MeleeWeaponAttack_GroundPound::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	// UGA_MeleeWeaponAttack::OnMontageCompleted(EventTag, EventData);
-	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slamming"));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	// if (EventTag == FGameplayTag::RequestGameplayTag(FName("LaunchTag.Slammed.Vertical")))
-	// {
-	// 	IsGroundPounding = true;
-	// }
+	
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
