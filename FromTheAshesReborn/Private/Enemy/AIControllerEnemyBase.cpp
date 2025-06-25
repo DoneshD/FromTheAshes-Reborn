@@ -16,6 +16,8 @@ AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectI
 	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Damage::StaticClass());
 
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
+
+	StateTreeComponent = CreateDefaultSubobject<UStateTreeAIComponent>("StateTreeAIComponent");
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
@@ -29,15 +31,6 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 		UE_LOG(LogTemp, Error, TEXT("[%s] AAIControllerEnemyBase::OnPossess - EnemyCharacter is null"), *GetActorNameOrLabel());
 		return;
 	}
-	
-	if (!EnemyCharacter->BehaviorTree)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] AAIControllerEnemyBase::OnPossess - BehaviorTree is null"), *GetActorNameOrLabel());
-		return;
-	}
-	
-	RunBehaviorTree(EnemyCharacter->BehaviorTree);
-		
 }
 
 void AAIControllerEnemyBase::BeginPlay()

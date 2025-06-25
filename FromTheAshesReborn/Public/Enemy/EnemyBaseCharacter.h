@@ -4,17 +4,10 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "EnemyBaseCharacter.generated.h"
 
-class UBehaviorTree;
-
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditAnywhere, Category = "AI")
-	TObjectPtr<UBehaviorTree> BehaviorTree;
-
 
 protected:
 	

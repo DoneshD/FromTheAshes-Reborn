@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Components/StateTreeAIComponent.h"
 #include "AIControllerEnemyBase.generated.h"
 
 class UAISenseConfig_Damage;
@@ -14,6 +15,9 @@ class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
 private:
 
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UStateTreeAIComponent> StateTreeComponent;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
