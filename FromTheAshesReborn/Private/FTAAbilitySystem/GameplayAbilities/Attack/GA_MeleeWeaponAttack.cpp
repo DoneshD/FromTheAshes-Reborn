@@ -136,15 +136,13 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 
 	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
 	{
-		FGameplayEventData EventData;
-		EventData.Instigator = GetAvatarActorFromActorInfo();
-		if(!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(StateTreeFinishedTag))
+		if (!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(StateTreeFinishedTag))
 		{
 			return;
 		}
-		EventData.EventTag = StateTreeFinishedTag;
 
-		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(ASC->GetAvatarActor(), EventData.EventTag, EventData);
+		ASC->AddLooseGameplayTag(StateTreeFinishedTag);
+		ASC->RemoveLooseGameplayTag(StateTreeFinishedTag);
 	}
 
 }
