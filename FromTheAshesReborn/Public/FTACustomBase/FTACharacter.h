@@ -48,6 +48,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UWallRunningComponent> WallRunningComponent;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool DisableRootMotion = false;
 	
 public:
 	

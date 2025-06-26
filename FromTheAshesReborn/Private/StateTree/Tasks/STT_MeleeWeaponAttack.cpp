@@ -1,10 +1,8 @@
 ﻿#include "StateTree/Tasks/STT_MeleeWeaponAttack.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
 #include "StateTreeExecutionContext.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTACustomBase/FTACharacter.h"
 
 EStateTreeRunStatus FStateTreeTask_MeleeWeaponAttack::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {

@@ -39,12 +39,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* CameraComp;
 
-
-	//Might need to move to FTA parent, check ABP base Cast
-	UPROPERTY(BlueprintReadWrite)
-	bool DisableRootMotion = false;
-
-
 public:
 	
 	UPROPERTY(BlueprintReadWrite)
