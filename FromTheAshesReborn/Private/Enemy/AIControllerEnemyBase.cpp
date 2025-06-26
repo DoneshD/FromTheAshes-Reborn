@@ -37,7 +37,6 @@ void AAIControllerEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 	StateTreeComponent->StartLogic();
-	
 }
 
 void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)

@@ -203,7 +203,6 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(CurrentActorInfo->OwnerActor.Get());
 	if(!PS)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Owner actor not player state"))
 		return;
 	}
 	
