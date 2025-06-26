@@ -50,6 +50,15 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Attacks")
 	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
 
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FGameplayTag StateTreeStartedTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FGameplayTag StateTreeRunningTag;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FGameplayTag StateTreeFinishedTag;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Attacks")
 	float BoxHalfSize;
 	

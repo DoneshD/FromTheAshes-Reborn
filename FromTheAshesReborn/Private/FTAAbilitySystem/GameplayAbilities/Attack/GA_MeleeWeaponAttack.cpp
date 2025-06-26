@@ -134,6 +134,19 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(20.0f, 20.0f, 20.0f);
 
+	if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+	{
+		FGameplayEventData EventData;
+		EventData.Instigator = GetAvatarActorFromActorInfo();
+		if(!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(StateTreeFinishedTag))
+		{
+			return;
+		}
+		EventData.EventTag = StateTreeFinishedTag;
+
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(ASC->GetAvatarActor(), EventData.EventTag, EventData);
+	}
+
 }
 
 void UGA_MeleeWeaponAttack::ResetMeleeAttack()
