@@ -82,7 +82,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 				{
 					FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
 
-					if (FTAASC->IsAbilityActive(FTAAbility))
+					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
 					{
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
@@ -143,7 +143,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 
 				if (FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 				{
-					if (FTAASC->IsAbilityActive(FTAAbility))
+					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
 					{
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}

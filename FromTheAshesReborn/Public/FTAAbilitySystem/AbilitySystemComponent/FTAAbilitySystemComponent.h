@@ -71,10 +71,8 @@ public:
 
 	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const;
 	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability);
-	UFTAGameplayAbility* GetCurrentlyActiveExclusiveAbility();
-	void CancelAllAbilitiesExceptActiveExclusive(UFTAGameplayAbility* AbilityToPreserve);
-	bool IsAbilityActive(UGameplayAbility* Ability) const;
 
+	bool IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const;
 	void CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass);
 	
 	virtual void NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability) override;

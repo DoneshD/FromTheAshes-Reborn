@@ -56,7 +56,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
 			if(FTAAbility)
 			{
-				if (IsAbilityActive(AbilitySpec.Ability) && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable)
+				if (IsAbilityActive(AbilitySpec.Ability->GetClass()) && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable)
 				{
 					CancelAbilityByClass(AbilitySpec.Ability->GetClass());
 				}
@@ -303,7 +303,8 @@ void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivati
 	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
 	if (ExclusiveCount > 1)
 	{
-		CancelAllAbilitiesExceptActiveExclusive(FTAAbility);
+		CancelAllAbilities();
+		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running. Canceling all abilities"));
 	}
 }
 
@@ -321,7 +322,6 @@ void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityAct
 {
 	ActivationGroupCount[(uint8)Group]--;
 }
-
 
 bool UFTAAbilitySystemComponent::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const
 {
@@ -351,55 +351,11 @@ bool UFTAAbilitySystemComponent::ChangeActivationGroup(EFTAAbilityActivationGrou
 	return true;
 }
 
-UFTAGameplayAbility* UFTAAbilitySystemComponent::GetCurrentlyActiveExclusiveAbility()
+bool UFTAAbilitySystemComponent::IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const
 {
 	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		if (Spec.IsActive())
-		{
-			if (UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability))
-			{
-				if (FTAAbility->GetActivationGroup() == EFTAAbilityActivationGroup::Exclusive_Blocking)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Active Exclusive Ability: %s"), *FTAAbility->GetName());
-					return FTAAbility;
-				}
-			}
-		}
-	}
-	return nullptr;
-}
-
-void UFTAAbilitySystemComponent::CancelAllAbilitiesExceptActiveExclusive(UFTAGameplayAbility* AbilityToPreserve)
-{
-	if (!AbilityToPreserve || !IsAbilityActive(AbilityToPreserve))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No valid exclusive ability to preserve; canceling all."));
-		CancelAllAbilities();
-		return;
-	}
-
-	TArray<UGameplayAbility*> AbilitiesToCancel;
-
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	{
-		if (Spec.Ability && Spec.Ability != AbilityToPreserve && Spec.IsActive())
-		{
-			AbilitiesToCancel.Add(Spec.Ability);
-		}
-	}
-
-	for (UGameplayAbility* Ability : AbilitiesToCancel)
-	{
-		CancelAbility(Ability);
-	}
-}
-
-bool UFTAAbilitySystemComponent::IsAbilityActive(UGameplayAbility* Ability) const
-{
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	{
-		if (Spec.Ability == Ability && Spec.IsActive())
+		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass)
 		{
 			return true;
 		}
