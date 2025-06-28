@@ -164,6 +164,8 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		}
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("GIT TEST"));
+
 	return true;
 }
 
