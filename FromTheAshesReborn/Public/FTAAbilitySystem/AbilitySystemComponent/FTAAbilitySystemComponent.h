@@ -28,6 +28,14 @@ public:
 	FReceivedDamageDelegate ReceivedDamage;
 
 protected:
+	UPROPERTY()
+	FGameplayTag ActivationIndependentTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Independent");
+
+	UPROPERTY()
+	FGameplayTag ActivationReplaceableTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable");
+
+	UPROPERTY()
+	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
 
 	int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];
 	
@@ -60,6 +68,7 @@ public:
 	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
 
 	void CancelInputActivatedAbilities();
+	bool CurrentlyActiveAbilityOfActivationGroup(FGameplayTag GroupToCheck);
 
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();

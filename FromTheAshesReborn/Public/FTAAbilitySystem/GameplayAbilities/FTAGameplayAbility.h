@@ -24,16 +24,6 @@ enum class EFTAAbilityActivationPolicy : uint8
 	OnSpawn
 };
 
-UENUM(BlueprintType)
-enum class EFTAAbilityActivationGroup : uint8
-{
-	Independent,
-	Exclusive_Replaceable,
-	Exclusive_Blocking,
-
-	MAX	UMETA(Hidden)
-};
-
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 {
@@ -42,14 +32,23 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 
 protected:
 
+	UPROPERTY()
+	FGameplayTag ActivationIndependentTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Independent");
+
+	UPROPERTY()
+	FGameplayTag ActivationReplaceableTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable");
+
+	UPROPERTY()
+	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	EFTAAbilityActivationPolicy ActivationPolicy;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	EFTAAbilityActivationGroup ActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
+	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	EFTAAbilityActivationGroup DefaultActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
+	FGameplayTag DefaultActivationGroupTag = ActivationBlockingTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
@@ -127,7 +126,7 @@ public:
 	virtual bool IsInputPressed() const;
 	
 	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
-	EFTAAbilityActivationGroup GetActivationGroup() const { return ActivationGroup; }
+	FGameplayTag GetActivationGroupTag() const { return ActivationGroupTag; }
 
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	

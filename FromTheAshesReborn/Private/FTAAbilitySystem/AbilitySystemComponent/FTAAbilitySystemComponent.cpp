@@ -6,6 +6,7 @@
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
 #include "InterchangeResult.h"
+#include "AnimNodes/AnimNode_RandomPlayer.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) :
@@ -56,7 +57,11 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(AbilitySpec.Ability);
 			if(FTAAbility)
 			{
-				if (IsAbilityActive(AbilitySpec.Ability->GetClass()) && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable)
+				// if (IsAbilityActive(AbilitySpec.Ability->GetClass()) && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable)
+				// {
+				// 	CancelAbilityByClass(AbilitySpec.Ability->GetClass());
+				// }
+				if (IsAbilityActive(AbilitySpec.Ability->GetClass()) && FTAAbility->DefaultActivationGroupTag == ActivationReplaceableTag)
 				{
 					CancelAbilityByClass(AbilitySpec.Ability->GetClass());
 				}
@@ -64,8 +69,11 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		}
 	}
 
-	const bool BlockingAbilityActive = ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::Exclusive_Blocking)] > 0;
-	const bool ReplaceableAbilityActive = ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::Exclusive_Replaceable)] > 0;
+	// const bool BlockingAbilityActive = ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::Exclusive_Blocking)] > 0;
+	// const bool ReplaceableAbilityActive = ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::Exclusive_Replaceable)] > 0;
+
+	const bool BlockingAbilityActive = CurrentlyActiveAbilityOfActivationGroup(ActivationBlockingTag);
+	const bool ReplaceableAbilityActive = CurrentlyActiveAbilityOfActivationGroup(ActivationReplaceableTag);
 	
 	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
@@ -253,6 +261,20 @@ void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 		const EFTAAbilityActivationPolicy ActivationPolicy = FTAAbility->GetActivationPolicy();
 		return((ActivationPolicy == EFTAAbilityActivationPolicy::OnInputTriggered || ActivationPolicy == EFTAAbilityActivationPolicy::WhileInputActive));
 	};
+}
+
+bool UFTAAbilitySystemComponent::CurrentlyActiveAbilityOfActivationGroup(FGameplayTag GroupToCheck)
+{
+	for (const FGameplayAbilitySpec& Spec : ActivatableAbilities.Items)
+	{
+		if (Spec.ActiveCount > 0 && Spec.Ability && Spec.GetDynamicSpecSourceTags().HasTagExact(GroupToCheck))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UFTAAbilitySystemComponent::CurrentlyActiveAbilityOfActivationGroup - True"))
+			return true;
+		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("UFTAAbilitySystemComponent::CurrentlyActiveAbilityOfActivationGroup - False"))
+	return false;
 }
 
 bool UFTAAbilitySystemComponent::IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const
