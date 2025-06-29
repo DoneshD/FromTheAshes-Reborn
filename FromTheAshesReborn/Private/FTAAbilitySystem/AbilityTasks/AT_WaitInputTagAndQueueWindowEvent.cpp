@@ -84,11 +84,9 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 
 					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
 					{
-						UE_LOG(LogTemp, Error, TEXT("ACTIVE"))
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
 					
-
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
