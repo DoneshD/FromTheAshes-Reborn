@@ -321,63 +321,109 @@ bool UFTAAbilitySystemComponent::IsActivationGroupTagBlocked(FGameplayTag GroupT
 	return false;
 }
 
-void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility)
+// void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility)
+// {
+// 	if(!FTAAbility)
+// 	{
+// 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Ability to Add"));
+// 		return;
+// 	}
+// 	
+// 	ActivationGroupCount[(uint8)Group]++;
+// 	switch (Group)
+// 	{
+// 	case EFTAAbilityActivationGroup::Independent:
+// 		break;
+// 	case EFTAAbilityActivationGroup::Exclusive_Replaceable:
+// 	case EFTAAbilityActivationGroup::Exclusive_Blocking:
+// 		CancelActivationGroupAbilities(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+// 		break;
+// 	
+// 	default:
+// 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Group"));
+// 		break;
+// 	}
+// 	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
+// 	if (ExclusiveCount > 1)
+// 	{
+// 		CancelAllAbilities();
+// 		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running. Canceling all abilities"));
+// 	}
+// }
+
+void UFTAAbilitySystemComponent::AddToActivationGroup(FGameplayTag Group, UFTAGameplayAbility* FTAAbility)
 {
-	if(!FTAAbility)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Ability to Add"));
-		return;
-	}
-	
-	ActivationGroupCount[(uint8)Group]++;
-	switch (Group)
-	{
-	case EFTAAbilityActivationGroup::Independent:
-		break;
-	case EFTAAbilityActivationGroup::Exclusive_Replaceable:
-	case EFTAAbilityActivationGroup::Exclusive_Blocking:
-		CancelActivationGroupAbilities(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
-		break;
-	
-	default:
-		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Invalid Group"));
-		break;
-	}
-	const int32 ExclusiveCount = ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking];
-	if (ExclusiveCount > 1)
-	{
-		CancelAllAbilities();
-		UE_LOG(LogTemp, Error, TEXT("AddAbilityToActivationGroup: Multiple exclusive abilities are running. Canceling all abilities"));
-	}
+	FTAAbility->GetCurrentAbilitySpec()->GetDynamicSpecSourceTags().AddTag(Group);
 }
 
-void UFTAAbilitySystemComponent::CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility)
+UFTAGameplayAbility* UFTAAbilitySystemComponent::GetCurrentlyActiveExclusiveAbility()
 {
-	auto ShouldCancelFunc = [this, Group, IgnoreFTAAbility](const UFTAGameplayAbility* LyraAbility, FGameplayAbilitySpecHandle Handle)
+	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		return ((LyraAbility->GetActivationGroup() == Group) && (LyraAbility != IgnoreFTAAbility));
-	};
-
-	CancelAbilitiesByFunc(ShouldCancelFunc);
+		if (Spec.ActiveCount > 0)
+		{
+			if (UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability))
+			{
+				if (FTAAbility->GetCurrentAbilitySpec()->GetDynamicSpecSourceTags().HasTagExact(ActivationBlockingTag))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Active Exclusive Ability: %s"), *FTAAbility->GetName());
+					return FTAAbility;
+				}
+			}
+		}
+	}
+	return nullptr;
 }
 
-void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility)
+// void UFTAAbilitySystemComponent::CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility)
+// {
+// 	auto ShouldCancelFunc = [this, Group, IgnoreFTAAbility](const UFTAGameplayAbility* LyraAbility, FGameplayAbilitySpecHandle Handle)
+// 	{
+// 		return ((LyraAbility->GetActivationGroup() == Group) && (LyraAbility != IgnoreFTAAbility));
+// 	};
+//
+// 	CancelAbilitiesByFunc(ShouldCancelFunc);
+// }
+
+// void UFTAAbilitySystemComponent::RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility)
+// {
+// 	ActivationGroupCount[(uint8)Group]--;
+// }
+
+void UFTAAbilitySystemComponent::RemoveFromActivationGroup(FGameplayTag Group, UFTAGameplayAbility* FTAAbility)
 {
-	ActivationGroupCount[(uint8)Group]--;
+	FTAAbility->GetCurrentAbilitySpec()->GetDynamicSpecSourceTags().RemoveTag(Group);
 }
 
-bool UFTAAbilitySystemComponent::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const
+// bool UFTAAbilitySystemComponent::CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const
+// {
+// 	if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
+// 	{
+// 		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
+// 		return false;
+// 	}
+//
+// 	return true;
+// }
+
+bool UFTAAbilitySystemComponent::ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability)
 {
-	if ((NewGroup == EFTAAbilityActivationGroup::Exclusive_Replaceable) && !Ability->CanBeCanceled())
+	if (!CanChangeActivationGroup(NewGroup, Ability))
 	{
-		UE_LOG(LogTemp, Error, TEXT("CanChangeActivationGroup: This ability can't become replaceable if it can't be canceled."));
 		return false;
 	}
 
+	if(Ability->ActivationGroup != NewGroup)
+	{
+		RemoveAbilityFromActivationGroup(Ability->ActivationGroup, Ability);
+		AddAbilityToActivationGroup(NewGroup, Ability);
+
+		Ability->ActivationGroup = NewGroup;
+	}
 	return true;
 }
 
-bool UFTAAbilitySystemComponent::ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability)
+bool UFTAAbilitySystemComponent::ChangeActivationGroup(FGameplayTag NewGroup, UFTAGameplayAbility* Ability)
 {
 	if (!CanChangeActivationGroup(NewGroup, Ability))
 	{

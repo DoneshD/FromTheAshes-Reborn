@@ -126,7 +126,6 @@ public:
 	virtual bool IsInputPressed() const;
 	
 	EFTAAbilityActivationPolicy GetActivationPolicy() const { return ActivationPolicy; }
-	FGameplayTag GetActivationGroupTag() const { return ActivationGroupTag; }
 
 	virtual void OnAvatarSet(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
 	

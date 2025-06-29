@@ -74,13 +74,16 @@ public:
 	void ClearAbilityInput();
 
 	bool IsActivationGroupTagBlocked(FGameplayTag GroupToCheck);
+	void AddToActivationGroup(FGameplayTag Group, UFTAGameplayAbility* FTAAbility);
 	// bool IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const;
-	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
-	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
-	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
+	// void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
+	UFTAGameplayAbility* GetCurrentlyActiveExclusiveAbility();
+	void RemoveFromActivationGroup(FGameplayTag Group, UFTAGameplayAbility* FTAAbility);
+	// void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
+	// void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 
-	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const;
-	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability);
+	// bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const;
+	// bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability);
 
 	bool IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const;
 	void CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass);
