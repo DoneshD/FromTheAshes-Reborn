@@ -46,9 +46,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	FGameplayTag DefaultActivationGroupTag = ActivationBlockingTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
