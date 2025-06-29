@@ -66,13 +66,15 @@ public:
 
 	bool IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const;
 	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
+	UFTAGameplayAbility* GetCurrentlyActiveExclusiveAbility();
+	void CancelAllAbilitiesExceptActiveExclusive(UFTAGameplayAbility* AbilityToPreserve);
 	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 
 	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const;
 	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability);
 
-	bool IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const;
+	bool IsAbilityActive(UGameplayAbility* Ability) const;
 	void CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass);
 	
 	virtual void NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability) override;
