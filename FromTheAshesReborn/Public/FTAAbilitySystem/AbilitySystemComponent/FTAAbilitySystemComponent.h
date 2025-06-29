@@ -73,7 +73,8 @@ public:
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();
 
-	bool IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const;
+	bool IsActivationGroupTagBlocked(FGameplayTag GroupToCheck);
+	// bool IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const;
 	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
 	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);

@@ -277,27 +277,48 @@ bool UFTAAbilitySystemComponent::CurrentlyActiveAbilityOfActivationGroup(FGamepl
 	return false;
 }
 
-bool UFTAAbilitySystemComponent::IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const
-{
-	bool IsBlocked = false;
-	
-	switch (Group)
-	{
-	case EFTAAbilityActivationGroup::Independent:
-		IsBlocked = false;
-		break;
-		
-	case EFTAAbilityActivationGroup::Exclusive_Replaceable:
-	case EFTAAbilityActivationGroup::Exclusive_Blocking:
-		IsBlocked = (ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0);
-		break;
+// bool UFTAAbilitySystemComponent::IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const
+// {
+// 	bool IsBlocked = false;
+// 	
+// 	switch (Group)
+// 	{
+// 	case EFTAAbilityActivationGroup::Independent:
+// 		IsBlocked = false;
+// 		break;
+// 		
+// 	case EFTAAbilityActivationGroup::Exclusive_Replaceable:
+// 	case EFTAAbilityActivationGroup::Exclusive_Blocking:
+// 		IsBlocked = (ActivationGroupCount[(uint8)EFTAAbilityActivationGroup::Exclusive_Blocking] > 0);
+// 		break;
+//
+// 	default:
+// 		UE_LOG(LogTemp, Error, TEXT("IsActivationGroupBlocked: Invalid Activation Group"));
+// 		break;
+// 	}
+// 	
+// 	return IsBlocked;
+// }
 
-	default:
-		UE_LOG(LogTemp, Error, TEXT("IsActivationGroupBlocked: Invalid Activation Group"));
-		break;
+bool UFTAAbilitySystemComponent::IsActivationGroupTagBlocked(FGameplayTag GroupToCheck)
+{
+	if(GroupToCheck == ActivationIndependentTag)
+	{
+		return false;
 	}
-	
-	return IsBlocked;
+	else if(GroupToCheck == ActivationReplaceableTag)
+	{
+		return CurrentlyActiveAbilityOfActivationGroup(ActivationReplaceableTag);
+	}
+	else if(GroupToCheck == ActivationBlockingTag)
+	{
+		return CurrentlyActiveAbilityOfActivationGroup(ActivationBlockingTag);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UFTAAbilitySystemComponent::IsActivationGroupTagBlocked - No matching tag"))
+	}
+	return false;
 }
 
 void UFTAAbilitySystemComponent::AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility)
