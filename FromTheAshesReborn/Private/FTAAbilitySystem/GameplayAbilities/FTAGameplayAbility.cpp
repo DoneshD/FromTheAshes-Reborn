@@ -150,7 +150,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		if (Spec.IsActive())
 		{
 			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
-			if(FTAAbility && FTAAbility->DefaultActivationGroupTag == ActivationBlockingTag)
+			if(FTAAbility && Spec.GetDynamicSpecSourceTags().HasTagExact(ActivationBlockingTag))
 			{
 				bHasActiveAbilities = true;
 				break;
