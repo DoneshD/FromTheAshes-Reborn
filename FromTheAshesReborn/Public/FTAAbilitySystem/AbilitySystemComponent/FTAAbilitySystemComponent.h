@@ -37,7 +37,7 @@ protected:
 	UPROPERTY()
 	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
 
-	int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];
+	// int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];
 	
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 	
@@ -65,9 +65,10 @@ public:
 	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
 
 	typedef TFunctionRef<bool(const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
-	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
+	// void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
 
 	void CancelInputActivatedAbilities();
+	void CancelAbilitiesWithRuntimeTag(const FGameplayTag& TagToCancel);
 	bool CurrentlyActiveAbilityOfActivationGroup(FGameplayTag GroupToCheck);
 
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
@@ -79,6 +80,7 @@ public:
 	// void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
 	UFTAGameplayAbility* GetCurrentlyActiveExclusiveAbility();
 	void RemoveFromActivationGroup(FGameplayTag Group, UFTAGameplayAbility* FTAAbility);
+	bool ChangeToActivationGroup(FGameplayTag NewGroup, UFTAGameplayAbility* Ability);
 	// void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 	// void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 

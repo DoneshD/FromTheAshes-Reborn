@@ -38,10 +38,10 @@ void UGA_MeleeWeaponAttack::OnGiveAbility(const FGameplayAbilityActorInfo* Actor
 	// 	MeleeCDO->DefaultActivationGroup = EFTAAbilityActivationGroup::Exclusive_Blocking;
 	// }
 	
-	if(UGA_MeleeWeaponAttack* MeleeCDO = Cast<UGA_MeleeWeaponAttack>(Spec.Ability))
-	{
-		MeleeCDO->GetCurrentAbilitySpec()->GetDynamicSpecSourceTags().AddTag(DefaultActivationGroupTag);
-	}
+	// if(UGA_MeleeWeaponAttack* MeleeCDO = Cast<UGA_MeleeWeaponAttack>(Spec.Ability))
+	// {
+	// 	MeleeCDO->GetCurrentAbilitySpec()->GetDynamicSpecSourceTags().AddTag(DefaultActivationGroupTag);
+	// }
 }
 
 UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const

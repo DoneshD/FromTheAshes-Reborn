@@ -136,10 +136,11 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 
 	UFTAAbilitySystemComponent* FTAASC = CastChecked<UFTAAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
 
-	if (FTAASC->IsActivationGroupBlocked(ActivationGroup))
-	{
-		return false;
-	}
+	// if (FTAASC->IsActivationGroupTagBlocked(ActivationGroupTag))
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Blocked"))
+	// 	return false;
+	// }
 	
 
 	bool bHasActiveAbilities = false;
@@ -149,7 +150,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		if (Spec.IsActive())
 		{
 			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
-			if(FTAAbility && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Blocking)
+			if(FTAAbility && FTAAbility->DefaultActivationGroupTag == ActivationBlockingTag)
 			{
 				bHasActiveAbilities = true;
 				break;
@@ -190,6 +191,8 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	
 	if (bEnableTick)
 	{
 		TickTask = UFTAAT_OnTick::StartTicking(this);
@@ -231,7 +234,7 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 		WaitInputTagAndQueueWindowEventTask = nullptr;
 	}
 
-	ActivationGroup = DefaultActivationGroup;
+	ActivationGroupTag = DefaultActivationGroupTag;
 
 }
 

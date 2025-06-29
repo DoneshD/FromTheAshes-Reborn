@@ -27,6 +27,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;
+
+	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "ActivationGroupTag"))
+	FGameplayTag DefaultActivationGroupTag;
 };
 
 USTRUCT(BlueprintType)
