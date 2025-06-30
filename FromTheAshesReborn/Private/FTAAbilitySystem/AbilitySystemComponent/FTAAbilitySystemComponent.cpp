@@ -399,7 +399,7 @@ bool UFTAAbilitySystemComponent::IsAbilityActive(TSubclassOf<UGameplayAbility> A
 {
 	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
-		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass&& Spec.ActiveCount > 0)
+		if (Spec.Ability && Spec.Ability->GetClass() == AbilityClass && Spec.ActiveCount > 0)
 		{
 			return true;
 		}
