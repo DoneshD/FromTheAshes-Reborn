@@ -339,6 +339,7 @@ void UFTAAbilitySystemComponent::AddToActivationGroup(FGameplayTag Group, UFTAGa
 
 UFTAGameplayAbility* UFTAAbilitySystemComponent::GetCurrentlyActiveExclusiveAbility()
 {
+	
 	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
 	{
 		if (Spec.ActiveCount > 0)
@@ -353,6 +354,7 @@ UFTAGameplayAbility* UFTAAbilitySystemComponent::GetCurrentlyActiveExclusiveAbil
 			}
 		}
 	}
+	
 	return nullptr;
 }
 
