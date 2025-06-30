@@ -136,11 +136,6 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 
 	UFTAAbilitySystemComponent* FTAASC = CastChecked<UFTAAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
 
-	if (FTAASC->IsActivationGroupBlocked(ActivationGroup))
-	{
-		return false;
-	}
-
 	bool bHasActiveAbilities = false;
 
 	for (const FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
@@ -148,7 +143,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		if (Spec.IsActive())
 		{
 			UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec.Ability);
-			if(FTAAbility && FTAAbility->DefaultActivationGroup == EFTAAbilityActivationGroup::Exclusive_Blocking)
+			if(FTAAbility && Spec.GetDynamicSpecSourceTags().HasTagExact(ActivationBlockingTag))
 			{
 				bHasActiveAbilities = true;
 				break;
@@ -163,7 +158,6 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 			return false;
 		}
 	}
-
 	return true;
 }
 
@@ -190,6 +184,29 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	// if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
+	// {
+	// 	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromHandle(Handle);
+	// 	if (Spec)
+	// 	{
+	// 		const FGameplayTagContainer& SourceTags = Spec->GetDynamicSpecSourceTags();
+	// 		UE_LOG(LogTemp, Error, TEXT("Source Tags:"));
+	//
+	// 		for (const FGameplayTag& Tag : SourceTags)
+	// 		{
+	// 			UE_LOG(LogTemp, Error, TEXT(" - %s"), *Tag.ToString());
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		UE_LOG(LogTemp, Error, TEXT("Failed to find Spec from Handle."));
+	// 	}
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("AbilitySystemComponent is null."));
+	// }
+
 	if (bEnableTick)
 	{
 		TickTask = UFTAAT_OnTick::StartTicking(this);
@@ -230,9 +247,6 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 		WaitInputTagAndQueueWindowEventTask->EndTask();
 		WaitInputTagAndQueueWindowEventTask = nullptr;
 	}
-
-	ActivationGroup = DefaultActivationGroup;
-
 }
 
 bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
@@ -302,8 +316,6 @@ void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSp
 
 bool UFTAGameplayAbility::DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	
-
 	bool IsBlocked = false;
 	bool IsMissing = false;
 

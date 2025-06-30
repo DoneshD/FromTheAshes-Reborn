@@ -80,13 +80,13 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 			{
 				if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 				{
-					FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+					FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
 
 					if (FTAASC->IsAbilityActive(FTAAbility))
 					{
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
-
+					
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
@@ -138,8 +138,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 		{
 			if (FTAAbility)
 			{
-				// Mark this ability as Replaceable
-				FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Replaceable, FTAAbility);
+				FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
 
 				if (FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 				{
@@ -165,7 +164,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 		{
 			if (FTAAbility)
 			{
-				FTAASC->ChangeActivationGroup(EFTAAbilityActivationGroup::Exclusive_Blocking, FTAAbility);
+				FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking"), FTAAbility);
 			}
 		}
 	}

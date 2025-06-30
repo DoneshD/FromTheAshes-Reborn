@@ -28,8 +28,16 @@ public:
 	FReceivedDamageDelegate ReceivedDamage;
 
 protected:
+	UPROPERTY()
+	FGameplayTag ActivationIndependentTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Independent");
 
-	int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];
+	UPROPERTY()
+	FGameplayTag ActivationReplaceableTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable");
+
+	UPROPERTY()
+	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
+
+	// int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];
 	
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 	
@@ -57,24 +65,24 @@ public:
 	virtual void AbilitySpecInputReleased(FGameplayAbilitySpec& Spec) override;
 
 	typedef TFunctionRef<bool(const UFTAGameplayAbility* FTAAbility, FGameplayAbilitySpecHandle Handle)> TShouldCancelAbilityFunc;
-	void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
+	// void CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc);
 
 	void CancelInputActivatedAbilities();
+	void CancelAbilitiesWithRuntimeTag(const FGameplayTag& TagToCancel);
+	bool CurrentlyActiveAbilityOfActivationGroup(FGameplayTag GroupToCheck);
 
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();
 
-	bool IsActivationGroupBlocked(EFTAAbilityActivationGroup Group) const;
-	void AddAbilityToActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* FTAAbility);
+	bool IsActivationGroupTagBlocked(FGameplayTag GroupToCheck);
+	void AddToActivationGroup(FGameplayTag Group, UFTAGameplayAbility* FTAAbility);
+	
+	void RemoveFromActivationGroup(FGameplayTag Group, UFTAGameplayAbility* FTAAbility);
+	bool ChangeToActivationGroup(FGameplayTag NewGroup, UFTAGameplayAbility* Ability);
+
 	UFTAGameplayAbility* GetCurrentlyActiveExclusiveAbility();
-	void CancelAllAbilitiesExceptActiveExclusive(UFTAGameplayAbility* AbilityToPreserve);
-	void CancelActivationGroupAbilities(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
-	void RemoveAbilityFromActivationGroup(EFTAAbilityActivationGroup Group, UFTAGameplayAbility* IgnoreFTAAbility);
 
-	bool CanChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability) const;
-	bool ChangeActivationGroup(EFTAAbilityActivationGroup NewGroup, UFTAGameplayAbility* Ability);
-
-	bool IsAbilityActive(UGameplayAbility* Ability) const;
+	bool IsAbilityActive(TSubclassOf<UGameplayAbility> AbilityClass) const;
 	void CancelAbilityByClass(TSubclassOf<UGameplayAbility> AbilityClass);
 	
 	virtual void NotifyAbilityActivated(const FGameplayAbilitySpecHandle Handle, UGameplayAbility* Ability) override;
