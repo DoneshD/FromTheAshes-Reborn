@@ -20,8 +20,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	void InitiateSpawn();
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpawnAfterImageActor();
 	

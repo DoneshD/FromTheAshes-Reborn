@@ -14,9 +14,6 @@ class FROMTHEASHESREBORN_API UGA_ReceiveHit : public UFTAGameplayAbility
 protected:
 
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<UHitReactionDataAsset> HitAbilityAsset;
-
-	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
 
 public:

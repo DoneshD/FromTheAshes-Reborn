@@ -4,6 +4,8 @@
 #include "UObject/Object.h"
 #include "HitEventObject.generated.h"
 
+enum class EHitReactionDirection : uint8;
+
 USTRUCT(BlueprintType)
 struct FHitInfo
 {
@@ -14,6 +16,9 @@ struct FHitInfo
 
 	UPROPERTY()
 	TObjectPtr<AActor> Instigator;
+
+	UPROPERTY()
+	EHitReactionDirection HitDirection;
 };
 
 UCLASS()

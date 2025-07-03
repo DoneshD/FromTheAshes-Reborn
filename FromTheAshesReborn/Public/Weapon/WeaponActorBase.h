@@ -5,6 +5,7 @@
 #include "NiagaraComponent.h"
 #include "WeaponActorBase.generated.h"
 
+enum class EHitReactionDirection : uint8;
 class UTracingComponent;
 class UDidItHitActorComponent;
 
@@ -34,6 +35,10 @@ public:
 	FRotator SpawnTrailRotation;
 
 	float TrailLength;
+
+	//TODO: Change later
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Direction")
+	EHitReactionDirection HitDirection;
 
 public:
 	

@@ -36,7 +36,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
-		
 	}
 	
 	const UHitEventObject* HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
@@ -59,31 +58,26 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
 
 	FRotator CurrentRotation = GetFTACharacterFromActorInfo()->GetActorRotation();
-
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 	
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(CurrentRotation.Pitch, LookAtRotation.Yaw, CurrentRotation.Roll));
-	
 
-
-	if(HitAbilityAsset)
+	for (UHitReactionDataAsset* Asset : HitAbilityAssets)
 	{
-		if(HitAbilityAsset->MontageToPlay)
+		if(Asset->HitReactionDirection == HitInfoObject->HitData.HitDirection)
 		{
-			PlayAbilityAnimMontage(HitAbilityAsset->MontageToPlay);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MontageToPlay null"))
+			if(Asset->MontageToPlay)
+			{
+				PlayAbilityAnimMontage(Asset->MontageToPlay);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("MontageToPlay null"))
 	
+			}
 		}
 	}
-	else
-	{
-		// UE_LOG(LogTemp, Warning, TEXT("HitAbilityAsset null"))
-	}
 
-	
 }
 
 void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

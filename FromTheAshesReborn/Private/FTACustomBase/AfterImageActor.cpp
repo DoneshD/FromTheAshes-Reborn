@@ -16,9 +16,3 @@ void AAfterImageActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-
-void AAfterImageActor::InitiateSpawn()
-{
-	SpawnAfterImageActor();
-}
-

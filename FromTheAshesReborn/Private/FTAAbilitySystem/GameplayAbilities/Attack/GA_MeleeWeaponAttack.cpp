@@ -207,7 +207,6 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		return;
 	}
 	
-
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(CurrentActorInfo->OwnerActor.Get());
 	if(!PS)
 	{
@@ -261,8 +260,13 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		FRotator WarpTargetRotation = (EnemyActor->GetActorLocation() - GetFTACharacterFromActorInfo()->GetActorLocation()).Rotation();
 
 		UE_LOG(LogTemp, Warning, TEXT("Warp"))
-		SpawnAfterImage();
+		
 		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
+
+		if(FVector::Dist(FTAChar->GetActorLocation(), WarpTargetLocation) > 300.0f)
+		{
+			SpawnAfterImage();
+		}
 	}
 }
 
@@ -294,7 +298,7 @@ void UGA_MeleeWeaponAttack::SpawnAfterImage()
 		return;
 	}
 
-	AfterImage->InitiateSpawn();
+	AfterImage->SpawnAfterImageActor();
 }
 
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
@@ -398,6 +402,14 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
+	
+	if(!MeleeWeaponActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
+		return;
+	}
+	
+	HitInfoObj->HitData.HitDirection = MeleeWeaponActor->HitDirection;
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 	
