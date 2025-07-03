@@ -14,6 +14,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "NiagaraSystem.h"
 #include "EventObjects/HitEventObject.h"
+#include "FTACustomBase/AfterImageActor.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -258,9 +259,42 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		
 		FVector WarpTargetLocation = OutHit.ImpactPoint + OffsetDirection * 100;
 		FRotator WarpTargetRotation = (EnemyActor->GetActorLocation() - GetFTACharacterFromActorInfo()->GetActorLocation()).Rotation();
-		
+
+		UE_LOG(LogTemp, Warning, TEXT("Warp"))
+		SpawnAfterImage();
 		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
 	}
+}
+
+void UGA_MeleeWeaponAttack::SpawnAfterImage()
+{
+	FVector SpawnLocation = FTAChar->GetMesh()->GetComponentLocation();
+	FRotator SpawnRotation = FTAChar->GetMesh()->GetComponentRotation();
+
+	AActor* Image = GetWorld()->SpawnActor<AActor>(FTAChar->AfterImageActor, SpawnLocation, SpawnRotation);
+
+	if(!Image)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Image is Null"));
+		return;
+	}
+
+	AAfterImageActor* AfterImage = Cast<AAfterImageActor>(Image);
+	if(!AfterImage)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AfterImageActor is Null"));
+		return;
+	}
+
+	AfterImage->MeshToCopy = FTAChar->GetMesh();
+
+	if(!AfterImage->MeshToCopy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AfterImage->MeshToCopy is Null"));
+		return;
+	}
+
+	AfterImage->InitiateSpawn();
 }
 
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)

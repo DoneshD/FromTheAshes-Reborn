@@ -7,6 +7,8 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 class UHealthComponent;
 class ULauncherComponent;
 class AWeaponActorBase;
@@ -45,12 +47,22 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
-
+	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UWallRunningComponent> WallRunningComponent;
+	
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
+	TObjectPtr<UNiagaraComponent> CharacterAfterImageComponent;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FTACharacter | Niagara")
+	UNiagaraSystem* FX_AfterImage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FTACharacter | Effects")
+	TSubclassOf<AActor> AfterImageActor;
+	
 	UPROPERTY(BlueprintReadWrite)
 	bool DisableRootMotion = false;
+
 	
 public:
 	

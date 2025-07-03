@@ -2,6 +2,7 @@
 #include "ComboManagerComponent.h"
 #include "HealthComponent.h"
 #include "MotionWarpingComponent.h"
+#include "NiagaraComponent.h"
 #include "WallRunningComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -40,6 +41,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	
 	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
 	this->AddOwnedComponent(WallRunningComponent);
+
+	CharacterAfterImageComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CharacterAfterImageComponent"));
+	this->AddOwnedComponent(GetMesh());
 	
 }
 
