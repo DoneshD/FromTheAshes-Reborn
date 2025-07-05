@@ -94,13 +94,18 @@ void UAT_LaunchCharacterAndWait::LocationReached()
 	
 	CMC->Velocity.Z = 0.0f;
 	CMC->GravityScale = 0.0f;
+	
+	const FVector LaunchVelocity = FVector(0.0f, 0.0f, 750.0f);
+
+	CMC->Velocity = FVector::ZeroVector; 
+	ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
+	Character->LaunchCharacter(LaunchVelocity, true, true);
 
 	GetWorld()->GetTimerManager().SetTimer(AerialStallTimerHandle, this, &UAT_LaunchCharacterAndWait::EndStall, StallDuration, false);
 }
 
 void UAT_LaunchCharacterAndWait::EndStall()
 {
-	CMC->Velocity.Z = -100.0f;
 	CMC->GravityScale = 4.0f;
 
 	OnLaunchComplete.Broadcast();

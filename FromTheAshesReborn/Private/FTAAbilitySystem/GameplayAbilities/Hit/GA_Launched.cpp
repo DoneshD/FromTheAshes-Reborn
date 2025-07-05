@@ -29,11 +29,11 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	
+
 	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(this,
 		LaunchInfoObject->LaunchData.VerticalDistance,
 		LaunchInfoObject->LaunchData.LaunchDuration,
-		LaunchInfoObject->LaunchData.StallDuration + 0.2f);
+		LaunchInfoObject->LaunchData.StallDuration);
 	
 	if (LaunchTask)
 	{
