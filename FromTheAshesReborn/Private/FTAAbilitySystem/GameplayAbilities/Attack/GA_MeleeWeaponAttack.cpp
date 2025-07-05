@@ -268,6 +268,19 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		
 		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
 
+		DrawDebugSphere(
+			GetWorld(),
+			WarpTargetLocation,
+			20.f,
+			12,
+			FColor::Red,
+			false,
+			2.f,
+			0,
+			1.f
+		);
+
+
 		if(FVector::Dist(FTAChar->GetActorLocation(), WarpTargetLocation) > 300.0f)
 		{
 			SpawnAfterImage();

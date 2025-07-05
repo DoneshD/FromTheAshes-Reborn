@@ -69,7 +69,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	else
 	{
 		ControlCameraOffset(DeltaTime);
-		// UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
+		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
 		// DrawCameraAnchor();
 		SetOwnerActorRotation();
 	}
