@@ -38,9 +38,6 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool NonMontageAttack = false;
-
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 

@@ -56,36 +56,38 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	
 	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
 	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
-
+	
 	FRotator CurrentRotation = GetFTACharacterFromActorInfo()->GetActorRotation();
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 	
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(CurrentRotation.Pitch, LookAtRotation.Yaw, CurrentRotation.Roll));
 
-	TArray<UHitReactionDataAsset*> AssetsToTry;
-	for (UHitReactionDataAsset* Asset : HitAbilityAssets)
+	if(!NonMontageAbility)
 	{
-		if(Asset->HitReactionDirection == HitInfoObject->HitData.HitDirection)
+		TArray<UHitReactionDataAsset*> AssetsToTry;
+		for (UHitReactionDataAsset* Asset : HitAbilityAssets)
 		{
-			if(Asset->MontageToPlay)
+			if(Asset->HitReactionDirection == HitInfoObject->HitData.HitDirection)
 			{
-				AssetsToTry.Add(Asset);
+				if(Asset->MontageToPlay)
+				{
+					AssetsToTry.Add(Asset);
+				}
 			}
 		}
+		
+		if(AssetsToTry.Num() > 0)
+		{
+			int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
+			PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UGA_ReceiveHit::ActivateAbility - No possible assets"));
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+			return;
+		}
 	}
-
-	if(AssetsToTry.Num() > 0)
-	{
-		int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
-		PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_ReceiveHit::ActivateAbility - No possible assets"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-
 }
 
 void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

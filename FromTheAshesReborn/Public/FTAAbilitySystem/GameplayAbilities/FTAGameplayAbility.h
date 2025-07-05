@@ -32,6 +32,9 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool NonMontageAbility = false;
+
 	UPROPERTY()
 	FGameplayTag ActivationIndependentTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Independent");
 

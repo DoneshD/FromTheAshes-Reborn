@@ -22,14 +22,14 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	const ULaunchEventObject* LaunchInfoObject = Cast<ULaunchEventObject>(CurrentEventData.OptionalObject);
-
+	
 	if(!LaunchInfoObject)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_Launched::ActivateAbility - LaunchInfoObject is Null"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-
+	
 	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(this,
 		LaunchInfoObject->LaunchData.VerticalDistance,
 		LaunchInfoObject->LaunchData.LaunchDuration,

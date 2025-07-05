@@ -46,10 +46,10 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		SuspendTask->ReadyForActivation();
 	}
 
-	if(HitMontage)
-	{
-		PlayAbilityAnimMontage(HitMontage);
-	}
+	// if(HitMontage)
+	// {
+	// 	PlayAbilityAnimMontage(HitMontage);
+	// }
 }
 
 void UGA_AerialSuspension::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

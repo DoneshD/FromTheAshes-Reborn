@@ -54,6 +54,13 @@ bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle 
 		return false;
 	}
 
+	//Might change later
+
+	if(Character->GetCharacterMovement()->IsFalling() || Character->GetCharacterMovement()->IsFlying())
+	{
+		return false;
+	}
+
 	return !Character->GetCharacterMovement()->IsFalling() || !Character->GetCharacterMovement()->IsFlying();
 }
 
@@ -153,7 +160,7 @@ void UGA_MeleeWeaponAttack::ResetMeleeAttack()
 
 void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets)
 {
-	if(NonMontageAttack)
+	if(NonMontageAbility)
 	{
 		return;
 	}
@@ -258,8 +265,6 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		
 		FVector WarpTargetLocation = OutHit.ImpactPoint + OffsetDirection * 100;
 		FRotator WarpTargetRotation = (EnemyActor->GetActorLocation() - GetFTACharacterFromActorInfo()->GetActorLocation()).Rotation();
-
-		UE_LOG(LogTemp, Warning, TEXT("Warp"))
 		
 		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
 
