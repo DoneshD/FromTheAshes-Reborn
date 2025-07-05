@@ -62,20 +62,28 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(CurrentRotation.Pitch, LookAtRotation.Yaw, CurrentRotation.Roll));
 
+	TArray<UHitReactionDataAsset*> AssetsToTry;
 	for (UHitReactionDataAsset* Asset : HitAbilityAssets)
 	{
 		if(Asset->HitReactionDirection == HitInfoObject->HitData.HitDirection)
 		{
 			if(Asset->MontageToPlay)
 			{
-				PlayAbilityAnimMontage(Asset->MontageToPlay);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("MontageToPlay null"))
-	
+				AssetsToTry.Add(Asset);
 			}
 		}
+	}
+
+	if(AssetsToTry.Num() > 0)
+	{
+		int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
+		PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_ReceiveHit::ActivateAbility - No possible assets"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
 	}
 
 }
