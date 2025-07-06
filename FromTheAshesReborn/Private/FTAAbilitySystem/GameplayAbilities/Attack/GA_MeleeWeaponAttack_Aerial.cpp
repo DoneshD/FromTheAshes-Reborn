@@ -39,11 +39,11 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
-	SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
-		DescentSpeed,
-		5.0f);
+	// SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
+	// 	DescentSpeed,
+	// 	5.0f);
 
-	SuspendTask->ReadyForActivation();
+	// SuspendTask->ReadyForActivation();
 	
 	if(EnableAerialCombatEffect)
 	{
@@ -51,6 +51,11 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
 
+	if(AddAerialCombatGravity)
+	{
+		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AddAerialCombatGravity, 1.0f);
+		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+	}
 }
 
 void UGA_MeleeWeaponAttack_Aerial::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

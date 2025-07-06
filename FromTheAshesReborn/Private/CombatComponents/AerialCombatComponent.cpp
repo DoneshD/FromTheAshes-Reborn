@@ -41,6 +41,9 @@ void UAerialCombatComponent::BeginPlay()
 
 	FDelegateHandle Handle = FTAAbilitySystemComponent->RegisterGameplayTagEvent(EnableTag, EGameplayTagEventType::NewOrRemoved)
 		.AddUObject(this, &UAerialCombatComponent::EnableComponent);
+
+	FDelegateHandle HandleTwo = FTAAbilitySystemComponent->RegisterGameplayTagEvent(AerialAttackCounterTag, EGameplayTagEventType::AnyCountChange)
+		.AddUObject(this, &UAerialCombatComponent::AddAttackCounterTag);
 	
 }
 
@@ -50,19 +53,29 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		
+		ElapsedTime += DeltaTime;
+		UE_LOG(LogTemp, Warning, TEXT("ElapsedTime: %f"), ElapsedTime);
 	}
 }
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Resetting Vars"))
 	IsComponentActive = false;
 	CMC->GravityScale = 4.0f;
+	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
+	AttackCounterGravityMultiplier = 0.0f;
+	AttackCounter = 0;
+	GetWorld()->GetTimerManager().ClearTimer(AerialCombatTimerHandle);
+	ElapsedTime = 0.0f;
 }
 
 void UAerialCombatComponent::InitializeStateAndVariables()
 {
 	IsComponentActive = true;
+	CMC->GravityScale = 0.0f;
+	// GetWorld()->GetTimerManager().SetTimer(AerialCombatTimerHandle, this, &UAerialCombatComponent::CalculateTimeSpentGravityMultiplier, 0.1f, true);
+	
 }
 
 void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int32 NewCount)
@@ -75,4 +88,26 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	{
 		ClearStateAndVariables();
 	}
+}
+
+void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount)
+{
+	if (NewCount > PreviousCount)
+	{
+		CalculateAttackCountGravityMultiplier(NewCount);
+	}
+
+	PreviousCount = NewCount;
+}
+
+float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCount)
+{
+	AttackCounter = InNewCount;
+	CMC->GravityScale = AttackCounter;
+	return 0.0;
+}
+
+float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier()
+{
+	return 0.0f;
 }

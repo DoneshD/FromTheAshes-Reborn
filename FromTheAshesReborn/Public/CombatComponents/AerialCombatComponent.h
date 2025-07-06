@@ -19,6 +19,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag EnableTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
+	FGameplayTag AerialAttackCounterTag;
 	
 	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTACharacter;
@@ -30,12 +33,24 @@ protected:
 	TObjectPtr<UCharacterMovementComponent> CMC;
 
 	bool IsComponentActive = false;
-	
+
+	int AttackCounter = 0;
+
+	float AttackCounterGravityMultiplier = 0.0f;
+	int32 PreviousCount;
+
+	FTimerHandle AerialCombatTimerHandle;
+	float ElapsedTime = 0.0f;
+
 protected:
 
 	void ClearStateAndVariables();
 	void InitializeStateAndVariables();
 	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
+
+	void AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount);
+	float CalculateAttackCountGravityMultiplier(int InNewCount);
+	float CalculateTimeSpentGravityMultiplier();
 
 public:
 	
