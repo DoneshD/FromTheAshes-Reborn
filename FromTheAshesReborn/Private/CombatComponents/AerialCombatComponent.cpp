@@ -2,6 +2,7 @@
 
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 UAerialCombatComponent::UAerialCombatComponent()
@@ -30,6 +31,14 @@ void UAerialCombatComponent::BeginPlay()
 		return;
 	}
 
+	CMC = Cast<UCharacterMovementComponent>(FTACharacter->GetMovementComponent());
+
+	if(!CMC)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UAerialCombatComponent::BeginPlay() - CMC is Null"));
+		return;
+	}
+
 	FDelegateHandle Handle = FTAAbilitySystemComponent->RegisterGameplayTagEvent(EnableTag, EGameplayTagEventType::NewOrRemoved)
 		.AddUObject(this, &UAerialCombatComponent::EnableComponent);
 	
@@ -43,13 +52,12 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		
 	}
-	
-	
 }
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
 	IsComponentActive = false;
+	CMC->GravityScale = 4.0f;
 }
 
 void UAerialCombatComponent::InitializeStateAndVariables()
@@ -57,7 +65,7 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 	IsComponentActive = true;
 }
 
-void UAerialCombatComponent::EnableComponent(const FGameplayTag EnableTag, int32 NewCount)
+void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int32 NewCount)
 {
 	if (NewCount > 0)
 	{
@@ -68,6 +76,3 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag EnableTag, int32
 		ClearStateAndVariables();
 	}
 }
-
-
-

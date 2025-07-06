@@ -6,6 +6,7 @@
 #include "AerialCombatComponent.generated.h"
 
 
+class UCharacterMovementComponent;
 class UFTAAbilitySystemComponent;
 class AFTACharacter;
 
@@ -25,13 +26,16 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
+	UPROPERTY()
+	TObjectPtr<UCharacterMovementComponent> CMC;
+
 	bool IsComponentActive = false;
 	
 protected:
 
 	void ClearStateAndVariables();
 	void InitializeStateAndVariables();
-	void EnableComponent(const FGameplayTag EnableTag, int32 NewCount);
+	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
 
 public:
 	

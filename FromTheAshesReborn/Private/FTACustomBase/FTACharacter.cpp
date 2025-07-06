@@ -199,11 +199,10 @@ void AFTACharacter::AddCharacterBaseAbilities() const
 void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-	ComboManagerComponent->AerialAttacksCounter = 0;
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slammed"));
-
+	
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")));
 }
 

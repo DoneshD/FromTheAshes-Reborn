@@ -20,8 +20,6 @@ class FROMTHEASHESREBORN_API UComboManagerComponent : public UActorComponent
 
 public:
 	
-	int32 AerialAttacksCounter = 0;
-
 	bool PauseCurrentAttack = false;
 
 protected:
