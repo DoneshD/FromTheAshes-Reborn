@@ -33,8 +33,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite)
 	int32 CurrentComboIndex = 0;
-
-
+	
 	FTimerHandle AerialAttacksTimerHandle;
 
 protected:
