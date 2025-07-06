@@ -24,7 +24,7 @@ void UAerialCombatComponent::BeginPlay()
 
 	FTAAbilitySystemComponent = FTACharacter->GetFTAAbilitySystemComponent();
 
-	if(FTAAbilitySystemComponent)
+	if(!FTAAbilitySystemComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UAerialCombatComponent::BeginPlay() - FTAAbilitySystemComponent is null"));
 		return;
@@ -33,35 +33,41 @@ void UAerialCombatComponent::BeginPlay()
 	FDelegateHandle Handle = FTAAbilitySystemComponent->RegisterGameplayTagEvent(EnableTag, EGameplayTagEventType::NewOrRemoved)
 		.AddUObject(this, &UAerialCombatComponent::EnableComponent);
 	
-	
 }
 
 void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
 	if(IsComponentActive)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Currently Active"));
+		
 	}
-
+	
+	
 }
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
-	
+	IsComponentActive = false;
 }
 
-void UAerialCombatComponent::EnableComponent(const FGameplayTag QueueWindowTag, int32 NewCount)
+void UAerialCombatComponent::InitializeStateAndVariables()
 {
-	if (NewCount > 0 && FTAAbilitySystemComponent->HasMatchingGameplayTag(QueueWindowTag))
+	IsComponentActive = true;
+}
+
+void UAerialCombatComponent::EnableComponent(const FGameplayTag EnableTag, int32 NewCount)
+{
+	if (NewCount > 0)
 	{
-		IsComponentActive = true;
+		InitializeStateAndVariables();
 	}
 	else
 	{
-		IsComponentActive = false;
+		ClearStateAndVariables();
 	}
 }
+
 
 

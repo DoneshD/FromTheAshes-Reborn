@@ -193,7 +193,6 @@ FString UAT_WaitInputTagAndQueueWindowEvent::GetDebugString() const
 
 void UAT_WaitInputTagAndQueueWindowEvent::OnDestroy(bool AbilityEnded)
 {
-	
 	if (FTAASC)
 	{
 		FTAASC->OnInputQueueReceived.RemoveDynamic(this, &UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived);

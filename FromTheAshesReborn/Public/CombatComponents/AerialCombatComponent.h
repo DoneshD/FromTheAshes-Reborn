@@ -30,7 +30,8 @@ protected:
 protected:
 
 	void ClearStateAndVariables();
-	void EnableComponent(const FGameplayTag QueueWindowTag, int32 NewCount);
+	void InitializeStateAndVariables();
+	void EnableComponent(const FGameplayTag EnableTag, int32 NewCount);
 
 public:
 	

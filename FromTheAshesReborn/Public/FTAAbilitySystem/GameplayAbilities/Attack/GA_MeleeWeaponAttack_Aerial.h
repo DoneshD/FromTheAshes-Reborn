@@ -19,6 +19,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aerial Ability")
 	float DescentSpeed = 10;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
+
 	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
 	
 public:
