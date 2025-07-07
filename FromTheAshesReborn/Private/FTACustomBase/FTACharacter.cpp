@@ -213,14 +213,12 @@ bool AFTACharacter::HasFlailTag() const
 
 bool AFTACharacter::HasLaunchedTag() const
 {
-	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Launch.Vertical"));
-
+	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
 }
 
 bool AFTACharacter::HasSlammedTag() const
 {
 	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slammed"));
-
 }
 
 bool AFTACharacter::HasSlammingTag() const
