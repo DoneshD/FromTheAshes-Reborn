@@ -57,22 +57,21 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		{
 			CMC->Velocity.Z = 0.f;
 		}
-		TotalAirTime += DeltaTime; 
-		CMC->GravityScale = TotalAirTime;
-	
+		TotalAirTime += DeltaTime;
+		CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+		PrintGravity();
 	}
 }
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Resetting Vars"));
 	IsComponentActive = false;
 	CMC->GravityScale = 4.0f;
-	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 	AttackCounterGravityMultiplier = 0.0f;
 	AttackCounter = 0;
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
+	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 
 }
 
@@ -119,24 +118,22 @@ float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCou
 {
 	AttackCounter = InNewCount;
 	
-	if (AttackCounter <= 3)
-	{
-		CMC->GravityScale = 0;
-	}
-	else if (AttackCounter > 3 && AttackCounter <= 6)
-	{
-		CMC->GravityScale = 0.2f;
-	}
-	else if (AttackCounter > 6 && AttackCounter <= 9)
-	{
-		CMC->GravityScale = 1.0f;
-	}
-	else
-	{
-		CMC->GravityScale = 4.0f;
-	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Time since last aerial attack: %f seconds"), GetAttackElapsedTime());
+	// if (AttackCounter <= 3)
+	// {
+	// 	CMC->GravityScale = CMC->GravityScale * 1.1;
+	// }
+	// else if (AttackCounter > 3 && AttackCounter <= 6)
+	// {
+	// 	CMC->GravityScale = CMC->GravityScale * 1.5;
+	// }
+	// else if (AttackCounter > 6 && AttackCounter <= 9)
+	// {
+	// 	CMC->GravityScale = CMC->GravityScale * 2;
+	// }
+	// else
+	// {
+	// 	CMC->GravityScale = 4.0f;
+	// }
 
 	ResetAttackTimer();
 
@@ -144,8 +141,9 @@ float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCou
 }
 
 
-void UAerialCombatComponent::CalculateTimeSpentGravityMultiplier()
+float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier() const
 {
+	return FMath::Square(TotalAirTime) * TimeGravityMultiplier;
 }
 
 void UAerialCombatComponent::ResetAttackTimer()

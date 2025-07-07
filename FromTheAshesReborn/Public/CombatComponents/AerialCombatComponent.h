@@ -15,14 +15,9 @@ class FROMTHEASHESREBORN_API UAerialCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-protected:
+private:
+	int32 PreviousCount;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
-	FGameplayTag EnableTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
-	FGameplayTag AerialAttackCounterTag;
-	
 	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTACharacter;
 
@@ -31,13 +26,23 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CMC;
+	
+protected:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
+	FGameplayTag EnableTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
+	FGameplayTag AerialAttackCounterTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Parameters")
+	float TimeGravityMultiplier = 0.5f;
 
 	bool IsComponentActive = false;
-
+	
 	int AttackCounter = 0;
 
 	float AttackCounterGravityMultiplier = 0.0f;
-	int32 PreviousCount;
 
 	float AttackLastResetTime;
 	float AttackTimeInAir = 0.0f;
@@ -49,12 +54,12 @@ protected:
 	void ClearStateAndVariables();
 	void InitializeStateAndVariables();
 	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
-
+	
 	void AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount);
-	void CalculateTimeSpentGravityMultiplier();
+	
+	float CalculateTimeSpentGravityMultiplier() const;
 	void ResetAttackTimer();
 	float GetAttackElapsedTime() const;
-	float GetTotalComponentActiveTime() const;
 
 public:
 	
@@ -64,6 +69,7 @@ public:
 
 	void SetGravity(float NewGravity);
 	void PrintGravity();
+	
 	float CalculateAttackCountGravityMultiplier(int InNewCount);
 	
 };
