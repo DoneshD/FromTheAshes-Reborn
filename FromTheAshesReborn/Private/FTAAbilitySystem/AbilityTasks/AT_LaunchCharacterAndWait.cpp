@@ -3,12 +3,13 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UAT_LaunchCharacterAndWait* UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(UGameplayAbility* OwningAbility, float VerticalDistance, float Duration, float StallTime)
+UAT_LaunchCharacterAndWait* UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(UGameplayAbility* OwningAbility, float VerticalDistance, float Duration, float StallTime, float Offset)
 {
 	UAT_LaunchCharacterAndWait* Task = NewAbilityTask<UAT_LaunchCharacterAndWait>(OwningAbility);
 	Task->LaunchVerticalDistance = VerticalDistance;
 	Task->LaunchDuration = Duration;
 	Task->StallDuration = StallTime;
+	Task->LaunchOffset = Offset;
 	return Task;
 }
 
@@ -95,7 +96,7 @@ void UAT_LaunchCharacterAndWait::LocationReached()
 	CMC->Velocity.Z = 0.0f;
 	CMC->GravityScale = 0.0f;
 	
-	const FVector LaunchVelocity = FVector(0.0f, 0.0f, 750.0f);
+	const FVector LaunchVelocity = FVector(0.0f, 0.0f, 750.0f - LaunchOffset);
 
 	CMC->Velocity = FVector::ZeroVector; 
 	ACharacter* Character = Cast<ACharacter>(GetAvatarActor());

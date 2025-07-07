@@ -98,6 +98,8 @@ protected:
 	UPROPERTY()
 	FGameplayTag CurrentHitReactionTag = FGameplayTag::EmptyTag;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+	float MotionWarpLocationOffset = 125.0f;
 
 protected:
 

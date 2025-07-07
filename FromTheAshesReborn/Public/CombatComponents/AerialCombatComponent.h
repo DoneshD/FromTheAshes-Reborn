@@ -27,6 +27,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CMC;
 	
+
 protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
@@ -36,18 +37,20 @@ protected:
 	FGameplayTag AerialAttackCounterTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Parameters")
-	float TimeGravityMultiplier = 0.5f;
+	float TimeGravityMultiplier = 0.65f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Parameters")
+	float LaunchStrengthMultiplier = 1.0f;
 
 	bool IsComponentActive = false;
-	
 	int AttackCounter = 0;
-
-	float AttackCounterGravityMultiplier = 0.0f;
 
 	float AttackLastResetTime;
 	float AttackTimeInAir = 0.0f;
 
 	float TotalAirTime = 0.0f;
+
+	float LaunchStrength = 100.0f;
 
 protected:
 
@@ -70,6 +73,6 @@ public:
 	void SetGravity(float NewGravity);
 	void PrintGravity();
 	
-	float CalculateAttackCountGravityMultiplier(int InNewCount);
+	float CalculateAttackAntiGravityMultiplier(int InNewCount);
 	
 };

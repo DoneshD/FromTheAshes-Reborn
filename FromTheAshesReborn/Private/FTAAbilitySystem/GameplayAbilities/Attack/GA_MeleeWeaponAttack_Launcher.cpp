@@ -49,10 +49,11 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(this,
+	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(
+		this,
 		LauncherVerticalDistance,
 		LauncherDuration,
-		StallDuration);
+		StallDuration, LaunchOffset);
 }
 
 void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -63,12 +64,7 @@ void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHan
 void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	// if(EnableAerialCombatEffect)
-	// {
-	// 	FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
-	// 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-	// }
+	
 }
 
 void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -77,6 +73,7 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
 	LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
 	LaunchInfoObj->LaunchData.StallDuration = StallDuration;
+	LaunchInfoObj->LaunchData.Offset = LaunchOffset;
 	LaunchInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
 	
 	FGameplayEventData OnLaunchHitEventData;

@@ -1,5 +1,6 @@
 #include "CombatComponents/AerialCombatComponent.h"
 
+#include "Components/CapsuleComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -53,13 +54,8 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		if (CMC->Velocity.Z > 0.f)
-		{
-			CMC->Velocity.Z = 0.f;
-		}
 		TotalAirTime += DeltaTime;
 		CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
-		PrintGravity();
 	}
 }
 
@@ -67,17 +63,19 @@ void UAerialCombatComponent::ClearStateAndVariables()
 {
 	IsComponentActive = false;
 	CMC->GravityScale = 4.0f;
-	AttackCounterGravityMultiplier = 0.0f;
 	AttackCounter = 0;
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
 }
 
 void UAerialCombatComponent::InitializeStateAndVariables()
 {
 	IsComponentActive = true;
+
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	ResetAttackTimer();
 	
 }
@@ -108,34 +106,39 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 {
 	if (NewCount > PreviousCount)
 	{
-		CalculateAttackCountGravityMultiplier(NewCount);
+		CalculateAttackAntiGravityMultiplier(NewCount);
 	}
 
 	PreviousCount = NewCount;
 }
 
-float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCount)
+float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCount)
 {
 	AttackCounter = InNewCount;
 	
-	// if (AttackCounter <= 3)
-	// {
-	// 	CMC->GravityScale = CMC->GravityScale * 1.1;
-	// }
-	// else if (AttackCounter > 3 && AttackCounter <= 6)
-	// {
-	// 	CMC->GravityScale = CMC->GravityScale * 1.5;
-	// }
-	// else if (AttackCounter > 6 && AttackCounter <= 9)
-	// {
-	// 	CMC->GravityScale = CMC->GravityScale * 2;
-	// }
-	// else
-	// {
-	// 	CMC->GravityScale = 4.0f;
-	// }
+	if (AttackCounter <= 3)
+	{
+		LaunchStrength = 100.0f;
+	}
+	else if (AttackCounter > 3 && AttackCounter <= 6)
+	{
+		LaunchStrength = 200.0f;
+	}
+	else if (AttackCounter > 6 && AttackCounter <= 9)
+	{
+		LaunchStrength = 300.0f;
+	}
+	else
+	{
+		CMC->GravityScale = 4.0f;
+		LaunchStrength = 0.0f;
+	}
 
 	ResetAttackTimer();
+
+	FVector LaunchVelocity = FVector(0.0f, 0.0f, LaunchStrength);
+	CMC->Velocity = FVector::ZeroVector;
+	FTACharacter->LaunchCharacter(LaunchVelocity, true, true);
 
 	return 0.0f;
 }
@@ -143,7 +146,9 @@ float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCou
 
 float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier() const
 {
-	return FMath::Square(TotalAirTime) * TimeGravityMultiplier;
+	float CurrentGravityScale = FMath::Square(TotalAirTime) * TimeGravityMultiplier;
+	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, 1.0, 4.0f);
+	return CurrentGravityScale;
 }
 
 void UAerialCombatComponent::ResetAttackTimer()

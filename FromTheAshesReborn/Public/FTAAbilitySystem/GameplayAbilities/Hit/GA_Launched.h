@@ -18,6 +18,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
+	float LaunchOffset;
+
 public:
 
 	UGA_Launched();

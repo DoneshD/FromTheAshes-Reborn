@@ -66,8 +66,6 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AddAerialCombatGravity, 1.0f);
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
-
-	// AerialCombatComponent->SetGravity(.50);
 	
 }
 
@@ -142,5 +140,4 @@ void UGA_MeleeWeaponAttack_Aerial::OnMontageBlendingOut(FGameplayTag EventTag, F
 	{
 		SuspendTask->EndTask();
 	}
-	// AerialCombatComponent->SetGravity(4.0);
 }

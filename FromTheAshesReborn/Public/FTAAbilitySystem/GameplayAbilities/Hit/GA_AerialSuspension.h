@@ -4,17 +4,30 @@
 #include "GA_ReceiveHit.h"
 #include "GA_AerialSuspension.generated.h"
 
+class UAerialCombatComponent;
 class UAT_SuspendInAirAndWait;
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_AerialSuspension : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
-	
+
+public:
+
+	UPROPERTY()
 	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> HitMontage;
+
+	UPROPERTY()
+	TObjectPtr<UAerialCombatComponent> AerialCombatComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	TSubclassOf<UGameplayEffect> AddAerialCombatGravity;
 
 public:
 

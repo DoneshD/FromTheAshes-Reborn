@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GA_MeleeWeaponAttack.h"
+#include "EventObjects/LaunchEventObject.h"
 #include "GA_MeleeWeaponAttack_Launcher.generated.h"
 
 class UAT_LaunchCharacterAndWait;
@@ -25,11 +26,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
 	float StallDuration = 0.25f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
+	float LaunchOffset = 0.0f;
+
 	UPROPERTY()
 	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
 	FGameplayTagContainer QueueableAbilities;
+	
 
 protected:
 	

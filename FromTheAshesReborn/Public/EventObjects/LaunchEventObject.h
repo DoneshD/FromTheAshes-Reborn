@@ -13,6 +13,7 @@ struct FLaunchInfo
 	float VerticalDistance;
 	float LaunchDuration;
 	float StallDuration;
+	float Offset;
 	
 };
 

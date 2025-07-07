@@ -33,12 +33,13 @@ protected:
 	float LaunchVerticalDistance;
 	float LaunchDuration;
 	float StallDuration;
+	float LaunchOffset;
 
 	FTimerHandle AerialStallTimerHandle;
 
 public:
 	
-	static UAT_LaunchCharacterAndWait* AT_LaunchCharacterAndWait(UGameplayAbility* OwningAbility, float VerticalDistance, float Duration, float StallTime);
+	static UAT_LaunchCharacterAndWait* AT_LaunchCharacterAndWait(UGameplayAbility* OwningAbility, float VerticalDistance, float Duration, float StallTime, float Offset);
 
 protected:
 	

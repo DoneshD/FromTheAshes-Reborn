@@ -69,7 +69,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	else
 	{
 		ControlCameraOffset(DeltaTime);
-		// UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
+		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
 		// DrawCameraAnchor();
 		SetOwnerActorRotation();
 	}
@@ -443,7 +443,7 @@ void UTargetingSystemComponent::SetOwnerActorRotation()
 {
 	FVector TargetLocation = LockedOnTargetActor->GetActorLocation();
 	FRotator TargetRotation = FindLookAtRotation(OwnerActor->GetActorLocation(), TargetLocation);
-	FRotator InterpRot = FMath::RInterpTo(OwnerActor->GetActorRotation(), TargetRotation, GetWorld()->GetDeltaSeconds(), 10.0f);
+	FRotator InterpRot = FMath::RInterpTo(OwnerActor->GetActorRotation(), FRotator(0.0, TargetRotation.Yaw, 0.0), GetWorld()->GetDeltaSeconds(), 10.0f);
 
 	OwnerActor->SetActorRotation(InterpRot);
 }
@@ -464,24 +464,26 @@ void UTargetingSystemComponent::EnableControlRotation(const bool InShouldControl
 	}
 }
 
-// void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) const
-// {
-// 	if (!IsValid(OwnerPlayerController))
-// 	{
-// 		UE_LOG(LogTemp, Warning, TEXT("UTargetingSystemComponent::SetControlRotationOnTarget - OwnerPlayerController is invalid"))
-// 		return;
-// 	}
-//
-// 	const FRotator ControlRotation = GetControlRotationOnTarget(TargetActor);
-// 	if (OnTargetSetRotation.IsBound())
-// 	{
-// 		OnTargetSetRotation.Broadcast(TargetActor, ControlRotation);
-// 	}
-// 	else
-// 	{
-// 		OwnerPlayerController->SetControlRotation(ControlRotation);
-// 	}
-// }
+/*
+void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) const
+{
+	if (!IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UTargetingSystemComponent::SetControlRotationOnTarget - OwnerPlayerController is invalid"))
+		return;
+	}
+
+	const FRotator ControlRotation = GetControlRotationOnTarget(TargetActor);
+	if (OnTargetSetRotation.IsBound())
+	{
+		OnTargetSetRotation.Broadcast(TargetActor, ControlRotation);
+	}
+	else
+	{
+		OwnerPlayerController->SetControlRotation(ControlRotation);
+	}
+}
+*/
 
 void UTargetingSystemComponent::DisableMidPointControlRotation()
 {

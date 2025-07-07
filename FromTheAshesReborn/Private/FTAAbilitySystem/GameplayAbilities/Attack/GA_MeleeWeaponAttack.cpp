@@ -263,22 +263,10 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 	{
 		FVector OffsetDirection = (GetFTACharacterFromActorInfo()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
 		
-		FVector WarpTargetLocation = OutHit.ImpactPoint + OffsetDirection * 100;
-		FRotator WarpTargetRotation = (EnemyActor->GetActorLocation() - GetFTACharacterFromActorInfo()->GetActorLocation()).Rotation();
+		FVector WarpTargetLocation = OutHit.ImpactPoint + OffsetDirection * MotionWarpLocationOffset;
+		FRotator WarpTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetFTACharacterFromActorInfo()->GetActorLocation(), EnemyActor->GetActorLocation());
 		
-		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation, WarpTargetRotation);
-
-		// DrawDebugSphere(
-		// 	GetWorld(),
-		// 	WarpTargetLocation,
-		// 	20.f,
-		// 	12,
-		// 	FColor::Red,
-		// 	false,
-		// 	2.f,
-		// 	0,
-		// 	1.f
-		// );
+		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation,  FRotator(0, WarpTargetRotation.Yaw, 0));
 
 
 		if(FVector::Dist(FTAChar->GetActorLocation(), WarpTargetLocation) > 300.0f)
