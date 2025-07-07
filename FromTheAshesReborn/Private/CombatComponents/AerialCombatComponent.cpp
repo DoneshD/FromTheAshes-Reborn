@@ -53,34 +53,35 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		ElapsedTime += DeltaTime;
-		UE_LOG(LogTemp, Warning, TEXT("You've been in the air for %f seconds"), GetElapsedTime());
-		// PrintGravity();
 		if (CMC->Velocity.Z > 0.f)
 		{
 			CMC->Velocity.Z = 0.f;
 		}
+		UE_LOG(LogTemp, Warning, TEXT("Component active for: %f seconds"), GetTotalComponentActiveTime());
+
 	}
 }
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Resetting Vars"))
+	UE_LOG(LogTemp, Warning, TEXT("Resetting Vars"));
 	IsComponentActive = false;
 	CMC->GravityScale = 4.0f;
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 	AttackCounterGravityMultiplier = 0.0f;
 	AttackCounter = 0;
-	GetWorld()->GetTimerManager().ClearTimer(AerialCombatTimerHandle);
-	ElapsedTime = 0.0f;
-	TimeInAir = 0.0f;
-	LastResetTime = 0.0f;
+	AttackLastResetTime = GetWorld()->GetTimeSeconds();
+	UE_LOG(LogTemp, Warning, TEXT("Final: %f seconds"), GetTotalComponentActiveTime());
+	TotalAirTime = 0.0f;
+
 }
 
 void UAerialCombatComponent::InitializeStateAndVariables()
 {
 	IsComponentActive = true;
-	// CMC->GravityScale = 0.0f;
+	TotalAirTime = GetWorld()->GetTimeSeconds();
+	ResetAttackTimer();
+	
 }
 
 void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int32 NewCount)
@@ -118,7 +119,6 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCount)
 {
 	AttackCounter = InNewCount;
-	// CMC->GravityScale = AttackCounter;
 
 	if (AttackCounter <= 3)
 	{
@@ -137,21 +137,34 @@ float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCou
 		CMC->GravityScale = 4.0f;
 	}
 
-	
-	ResetTimer();
+	UE_LOG(LogTemp, Warning, TEXT("Time since last aerial attack: %f seconds"), GetAttackElapsedTime());
+
+	ResetAttackTimer();
+
 	return 0.0f;
 }
+
 
 void UAerialCombatComponent::CalculateTimeSpentGravityMultiplier()
 {
 }
 
-void UAerialCombatComponent::ResetTimer()
+void UAerialCombatComponent::ResetAttackTimer()
 {
-	LastResetTime = GetWorld()->GetTimeSeconds();
+	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 }
 
-float UAerialCombatComponent::GetElapsedTime() const
+float UAerialCombatComponent::GetAttackElapsedTime() const
 {
-	return GetWorld()->GetTimeSeconds() - LastResetTime;
+	return GetWorld()->GetTimeSeconds() - AttackLastResetTime;
+}
+
+float UAerialCombatComponent::GetTotalComponentActiveTime() const
+{
+	if (TotalAirTime == 0.0f)
+	{
+		return 0.0f;
+	}
+
+	return GetWorld()->GetTimeSeconds() - TotalAirTime;
 }

@@ -39,10 +39,10 @@ protected:
 	float AttackCounterGravityMultiplier = 0.0f;
 	int32 PreviousCount;
 
-	FTimerHandle AerialCombatTimerHandle;
-	float ElapsedTime = 0.0f;
-	double LastResetTime;
-	float TimeInAir = 0.0f;
+	float AttackLastResetTime;
+	float AttackTimeInAir = 0.0f;
+
+	float TotalAirTime = 0.0f;
 
 protected:
 
@@ -52,8 +52,9 @@ protected:
 
 	void AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount);
 	void CalculateTimeSpentGravityMultiplier();
-	void ResetTimer();
-	float GetElapsedTime() const;
+	void ResetAttackTimer();
+	float GetAttackElapsedTime() const;
+	float GetTotalComponentActiveTime() const;
 
 public:
 	
