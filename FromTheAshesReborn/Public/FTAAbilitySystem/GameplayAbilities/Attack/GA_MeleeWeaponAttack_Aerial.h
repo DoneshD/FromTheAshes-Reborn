@@ -5,6 +5,7 @@
 #include "GA_MeleeWeaponAttack_Aerial.generated.h"
 
 
+class UAerialCombatComponent;
 class UAT_SuspendInAirAndWait;
 
 UCLASS()
@@ -24,6 +25,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> AddAerialCombatGravity;
+
+	UPROPERTY()
+	TObjectPtr<UAerialCombatComponent> AerialCombatComponent;
 
 	UPROPERTY()
 	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;

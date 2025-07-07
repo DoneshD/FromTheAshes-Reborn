@@ -3,12 +3,14 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "ComboManagerComponent.h"
+#include "CombatComponents/AerialCombatComponent.h"
 #include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "TargetingSystem/TargetingSystemComponent.h"
 
 UGA_MeleeWeaponAttack_Aerial::UGA_MeleeWeaponAttack_Aerial()
 {
@@ -44,6 +46,14 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 	// 	5.0f);
 
 	// SuspendTask->ReadyForActivation();
+
+	AerialCombatComponent = FTAChar->FindComponentByClass<UAerialCombatComponent>();
+
+	if(!AerialCombatComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Aerial::ActivateAbility - AerialCombatComponent"));
+		return;
+	}
 	
 	if(EnableAerialCombatEffect)
 	{
@@ -56,6 +66,9 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AddAerialCombatGravity, 1.0f);
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
+
+	// AerialCombatComponent->SetGravity(.50);
+	
 }
 
 void UGA_MeleeWeaponAttack_Aerial::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -129,4 +142,5 @@ void UGA_MeleeWeaponAttack_Aerial::OnMontageBlendingOut(FGameplayTag EventTag, F
 	{
 		SuspendTask->EndTask();
 	}
+	// AerialCombatComponent->SetGravity(4.0);
 }

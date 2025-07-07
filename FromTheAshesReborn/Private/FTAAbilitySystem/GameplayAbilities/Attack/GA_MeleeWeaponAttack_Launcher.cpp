@@ -64,11 +64,11 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	if(EnableAerialCombatEffect)
-	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-	}
+	// if(EnableAerialCombatEffect)
+	// {
+	// 	FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
+	// 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+	// }
 }
 
 void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)

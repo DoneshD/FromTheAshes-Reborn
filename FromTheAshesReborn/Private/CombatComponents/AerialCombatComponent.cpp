@@ -54,7 +54,12 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(IsComponentActive)
 	{
 		ElapsedTime += DeltaTime;
-		UE_LOG(LogTemp, Warning, TEXT("ElapsedTime: %f"), ElapsedTime);
+		UE_LOG(LogTemp, Warning, TEXT("You've been in the air for %f seconds"), GetElapsedTime());
+		// PrintGravity();
+		if (CMC->Velocity.Z > 0.f)
+		{
+			CMC->Velocity.Z = 0.f;
+		}
 	}
 }
 
@@ -68,14 +73,14 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackCounter = 0;
 	GetWorld()->GetTimerManager().ClearTimer(AerialCombatTimerHandle);
 	ElapsedTime = 0.0f;
+	TimeInAir = 0.0f;
+	LastResetTime = 0.0f;
 }
 
 void UAerialCombatComponent::InitializeStateAndVariables()
 {
 	IsComponentActive = true;
-	CMC->GravityScale = 0.0f;
-	// GetWorld()->GetTimerManager().SetTimer(AerialCombatTimerHandle, this, &UAerialCombatComponent::CalculateTimeSpentGravityMultiplier, 0.1f, true);
-	
+	// CMC->GravityScale = 0.0f;
 }
 
 void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int32 NewCount)
@@ -88,6 +93,16 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	{
 		ClearStateAndVariables();
 	}
+}
+
+void UAerialCombatComponent::SetGravity(float NewGravity)
+{
+	CMC->GravityScale = NewGravity;
+}
+
+void UAerialCombatComponent::PrintGravity()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Gravity: %f"), CMC->GravityScale)
 }
 
 void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount)
@@ -103,11 +118,40 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCount)
 {
 	AttackCounter = InNewCount;
-	CMC->GravityScale = AttackCounter;
-	return 0.0;
+	// CMC->GravityScale = AttackCounter;
+
+	if (AttackCounter <= 3)
+	{
+		CMC->GravityScale = 0;
+	}
+	else if (AttackCounter > 3 && AttackCounter <= 6)
+	{
+		CMC->GravityScale = 0.2f;
+	}
+	else if (AttackCounter > 6 && AttackCounter <= 9)
+	{
+		CMC->GravityScale = 1.0f;
+	}
+	else
+	{
+		CMC->GravityScale = 4.0f;
+	}
+
+	
+	ResetTimer();
+	return 0.0f;
 }
 
-float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier()
+void UAerialCombatComponent::CalculateTimeSpentGravityMultiplier()
 {
-	return 0.0f;
+}
+
+void UAerialCombatComponent::ResetTimer()
+{
+	LastResetTime = GetWorld()->GetTimeSeconds();
+}
+
+float UAerialCombatComponent::GetElapsedTime() const
+{
+	return GetWorld()->GetTimeSeconds() - LastResetTime;
 }

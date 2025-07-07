@@ -41,6 +41,8 @@ protected:
 
 	FTimerHandle AerialCombatTimerHandle;
 	float ElapsedTime = 0.0f;
+	double LastResetTime;
+	float TimeInAir = 0.0f;
 
 protected:
 
@@ -49,12 +51,18 @@ protected:
 	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
 
 	void AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount);
-	float CalculateAttackCountGravityMultiplier(int InNewCount);
-	float CalculateTimeSpentGravityMultiplier();
+	void CalculateTimeSpentGravityMultiplier();
+	void ResetTimer();
+	float GetElapsedTime() const;
 
 public:
 	
 	UAerialCombatComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void SetGravity(float NewGravity);
+	void PrintGravity();
+	float CalculateAttackCountGravityMultiplier(int InNewCount);
+	
 };
