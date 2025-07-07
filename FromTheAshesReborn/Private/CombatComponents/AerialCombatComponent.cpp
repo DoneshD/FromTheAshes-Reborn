@@ -57,8 +57,9 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		{
 			CMC->Velocity.Z = 0.f;
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Component active for: %f seconds"), GetTotalComponentActiveTime());
-
+		TotalAirTime += DeltaTime; 
+		CMC->GravityScale = TotalAirTime;
+	
 	}
 }
 
@@ -71,7 +72,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackCounterGravityMultiplier = 0.0f;
 	AttackCounter = 0;
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
-	UE_LOG(LogTemp, Warning, TEXT("Final: %f seconds"), GetTotalComponentActiveTime());
 	TotalAirTime = 0.0f;
 
 }
@@ -79,7 +79,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 void UAerialCombatComponent::InitializeStateAndVariables()
 {
 	IsComponentActive = true;
-	TotalAirTime = GetWorld()->GetTimeSeconds();
 	ResetAttackTimer();
 	
 }
@@ -119,7 +118,7 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 float UAerialCombatComponent::CalculateAttackCountGravityMultiplier(int InNewCount)
 {
 	AttackCounter = InNewCount;
-
+	
 	if (AttackCounter <= 3)
 	{
 		CMC->GravityScale = 0;
@@ -157,14 +156,4 @@ void UAerialCombatComponent::ResetAttackTimer()
 float UAerialCombatComponent::GetAttackElapsedTime() const
 {
 	return GetWorld()->GetTimeSeconds() - AttackLastResetTime;
-}
-
-float UAerialCombatComponent::GetTotalComponentActiveTime() const
-{
-	if (TotalAirTime == 0.0f)
-	{
-		return 0.0f;
-	}
-
-	return GetWorld()->GetTimeSeconds() - TotalAirTime;
 }
