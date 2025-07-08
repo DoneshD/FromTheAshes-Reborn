@@ -4,6 +4,8 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
 class UCameraSystemComponent;
 class UTargetingSystemComponent;
 class UParkourSystemComponent;
@@ -16,10 +18,13 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
-	USceneComponent* TargetCameraAnchor;
+	TObjectPtr<USceneComponent> CameraAnchorComponent;
 	
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
-	class USpringArmComponent* SpringArmComp;
+	TObjectPtr<USpringArmComponent> SpringArmComp;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
+	TObjectPtr<UCameraComponent> CameraComp;
 
 protected:
 	
@@ -38,9 +43,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseLookUpRate;
 
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
-	class UCameraComponent* CameraComp;
 
 public:
 	

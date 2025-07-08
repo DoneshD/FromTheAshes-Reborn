@@ -13,14 +13,14 @@
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-	TargetCameraAnchor = CreateDefaultSubobject<USceneComponent>(TEXT("TargetCameraAnchor"));
-	TargetCameraAnchor->SetupAttachment(RootComponent);
-	TargetCameraAnchor->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
-	DefaultCameraAnchorRelativeLocation = TargetCameraAnchor->GetRelativeLocation();
-	DefaultCameraAnchorRelativeRotation = TargetCameraAnchor->GetRelativeRotation();
+	CameraAnchorComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CameraAnchorComponent"));
+	CameraAnchorComponent->SetupAttachment(RootComponent);
+	CameraAnchorComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+	DefaultCameraAnchorRelativeLocation = CameraAnchorComponent->GetRelativeLocation();
+	DefaultCameraAnchorRelativeRotation = CameraAnchorComponent->GetRelativeRotation();
 	
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
-	SpringArmComp->SetupAttachment(TargetCameraAnchor);
+	SpringArmComp->SetupAttachment(CameraAnchorComponent);
 
 	SpringArmComp->TargetArmLength = 400.0f;
 	SpringArmComp->bUsePawnControlRotation = true;
