@@ -14,10 +14,10 @@ class FROMTHEASHESREBORN_API UViewportUtilityFunctionLibrary : public UBlueprint
 public:
 	
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	FVector2D FindCenterOfViewPort(float SpringArmXOffset = 40.0f);
+	static FVector2D FindCenterOfViewPort(UWorld* World, float SpringArmXOffset = 40.0f);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool IsInViewport(const AActor* ActorToCheck, const APlayerController* PlayerController);
+	static bool IsInViewport(UWorld* World, const AActor* ActorToCheck, const APlayerController* PlayerController);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static bool PlayerSideRelativeToActorOnScreen(UWorld* World, const AActor* ActorToCheck, const APlayerCharacter* PlayerCharacter, const APlayerController* PlayerController);

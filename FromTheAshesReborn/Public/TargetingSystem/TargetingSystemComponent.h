@@ -143,7 +143,6 @@ protected:
 	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
 	void ControlCameraOffset(float DeltaTime);
 
-	bool PlayerSideRelativeToActorOnScreen(const AActor* OtherActor) const;
 	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
 	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
 
@@ -166,9 +165,7 @@ protected:
 	bool ShouldBreakLineOfSight() const;
 	void BreakLineOfSight();
 
-	bool IsInViewport(const AActor* TargetActor) const;
 	float FindDistanceFromCenterOfViewport(const AActor* TargetActor) const;
-	FVector2D FindCenterOfViewPort() const;
 
 	float GetAngleUsingCameraRotation(const AActor* ActorToLook) const;
 	float GetAngleUsingCharacterRotation(const AActor* ActorToLook) const;

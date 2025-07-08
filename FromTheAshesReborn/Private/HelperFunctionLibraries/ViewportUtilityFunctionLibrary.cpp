@@ -2,19 +2,16 @@
 
 #include "Player/PlayerCharacter.h"
 
-FVector2D UViewportUtilityFunctionLibrary::FindCenterOfViewPort(const float SpringArmXOffset)
+FVector2D UViewportUtilityFunctionLibrary::FindCenterOfViewPort(UWorld* World, const float SpringArmXOffset)
 {
 	FVector2D ViewportSize;
-	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
-
-	UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary: SpringArmXOffset %f"), SpringArmXOffset);
+	World->GetGameViewport()->GetViewportSize(ViewportSize);
 	
 	const FVector2D CenterViewportSize = FVector2D((ViewportSize.X * 0.5f) - SpringArmXOffset, ViewportSize.Y * 0.5f);
-	
 	return CenterViewportSize;
 }
 
-bool UViewportUtilityFunctionLibrary::IsInViewport(const AActor* ActorToCheck, const APlayerController* PlayerController)
+bool UViewportUtilityFunctionLibrary::IsInViewport(UWorld* World, const AActor* ActorToCheck, const APlayerController* PlayerController)
 {
 	// if (!IsValid(PlayerController))
 	// {
@@ -31,7 +28,7 @@ bool UViewportUtilityFunctionLibrary::IsInViewport(const AActor* ActorToCheck, c
 	PlayerController->ProjectWorldLocationToScreen(ActorToCheck->GetActorLocation(), ScreenLocation);
 
 	FVector2D ViewportSize;
-	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
+	World->GetGameViewport()->GetViewportSize(ViewportSize);
 
 	return ScreenLocation.X > 0 && ScreenLocation.Y > 0 && ScreenLocation.X < ViewportSize.X && ScreenLocation.Y < ViewportSize.Y;
 }

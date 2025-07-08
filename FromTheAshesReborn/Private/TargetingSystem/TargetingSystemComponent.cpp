@@ -390,23 +390,6 @@ void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
 	}
 }
 
-bool UTargetingSystemComponent::PlayerSideRelativeToActorOnScreen(const AActor* OtherActor) const
-{
-	FVector2D ViewportSize;
-	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
-
-	FVector2D PlayerScreenLocation;
-	OwnerPlayerController->ProjectWorldLocationToScreen(PlayerCharacter->GetActorLocation(), PlayerScreenLocation);
-
-	FVector2D TargetScreenLocation;
-	OwnerPlayerController->ProjectWorldLocationToScreen(OtherActor->GetActorLocation(), TargetScreenLocation);
-
-	const float PlayerX = PlayerScreenLocation.X;
-	const float TargetX = TargetScreenLocation.X;
-	
-	return PlayerX < TargetX;
-}
-
 float UTargetingSystemComponent::GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* ActorToCheck)
 {
 	if(!PlayerController || !ActorToCheck)
@@ -552,7 +535,7 @@ AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Acto
 	{
 		TArray<AActor*> ActorsToIgnore;
 		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
-		if (bHit && IsInViewport(Actor))
+		if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor, OwnerPlayerController))
 		{
 			ActorsHit.Add(Actor);
 		}
@@ -587,7 +570,7 @@ AActor* UTargetingSystemComponent::FindNearestTargetToCenterViewport(TArray<AAct
 	{
 		TArray<AActor*> ActorsToIgnore;
 		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
-		if (bHit && IsInViewport(Actor))
+		if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor, OwnerPlayerController))
 		{
 			ActorsHit.Add(Actor);
 		}
@@ -696,22 +679,6 @@ void UTargetingSystemComponent::BreakLineOfSight()
 	
 }
 
-bool UTargetingSystemComponent::IsInViewport(const AActor* TargetActor) const
-{
-	if (!IsValid(OwnerPlayerController))
-	{
-		return true;
-	}
-
-	FVector2D ScreenLocation;
-	OwnerPlayerController->ProjectWorldLocationToScreen(TargetActor->GetActorLocation(), ScreenLocation);
-
-	FVector2D ViewportSize;
-	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
-
-	return ScreenLocation.X > 0 && ScreenLocation.Y > 0 && ScreenLocation.X < ViewportSize.X && ScreenLocation.Y < ViewportSize.Y;
-}
-
 float UTargetingSystemComponent::FindDistanceFromCenterOfViewport(const AActor* TargetActor) const
 {
 	FVector ActorLocation = TargetActor->GetActorLocation();
@@ -719,21 +686,10 @@ float UTargetingSystemComponent::FindDistanceFromCenterOfViewport(const AActor* 
 	
 	OwnerPlayerController->ProjectWorldLocationToScreen(ActorLocation, ScreenPosition);
 	
-	FVector2D CenterOfScreen = FindCenterOfViewPort();
+	FVector2D CenterOfScreen = UViewportUtilityFunctionLibrary::FindCenterOfViewPort(GetWorld());
 	
 	return FVector2D::Distance(CenterOfScreen, ScreenPosition);
 	
-}
-
-FVector2D UTargetingSystemComponent::FindCenterOfViewPort() const
-{
-	FVector2D ViewportSize;
-	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
-
-	//Need to make offset variable from spring component
-	FVector2D CenterViewportSize = FVector2D((ViewportSize.X * 0.5f) - 40.0f, ViewportSize.Y * 0.5f);
-	
-	return CenterViewportSize;
 }
 
 float UTargetingSystemComponent::GetAngleUsingCameraRotation(const AActor* ActorToLook) const
