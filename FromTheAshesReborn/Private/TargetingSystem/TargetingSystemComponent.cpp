@@ -10,6 +10,7 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "HelperFunctionLibraries/ViewportUtilityFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/FTAPlayerCameraManger.h"
 #include "Player/PlayerCharacter.h"
@@ -316,7 +317,12 @@ FRotator UTargetingSystemComponent::AddDistanceBasedAndInputOffset(const AActor*
 	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
-	if(PlayerSideRelativeToActorOnScreen(OtherActor))
+	// if(PlayerSideRelativeToActorOnScreen(OtherActor))
+	// {
+	// 	DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
+	// }
+	
+	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen(GetWorld(), OtherActor, PlayerCharacter, OwnerPlayerController))
 	{
 		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
 	}
@@ -687,6 +693,7 @@ void UTargetingSystemComponent::BreakLineOfSight()
 	{
 		TargetLockOff();
 	}
+	
 }
 
 bool UTargetingSystemComponent::IsInViewport(const AActor* TargetActor) const
