@@ -4,9 +4,9 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+class UCameraSystemComponent;
 class UTargetingSystemComponent;
 class UParkourSystemComponent;
-class UTargetSystemComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
@@ -28,6 +28,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UCameraSystemComponent> CameraSystemComponent;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseTurnRate;

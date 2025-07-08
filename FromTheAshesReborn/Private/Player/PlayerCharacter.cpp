@@ -1,4 +1,6 @@
 #include "Player/PlayerCharacter.h"
+
+#include "CameraSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -48,6 +50,7 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	
 	TargetingSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>(TEXT("TargetingSystemComponent"));
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
+	CameraSystemComponent = CreateDefaultSubobject<UCameraSystemComponent>(TEXT("CameraSystemComponent"));
 	
 }
 
