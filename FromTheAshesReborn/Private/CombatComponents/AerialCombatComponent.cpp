@@ -73,7 +73,8 @@ void UAerialCombatComponent::ClearStateAndVariables()
 
 	FCameraSystemParams CameraParams;
 	CameraParams.ShouldAdjustArmLength = true;
-	CameraParams.DeltaArmLength = -300.0f;
+	CameraParams.ShouldOverrideArmLength = true;
+	CameraParams.DeltaArmLength = 400.0f;
 
 	UCameraSystemComponent* CSC = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)

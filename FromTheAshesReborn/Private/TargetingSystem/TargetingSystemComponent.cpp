@@ -1,4 +1,7 @@
 ﻿#include "TargetingSystem/TargetingSystemComponent.h"
+
+#include "CameraSystemComponent.h"
+#include "CameraSystemParams.h"
 #include "EngineUtils.h"
 #include "TargetingSystem/TargetingSystemTargetableInterface.h"
 #include "TimerManager.h"
@@ -69,8 +72,8 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		// ControlCameraOffset(DeltaTime);
-		// UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
+		ControlCameraOffset(DeltaTime);
+		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
 	}
@@ -261,9 +264,9 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	if (IsValid(PlayerOwner->CameraAnchorComponent))
 	{
 		//TODO: Fix later
-		PlayerOwner->CameraAnchorComponent->SetWorldLocation(SmoothedMidPoint);
+		// PlayerOwner->CameraAnchorComponent->SetWorldLocation(SmoothedMidPoint);
 		
-		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(MidpointAnchorLocation);
+		PlayerOwner->CameraAnchorComponent->SetWorldLocation(MidpointAnchorLocation);
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
 		const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->CameraAnchorComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
@@ -273,6 +276,15 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
 		const float TargetArmLength = DesiredRadius + 300.0f;
+
+		UCameraSystemComponent* CSC = PlayerOwner->FindComponentByClass<UCameraSystemComponent>();
+		
+		// FCameraSystemParams CameraParams;
+		// CameraParams.ShouldAdjustArmLength = true;
+		// CameraParams.ShouldOverrideArmLength = true;
+		// CameraParams.DeltaArmLength = TargetArmLength;
+		//
+		// CSC->HandleCameraSystemAdjustment(CameraParams);
 		PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
 	}
 

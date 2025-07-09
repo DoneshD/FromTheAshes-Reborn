@@ -13,6 +13,9 @@ struct FCameraSystemParams
 	bool ShouldAdjustArmLength = true;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool ShouldOverrideArmLength = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float DeltaArmLength = 0.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

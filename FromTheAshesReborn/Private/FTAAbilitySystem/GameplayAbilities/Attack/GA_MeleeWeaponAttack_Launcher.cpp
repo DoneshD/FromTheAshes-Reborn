@@ -63,11 +63,12 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
 		return;
 	}
-	// CSC->OnSpringArmLengthAdjusted.Broadcast(300.0f);
 
 	FCameraSystemParams CameraParams;
 	CameraParams.ShouldAdjustArmLength = true;
+	CameraParams.ShouldOverrideArmLength = false;
 	CameraParams.DeltaArmLength = 300.0f;
+	
 	CSC->HandleCameraSystemAdjustment(CameraParams);
 }
 

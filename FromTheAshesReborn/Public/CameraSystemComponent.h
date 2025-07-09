@@ -51,7 +51,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION()
-	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed);
+	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride);
 
 	UFUNCTION()
 	void HandleCameraSystemAdjustment(FCameraSystemParams Params);
