@@ -15,16 +15,30 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 {
 	GENERATED_BODY()
 
+private:
+	
+	FVector DefaultCameraAnchorLocation;
+	FRotator DefaultCameraAnchorRotation;
+
+	FVector DefaultSpringArmLocation;
+	FRotator DefaultSpringArmRotation;
+	float DefaultSpringArmLength;
+
+	FVector DefaultCameraComponentLocation;
+	FRotator DefaultCameraComponentRotation;
+
 public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<USceneComponent> CameraAnchorComponent;
 	
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
-	TObjectPtr<USpringArmComponent> SpringArmComp;
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
-	TObjectPtr<UCameraComponent> CameraComp;
+	TObjectPtr<UCameraComponent> CameraComponent;
+
+	
 
 protected:
 	
@@ -52,9 +66,7 @@ public:
 public:
 
 	APlayerCharacter(const class FObjectInitializer& ObjectInitializer);
-
 	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
@@ -62,10 +74,18 @@ public:
 
 	virtual void InitAbilitySystemComponent() override;
 
-	FVector GetDefaultCameraAnchorRelativeLocation() const { return DefaultCameraAnchorRelativeLocation; }
-	FRotator GetDefaultCameraAnchorRelativeRotation() const { return DefaultCameraAnchorRelativeRotation; }
+	FVector GetDefaultCameraAnchorLocation() const { return DefaultCameraAnchorLocation; }
+	FRotator GetDefaultCameraAnchorRotation() const { return DefaultCameraAnchorRotation; }
 
-	FVector DefaultCameraAnchorRelativeLocation;
-	FRotator DefaultCameraAnchorRelativeRotation;
+	FVector GetDefaultSpringArmLocation() const { return DefaultSpringArmLocation; }
+	FRotator GetDefaultSpringArmRotation() const { return DefaultSpringArmRotation; }
+	float GetDefaultSpringArmLength() const { return DefaultSpringArmLength; }
+
+	FVector GetDefaultCameraComponentLocation() const { return DefaultCameraComponentLocation; }
+	FRotator GetDefaultCameraComponentRotation() const { return DefaultCameraComponentRotation; }
+
+	USceneComponent* GetCameraAnchorComponent();
+	USpringArmComponent* GetSpringArmComponent();
+	UCameraComponent* GetCameraComponentComponent();
 
 };

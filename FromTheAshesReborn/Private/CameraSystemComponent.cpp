@@ -20,7 +20,7 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 
-	CameraAnchorComponent = PlayerCharacter->CameraAnchorComponent;
+	CameraAnchorComponent = PlayerCharacter->GetCameraAnchorComponent();
 
 	if (!IsValid(CameraAnchorComponent))
 	{
@@ -28,7 +28,7 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 
-	CameraComponent = PlayerCharacter->CameraComp;
+	CameraComponent = PlayerCharacter->GetCameraComponentComponent();
 
 	if (!CameraComponent)
 	{
@@ -36,7 +36,7 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 	
-	SpringArmComponent = PlayerCharacter->SpringArmComp;
+	SpringArmComponent = PlayerCharacter->GetSpringArmComponent();
 	
 	if (!SpringArmComponent)
 	{

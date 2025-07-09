@@ -16,26 +16,33 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	CameraAnchorComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CameraAnchorComponent"));
 	CameraAnchorComponent->SetupAttachment(RootComponent);
 	CameraAnchorComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
-	DefaultCameraAnchorRelativeLocation = CameraAnchorComponent->GetRelativeLocation();
-	DefaultCameraAnchorRelativeRotation = CameraAnchorComponent->GetRelativeRotation();
 	
-	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
-	SpringArmComp->SetupAttachment(CameraAnchorComponent);
+	DefaultCameraAnchorLocation = CameraAnchorComponent->GetRelativeLocation();
+	DefaultCameraAnchorRotation = CameraAnchorComponent->GetRelativeRotation();
+	
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	SpringArmComponent->SetupAttachment(CameraAnchorComponent);
 
-	SpringArmComp->TargetArmLength = 400.0f;
-	SpringArmComp->bUsePawnControlRotation = true;
-	SpringArmComp->SetUsingAbsoluteRotation(true);
+	SpringArmComponent->TargetArmLength = 400.0f;
+	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->SetUsingAbsoluteRotation(true);
 
-	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
-	CameraComp->SetupAttachment(SpringArmComp);
-	CameraComp->bUsePawnControlRotation = false;
+	DefaultSpringArmLocation = SpringArmComponent->GetRelativeLocation();
+	DefaultSpringArmRotation = SpringArmComponent->GetRelativeRotation();
+	DefaultSpringArmLength = SpringArmComponent->TargetArmLength;
+
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	CameraComponent->SetupAttachment(SpringArmComponent);
+	CameraComponent->bUsePawnControlRotation = false;
+
+	DefaultCameraComponentLocation = CameraComponent->GetRelativeLocation();
+	DefaultCameraComponentRotation = CameraComponent->GetRelativeRotation();
 
 	GetCharacterMovement()->JumpZVelocity = 1500.f;
 	GetCharacterMovement()->GravityScale = 4.0f;
 	GetCharacterMovement()->AirControl = 1.0f;
 	GetCharacterMovement()->AirControlBoostMultiplier = 1.0f;
 	GetCharacterMovement()->AirControlBoostVelocityThreshold = 100.0f;
-
 	
 	GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
 	GetCharacterMovement()->BrakingFriction = 1.0f;
@@ -70,7 +77,7 @@ void APlayerCharacter::BeginPlay()
 		return;
 	}
 
-	ParkourSystemComponent->SetIntializeReference(this, SpringArmComp, CameraComp, MotionWarpingComponent);
+	// ParkourSystemComponent->SetIntializeReference(this, SpringArmComponent, CameraComponent, MotionWarpingComponent);
 
 }
 
@@ -104,4 +111,31 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	FTAAbilitySystemComponent = CastChecked<UFTAAbilitySystemComponent>(FTAPlayerState->GetAbilitySystemComponent());
 	FTAAbilitySystemComponent->InitAbilityActorInfo(FTAPlayerState, this);
 	
+}
+
+USceneComponent* APlayerCharacter::GetCameraAnchorComponent()
+{
+	if(!CameraAnchorComponent)
+	{
+		return nullptr;
+	}
+	return CameraAnchorComponent;
+}
+
+USpringArmComponent* APlayerCharacter::GetSpringArmComponent()
+{
+	if(!SpringArmComponent)
+	{
+		return nullptr;
+	}
+	return SpringArmComponent;
+}
+
+UCameraComponent* APlayerCharacter::GetCameraComponentComponent()
+{
+	if(!CameraComponent)
+	{
+		return nullptr;
+	}
+	return CameraComponent;
 }
