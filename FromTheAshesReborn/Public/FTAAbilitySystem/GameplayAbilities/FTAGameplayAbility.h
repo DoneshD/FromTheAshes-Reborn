@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "CameraSystemParams.h"
 #include "Abilities/GameplayAbility.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
@@ -52,6 +53,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	FCameraSystemParams CameraParams;
 
 	UPROPERTY()
 	TObjectPtr<UFTAAT_OnTick> TickTask;

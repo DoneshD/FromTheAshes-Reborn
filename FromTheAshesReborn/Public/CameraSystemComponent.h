@@ -43,7 +43,6 @@ protected:
 
 	float BaseArmLengthFromTargetingSystem = 400.0f;
 
-
 public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "Camera")

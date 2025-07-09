@@ -49,8 +49,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
-	TObjectPtr<UAerialCombatComponent> AerialCombatComponent;
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
+	// TObjectPtr<UAerialCombatComponent> AerialCombatComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
+	TObjectPtr<UAerialCombatComponent> AirCombatComponent;
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UWallRunningComponent> WallRunningComponent;

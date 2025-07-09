@@ -38,18 +38,22 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
-	
-
 protected:
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	// TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UTargetingSystemComponent> TargetSystemComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
 
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	// TObjectPtr<UCameraSystemComponent> CameraSystemComponent;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	TObjectPtr<UCameraSystemComponent> CameraSystemComponent;
+	TObjectPtr<UCameraSystemComponent> CameraManagerComponent;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float BaseTurnRate;

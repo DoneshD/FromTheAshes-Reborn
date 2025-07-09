@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "CameraSystemParams.h"
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
@@ -19,6 +20,9 @@ class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	FCameraSystemParams CameraParams;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	float MinimumDistanceToEnable = 4000.0f;

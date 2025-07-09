@@ -40,8 +40,8 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
 	this->AddOwnedComponent(ComboManagerComponent);
 
-	AerialCombatComponent = CreateDefaultSubobject<UAerialCombatComponent>(TEXT("AerialCombatComponent"));
-	this->AddOwnedComponent(AerialCombatComponent);
+	AirCombatComponent = CreateDefaultSubobject<UAerialCombatComponent>(TEXT("AerialCombatComponent"));
+	this->AddOwnedComponent(AirCombatComponent);
 	
 	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
 	this->AddOwnedComponent(WallRunningComponent);
@@ -57,6 +57,12 @@ void AFTACharacter::BeginPlay()
 	
 	InitAbilitySystemComponent();
 	AddCharacterBaseAbilities();
+	
+	if (!AirCombatComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - AirCombatComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 }
 

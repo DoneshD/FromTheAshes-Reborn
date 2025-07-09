@@ -71,24 +71,20 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
-	FCameraSystemParams CameraParams;
-	CameraParams.ShouldAdjustArmLength = true;
-	CameraParams.ShouldOverrideArmLength = true;
-	CameraParams.ShouldResetOffset = true;
-	// CameraParams.DeltaArmLength = -300.0f;
-	CameraParams.DeltaArmLength = 400.0f;
+	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
+	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
+	// CameraParams.ArmLengthParams.ShouldResetOffset = true;
+	// CameraParams.ArmLengthParams.DeltaArmLength = 400.0f;
 	
 	UCameraSystemComponent* CSC = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
 		return;
 	}
 	
 	CSC->HandleCameraSystemAdjustment(CameraParams);
 
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
-
 }
 
 void UAerialCombatComponent::InitializeStateAndVariables()

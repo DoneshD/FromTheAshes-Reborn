@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "CameraSystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
 #include "MotionWarpingComponent.h"
@@ -184,29 +185,7 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	// if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
-	// {
-	// 	FGameplayAbilitySpec* Spec = ASC->FindAbilitySpecFromHandle(Handle);
-	// 	if (Spec)
-	// 	{
-	// 		const FGameplayTagContainer& SourceTags = Spec->GetDynamicSpecSourceTags();
-	// 		UE_LOG(LogTemp, Error, TEXT("Source Tags:"));
-	//
-	// 		for (const FGameplayTag& Tag : SourceTags)
-	// 		{
-	// 			UE_LOG(LogTemp, Error, TEXT(" - %s"), *Tag.ToString());
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		UE_LOG(LogTemp, Error, TEXT("Failed to find Spec from Handle."));
-	// 	}
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("AbilitySystemComponent is null."));
-	// }
-
+	
 	if (bEnableTick)
 	{
 		TickTask = UFTAAT_OnTick::StartTicking(this);
@@ -224,6 +203,17 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
+
+	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	if(!CSC)
+	{
+		return;
+	}
+	
+	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
+	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
+
+	CSC->HandleCameraSystemAdjustment(CameraParams);
 }
 
 void UFTAGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

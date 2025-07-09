@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CameraSystemParams.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "AerialCombatComponent.generated.h"
@@ -35,6 +36,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag AerialAttackCounterTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	FCameraSystemParams CameraParams;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Parameters")
 	float TimeGravityMultiplier = 0.65f;
