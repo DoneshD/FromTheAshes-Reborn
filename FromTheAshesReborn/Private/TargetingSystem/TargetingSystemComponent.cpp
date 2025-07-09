@@ -279,13 +279,13 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 
 		UCameraSystemComponent* CSC = PlayerOwner->FindComponentByClass<UCameraSystemComponent>();
 		
-		// FCameraSystemParams CameraParams;
-		// CameraParams.ShouldAdjustArmLength = true;
-		// CameraParams.ShouldOverrideArmLength = true;
-		// CameraParams.DeltaArmLength = TargetArmLength;
-		//
-		// CSC->HandleCameraSystemAdjustment(CameraParams);
-		PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
+		FCameraSystemParams CameraParams;
+		CameraParams.ShouldAdjustArmLength = true;
+		CameraParams.ShouldOverrideArmLength = true;
+		CameraParams.DeltaArmLength = TargetArmLength;
+		
+		CSC->HandleCameraSystemAdjustment(CameraParams);
+		// PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
 	}
 
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);

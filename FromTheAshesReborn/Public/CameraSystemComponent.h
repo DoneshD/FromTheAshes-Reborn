@@ -39,6 +39,11 @@ protected:
 	UPROPERTY()
 	float SpringArmTargetLength = 400.0f;
 
+	float ArmLengthOffset = 0.0f;
+
+	float BaseArmLengthFromTargetingSystem = 400.0f;
+
+
 public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "Camera")
@@ -51,7 +56,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION()
-	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride);
+	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
 
 	UFUNCTION()
 	void HandleCameraSystemAdjustment(FCameraSystemParams Params);

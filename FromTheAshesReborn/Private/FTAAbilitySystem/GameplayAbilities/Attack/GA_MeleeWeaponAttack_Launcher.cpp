@@ -69,6 +69,8 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 	CameraParams.ShouldOverrideArmLength = false;
 	CameraParams.DeltaArmLength = 300.0f;
 	
+	// CSC->OnCameraSystemAdjusted.Broadcast(CameraParams);
+	
 	CSC->HandleCameraSystemAdjustment(CameraParams);
 }
 

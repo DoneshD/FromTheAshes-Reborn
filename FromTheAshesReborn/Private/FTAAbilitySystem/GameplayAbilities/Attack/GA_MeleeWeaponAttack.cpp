@@ -12,6 +12,8 @@
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "CameraSystemComponent.h"
+#include "CameraSystemParams.h"
 #include "NiagaraSystem.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTACustomBase/AfterImageActor.h"
@@ -113,7 +115,13 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 	
 	PerformMeleeAttack(MeleeAttackAssets);
-		
+
+	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	if(!CSC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
+		return;
+	}
 	
 }
 
@@ -147,6 +155,13 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 
 		ASC->AddLooseGameplayTag(StateTreeFinishedTag);
 		ASC->RemoveLooseGameplayTag(StateTreeFinishedTag);
+	}
+
+	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	if(!CSC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
+		return;
 	}
 
 }

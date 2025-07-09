@@ -56,37 +56,38 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if (SpringArmComponent)
 	{
 		const float CurrentLength = SpringArmComponent->TargetArmLength;
-		if (!FMath::IsNearlyEqual(CurrentLength, SpringArmTargetLength, 0.1f))
-		{
-			SpringArmComponent->TargetArmLength = FMath::FInterpTo(CurrentLength, SpringArmTargetLength, DeltaTime, SpringArmLerpSpeed);;
-			const float InterpolatedLength = FMath::FInterpTo(CurrentLength, SpringArmTargetLength, DeltaTime, SpringArmLerpSpeed);
+		const float FinalTargetLength = BaseArmLengthFromTargetingSystem + ArmLengthOffset;
 
+		if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
+		{
+			const float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, SpringArmLerpSpeed);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 
-			UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, TargetLength: %.2f, DeltaTime: %.4f, LerpSpeed: %.2f, InterpolatedLength: %.2f, FinalComponentArmLength: %.2f"),
-				CurrentLength,
-				SpringArmTargetLength,
-				DeltaTime,
-				SpringArmLerpSpeed,
-				InterpolatedLength,
-				SpringArmComponent->TargetArmLength);
-				}
+			UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
+				CurrentLength, BaseArmLengthFromTargetingSystem, ArmLengthOffset, InterpolatedLength);
+		}
 	}
 
 }
 
-void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride)
+void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset)
 {
 	if (SpringArmComponent)
 	{
-		if(InShouldOverride)
+		if (InShouldOverride)
 		{
-			SpringArmTargetLength = InDeltaLength;
+			BaseArmLengthFromTargetingSystem = InDeltaLength;
+
+			if (InShouldResetOffset)
+			{
+				ArmLengthOffset = 0.0f;
+			}
 		}
-		if(!InShouldOverride)
+		else
 		{
-			SpringArmTargetLength = SpringArmComponent->TargetArmLength + InDeltaLength;
+			ArmLengthOffset += InDeltaLength;
 		}
+
 		SpringArmLerpSpeed = InInterpSpeed;
 	}
 }
@@ -95,7 +96,7 @@ void UCameraSystemComponent::HandleCameraSystemAdjustment(FCameraSystemParams Pa
 {
 	if(Params.ShouldAdjustArmLength)
 	{
-		HandleSpringArmAdjustment(Params.DeltaArmLength, Params.DeltaArmLengthInterpSpeed, Params.ShouldOverrideArmLength);
+		HandleSpringArmAdjustment(Params.DeltaArmLength, Params.DeltaArmLengthInterpSpeed, Params.ShouldOverrideArmLength, Params.ShouldResetOffset);
 	}
 }
 
