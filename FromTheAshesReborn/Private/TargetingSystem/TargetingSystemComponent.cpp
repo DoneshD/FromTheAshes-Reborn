@@ -285,6 +285,11 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	}
 }
 
+void UTargetingSystemComponent::TESTUpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+{
+	
+}
+
 float UTargetingSystemComponent::CalculateControlRotationOffset(float Distance, float MaxOffset) const
 {
 	if (Distance > MaxDistance)

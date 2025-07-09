@@ -44,7 +44,9 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 
-	OnSpringArmLengthAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleSpringArmAdjustment);
+	BaseSpringArmLength = PlayerCharacter->GetDefaultSpringArmLength();
+
+	OnCameraSystemAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleCameraSystemAdjustment);
 }
 
 void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -62,11 +64,20 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 }
 
-void UCameraSystemComponent::HandleSpringArmAdjustment(float DeltaLength)
+void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed)
 {
 	if (SpringArmComponent)
 	{
-		SpringArmTargetLength = SpringArmComponent->TargetArmLength + DeltaLength;
+		SpringArmTargetLength = SpringArmComponent->TargetArmLength + InDeltaLength;
+		SpringArmLerpSpeed = InInterpSpeed;
 	}
-	
 }
+
+void UCameraSystemComponent::HandleCameraSystemAdjustment(FCameraSystemParams Params)
+{
+	if(Params.ShouldAdjustArmLength)
+	{
+		HandleSpringArmAdjustment(Params.DeltaArmLength, Params.DeltaArmLengthInterpSpeed);
+	}
+}
+

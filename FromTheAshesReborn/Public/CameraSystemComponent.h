@@ -1,10 +1,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CameraSystemParams.h"
 #include "Components/ActorComponent.h"
 #include "CameraSystemComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSpringArmLengthAdjusted, float, DeltaLength);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCameraSystemAdjusted, FCameraSystemParams, CameraParams);
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -29,22 +30,19 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USceneComponent> CameraAnchorComponent;
 
-	// UPROPERTY()
-	// float BaseSpringArmLength = 400.0f;
-
-	// UPROPERTY()
-	// float CurrentSpringArmLength = 400.0f;
+	UPROPERTY()
+	float BaseSpringArmLength = 400.0f;
 
 	UPROPERTY()
-	float SpringArmLerpSpeed = 5.0f;
+	float SpringArmLerpSpeed = 0.0f;
 
 	UPROPERTY()
 	float SpringArmTargetLength = 400.0f;
 
 public:
-
+	
 	UPROPERTY(BlueprintAssignable, Category = "Camera")
-	FOnSpringArmLengthAdjusted OnSpringArmLengthAdjusted;
+	FOnCameraSystemAdjusted OnCameraSystemAdjusted;
 
 public:
 	
@@ -53,5 +51,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION()
-	void HandleSpringArmAdjustment(float DeltaLength);
+	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed);
+
+	UFUNCTION()
+	void HandleCameraSystemAdjustment(FCameraSystemParams Params);
+	
 };

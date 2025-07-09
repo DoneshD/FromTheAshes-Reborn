@@ -1,5 +1,7 @@
 #include "CombatComponents/AerialCombatComponent.h"
 
+#include "CameraSystemComponent.h"
+#include "CameraSystemParams.h"
 #include "Components/CapsuleComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -66,8 +68,23 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackCounter = 0;
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
-	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
+	
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+
+	FCameraSystemParams CameraParams;
+	CameraParams.ShouldAdjustArmLength = true;
+	CameraParams.DeltaArmLength = -300.0f;
+
+	UCameraSystemComponent* CSC = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
+	if(!CSC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
+		return;
+	}
+	
+	CSC->HandleCameraSystemAdjustment(CameraParams);
+
+	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 
 }
 

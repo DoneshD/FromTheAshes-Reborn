@@ -58,7 +58,17 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 		StallDuration, LaunchOffset);
 
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
-	CSC->OnSpringArmLengthAdjusted.Broadcast(300.0f);
+	if(!CSC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
+		return;
+	}
+	// CSC->OnSpringArmLengthAdjusted.Broadcast(300.0f);
+
+	FCameraSystemParams CameraParams;
+	CameraParams.ShouldAdjustArmLength = true;
+	CameraParams.DeltaArmLength = 300.0f;
+	CSC->HandleCameraSystemAdjustment(CameraParams);
 }
 
 void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

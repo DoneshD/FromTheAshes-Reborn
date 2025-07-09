@@ -138,6 +138,8 @@ protected:
 
 	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 
+	void TESTUpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
+
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor) const;
 	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
