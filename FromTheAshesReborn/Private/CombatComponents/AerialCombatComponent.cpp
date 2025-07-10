@@ -68,7 +68,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackCounter = 0;
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
-	
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
 	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;

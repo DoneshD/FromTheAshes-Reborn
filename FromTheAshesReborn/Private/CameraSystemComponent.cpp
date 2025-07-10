@@ -1,5 +1,6 @@
 #include "CameraSystemComponent.h"
 
+#include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HelperFunctionLibraries/ViewportUtilityFunctionLibrary.h"
 
@@ -68,6 +69,23 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
+	
+
+	if (CameraComponent)
+	{
+		const float CurrentFOV = CameraComponent->FieldOfView;
+		const float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
+
+		if (!FMath::IsNearlyEqual(CurrentFOV, FinalTargetFOV, 0.1f))
+		{
+			const float InterpolatedFOV = FMath::InterpEaseOut(CurrentFOV, FinalTargetFOV, DeltaTime * CameraFOVLerpSpeed, 2.0);
+			CameraComponent->SetFieldOfView(InterpolatedFOV);
+
+			// UE_LOG(LogTemp, Warning, TEXT("FOV Lerp Debug -> Current: %.2f, Base: %.2f, Offset: %.2f, Target: %.2f, Interpolated: %.2f, DeltaTime: %.2f, Speed: %.2f"),
+			// 	CurrentFOV, CameraBaseFOV, CameraFOVOffset, FinalTargetFOV, InterpolatedFOV, DeltaTime, CameraFOVLerpSpeed);
+		}
+	}
+
 }
 
 void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset)
@@ -92,11 +110,38 @@ void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, floa
 	}
 }
 
+void UCameraSystemComponent::HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset)
+{
+	if (CameraComponent)
+	{
+		if (InShouldOverride)
+		{
+			CameraBaseFOV = InDeltaFOV;
+
+			if (InShouldResetOffset)
+			{
+				CameraFOVOffset = 0.0f;
+			}
+		}
+		else
+		{
+			CameraFOVOffset += InDeltaFOV;
+		}
+
+		CameraFOVLerpSpeed = InInterpSpeed;
+	}
+}
+
 void UCameraSystemComponent::HandleCameraSystemAdjustment(FCameraSystemParams Params)
 {
 	if(Params.ArmLengthParams.ShouldAdjustArmLength)
 	{
 		HandleSpringArmAdjustment(Params.ArmLengthParams.DeltaArmLength, Params.ArmLengthParams.DeltaArmLengthInterpSpeed, Params.ArmLengthParams.ShouldOverrideArmLength, Params.ArmLengthParams.ShouldResetOffset);
+	}
+
+	if(Params.CameraParams.ShouldAdjustFOV)
+	{
+		HandleCameraComponentAdjustment(Params.CameraParams.DeltaFOV, Params.CameraParams.DeltaFOVInterpSpeed, Params.CameraParams.ShouldOverrideFOV, Params.CameraParams.ShouldResetFOVOffset);
 	}
 }
 
