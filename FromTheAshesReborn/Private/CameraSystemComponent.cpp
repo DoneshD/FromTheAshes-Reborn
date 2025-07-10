@@ -56,12 +56,12 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (SpringArmComponent)
 	{
-		const float CurrentLength = SpringArmComponent->TargetArmLength;
-		const float FinalTargetLength = BaseArmLengthFromTargetingSystem + ArmLengthOffset;
+		float CurrentLength = SpringArmComponent->TargetArmLength;
+		float FinalTargetLength = BaseArmLengthFromTargetingSystem + ArmLengthOffset;
 
 		if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
 		{
-			const float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, SpringArmLerpSpeed);
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, SpringArmLerpSpeed);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 
 			// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
@@ -73,8 +73,10 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (CameraComponent)
 	{
-		const float CurrentFOV = CameraComponent->FieldOfView;
-		const float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
+		float CurrentFOV = CameraComponent->FieldOfView;
+		float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
+		
+		FinalTargetFOV = FMath::Clamp(FinalTargetFOV, 90.0, 100.0f);
 
 		if (!FMath::IsNearlyEqual(CurrentFOV, FinalTargetFOV, 0.1f))
 		{

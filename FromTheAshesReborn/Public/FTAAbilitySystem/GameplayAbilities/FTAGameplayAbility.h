@@ -66,6 +66,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
 
+	FDelegateHandle AdjustFOVDelegateHandle;
+
 public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
@@ -169,6 +171,9 @@ public:
 
 	UFUNCTION()
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION()
+	void AdjustFOV(const FGameplayTag InEnableTag, int32 NewCount);
 	
 	
 };

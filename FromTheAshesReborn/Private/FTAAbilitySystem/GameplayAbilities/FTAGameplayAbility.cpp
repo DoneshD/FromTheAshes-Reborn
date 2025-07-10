@@ -204,16 +204,18 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
 
-	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
-	if(!CSC)
-	{
-		return;
-	}
-	
-	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
-	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
+	AdjustFOVDelegateHandle = GetFTAAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("CameraTag.Event.AdjustFOV"), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UFTAGameplayAbility::AdjustFOV);
 
-	CSC->HandleCameraSystemAdjustment(CameraParams);
+	// UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	// if(!CSC)
+	// {
+	// 	return;
+	// }
+	//
+	// // CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
+	// // CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
+	//
+	// CSC->HandleCameraSystemAdjustment(CameraParams);
 }
 
 void UFTAGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -237,6 +239,10 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 		WaitInputTagAndQueueWindowEventTask->EndTask();
 		WaitInputTagAndQueueWindowEventTask = nullptr;
 	}
+
+	GetFTAAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("CameraTag.Event.AdjustFOV"), EGameplayTagEventType::NewOrRemoved)
+		.Remove(AdjustFOVDelegateHandle);
+	
 }
 
 bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const
@@ -463,4 +469,25 @@ void UFTAGameplayAbility::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayE
 void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	
+}
+
+void UFTAGameplayAbility::AdjustFOV(const FGameplayTag InEnableTag, int32 NewCount)
+{
+	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	if(!CSC)
+	{
+		return;
+	}
+	
+	if (NewCount > 0)
+	{
+		CameraParams.CameraParams.DeltaFOV = 10.0f;
+		CSC->HandleCameraSystemAdjustment(CameraParams);
+	}
+	else
+	{
+		CameraParams.CameraParams.DeltaFOV = -10.0f;
+		CSC->HandleCameraSystemAdjustment(CameraParams);
+		
+	}
 }
