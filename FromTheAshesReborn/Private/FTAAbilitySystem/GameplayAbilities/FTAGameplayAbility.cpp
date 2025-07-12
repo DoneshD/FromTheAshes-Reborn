@@ -481,12 +481,12 @@ void UFTAGameplayAbility::AdjustFOV(const FGameplayTag InEnableTag, int32 NewCou
 	
 	if (NewCount > 0)
 	{
-		CameraParams.CameraParams.DeltaFOV = 10.0f;
+		CameraParams.CameraComponentParams.DeltaFOV = -10.0f;
 		CSC->HandleCameraSystemAdjustment(CameraParams);
 	}
 	else
 	{
-		CameraParams.CameraParams.DeltaFOV = -10.0f;
+		CameraParams.CameraComponentParams.DeltaFOV = 10.0f;
 		CSC->HandleCameraSystemAdjustment(CameraParams);
 		
 	}

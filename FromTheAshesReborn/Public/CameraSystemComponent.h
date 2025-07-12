@@ -30,20 +30,18 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USceneComponent> CameraAnchorComponent;
 
-	UPROPERTY()
 	float BaseSpringArmLength = 400.0f;
-	
 	float BaseArmLengthFromTargetingSystem = 400.0f;
-	
 	float ArmLengthOffset = 0.0f;
-	
-	UPROPERTY()
-	float SpringArmLerpSpeed = 0.0f;
-	
+	float ArmLengthLerpSpeed = 0.0f;
 	
 	float CameraBaseFOV = 90.0f;
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;
+	
+	FVector BaseAnchorLocation;
+	FRotator BaseAnchorRotation;
+	float CameraAnchorInterpSpeed = 5.0f;
 
 public:
 	
@@ -55,13 +53,17 @@ public:
 	UCameraSystemComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	
-	UFUNCTION()
-	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
-	void HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride,
-	                                     bool InShouldResetOffset);
 
 	UFUNCTION()
 	void HandleCameraSystemAdjustment(FCameraSystemParams Params);
+	
+	UFUNCTION()
+	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
+
+	UFUNCTION()
+	void HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
+
+	UFUNCTION()
+	void HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed);
 	
 };

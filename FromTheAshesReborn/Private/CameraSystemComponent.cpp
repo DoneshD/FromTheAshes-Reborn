@@ -46,6 +46,8 @@ void UCameraSystemComponent::BeginPlay()
 	}
 
 	BaseSpringArmLength = PlayerCharacter->GetDefaultSpringArmLength();
+	BaseAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorLocation();
+	BaseAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRotation();
 
 	OnCameraSystemAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleCameraSystemAdjustment);
 }
@@ -61,7 +63,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 		if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, SpringArmLerpSpeed);
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, ArmLengthLerpSpeed);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 
 			// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
@@ -76,7 +78,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		float CurrentFOV = CameraComponent->FieldOfView;
 		float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
 		
-		FinalTargetFOV = FMath::Clamp(FinalTargetFOV, 90.0, 100.0f);
+		FinalTargetFOV = FMath::Clamp(FinalTargetFOV, 80.0, 100.0f);
 
 		if (!FMath::IsNearlyEqual(CurrentFOV, FinalTargetFOV, 0.1f))
 		{
@@ -87,6 +89,18 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			// 	CurrentFOV, CameraBaseFOV, CameraFOVOffset, FinalTargetFOV, InterpolatedFOV, DeltaTime, CameraFOVLerpSpeed);
 		}
 	}
+
+	if (CameraAnchorComponent)
+	{
+		FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
+
+		if (!CurrentAnchorLocation.Equals(BaseAnchorLocation, 0.1f))
+		{
+			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, BaseAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+			CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
+		}
+	}
+
 
 }
 
@@ -108,7 +122,7 @@ void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, floa
 			ArmLengthOffset += InDeltaLength;
 		}
 
-		SpringArmLerpSpeed = InInterpSpeed;
+		ArmLengthLerpSpeed = InInterpSpeed;
 	}
 }
 
@@ -134,16 +148,44 @@ void UCameraSystemComponent::HandleCameraComponentAdjustment(float InDeltaFOV, f
 	}
 }
 
+void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed)
+{
+	if (CameraAnchorComponent)
+	{
+		if (InShouldOverride)
+		{
+			BaseAnchorLocation = InLocation;
+			BaseAnchorRotation = InRotation;
+		}
+		CameraAnchorInterpSpeed = InInterpSpeed;
+	}
+}
+
 void UCameraSystemComponent::HandleCameraSystemAdjustment(FCameraSystemParams Params)
 {
 	if(Params.ArmLengthParams.ShouldAdjustArmLength)
 	{
-		HandleSpringArmAdjustment(Params.ArmLengthParams.DeltaArmLength, Params.ArmLengthParams.DeltaArmLengthInterpSpeed, Params.ArmLengthParams.ShouldOverrideArmLength, Params.ArmLengthParams.ShouldResetOffset);
+		HandleSpringArmAdjustment(Params.ArmLengthParams.DeltaArmLength,
+			Params.ArmLengthParams.DeltaArmLengthInterpSpeed,
+			Params.ArmLengthParams.ShouldOverrideArmLength,
+			Params.ArmLengthParams.ShouldResetOffset);
 	}
 
-	if(Params.CameraParams.ShouldAdjustFOV)
+	if(Params.CameraComponentParams.ShouldAdjustFOV)
 	{
-		HandleCameraComponentAdjustment(Params.CameraParams.DeltaFOV, Params.CameraParams.DeltaFOVInterpSpeed, Params.CameraParams.ShouldOverrideFOV, Params.CameraParams.ShouldResetFOVOffset);
+		HandleCameraComponentAdjustment(Params.CameraComponentParams.DeltaFOV,
+			Params.CameraComponentParams.DeltaFOVInterpSpeed,
+			Params.CameraComponentParams.ShouldOverrideFOV,
+			Params.CameraComponentParams.ShouldResetFOVOffset);
 	}
+
+	// if(Params.CameraAnchorParams.ShouldAdjustAnchor)
+	// {
+	// 	HandleCameraAnchorAdjustment(Params.CameraAnchorParams.NewAnchorLocation,
+	// 		Params.CameraAnchorParams.NewAnchorRotation,
+	// 		Params.CameraAnchorParams.ShouldOverrideAnchor,
+	// 		Params.CameraAnchorParams.ShouldResetAnchorOffset,
+	// 		Params.CameraAnchorParams.DeltaAnchorInterpSpeed);
+	// }
 }
 
