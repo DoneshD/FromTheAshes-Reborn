@@ -99,7 +99,8 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 			if (!CurrentAnchorLocation.Equals(NewCameraAnchorLocation, 0.1f))
 			{
-				FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+				// FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+				FVector InterpolatedLocation = FMath::Lerp(CurrentAnchorLocation, NewCameraAnchorLocation, 0.5f);
 				CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
 			}
 	

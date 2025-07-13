@@ -34,7 +34,7 @@ protected:
 	float BaseArmLengthFromTargetingSystem = 400.0f;
 	float ArmLengthOffset = 0.0f;
 	float ArmLengthLerpSpeed = 0.0f;
-	float NewSpringArmLength= 0.0f;
+	float NewSpringArmLength = 0.0f;
 	
 	
 	float CameraBaseFOV = 90.0f;
