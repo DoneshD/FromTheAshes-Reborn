@@ -49,7 +49,7 @@ void UCameraSystemComponent::BeginPlay()
 	DefaultCameraAnchorRelativeLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
 	DefaultCameraAnchorRelativeRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
 
-	OnCameraSystemAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleCameraSystemAdjustment);
+	// OnCameraSystemAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleCameraSystemAdjustment);
 }
 
 void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -58,75 +58,78 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (SpringArmComponent)
 	{
-		float CurrentLength = SpringArmComponent->TargetArmLength;
-		float FinalTargetLength = BaseArmLengthFromTargetingSystem + ArmLengthOffset;
-
-		if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
+		if(Testbool)
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, ArmLengthLerpSpeed);
-			SpringArmComponent->TargetArmLength = InterpolatedLength;
-
-			// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
-			// 	CurrentLength, BaseArmLengthFromTargetingSystem, ArmLengthOffset, InterpolatedLength);
+			float CurrentLength = SpringArmComponent->TargetArmLength;
+			float FinalTargetLength = NewSpringArmLength + ArmLengthOffset;
+		
+			if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
+			{
+				float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, ArmLengthLerpSpeed);
+				SpringArmComponent->TargetArmLength = InterpolatedLength;
+		
+				// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
+				// 	CurrentLength, BaseArmLengthFromTargetingSystem, ArmLengthOffset, InterpolatedLength);
+			}
 		}
 	}
-
+	
 	if (CameraComponent)
 	{
 		float CurrentFOV = CameraComponent->FieldOfView;
 		float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
 		
 		FinalTargetFOV = FMath::Clamp(FinalTargetFOV, 80.0, 100.0f);
-
+	
 		if (!FMath::IsNearlyEqual(CurrentFOV, FinalTargetFOV, 0.1f))
 		{
 			const float InterpolatedFOV = FMath::InterpEaseOut(CurrentFOV, FinalTargetFOV, DeltaTime * CameraFOVLerpSpeed, 2.0);
 			CameraComponent->SetFieldOfView(InterpolatedFOV);
-
+	
 			// UE_LOG(LogTemp, Warning, TEXT("FOV Lerp Debug -> Current: %.2f, Base: %.2f, Offset: %.2f, Target: %.2f, Interpolated: %.2f, DeltaTime: %.2f, Speed: %.2f"),
 			// 	CurrentFOV, CameraBaseFOV, CameraFOVOffset, FinalTargetFOV, InterpolatedFOV, DeltaTime, CameraFOVLerpSpeed);
 		}
 	}
 
-	// if (CameraAnchorComponent)
-	// {
-	// 	if(UseWorldTransform)
-	// 	{
-	// 		FVector CurrentAnchorLocation = AnchorTransformLocation;
-	//
-	// 		if (!CurrentAnchorLocation.Equals(NewCameraAnchorLocation, 0.1f))
-	// 		{
-	// 			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
-	// 			CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
-	// 		}
-	//
-	// 		FRotator CurrentAnchorRotation = AnchorTransformRotation;
-	//
-	// 		if (!CurrentAnchorRotation.Equals(NewCameraAnchorRotation, 0.1f))
-	// 		{
-	// 			FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, NewCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
-	// 			CameraAnchorComponent->SetWorldRotation(InterpolatedRotation);
-	// 		}
-	// 	}
-	// 	if(!UseWorldTransform)
-	// 	{
-	// 		FVector CurrentAnchorLocation = AnchorTransformLocation;
-	//
-	// 		if (!CurrentAnchorLocation.Equals(NewCameraAnchorLocation, 0.1f))
-	// 		{
-	// 			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
-	// 			CameraAnchorComponent->SetRelativeLocation(InterpolatedLocation);
-	// 		}
-	//
-	// 		FRotator CurrentAnchorRotation = AnchorTransformRotation;
-	//
-	// 		if (!CurrentAnchorRotation.Equals(NewCameraAnchorRotation, 0.1f))
-	// 		{
-	// 			FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, NewCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
-	// 			CameraAnchorComponent->SetRelativeRotation(InterpolatedRotation);
-	// 		}
-	// 	}
-	// }
+	if (CameraAnchorComponent)
+	{
+		if(UseWorldTransform)
+		{
+			FVector CurrentAnchorLocation = AnchorTransformLocation;
+	
+			if (!CurrentAnchorLocation.Equals(NewCameraAnchorLocation, 0.1f))
+			{
+				FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+				CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
+			}
+	
+			FRotator CurrentAnchorRotation = AnchorTransformRotation;
+	
+			if (!CurrentAnchorRotation.Equals(NewCameraAnchorRotation, 0.1f))
+			{
+				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, NewCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+				CameraAnchorComponent->SetWorldRotation(InterpolatedRotation);
+			}
+		}
+		if(!UseWorldTransform)
+		{
+			FVector CurrentAnchorLocation = AnchorTransformLocation;
+	
+			if (!CurrentAnchorLocation.Equals(NewCameraAnchorLocation, 0.1f))
+			{
+				FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+				CameraAnchorComponent->SetRelativeLocation(InterpolatedLocation);
+			}
+	
+			FRotator CurrentAnchorRotation = AnchorTransformRotation;
+	
+			if (!CurrentAnchorRotation.Equals(NewCameraAnchorRotation, 0.1f))
+			{
+				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, NewCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+				CameraAnchorComponent->SetRelativeRotation(InterpolatedRotation);
+			}
+		}
+	}
 
 
 }
@@ -135,9 +138,12 @@ void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, floa
 {
 	if (SpringArmComponent)
 	{
+		Testbool = true;
 		if (InShouldOverride)
 		{
-			BaseArmLengthFromTargetingSystem = InDeltaLength;
+			// BaseArmLengthFromTargetingSystem = InDeltaLength;
+			NewSpringArmLength = InDeltaLength;
+			
 
 			if (InShouldResetOffset)
 			{

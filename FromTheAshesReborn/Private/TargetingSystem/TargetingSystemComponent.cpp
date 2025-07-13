@@ -276,7 +276,12 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
 		const float TargetArmLength = DesiredRadius + 300.0f;
-		PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
+		// PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
+		UCameraSystemComponent* CSC = PlayerOwner->FindComponentByClass<UCameraSystemComponent>();
+		if (CSC)
+		{
+			CSC->HandleSpringArmAdjustment(TargetArmLength, 3.0, true, true);
+		}
 	}
 
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
@@ -286,6 +291,8 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, GetWorld()->GetDeltaSeconds(), ControlRotationInterpSpeed * 5);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
+
+	
 }
 
 
