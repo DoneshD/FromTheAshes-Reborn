@@ -232,10 +232,6 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation - Invalid Access"));
 		return;
 	}
-
-	CameraParams.CameraAnchorParams.ShouldAdjustAnchor = true;
-	CameraParams.CameraAnchorParams.ShouldOverrideAnchor = true;
-	CameraParams.CameraAnchorParams.ShouldUseWorldTransform = true;
 	
 	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
 	const FVector TargetLocation = TargetActor->GetActorLocation();
@@ -250,43 +246,36 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	}
 
 	// DrawCameraAnchor();
-	
-	// float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
-	// SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
 
-	DrawDebugSphere(
-	GetWorld(),
-	MidpointAnchorLocation,
-	15.0f,           
-	12,                 
-	FColor::Yellow,        
-	false,              
-	-1.0f,              
-	0                   
-	);
+	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
+	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
+
+	// DrawDebugSphere(
+	// GetWorld(),
+	// MidpointAnchorLocation,
+	// 15.0f,           
+	// 12,                 
+	// FColor::Yellow,        
+	// false,              
+	// -1.0f,              
+	// 0                   
+	// );
 
 	if (IsValid(PlayerOwner->CameraAnchorComponent))
 	{
 		//TODO: Fix later
-		// PlayerOwner->CameraAnchorComponent->SetWorldLocation(SmoothedMidPoint);
+		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
 		
 		PlayerOwner->CameraAnchorComponent->SetWorldLocation(MidpointAnchorLocation);
-		CameraParams.CameraAnchorParams.NewAnchorLocation = MidpointAnchorLocation;
 
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
 		const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->CameraAnchorComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
 		PlayerOwner->CameraAnchorComponent->SetWorldRotation(NewRotation);
-		CameraParams.CameraAnchorParams.NewAnchorRotation = NewRotation;
 	}
 
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
 		const float TargetArmLength = DesiredRadius + 300.0f;
-		
-		// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
-		// CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
-		CameraParams.ArmLengthParams.DeltaArmLength = TargetArmLength;
-		
 		PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
 	}
 
@@ -297,9 +286,8 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, GetWorld()->GetDeltaSeconds(), ControlRotationInterpSpeed * 5);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
-	UCameraSystemComponent* CSC = PlayerOwner->FindComponentByClass<UCameraSystemComponent>();
-	// CSC->HandleCameraSystemAdjustment(CameraParams);
 }
+
 
 void UTargetingSystemComponent::TESTUpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
 {
