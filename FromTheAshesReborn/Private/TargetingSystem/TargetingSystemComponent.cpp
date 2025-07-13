@@ -486,37 +486,21 @@ void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) 
 void UTargetingSystemComponent::DisableMidPointControlRotation()
 {
 	if (!PlayerCharacter || !PlayerCharacter->CameraAnchorComponent) return;
-	CameraParams.CameraAnchorParams.ShouldAdjustAnchor = true;
-	CameraParams.CameraAnchorParams.ShouldOverrideAnchor = true;
-	CameraParams.CameraAnchorParams.ShouldUseWorldTransform = false;
-	
+
 	const FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
 	const FVector TargetAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
+	const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
 
-	
-	CameraParams.CameraAnchorParams.NewAnchorLocation = TargetAnchorLocation;
-	
-	// const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
-	// PlayerCharacter->CameraAnchorComponent->SetRelativeLocation(NewLocation);
+	PlayerCharacter->CameraAnchorComponent->SetRelativeLocation(NewLocation);
 
 	const FRotator CurrentAnchorRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
 	const FRotator TargetAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
-	
-	CameraParams.CameraAnchorParams.NewAnchorRotation = TargetAnchorRotation;
-	
-	// const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
-	// PlayerCharacter->CameraAnchorComponent->SetRelativeRotation(NewRotation);
-	//
-	// const float CurrentTargetArmLength = PlayerCharacter->SpringArmComponent->TargetArmLength;
-	// PlayerCharacter->SpringArmComponent->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, 400, GetWorld()->GetDeltaSeconds(), 2.0f);
-	
-	CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
-	CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
-	CameraParams.ArmLengthParams.DeltaArmLength = 400;
-	
+	const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
 
-	UCameraSystemComponent* CSC = PlayerCharacter->FindComponentByClass<UCameraSystemComponent>();
-	CSC->HandleCameraSystemAdjustment(CameraParams);
+	PlayerCharacter->CameraAnchorComponent->SetRelativeRotation(NewRotation);
+	
+	const float CurrentTargetArmLength = PlayerCharacter->SpringArmComponent->TargetArmLength;
+	PlayerCharacter->SpringArmComponent->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, 400, GetWorld()->GetDeltaSeconds(), 2.0f);
 	
 }
 
