@@ -41,10 +41,16 @@ protected:
 	
 	FVector DefaultCameraAnchorRelativeLocation;
 	FRotator DefaultCameraAnchorRelativeRotation;
+
+	FVector NewCameraAnchorLocation;
+	FRotator NewCameraAnchorRotation;
+	
 	float CameraAnchorInterpSpeed = 5.0f;
 
 	FVector AnchorTransformLocation;
 	FRotator AnchorTransformRotation;
+
+	bool UseWorldTransform = false;
 
 public:
 	

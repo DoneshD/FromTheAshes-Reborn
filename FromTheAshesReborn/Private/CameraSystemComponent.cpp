@@ -88,16 +88,45 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
-	if (CameraAnchorComponent)
-	{
-		FVector CurrentAnchorLocation = AnchorTransformLocation;
-
-		if (!CurrentAnchorLocation.Equals(DefaultCameraAnchorRelativeLocation, 0.1f))
-		{
-			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, DefaultCameraAnchorRelativeLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
-			CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
-		}
-	}
+	// if (CameraAnchorComponent)
+	// {
+	// 	if(UseWorldTransform)
+	// 	{
+	// 		FVector CurrentAnchorLocation = AnchorTransformLocation;
+	//
+	// 		if (!CurrentAnchorLocation.Equals(NewCameraAnchorLocation, 0.1f))
+	// 		{
+	// 			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+	// 			CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
+	// 		}
+	//
+	// 		FRotator CurrentAnchorRotation = AnchorTransformRotation;
+	//
+	// 		if (!CurrentAnchorRotation.Equals(NewCameraAnchorRotation, 0.1f))
+	// 		{
+	// 			FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, NewCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+	// 			CameraAnchorComponent->SetWorldRotation(InterpolatedRotation);
+	// 		}
+	// 	}
+	// 	if(!UseWorldTransform)
+	// 	{
+	// 		FVector CurrentAnchorLocation = AnchorTransformLocation;
+	//
+	// 		if (!CurrentAnchorLocation.Equals(NewCameraAnchorLocation, 0.1f))
+	// 		{
+	// 			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+	// 			CameraAnchorComponent->SetRelativeLocation(InterpolatedLocation);
+	// 		}
+	//
+	// 		FRotator CurrentAnchorRotation = AnchorTransformRotation;
+	//
+	// 		if (!CurrentAnchorRotation.Equals(NewCameraAnchorRotation, 0.1f))
+	// 		{
+	// 			FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, NewCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+	// 			CameraAnchorComponent->SetRelativeRotation(InterpolatedRotation);
+	// 		}
+	// 	}
+	// }
 
 
 }
@@ -152,18 +181,20 @@ void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FR
 	{
 		if(ShouldUseWorldTransform)
 		{
+			UseWorldTransform = true;
 			AnchorTransformLocation = PlayerCharacter->CameraAnchorComponent->GetComponentLocation();
 			AnchorTransformRotation = PlayerCharacter->CameraAnchorComponent->GetComponentRotation();
 		}
 		else
 		{
+			UseWorldTransform = false;
 			AnchorTransformLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
 			AnchorTransformRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
 		}
 		if (InShouldOverride)
 		{
-			DefaultCameraAnchorRelativeLocation = InLocation;
-			DefaultCameraAnchorRelativeRotation = InRotation;
+			NewCameraAnchorLocation = InLocation;
+			NewCameraAnchorRotation = InRotation;
 		}
 		CameraAnchorInterpSpeed = InInterpSpeed;
 	}
