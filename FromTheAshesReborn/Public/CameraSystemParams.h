@@ -63,6 +63,9 @@ struct FCameraAnchorParams
 	bool ShouldResetAnchorOffset = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
+	bool ShouldUseWorldTransform = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	FVector NewAnchorLocation;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))

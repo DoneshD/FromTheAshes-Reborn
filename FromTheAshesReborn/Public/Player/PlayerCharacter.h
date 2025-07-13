@@ -17,15 +17,15 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 
 private:
 	
-	FVector DefaultCameraAnchorLocation;
-	FRotator DefaultCameraAnchorRotation;
+	FVector DefaultCameraAnchorRelativeLocation;
+	FRotator DefaultCameraAnchorRelativeRotation;
 
-	FVector DefaultSpringArmLocation;
-	FRotator DefaultSpringArmRotation;
+	FVector DefaultSpringArmRelativeLocation;
+	FRotator DefaultSpringArmRelativeRotation;
 	float DefaultSpringArmLength;
 
-	FVector DefaultCameraComponentLocation;
-	FRotator DefaultCameraComponentRotation;
+	FVector DefaultCameraComponentRelativeLocation;
+	FRotator DefaultCameraComponentRelativeRotation;
 
 public:
 	
@@ -78,15 +78,15 @@ public:
 
 	virtual void InitAbilitySystemComponent() override;
 
-	FVector GetDefaultCameraAnchorLocation() const { return DefaultCameraAnchorLocation; }
-	FRotator GetDefaultCameraAnchorRotation() const { return DefaultCameraAnchorRotation; }
+	FVector GetDefaultCameraAnchorRelativeLocation() const { return DefaultCameraAnchorRelativeLocation; }
+	FRotator GetDefaultCameraAnchorRelativeRotation() const { return DefaultCameraAnchorRelativeRotation; }
 
-	FVector GetDefaultSpringArmLocation() const { return DefaultSpringArmLocation; }
-	FRotator GetDefaultSpringArmRotation() const { return DefaultSpringArmRotation; }
+	FVector GetDefaultSpringArmRelativeLocation() const { return DefaultSpringArmRelativeLocation; }
+	FRotator GetDefaultSpringArmRelativeRotation() const { return DefaultSpringArmRelativeRotation; }
 	float GetDefaultSpringArmLength() const { return DefaultSpringArmLength; }
 
-	FVector GetDefaultCameraComponentLocation() const { return DefaultCameraComponentLocation; }
-	FRotator GetDefaultCameraComponentRotation() const { return DefaultCameraComponentRotation; }
+	FVector GetDefaultCameraComponentRelativeLocation() const { return DefaultCameraComponentRelativeLocation; }
+	FRotator GetDefaultCameraComponentRelativeRotation() const { return DefaultCameraComponentRelativeRotation; }
 
 	USceneComponent* GetCameraAnchorComponent();
 	USpringArmComponent* GetSpringArmComponent();

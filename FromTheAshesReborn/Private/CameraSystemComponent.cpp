@@ -45,9 +45,9 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 
-	BaseSpringArmLength = PlayerCharacter->GetDefaultSpringArmLength();
-	BaseAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorLocation();
-	BaseAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRotation();
+	DefaultSpringArmLength = PlayerCharacter->GetDefaultSpringArmLength();
+	DefaultCameraAnchorRelativeLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
+	DefaultCameraAnchorRelativeRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
 
 	OnCameraSystemAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleCameraSystemAdjustment);
 }
@@ -71,8 +71,6 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
-	
-
 	if (CameraComponent)
 	{
 		float CurrentFOV = CameraComponent->FieldOfView;
@@ -92,11 +90,11 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (CameraAnchorComponent)
 	{
-		FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
+		FVector CurrentAnchorLocation = AnchorTransformLocation;
 
-		if (!CurrentAnchorLocation.Equals(BaseAnchorLocation, 0.1f))
+		if (!CurrentAnchorLocation.Equals(DefaultCameraAnchorRelativeLocation, 0.1f))
 		{
-			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, BaseAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+			FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, DefaultCameraAnchorRelativeLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
 			CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
 		}
 	}
@@ -148,14 +146,24 @@ void UCameraSystemComponent::HandleCameraComponentAdjustment(float InDeltaFOV, f
 	}
 }
 
-void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed)
+void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool ShouldUseWorldTransform, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed)
 {
 	if (CameraAnchorComponent)
 	{
+		if(ShouldUseWorldTransform)
+		{
+			AnchorTransformLocation = PlayerCharacter->CameraAnchorComponent->GetComponentLocation();
+			AnchorTransformRotation = PlayerCharacter->CameraAnchorComponent->GetComponentRotation();
+		}
+		else
+		{
+			AnchorTransformLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
+			AnchorTransformRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
+		}
 		if (InShouldOverride)
 		{
-			BaseAnchorLocation = InLocation;
-			BaseAnchorRotation = InRotation;
+			DefaultCameraAnchorRelativeLocation = InLocation;
+			DefaultCameraAnchorRelativeRotation = InRotation;
 		}
 		CameraAnchorInterpSpeed = InInterpSpeed;
 	}
@@ -179,13 +187,14 @@ void UCameraSystemComponent::HandleCameraSystemAdjustment(FCameraSystemParams Pa
 			Params.CameraComponentParams.ShouldResetFOVOffset);
 	}
 
-	// if(Params.CameraAnchorParams.ShouldAdjustAnchor)
-	// {
-	// 	HandleCameraAnchorAdjustment(Params.CameraAnchorParams.NewAnchorLocation,
-	// 		Params.CameraAnchorParams.NewAnchorRotation,
-	// 		Params.CameraAnchorParams.ShouldOverrideAnchor,
-	// 		Params.CameraAnchorParams.ShouldResetAnchorOffset,
-	// 		Params.CameraAnchorParams.DeltaAnchorInterpSpeed);
-	// }
+	if(Params.CameraAnchorParams.ShouldAdjustAnchor)
+	{
+		HandleCameraAnchorAdjustment(Params.CameraAnchorParams.NewAnchorLocation,
+			Params.CameraAnchorParams.NewAnchorRotation,
+			Params.CameraAnchorParams.ShouldUseWorldTransform, 
+			Params.CameraAnchorParams.ShouldOverrideAnchor,
+			Params.CameraAnchorParams.ShouldResetAnchorOffset,
+			Params.CameraAnchorParams.DeltaAnchorInterpSpeed);
+	}
 }
 

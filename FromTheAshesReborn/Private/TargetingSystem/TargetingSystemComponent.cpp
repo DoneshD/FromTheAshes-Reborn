@@ -499,13 +499,13 @@ void UTargetingSystemComponent::DisableMidPointControlRotation()
 	if (!PlayerCharacter || !PlayerCharacter->CameraAnchorComponent) return;
 
 	const FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
-	const FVector TargetAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorLocation();
+	const FVector TargetAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
 	const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
 
 	PlayerCharacter->CameraAnchorComponent->SetRelativeLocation(NewLocation);
 
 	const FRotator CurrentAnchorRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
-	const FRotator TargetAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRotation();
+	const FRotator TargetAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
 	const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
 
 	PlayerCharacter->CameraAnchorComponent->SetRelativeRotation(NewRotation);

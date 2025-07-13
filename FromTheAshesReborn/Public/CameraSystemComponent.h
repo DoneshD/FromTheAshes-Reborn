@@ -30,7 +30,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USceneComponent> CameraAnchorComponent;
 
-	float BaseSpringArmLength = 400.0f;
+	float DefaultSpringArmLength = 400.0f;
 	float BaseArmLengthFromTargetingSystem = 400.0f;
 	float ArmLengthOffset = 0.0f;
 	float ArmLengthLerpSpeed = 0.0f;
@@ -39,9 +39,12 @@ protected:
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;
 	
-	FVector BaseAnchorLocation;
-	FRotator BaseAnchorRotation;
+	FVector DefaultCameraAnchorRelativeLocation;
+	FRotator DefaultCameraAnchorRelativeRotation;
 	float CameraAnchorInterpSpeed = 5.0f;
+
+	FVector AnchorTransformLocation;
+	FRotator AnchorTransformRotation;
 
 public:
 	
@@ -64,6 +67,7 @@ public:
 	void HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
 
 	UFUNCTION()
-	void HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed);
+	void HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InTransformType, bool InShouldOverride, bool InShouldResetOffset, float
+	                                  InInterpSpeed);
 	
 };
