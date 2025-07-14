@@ -23,14 +23,7 @@ void UGA_Knockback::ActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("HitTag.Grounded.Knockback")));
-
-	if(!KnockbackMontage)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_Knockback::ActivateAbility - KnockbackMontage is Null"))
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-	PlayAbilityAnimMontage(KnockbackMontage);
+	
 }
 
 void UGA_Knockback::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

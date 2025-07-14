@@ -10,9 +10,6 @@ class FROMTHEASHESREBORN_API UGA_Knockback : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAnimMontage> KnockbackMontage;
-
 public:
 
 	UGA_Knockback();

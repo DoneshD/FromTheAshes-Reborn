@@ -12,11 +12,6 @@ class FROMTHEASHESREBORN_API UGA_KnockDown : public UGA_ReceiveHit
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UHitReactionDataAsset> KnockDownAbilityAsset;
-
-	UPROPERTY(EditAnywhere)
-	TArray<TObjectPtr<UHitReactionDataAsset>> KnockDownAbilityAssets;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UGameplayEffect> GetUpAbilityEffect;

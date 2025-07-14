@@ -437,14 +437,16 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
 	{
 		OnHitEventData.EventTag = CurrentHitReactionTag;
+		
 	}
 	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
 	{
 		OnHitEventData.EventTag = HitReactionTag;
+		
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - Not a valid Gameplay Tag"));
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
 	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);

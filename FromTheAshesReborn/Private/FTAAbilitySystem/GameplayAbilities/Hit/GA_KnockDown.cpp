@@ -22,23 +22,6 @@ bool UGA_KnockDown::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 void UGA_KnockDown::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	if(KnockDownAbilityAsset)
-	{
-		if(KnockDownAbilityAsset->MontageToPlay)
-		{
-			PlayAbilityAnimMontage(KnockDownAbilityAsset->MontageToPlay);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("MontageToPlay null"))
-	
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("down null"))
-	}
 }
 
 void UGA_KnockDown::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
