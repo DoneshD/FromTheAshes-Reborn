@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 
 #include "DataAsset/HitReactionDataAsset.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "EventObjects/HitEventObject.h"
 
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -66,6 +67,16 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
 
+	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Cast<AEnemyBaseCharacter>(ActorInfo->AvatarActor));
+
+	if(Enemy)
+	{
+		if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AITag.Hit")))
+		{
+			GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AITag.Hit"));
+		}
+	}
+	
 	if(!NonMontageAbility)
 	{
 		TArray<UHitReactionDataAsset*> AssetsToTry;
@@ -84,6 +95,8 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		{
 			int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
 			PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
+			
+			
 		}
 		else
 		{
@@ -102,6 +115,13 @@ void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, cons
 void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(ActorInfo->AvatarActor);
+
+	if(Enemy)
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AITag.Hit"));
+	}
 }
 
 void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

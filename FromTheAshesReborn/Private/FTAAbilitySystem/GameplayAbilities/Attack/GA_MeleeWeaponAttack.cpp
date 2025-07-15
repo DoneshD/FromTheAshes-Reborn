@@ -119,7 +119,6 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
 		return;
 	}
 	
@@ -160,7 +159,6 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::ActivateAbility - CameraSystemComponent"));
 		return;
 	}
 
@@ -330,6 +328,19 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 	{
 		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
 		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		//TODO: Temporary, change later
+		AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo()));
+
+		if(Enemy)
+		{
+			AEnemyBaseCharacter* TargetEnemy = Cast<AEnemyBaseCharacter>(TargetActor);
+			if(TargetEnemy)
+			{
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+				return;
+			}
+		}
 
 		if (TargetASC)
 		{

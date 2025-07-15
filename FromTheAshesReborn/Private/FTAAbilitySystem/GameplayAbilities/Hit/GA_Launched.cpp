@@ -3,6 +3,7 @@
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
+#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 
 UGA_Launched::UGA_Launched()
 {
@@ -30,7 +31,7 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-
+	
 	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(
 		this,
 		LaunchInfoObject->LaunchData.VerticalDistance,

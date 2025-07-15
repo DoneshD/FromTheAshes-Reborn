@@ -54,10 +54,13 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		TargetCharacter = Cast<AFTACharacter>(LockedOnTarget);
 	}
 
-	if(TargetCharacter->IsDead || TargetCharacter->IsAlreadyDead)
+	if(TargetCharacter)
 	{
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
+		if(TargetCharacter->IsDead || TargetCharacter->IsAlreadyDead)
+		{
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+			return;
+		}
 	}
 }
 

@@ -12,12 +12,13 @@ class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	TObjectPtr<UStateTreeAIComponent> StateTreeComponent;
+
 private:
 
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UStateTreeAIComponent> StateTreeComponent;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;

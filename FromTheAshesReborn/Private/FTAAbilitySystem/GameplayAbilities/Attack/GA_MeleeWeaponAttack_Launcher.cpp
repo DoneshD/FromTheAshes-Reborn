@@ -3,6 +3,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Camera/CameraSystemComponent.h"
 #include "MotionWarpingComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
@@ -62,7 +63,6 @@ void UGA_MeleeWeaponAttack_Launcher::ActivateAbility(const FGameplayAbilitySpecH
 	{
 		return;
 	}
-	
 }
 
 void UGA_MeleeWeaponAttack_Launcher::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

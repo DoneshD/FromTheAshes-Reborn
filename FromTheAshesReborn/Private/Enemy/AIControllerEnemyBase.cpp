@@ -26,6 +26,7 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 
 	AEnemyBaseCharacter* EnemyCharacter = Cast<AEnemyBaseCharacter>(InPawn);
 
+	
 	if (!EnemyCharacter)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[%s] AAIControllerEnemyBase::OnPossess - EnemyCharacter is null"), *GetActorNameOrLabel());
@@ -36,10 +37,6 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 void AAIControllerEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-	if(StateTreeComponent)
-	{
-		StateTreeComponent->StartLogic();
-	}
 }
 
 void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)

@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
-
 #include "DataAsset/RecoverAbilityDataAsset.h"
+#include "FTACustomBase/FTACharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UGA_Recover::UGA_Recover(const FObjectInitializer&)
 {
@@ -40,6 +41,8 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Recover null"))
 	}
+
+	GetFTACharacterFromActorInfo()->GetCharacterMovement()->DisableMovement();
 }
 
 void UGA_Recover::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -50,6 +53,8 @@ void UGA_Recover::CancelAbility(const FGameplayAbilitySpecHandle Handle, const F
 void UGA_Recover::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	GetFTACharacterFromActorInfo()->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	
 }
 
 void UGA_Recover::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
