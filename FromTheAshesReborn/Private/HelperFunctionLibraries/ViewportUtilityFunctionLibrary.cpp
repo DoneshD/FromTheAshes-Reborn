@@ -13,11 +13,6 @@ FVector2D UViewportUtilityFunctionLibrary::FindCenterOfViewPort(UWorld* World, c
 
 bool UViewportUtilityFunctionLibrary::IsInViewport(UWorld* World, const AActor* ActorToCheck, const APlayerController* PlayerController)
 {
-	// if (!IsValid(PlayerController))
-	// {
-	// 	return false;
-	// }
-
 	if (!PlayerController)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::IsInViewport - PlayerController is NULL"));
@@ -25,31 +20,41 @@ bool UViewportUtilityFunctionLibrary::IsInViewport(UWorld* World, const AActor* 
 	}
 
 	FVector2D ScreenLocation;
-	PlayerController->ProjectWorldLocationToScreen(ActorToCheck->GetActorLocation(), ScreenLocation);
+	
+	if (!PlayerController->ProjectWorldLocationToScreen(ActorToCheck->GetActorLocation(), ScreenLocation))
+	{
+		return false;
+	}
 
 	FVector2D ViewportSize;
 	World->GetGameViewport()->GetViewportSize(ViewportSize);
 
-	return ScreenLocation.X > 0 && ScreenLocation.Y > 0 && ScreenLocation.X < ViewportSize.X && ScreenLocation.Y < ViewportSize.Y;
+	const bool bIsOnScreen = 
+		ScreenLocation.X > 0 && ScreenLocation.Y > 0 &&
+		ScreenLocation.X < ViewportSize.X && 
+		ScreenLocation.Y < ViewportSize.Y;
+
+	return bIsOnScreen;
 }
+
 
 bool UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen(UWorld* World, const AActor* ActorToCheck, const APlayerCharacter* PlayerCharacter, const APlayerController* PlayerController)
 {
 	if (!IsValid(ActorToCheck))
 	{
-		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::IsInViewport - ActorToCheck is NULL or invalid."));
+		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen - ActorToCheck is NULL or invalid."));
 		return false;
 	}
 
 	if (!IsValid(PlayerCharacter))
 	{
-		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::IsInViewport - PlayerCharacter is NULL or invalid."));
+		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen - PlayerCharacter is NULL or invalid."));
 		return false;
 	}
 
 	if (!IsValid(PlayerController))
 	{
-		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::IsInViewport - PlayerController is NULL or invalid."));
+		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen - PlayerController is NULL or invalid."));
 		return false;
 	}
 	

@@ -768,6 +768,7 @@ AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
 	
 	if (IsTargetLocked)
 	{
+		UE_LOG(LogTemp, Display, TEXT("UTargetingSystemComponent::TargetActor"));
 		TargetLockOff();
 		IsSuccess = false;
 		return nullptr;

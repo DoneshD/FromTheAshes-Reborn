@@ -31,22 +31,22 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 	
-	if(IsTargeting)
-	{
-		TargetingSystemComponent->TargetLockOff();
-		IsTargeting = false;
-		LockedOnTarget = nullptr;
-		PS->HardLockedTargetActor = nullptr;
-		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
-	}
-	else
-	{
+	// if(IsTargeting)
+	// {
+	// 	TargetingSystemComponent->TargetLockOff();
+	// 	IsTargeting = false;
+	// 	LockedOnTarget = nullptr;
+	// 	PS->HardLockedTargetActor = nullptr;
+	// 	EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
+	// }
+	// else
+	// {
 		LockedOnTarget = TargetingSystemComponent->TargetActor(IsTargeting);
 		if(LockedOnTarget)
 		{
 			PS->HardLockedTargetActor = LockedOnTarget;
 		}
-	}
+	// }
 }
 
 void UGA_LockOn::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
