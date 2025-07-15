@@ -13,11 +13,15 @@ protected:
 
 	bool IsTargeting = false;
 
+	TObjectPtr<AFTACharacter> TargetCharacter;
+
 	TObjectPtr<AActor> LockedOnTarget;
 
 protected:
 	
 	UGA_LockOn();
+
+	virtual void OnAbilityTick(float DeltaTime) override;
 
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

@@ -439,7 +439,7 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 	}
 	PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(),
 	1.0f, NAME_None, false, 1.0f);
-
+	
 	
 	PlayMontageTask->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageBlendingOut);
 	PlayMontageTask->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);

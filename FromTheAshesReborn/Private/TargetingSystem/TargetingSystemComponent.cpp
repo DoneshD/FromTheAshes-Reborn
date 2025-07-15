@@ -132,7 +132,6 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 {
 	if (!IsValid(TargetToLockOn))
 	{
-		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::TargetLockOn - TargetToLockOn is invalid"));
 		return;
 	}
 

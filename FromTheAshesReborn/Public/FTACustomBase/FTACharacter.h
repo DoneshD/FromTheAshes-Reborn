@@ -70,6 +70,11 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool DisableRootMotion = false;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool IsDead = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool IsAlreadyDead = false;
 	
 public:
 	
