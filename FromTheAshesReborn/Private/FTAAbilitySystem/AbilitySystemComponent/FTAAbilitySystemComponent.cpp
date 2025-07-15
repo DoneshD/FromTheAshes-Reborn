@@ -67,7 +67,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	
 	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
-		if (InputTag.IsValid())
+		if (InputTag.IsValid() && !InputTag.MatchesTagExact(FGameplayTag::RequestGameplayTag("InputTag.Hold.Ability.LockOn")))
 		{
 			OnInputQueueReceived.Broadcast(InputTag);
 			return;
@@ -97,6 +97,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inp
 			if(AbilitySpec.Ability && (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag)))
 			{
 				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
+				InputReleasedSpecHandles.AddUnique(AbilitySpec.Handle);
 				InputHeldSpecHandles.Remove(AbilitySpec.Handle);
 			}
 		}
@@ -119,7 +120,7 @@ void UFTAAbilitySystemComponent::AbilitySpecInputReleased(FGameplayAbilitySpec& 
 
 	if (Spec.IsActive())
 	{
-		
+		// CancelAbilityHandle(Spec.Handle);
 	}
 }
 
@@ -198,53 +199,6 @@ void UFTAAbilitySystemComponent::ClearAbilityInput()
 	InputReleasedSpecHandles.Reset();
 	InputHeldSpecHandles.Reset();
 }
-
-/*
-void UFTAAbilitySystemComponent::CancelAbilitiesByFunc(TShouldCancelAbilityFunc ShouldCancelFunc)
-{
-	ABILITYLIST_SCOPE_LOCK();
-	for(const FGameplayAbilitySpec& AbilitySpec : ActivatableAbilities.Items)
-	{
-		if(!AbilitySpec.IsActive())
-		{
-			continue;
-		}
-		
-		UFTAGameplayAbility* FTAAbilityCDO = CastChecked<UFTAGameplayAbility>(AbilitySpec.Ability);
-
-		if(FTAAbilityCDO->GetInstancingPolicy() != EGameplayAbilityInstancingPolicy::NonInstanced)
-		{
-			TArray<UGameplayAbility*> AllInstances = AbilitySpec.GetAbilityInstances();
-
-			for(UGameplayAbility* AbilityInstance : AllInstances)
-			{
-				UFTAGameplayAbility* FTAAbilityInstance = CastChecked<UFTAGameplayAbility>(AbilityInstance);
-
-				if(ShouldCancelFunc(FTAAbilityInstance, AbilitySpec.Handle))
-				{
-					if(FTAAbilityInstance->CanBeCanceled())
-					{
-						
-						FTAAbilityInstance->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FTAAbilityInstance->GetCurrentActivationInfo(), false);
-					}
-					else
-					{
-						UE_LOG(LogTemp, Error, TEXT("CancelAbilitiesByFunc: Can't cancel ability [%s] because CanBeCanceled is false."), *FTAAbilityInstance->GetName());
-					}
-				}
-			}
-		}
-		else
-		{
-			if (ShouldCancelFunc(FTAAbilityCDO, AbilitySpec.Handle))
-			{
-				check(FTAAbilityCDO->CanBeCanceled());
-				FTAAbilityCDO->CancelAbility(AbilitySpec.Handle, AbilityActorInfo.Get(), FGameplayAbilityActivationInfo(), false);
-			}
-		}
-	}
-}
-*/
 
 void UFTAAbilitySystemComponent::CancelInputActivatedAbilities()
 {

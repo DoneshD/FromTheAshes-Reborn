@@ -195,13 +195,15 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			TickTask->ReadyForActivation();
 		}
 	}
-
 	//TODO: check if owner is player first
-	WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
-	if (WaitInputTagAndQueueWindowEventTask)
+	if(!InputTag.MatchesTagExact(FGameplayTag::RequestGameplayTag("InputTag.Hold.Ability.LockOn")))
 	{
-		
-		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
+		WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
+		if (WaitInputTagAndQueueWindowEventTask)
+		{
+			
+			WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
+		}
 	}
 
 	AdjustFOVDelegateHandle = GetFTAAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("CameraTag.Event.AdjustFOV"), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UFTAGameplayAbility::AdjustFOV);
