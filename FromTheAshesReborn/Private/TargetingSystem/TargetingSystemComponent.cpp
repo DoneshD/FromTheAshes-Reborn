@@ -1,7 +1,7 @@
 ﻿#include "TargetingSystem/TargetingSystemComponent.h"
 
-#include "CameraSystemComponent.h"
-#include "CameraSystemParams.h"
+#include "Camera/CameraSystemComponent.h"
+#include "Camera/CameraSystemParams.h"
 #include "EngineUtils.h"
 #include "TargetingSystem/TargetingSystemTargetableInterface.h"
 #include "TimerManager.h"

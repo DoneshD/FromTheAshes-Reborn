@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "CameraSystemParams.h"
+#include "Camera/CameraSystemParams.h"
 #include "Abilities/GameplayAbility.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"

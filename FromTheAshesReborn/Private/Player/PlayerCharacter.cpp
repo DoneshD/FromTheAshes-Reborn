@@ -1,6 +1,6 @@
 #include "Player/PlayerCharacter.h"
 
-#include "CameraSystemComponent.h"
+#include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"

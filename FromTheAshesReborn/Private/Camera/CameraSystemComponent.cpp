@@ -1,4 +1,4 @@
-#include "CameraSystemComponent.h"
+#include "Camera/CameraSystemComponent.h"
 
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"

@@ -2,7 +2,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
-#include "ComboManagerComponent.h"
+#include "CombatComponents/ComboManagerComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"

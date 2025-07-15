@@ -1,6 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Dash/GA_Dash.h"
 
-#include "ComboManagerComponent.h"
+#include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"

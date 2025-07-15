@@ -1,7 +1,7 @@
 #include "CombatComponents/AerialCombatComponent.h"
 
-#include "CameraSystemComponent.h"
-#include "CameraSystemParams.h"
+#include "Camera/CameraSystemComponent.h"
+#include "Camera/CameraSystemParams.h"
 #include "Components/CapsuleComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"

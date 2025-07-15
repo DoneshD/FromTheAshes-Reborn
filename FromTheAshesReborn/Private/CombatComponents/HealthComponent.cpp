@@ -1,4 +1,4 @@
-﻿#include "HealthComponent.h"
+﻿#include "CombatComponents/HealthComponent.h"
 
 #include "GameplayEffectExtension.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"

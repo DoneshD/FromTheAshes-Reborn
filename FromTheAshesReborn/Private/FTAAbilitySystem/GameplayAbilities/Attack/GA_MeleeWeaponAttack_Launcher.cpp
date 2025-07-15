@@ -1,7 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_Launcher.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
-#include "CameraSystemComponent.h"
+#include "Camera/CameraSystemComponent.h"
 #include "MotionWarpingComponent.h"
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"

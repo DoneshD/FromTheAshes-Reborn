@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "CameraSystemParams.h"
+#include "Camera/CameraSystemParams.h"
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 

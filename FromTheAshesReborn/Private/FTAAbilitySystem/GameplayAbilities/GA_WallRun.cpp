@@ -1,6 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_WallRun.h"
 
-#include "WallRunningComponent.h"
+#include "ParkourSystem/WallRunningComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 
 UGA_WallRun::UGA_WallRun()

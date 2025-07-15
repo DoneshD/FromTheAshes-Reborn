@@ -1,4 +1,4 @@
-﻿#include "WallRunningComponent.h"
+﻿#include "ParkourSystem/WallRunningComponent.h"
 
 #include "FrameTypes.h"
 #include "GameFramework/Character.h"

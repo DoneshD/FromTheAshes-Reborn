@@ -1,4 +1,4 @@
-﻿#include "ComboManagerComponent.h"
+﻿#include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
