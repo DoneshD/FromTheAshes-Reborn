@@ -58,8 +58,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (SpringArmComponent)
 	{
-		if(Testbool)
-		{
+		
 			float CurrentLength = SpringArmComponent->TargetArmLength;
 			float FinalTargetLength = NewSpringArmLength + ArmLengthOffset;
 		
@@ -71,7 +70,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 				// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
 				// 	CurrentLength, BaseArmLengthFromTargetingSystem, ArmLengthOffset, InterpolatedLength);
 			}
-		}
+		
 	}
 	
 	if (CameraComponent)
@@ -139,12 +138,10 @@ void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, floa
 {
 	if (SpringArmComponent)
 	{
-		Testbool = true;
 		if (InShouldOverride)
 		{
 			// BaseArmLengthFromTargetingSystem = InDeltaLength;
 			NewSpringArmLength = InDeltaLength;
-			
 
 			if (InShouldResetOffset)
 			{

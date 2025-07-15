@@ -53,7 +53,6 @@ protected:
 	FRotator AnchorTransformRotation;
 
 	bool UseWorldTransform = false;
-	bool Testbool = false;
 
 public:
 	
