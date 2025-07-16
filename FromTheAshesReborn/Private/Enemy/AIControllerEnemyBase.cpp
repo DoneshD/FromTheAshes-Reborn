@@ -4,6 +4,7 @@
 #include "Perception/AISenseConfig_Damage.h"
 #include "Enemy/EnemyBaseCharacter.h"
 
+
 AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
@@ -18,6 +19,8 @@ AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectI
 	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
 
 	StateTreeComponent = CreateDefaultSubobject<UStateTreeAIComponent>("StateTreeAIComponent");
+
+	
 }
 
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
