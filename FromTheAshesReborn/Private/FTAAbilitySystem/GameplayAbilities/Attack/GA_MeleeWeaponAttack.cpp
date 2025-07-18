@@ -31,12 +31,12 @@ UGA_MeleeWeaponAttack::UGA_MeleeWeaponAttack(const FObjectInitializer&)
 	
 }
 
-void UGA_MeleeWeaponAttack::OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec)
+void UGA_MeleeWeaponAttack::OnAbilityTick(float DeltaTime)
 {
-	Super::OnGiveAbility(ActorInfo, Spec);
-
+	Super::OnAbilityTick(DeltaTime);
 	
 }
+
 
 UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
 {
@@ -272,7 +272,7 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 
 	//TODO: Change later
 	AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(OutHit.GetActor());
-	if (bHit && EnemyActor)
+	if (bHit && EnemyActor && !EnemyActor->IsDead)
 	{
 		FVector OffsetDirection = (GetFTACharacterFromActorInfo()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
 		
@@ -282,7 +282,7 @@ void UGA_MeleeWeaponAttack::MotionWarpToTarget()
 		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation,  FRotator(0, WarpTargetRotation.Yaw, 0));
 
 
-		if(FVector::Dist(FTAChar->GetActorLocation(), WarpTargetLocation) > 300.0f)
+		if(FVector::Dist(FTAChar->GetActorLocation(), WarpTargetLocation) > AfterImageDistance)
 		{
 			SpawnAfterImage();
 		}
@@ -331,6 +331,7 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 
 		//TODO: Temporary, change later
 		AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo()));
+		AEnemyBaseCharacter* AIEnemy = Cast<AEnemyBaseCharacter>(Cast<AEnemyBaseCharacter>(TargetActor));
 
 		if(Enemy)
 		{
@@ -507,7 +508,7 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 
 	if(MeleeAsset->SlashFX)
 	{
-		CurrentHitFX = MeleeAsset->SlashFX;
+		CurrentSlashFX = MeleeAsset->SlashFX;
 	}
 
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->HitReactionTag))

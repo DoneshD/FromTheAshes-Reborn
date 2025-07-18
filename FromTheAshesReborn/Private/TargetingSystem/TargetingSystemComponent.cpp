@@ -558,6 +558,7 @@ TArray<AActor*> UTargetingSystemComponent::FindTargetsInRange(TArray<AActor*> Ac
 AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Actors) const
 {
 	TArray<AActor*> ActorsHit;
+	TArray<AActor*> ActorsWithInRange;
 
 	for (AActor* Actor : Actors)
 	{
@@ -577,15 +578,19 @@ AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Acto
 	float ClosestDistance = ClosestTargetDistance;
 	AActor* Target = nullptr;
 	
-	for (AActor* Actor : ActorsHit)
+	for (AActor* HitActor : ActorsHit)
 	{
-		const float Distance = GetDistanceFromCharacter(Actor);
-		if (Distance < ClosestDistance)
+		const float Distance = GetDistanceFromCharacter(HitActor);
+
+		if (Distance < MinimumDistanceToEnable)
 		{
 			ClosestDistance = Distance;
-			Target = Actor;
+			// Target = Actor;
+			ActorsWithInRange.Add(HitActor);
 		}
 	}
+	
+	Target = FindNearestTargetToCenterViewport(ActorsWithInRange);
 
 	return Target;
 }
@@ -765,22 +770,29 @@ AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
 {
 	ClosestTargetDistance = MinimumDistanceToEnable;
 	
-	if (IsTargetLocked)
-	{
-		UE_LOG(LogTemp, Display, TEXT("UTargetingSystemComponent::TargetActor"));
-		TargetLockOff();
-		IsSuccess = false;
-		return nullptr;
-	}
+	// if (IsTargetLocked)
+	// {
+	// 	UE_LOG(LogTemp, Display, TEXT("UTargetingSystemComponent::TargetActor"));
+	// 	TargetLockOff();
+	// 	IsSuccess = false;
+	// 	return nullptr;
+	// }
 	
 	const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
-	LockedOnTargetActor = FindNearestTargetToCenterViewport(Actors);
+	LockedOnTargetActor = FindNearestTargetToActor(Actors);
+	// LockedOnTargetActor = FindNearestTargetToCenterViewport(Actors);
+
+	if(LockedOnTargetActor)
+	{
+		TargetLockOn(LockedOnTargetActor);
 	
-	TargetLockOn(LockedOnTargetActor);
-	
-	IsSuccess = true;
-	FTAPlayerCameraManger->ViewPitchMax = 10;
-	return LockedOnTargetActor;
+		IsSuccess = true;
+		FTAPlayerCameraManger->ViewPitchMax = 10;
+		return LockedOnTargetActor;
+	}
+	TargetLockOff();
+	IsSuccess = false;
+	return nullptr;
 }
 
 

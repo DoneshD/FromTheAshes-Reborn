@@ -101,11 +101,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
 	float MotionWarpLocationOffset = 125.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+	float AfterImageDistance = 200.0f;
+
 protected:
 
 	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());
 
-	virtual void OnGiveAbility(const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilitySpec& Spec) override;
+	virtual void OnAbilityTick(float DeltaTime) override;
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

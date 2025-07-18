@@ -6,6 +6,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UGA_Dash::UGA_Dash()
 {
@@ -74,6 +75,8 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	IsDashing = true;
 
 	PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
+
+	GetFTACharacterFromActorInfo()->SetActorRotation(InputDir.Rotation());
 	
 }
 

@@ -48,10 +48,12 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	}
 	
 	LockedOnTarget = TargetingSystemComponent->TargetActor(IsTargeting);
+	
 	if(LockedOnTarget && IsTargeting)
 	{
 		PS->HardLockedTargetActor = LockedOnTarget;
 		TargetCharacter = Cast<AFTACharacter>(LockedOnTarget);
+		
 	}
 
 	if(TargetCharacter)
