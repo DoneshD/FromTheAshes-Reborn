@@ -22,6 +22,7 @@ public class FromTheAshesReborn : ModuleRules
 			"AIModule", 
 			"AnimGraphRuntime", 
 			"MotionWarping", 
+			"MoviePlayer",
 			"Niagara",
 			"UMG"
 		});
