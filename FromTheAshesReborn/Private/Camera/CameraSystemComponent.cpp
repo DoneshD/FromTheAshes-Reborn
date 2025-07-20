@@ -7,6 +7,28 @@
 UCameraSystemComponent::UCameraSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+	DefaultSpringArmLength = 400.0f;
+	BaseArmLengthFromTargetingSystem = 400.0f;
+	ArmLengthOffset = 0.0f;
+	ArmLengthLerpSpeed = 0.0f;
+	NewSpringArmLength = 0.0f;
+
+	CameraBaseFOV = 90.0f;
+	CameraFOVOffset = 0.0f;
+	CameraFOVLerpSpeed = 2.0f;
+
+	CameraAnchorInterpSpeed = 5.0f;
+
+	UseWorldTransform = false;
+
+	DefaultCameraAnchorRelativeLocation = FVector::ZeroVector;
+	DefaultCameraAnchorRelativeRotation = FRotator::ZeroRotator;
+
+	NewCameraAnchorLocation = FVector::ZeroVector;
+	NewCameraAnchorRotation = FRotator::ZeroRotator;
+
+	AnchorTransformLocation = FVector::ZeroVector;
+	AnchorTransformRotation = FRotator::ZeroRotator;
 }
 
 void UCameraSystemComponent::BeginPlay()

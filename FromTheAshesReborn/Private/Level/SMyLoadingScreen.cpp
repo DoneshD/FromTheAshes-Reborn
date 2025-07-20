@@ -7,6 +7,8 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SMyLoadingScreen::Construct(const FArguments& InArgs)
 {
 	Font = FSlateFontInfo(FPaths::EngineContentDir() / TEXT("Slate/Fonts/Roboto-Regular.ttf"), 48);
+	// Font = FSlateFontInfo(FPaths::ProjectContentDir() / TEXT("UI/Fonts/Roboto-Regular.ttf"), 48);
+
 
 	ChildSlot
 	[

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "DataAsset/HitReactionDataAsset.h"
 #include "UObject/Object.h"
 #include "HitEventObject.generated.h"
 
@@ -11,6 +12,12 @@ struct FHitInfo
 {
 	GENERATED_BODY()
 
+	FHitInfo()
+		: Location(FVector::ZeroVector)
+		, Instigator(nullptr)
+		, HitDirection(EHitReactionDirection::Front) // Or whatever your default direction should be
+	{}
+
 	UPROPERTY()
 	FVector Location;
 
@@ -20,6 +27,7 @@ struct FHitInfo
 	UPROPERTY()
 	EHitReactionDirection HitDirection;
 };
+
 
 UCLASS()
 class FROMTHEASHESREBORN_API UHitEventObject : public UObject
