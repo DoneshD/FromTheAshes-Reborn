@@ -36,7 +36,8 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		this,
 		LaunchInfoObject->LaunchData.VerticalDistance,
 		LaunchInfoObject->LaunchData.LaunchDuration,
-		LaunchInfoObject->LaunchData.StallDuration, LaunchOffset);
+		LaunchInfoObject->LaunchData.StallDuration,
+		LaunchOffset);
 	
 	if (LaunchTask)
 	{
@@ -57,6 +58,13 @@ void UGA_Launched::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
 	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
+
+	if(EnableAerialCombatEffect)
+	{
+		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
+		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+	}
+	
 }
 
 void UGA_Launched::OnLaunchComplete()

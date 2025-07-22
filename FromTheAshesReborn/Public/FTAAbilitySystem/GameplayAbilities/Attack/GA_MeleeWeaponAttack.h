@@ -82,8 +82,10 @@ protected:
 	
 	FGameplayEventData OnHitEventData;
 
+	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTAChar;
 
+	UPROPERTY()
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
 	UPROPERTY()

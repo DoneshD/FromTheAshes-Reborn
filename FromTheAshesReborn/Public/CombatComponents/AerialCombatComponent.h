@@ -34,6 +34,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag EnableTag;
 
+	UPROPERTY()
+	FGameplayTag FlailTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail");
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag AerialAttackCounterTag;
 

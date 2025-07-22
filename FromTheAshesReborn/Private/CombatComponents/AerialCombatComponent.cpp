@@ -56,8 +56,20 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		TotalAirTime += DeltaTime;
-		CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+		if(FTAAbilitySystemComponent->HasMatchingGameplayTag(FlailTag))
+		{
+			if(CMC->Velocity.Z < 0)
+			{
+				TotalAirTime += DeltaTime;
+				CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+			}
+		}
+		else
+		{
+			TotalAirTime += DeltaTime;
+			CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+		}
+		
 	}
 }
 
@@ -74,7 +86,9 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
 	// CameraParams.ArmLengthParams.ShouldResetOffset = true;
 	// CameraParams.ArmLengthParams.DeltaArmLength = 400.0f;
-	
+
+	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
+
 	UCameraSystemComponent* CSC = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
 	{
@@ -82,8 +96,7 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	}
 	
 	CSC->HandleCameraSystemAdjustment(CameraParams);
-
-	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
+	
 }
 
 void UAerialCombatComponent::InitializeStateAndVariables()
@@ -92,6 +105,8 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	ResetAttackTimer();
+
+	UE_LOG(LogTemp, Warning, TEXT("START"))
 	
 }
 
