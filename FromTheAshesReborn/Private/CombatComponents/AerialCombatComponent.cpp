@@ -56,20 +56,9 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		if(FTAAbilitySystemComponent->HasMatchingGameplayTag(FlailTag))
-		{
-			if(CMC->Velocity.Z < 0)
-			{
-				TotalAirTime += DeltaTime;
-				CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
-			}
-		}
-		else
-		{
-			TotalAirTime += DeltaTime;
-			CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
-		}
-		
+		// PrintGravity();
+		TotalAirTime += DeltaTime;
+		CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
 	}
 }
 
@@ -81,6 +70,7 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	AlreadyLaunched = false;
 
 	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
 	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
@@ -127,8 +117,17 @@ void UAerialCombatComponent::SetGravity(float NewGravity)
 
 void UAerialCombatComponent::PrintGravity()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Gravity: %f"), CMC->GravityScale)
+	if (AActor* Owner = GetOwner())
+	{
+		FString OwnerName = Owner->GetName();
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Gravity: %f"), *OwnerName, CMC->GravityScale);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[No Owner] Gravity: %f"), CMC->GravityScale);
+	}
 }
+
 
 void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount)
 {

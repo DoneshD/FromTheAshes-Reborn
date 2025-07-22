@@ -59,6 +59,8 @@ protected:
 
 	float LaunchStrength = 100.0f;
 
+	bool AlreadyLaunched = false;
+
 protected:
 
 	void ClearStateAndVariables();

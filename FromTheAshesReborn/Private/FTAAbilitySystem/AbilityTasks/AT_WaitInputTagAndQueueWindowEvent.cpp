@@ -69,12 +69,11 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 	for (const auto& Pair : QueueableAbilities)
 	{
 		const FGameplayTag& WindowTag = Pair.Key;
-
-		bool bHasTag = FTAASC->HasMatchingGameplayTag(WindowTag);
-		UE_LOG(LogTemp, Warning, TEXT("FTAASC has tag %s: %s"), *WindowTag.ToString(), bHasTag ? TEXT("true") : TEXT("false"));
 		
 		if (FTAASC->HasMatchingGameplayTag(WindowTag))
 		{
+			bool bHasTag = FTAASC->HasMatchingGameplayTag(WindowTag);
+			// UE_LOG(LogTemp, Warning, TEXT("FTAASC has tag %s: %s"), *WindowTag.ToString(), bHasTag ? TEXT("true") : TEXT("false"));
 			TArray<UFTAGameplayAbility*>* AbilitiesPtr = QueueableAbilities.Find(WindowTag);
 			if (!AbilitiesPtr) continue;
 
@@ -89,7 +88,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
 
-					UE_LOG(LogTemp, Warning, TEXT("Activate here 1"))
+					// UE_LOG(LogTemp, Warning, TEXT("Activate here 1"))
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
@@ -150,7 +149,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
 
-					UE_LOG(LogTemp, Warning, TEXT("Activate here 2"))
+					// UE_LOG(LogTemp, Warning, TEXT("Activate here 2"))
 					
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
