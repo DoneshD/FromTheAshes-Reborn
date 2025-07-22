@@ -244,6 +244,8 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("CameraTag.Event.AdjustFOV"), EGameplayTagEventType::NewOrRemoved)
 		.Remove(AdjustFOVDelegateHandle);
+
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.InputQueue.Open"));
 	
 }
 

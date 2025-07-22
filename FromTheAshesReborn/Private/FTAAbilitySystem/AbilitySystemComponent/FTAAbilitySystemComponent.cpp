@@ -67,7 +67,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 	
 	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
-		if (InputTag.IsValid() && !InputTag.MatchesTagExact(FGameplayTag::RequestGameplayTag("InputTag.Hold.Ability.LockOn")))
+		if (InputTag.IsValid() && !InputTag.MatchesTagExact(FGameplayTag::RequestGameplayTag("InputTag.Hold.Ability.LockOn")) && HasMatchingGameplayTag(InputQueueOpen))
 		{
 			OnInputQueueReceived.Broadcast(InputTag);
 			return;

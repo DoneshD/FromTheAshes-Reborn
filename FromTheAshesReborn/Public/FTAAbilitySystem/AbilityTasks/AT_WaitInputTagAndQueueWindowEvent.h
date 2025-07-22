@@ -14,8 +14,10 @@ class FROMTHEASHESREBORN_API UAT_WaitInputTagAndQueueWindowEvent : public UAbili
 	GENERATED_BODY()
 
 protected:
-	
+
+	UPROPERTY()
 	UFTAAbilitySystemComponent* FTAASC = nullptr;
+	
 	FGameplayTag QueuedInputTag;
 
 	struct FQueueWindowHandle

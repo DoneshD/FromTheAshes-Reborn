@@ -38,7 +38,8 @@ protected:
 	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
 
 	// int32 ActivationGroupCount[static_cast<uint8>(EFTAAbilityActivationGroup::MAX)];
-	
+
+	UPROPERTY()
 	TObjectPtr<UFTAAbilityTagRelationshipMapping> TagRelationshipMapping;
 	
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Queue")
 	FGameplayTag QueuedInputTag;
+
+	UPROPERTY(BlueprintReadOnly)
+	FGameplayTag InputQueueOpen = FGameplayTag::RequestGameplayTag("QueueTag.InputQueue.Open");
 	
 public:
 	
