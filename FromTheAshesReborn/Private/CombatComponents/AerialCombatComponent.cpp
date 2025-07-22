@@ -105,8 +105,6 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	ResetAttackTimer();
-
-	UE_LOG(LogTemp, Warning, TEXT("START"))
 	
 }
 

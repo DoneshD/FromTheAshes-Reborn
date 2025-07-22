@@ -48,27 +48,15 @@ void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 
 void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)
 {
-	for (const FGameplayAbilitySpec& Spec : GetActivatableAbilities())
-	{
-		if(Spec.Ability && (Spec.GetDynamicSpecSourceTags().HasTagExact(InputTag)))
-		{
-			const FGameplayTagContainer& DynamicTags = Spec.GetDynamicSpecSourceTags();
-			if (IsAbilityActive(Spec.Ability->GetClass()) && Spec.GetDynamicSpecSourceTags().HasTagExact(ActivationReplaceableTag))
-			{
-				CancelAbilityByClass(Spec.Ability->GetClass());
-			}
-			
-			break;
-		}
-	}
-	
 	const bool BlockingAbilityActive = CurrentlyActiveAbilityOfActivationGroup(ActivationBlockingTag);
 	const bool ReplaceableAbilityActive = CurrentlyActiveAbilityOfActivationGroup(ActivationReplaceableTag);
 	
 	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
 		if (InputTag.IsValid() && !InputTag.MatchesTagExact(FGameplayTag::RequestGameplayTag("InputTag.Hold.Ability.LockOn")) && HasMatchingGameplayTag(InputQueueOpen))
+		// if (InputTag.IsValid() && !InputTag.MatchesTagExact(FGameplayTag::RequestGameplayTag("InputTag.Hold.Ability.LockOn")))
 		{
+			
 			OnInputQueueReceived.Broadcast(InputTag);
 			return;
 		}

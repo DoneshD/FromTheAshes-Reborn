@@ -18,7 +18,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 	Super::Activate();
 	
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(GetOwnerActor());
-
 	
 	if (!PS)
 	{
@@ -71,6 +70,9 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 	{
 		const FGameplayTag& WindowTag = Pair.Key;
 
+		bool bHasTag = FTAASC->HasMatchingGameplayTag(WindowTag);
+		UE_LOG(LogTemp, Warning, TEXT("FTAASC has tag %s: %s"), *WindowTag.ToString(), bHasTag ? TEXT("true") : TEXT("false"));
+		
 		if (FTAASC->HasMatchingGameplayTag(WindowTag))
 		{
 			TArray<UFTAGameplayAbility*>* AbilitiesPtr = QueueableAbilities.Find(WindowTag);
@@ -86,7 +88,8 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 					{
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
-					
+
+					UE_LOG(LogTemp, Warning, TEXT("Activate here 1"))
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
@@ -147,6 +150,8 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
 
+					UE_LOG(LogTemp, Warning, TEXT("Activate here 2"))
+					
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
