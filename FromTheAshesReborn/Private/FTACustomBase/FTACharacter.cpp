@@ -51,12 +51,7 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	
 }
 
-void AFTACharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 
-	UE_LOG(LogTemp, Warning, TEXT("Gravity: %f"), GetCharacterMovement()->GravityScale);
-}
 
 void AFTACharacter::BeginPlay()
 {
@@ -221,13 +216,18 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 
 bool AFTACharacter::HasFlailTag() const
 {
-	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
+	bool bHasTag = FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
+	// UE_LOG(LogTemp, Warning, TEXT("HasFlailTag: %s"), bHasTag ? TEXT("true") : TEXT("false"));
+	return bHasTag;
 }
 
 bool AFTACharacter::HasLaunchedTag() const
 {
-	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
+	bool bHasTag = FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
+	// UE_LOG(LogTemp, Warning, TEXT("HasLaunchedTag: %s"), bHasTag ? TEXT("true") : TEXT("false"));
+	return bHasTag;
 }
+
 
 bool AFTACharacter::HasSlammedTag() const
 {

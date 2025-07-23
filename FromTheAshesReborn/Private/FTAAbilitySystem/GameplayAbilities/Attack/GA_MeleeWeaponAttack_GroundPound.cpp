@@ -83,8 +83,6 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 		GroundPoundEndLocation,
 		GroundPoundSpeed,
 		SlamDuration);
-
-	UE_LOG(LogTemp, Display, TEXT("Groundpound started"));
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

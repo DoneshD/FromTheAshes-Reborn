@@ -79,7 +79,6 @@ public:
 public:
 	
 	AFTACharacter(const FObjectInitializer& ObjectInitializer);
-	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")
