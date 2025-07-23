@@ -50,7 +50,11 @@ public:
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	
 	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
+	void TraceForActors();
 
+	UFUNCTION()
+	void SendHitGPEvent(FHitResult HitItemToAdd, FVector LocationEnd, float Speed, float Duration);
+	
 	UFUNCTION()
 	void OnSlamComplete();
 	

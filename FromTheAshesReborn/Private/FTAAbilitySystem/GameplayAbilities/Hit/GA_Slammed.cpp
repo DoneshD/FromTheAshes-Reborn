@@ -1,7 +1,10 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Slammed.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "EventObjects/SlamEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SlamCharacterAndWait.h"
+#include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 UGA_Slammed::UGA_Slammed()
 {
@@ -22,7 +25,18 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	if (CurrentEventData.OptionalObject)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OptionalObject Name: %s"), *CurrentEventData.OptionalObject->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OptionalObject is not valid."));
+	}
+
+
 	const USlamEventObject* SlamInfoObject = Cast<USlamEventObject>(CurrentEventData.OptionalObject);
+	
 
 	if(!SlamInfoObject)
 	{
@@ -51,9 +65,30 @@ void UGA_Slammed::CancelAbility(const FGameplayAbilitySpecHandle Handle, const F
 void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	GetFTACharacterFromActorInfo()->RemoveAerialEffects();
+	
+	FGameplayEventData RecoverEventData;
+	
+	RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
+	RecoverEventData.Target = GetAvatarActorFromActorInfo();
+	
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.GrantRecovery.GetUp")))
+	{
+		RecoverEventData.EventTag = FGameplayTag::RequestGameplayTag("EffectTag.GrantRecovery.GetUp");
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
+	}
+		
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
+	
 }
 
 void UGA_Slammed::OnSlamComplete()
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("UGA_Slammed::OnSlamComplete"));
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+
 }

@@ -1,6 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_GroundPound.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "EventObjects/SlamEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SlamCharacterAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -18,6 +20,11 @@ UGA_MeleeWeaponAttack_GroundPound::UGA_MeleeWeaponAttack_GroundPound(const FObje
 void UGA_MeleeWeaponAttack_GroundPound::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
+
+	if(IsGroundPounding)
+	{
+		TraceForActors();
+	}
 	
 }
 
@@ -81,55 +88,6 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity = FVector(0.0f, 0.0f, 0.0f);
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0;
 	
-	//Testing sweep
-	TArray<FHitResult> HitResults;
-	TSet<AActor*> UniqueHitActors;
-
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-
-	TArray<AActor*> ActorsToIgnore;
-	ActorsToIgnore.Add(GetFTACharacterFromActorInfo());
-
-	FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
-	FVector End = Start + GetFTACharacterFromActorInfo()->GetActorForwardVector() * 250.0f;
-
-	FVector HalfSize = FVector(50.0f, 50.0f, 50.0f); 
-	FRotator Orientation = FRotator::ZeroRotator;
-
-	UKismetSystemLibrary::BoxTraceMultiForObjects(
-		GetWorld(),
-		Start,
-		End,
-		HalfSize,
-		Orientation,
-		ObjectTypes,
-		false,
-		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration, 
-		HitResults,
-		true,                    
-		FLinearColor::Red,
-		FLinearColor::Green,
-		2.0f
-	);
-
-
-	if(HitResults.Num() > 0 && HitResults.IsValidIndex(0))
-	{
-		for(FHitResult GPHitResult : HitResults)
-		{
-			if(GPHitResult.GetActor() && !UniqueHitActors.Contains(GPHitResult.GetActor()))
-			{
-				UniqueHitActors.Add(GPHitResult.GetActor());
-				if(AEnemyBaseCharacter* EnemyBaseCharacter = Cast<AEnemyBaseCharacter>(GPHitResult.GetActor()))
-				{
-					
-				}
-			}
-		}
-	}
-	
 	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
 	
 	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(
@@ -174,6 +132,9 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 			SlamTask->OnSlamComplete.AddDynamic(this, &UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete);
 			SlamTask->ReadyForActivation();
 		}
+
+		IsGroundPounding = true;
+		
 	}
 }
 
@@ -183,8 +144,102 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 	
 }
 
+void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
+{
+	//Testing sweep
+		TArray<FHitResult> HitResults;
+		TSet<AActor*> UniqueHitActors;
+
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+		TArray<AActor*> ActorsToIgnore;
+		ActorsToIgnore.Add(GetFTACharacterFromActorInfo());
+
+		FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
+		FVector End = Start + GetFTACharacterFromActorInfo()->GetActorForwardVector() * 250.0f;
+
+		FVector HalfSize = FVector(100.0f, 100.0f, 100.0f); 
+		FRotator Orientation = FRotator::ZeroRotator;
+
+		UKismetSystemLibrary::BoxTraceMultiForObjects(
+			GetWorld(),
+			Start,
+			End,
+			HalfSize,
+			Orientation,
+			ObjectTypes,
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::None, 
+			HitResults,
+			true,                    
+			FLinearColor::Red,
+			FLinearColor::Green,
+			2.0f
+		);
+
+
+		if(HitResults.Num() > 0 && HitResults.IsValidIndex(0))
+		{
+			for(FHitResult GPHitResult : HitResults)
+			{
+				if(GPHitResult.GetActor() && !UniqueHitActors.Contains(GPHitResult.GetActor()))
+				{
+					UniqueHitActors.Add(GPHitResult.GetActor());
+					if(AEnemyBaseCharacter* EnemyBaseCharacter = Cast<AEnemyBaseCharacter>(GPHitResult.GetActor()))
+					{
+						FHitResult TempHitResult;
+						FVector EnemyGroundPoundEndLocation;
+
+						FCollisionObjectQueryParams GroundCollisionQueryParams;
+						GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+						GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+						
+						if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(TempHitResult, EnemyBaseCharacter->GetActorLocation(), TraceEndLocation, GroundCollisionQueryParams))
+						{
+							EnemyGroundPoundEndLocation = TempHitResult.ImpactPoint;
+							DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
+						}
+						else
+						{
+							UE_LOG(LogTemp, Error, TEXT("Ground not found"));
+						}
+						SendHitGPEvent(GPHitResult, EnemyGroundPoundEndLocation, GroundPoundSpeed, SlamDuration);
+					}
+				}
+			}
+		}
+}
+
+void UGA_MeleeWeaponAttack_GroundPound::SendHitGPEvent(FHitResult HitItemToAdd, FVector LocationEnd, float Speed, float Duration)
+{
+	FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(HitItemToAdd);
+	
+	USlamEventObject* SlamInfoObj = NewObject<USlamEventObject>(this);
+	SlamInfoObj->SlamData.Location = LocationEnd;
+	SlamInfoObj->SlamData.Speed = Speed;
+	SlamInfoObj->SlamData.Duration = Duration;
+	SlamInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
+	
+	FGameplayEventData OnSlamHitEventData;
+	OnSlamHitEventData.OptionalObject = SlamInfoObj;
+
+	AActor* TargetActor = TargetHitDataHandle.Get(0)->GetHitResult()->GetActor();
+	
+	OnSlamHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnSlamHitEventData.Target = TargetActor;
+	OnSlamHitEventData.ContextHandle.AddHitResult(*TargetHitDataHandle.Get(0)->GetHitResult());
+	
+
+	OnSlamHitEventData.EventTag = FGameplayTag::RequestGameplayTag("TestTag.Tag7");
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnSlamHitEventData.EventTag, OnSlamHitEventData);
+}
+
 void UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete()
 {
+	IsGroundPounding = false;
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
 	PlayAbilityAnimMontage(SlamMontage);
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0;

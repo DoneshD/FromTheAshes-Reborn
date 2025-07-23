@@ -31,8 +31,6 @@ void UAT_SlamCharacterAndWait::Activate()
 {
 	Super::Activate();
 
-	Super::Activate();
-
 	ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
 
 	if(!Character)

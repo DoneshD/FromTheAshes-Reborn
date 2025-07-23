@@ -95,8 +95,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		{
 			int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
 			PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
-			
-			
 		}
 		else
 		{

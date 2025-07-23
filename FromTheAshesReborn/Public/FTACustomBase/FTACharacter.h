@@ -98,6 +98,7 @@ public:
 	void AddCharacterBaseAbilities() const;
 
 	virtual void Landed(const FHitResult& Hit) override;
+	
 
 	//TODO: Allplaceholder below
 	UFUNCTION(BlueprintPure)
@@ -118,4 +119,5 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndHitStop();
 	
+	void RemoveAerialEffects();
 };
