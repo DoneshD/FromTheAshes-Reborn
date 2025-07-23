@@ -1,11 +1,13 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_GroundPound.h"
 
+#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SlamCharacterAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 UGA_MeleeWeaponAttack_GroundPound::UGA_MeleeWeaponAttack_GroundPound(const FObjectInitializer&): TraceStartLocation(),
                                                                                                  TraceEndLocation(),
@@ -40,6 +42,8 @@ bool UGA_MeleeWeaponAttack_GroundPound::CanActivateAbility(const FGameplayAbilit
 	{
 		return false;
 	}
+	
+		
 
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
@@ -55,12 +59,13 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 	TraceStartLocation = ActorInfo->AvatarActor.Get()->GetActorLocation();
 	TraceEndLocation = TraceStartLocation + FVector(0.0f, 0.0f, -TraceVerticalDownwardDistance);
 
-	FCollisionObjectQueryParams CollisionQueryParams;
-	CollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	CollisionQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	FCollisionObjectQueryParams GroundCollisionQueryParams;
+	GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
 	
 
-	if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(HitResult, ActorInfo->AvatarActor.Get()->GetActorLocation(), TraceEndLocation, CollisionQueryParams))
+	if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(HitResult, ActorInfo->AvatarActor.Get()->GetActorLocation(), TraceEndLocation, GroundCollisionQueryParams))
 	{
 		GroundPoundEndLocation = HitResult.ImpactPoint;
 		DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
@@ -75,7 +80,56 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity = FVector(0.0f, 0.0f, 0.0f);
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0;
+	
+	//Testing sweep
+	TArray<FHitResult> HitResults;
+	TSet<AActor*> UniqueHitActors;
 
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetFTACharacterFromActorInfo());
+
+	FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
+	FVector End = Start + GetFTACharacterFromActorInfo()->GetActorForwardVector() * 250.0f;
+
+	FVector HalfSize = FVector(50.0f, 50.0f, 50.0f); 
+	FRotator Orientation = FRotator::ZeroRotator;
+
+	UKismetSystemLibrary::BoxTraceMultiForObjects(
+		GetWorld(),
+		Start,
+		End,
+		HalfSize,
+		Orientation,
+		ObjectTypes,
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::ForDuration, 
+		HitResults,
+		true,                    
+		FLinearColor::Red,
+		FLinearColor::Green,
+		2.0f
+	);
+
+
+	if(HitResults.Num() > 0 && HitResults.IsValidIndex(0))
+	{
+		for(FHitResult GPHitResult : HitResults)
+		{
+			if(GPHitResult.GetActor() && !UniqueHitActors.Contains(GPHitResult.GetActor()))
+			{
+				UniqueHitActors.Add(GPHitResult.GetActor());
+				if(AEnemyBaseCharacter* EnemyBaseCharacter = Cast<AEnemyBaseCharacter>(GPHitResult.GetActor()))
+				{
+					
+				}
+			}
+		}
+	}
+	
 	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
 	
 	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(
