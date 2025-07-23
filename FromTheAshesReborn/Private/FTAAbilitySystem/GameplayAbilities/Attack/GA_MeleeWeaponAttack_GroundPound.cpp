@@ -5,10 +5,11 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 UGA_MeleeWeaponAttack_GroundPound::UGA_MeleeWeaponAttack_GroundPound(const FObjectInitializer&): TraceStartLocation(),
-	TraceEndLocation(),
-	GroundPoundEndLocation()
+                                                                                                 TraceEndLocation(),
+                                                                                                 GroundPoundEndLocation()
 {
 }
 
@@ -46,6 +47,9 @@ bool UGA_MeleeWeaponAttack_GroundPound::CanActivateAbility(const FGameplayAbilit
 void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	//TODO: Need to change this
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")));
 	
 	FHitResult HitResult;
 	TraceStartLocation = ActorInfo->AvatarActor.Get()->GetActorLocation();
@@ -68,24 +72,19 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 	
 	DrawDebugLine(GetWorld(), TraceStartLocation, TraceEndLocation, FColor::Red, false, 2.0f, 0, 2.0f);
 
-	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
 
+	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity = FVector(0.0f, 0.0f, 0.0f);
+	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0;
+
+	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
+	
 	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(
 		this,
 		GroundPoundEndLocation,
 		GroundPoundSpeed,
 		SlamDuration);
-	
-	if(SlamTask)
-	{
-		SlamTask->OnSlamComplete.AddDynamic(this, &UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete);
-		SlamTask->ReadyForActivation();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Slam task is invalid"));
-	}
-	
+
+	UE_LOG(LogTemp, Display, TEXT("Groundpound started"));
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -98,7 +97,6 @@ void UGA_MeleeWeaponAttack_GroundPound::EndAbility(const FGameplayAbilitySpecHan
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-
 void UGA_MeleeWeaponAttack_GroundPound::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCancelled(EventTag, EventData);
@@ -106,13 +104,25 @@ void UGA_MeleeWeaponAttack_GroundPound::OnMontageCancelled(FGameplayTag EventTag
 
 void UGA_MeleeWeaponAttack_GroundPound::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	if(!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(EventTag))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::EventMontageReceived - EventTag is invalid"))
+		return;
+	}
 	
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("CombatMovementTag.TestTag2")))
+	{
+		if (SlamTask)
+		{
+			SlamTask->OnSlamComplete.AddDynamic(this, &UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete);
+			SlamTask->ReadyForActivation();
+		}
+	}
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -123,5 +133,8 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 
 void UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete()
 {
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
 	PlayAbilityAnimMontage(SlamMontage);
+	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0;
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

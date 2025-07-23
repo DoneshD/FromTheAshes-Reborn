@@ -51,6 +51,13 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	
 }
 
+void AFTACharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("Gravity: %f"), GetCharacterMovement()->GravityScale);
+}
+
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();

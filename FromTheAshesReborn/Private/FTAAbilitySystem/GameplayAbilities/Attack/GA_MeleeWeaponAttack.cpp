@@ -75,6 +75,8 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	FTAChar = Cast<AFTACharacter>(GetAvatarActorFromActorInfo());
 
+	UE_LOG(LogTemp, Log, TEXT("UGA_MeleeWeaponAttack is Active Ability"));
+
 	if(!FTAChar)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - Avatar Actor Not FTAChar"));

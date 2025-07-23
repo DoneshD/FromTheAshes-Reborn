@@ -34,9 +34,6 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
 
-	UPROPERTY()
-	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> FinishSlamMontageTask;
-
 public:
 	
 	UGA_MeleeWeaponAttack_GroundPound(const FObjectInitializer& = FObjectInitializer::Get());

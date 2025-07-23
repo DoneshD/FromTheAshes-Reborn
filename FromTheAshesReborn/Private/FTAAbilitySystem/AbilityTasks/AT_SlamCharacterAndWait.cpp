@@ -93,7 +93,6 @@ void UAT_SlamCharacterAndWait::UpdateMovement(float DeltaTime)
 
 void UAT_SlamCharacterAndWait::LocationReached()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UAT_SlamCharacterAndWait::LocationReached"));
 	IsSlamming = false;
 	OnSlamComplete.Broadcast();
 	EndTask();

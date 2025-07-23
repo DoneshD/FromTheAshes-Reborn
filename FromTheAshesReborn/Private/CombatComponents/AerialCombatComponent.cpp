@@ -57,6 +57,7 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(IsComponentActive)
 	{
 		// PrintGravity();
+		
 		TotalAirTime += DeltaTime;
 		CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
 	}
@@ -69,7 +70,7 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackCounter = 0;
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
-	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	// FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 	AlreadyLaunched = false;
 
 	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
@@ -93,7 +94,7 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 {
 	IsComponentActive = true;
 
-	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	// FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	ResetAttackTimer();
 	
 }
