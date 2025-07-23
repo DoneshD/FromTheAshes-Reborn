@@ -25,19 +25,8 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if (CurrentEventData.OptionalObject)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("OptionalObject Name: %s"), *CurrentEventData.OptionalObject->GetName());
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("OptionalObject is not valid."));
-	}
-
-
 	const USlamEventObject* SlamInfoObject = Cast<USlamEventObject>(CurrentEventData.OptionalObject);
 	
-
 	if(!SlamInfoObject)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::ActivateAbility - SlamInfoObject is Null"));
@@ -88,7 +77,5 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 
 void UGA_Slammed::OnSlamComplete()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UGA_Slammed::OnSlamComplete"));
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-
 }
