@@ -454,7 +454,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
 	{
 		OnHitEventData.EventTag = HitReactionTag;
-		
 	}
 	else
 	{
