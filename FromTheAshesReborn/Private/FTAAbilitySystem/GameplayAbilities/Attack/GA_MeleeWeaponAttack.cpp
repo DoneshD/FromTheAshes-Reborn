@@ -105,8 +105,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(BoxHalfSize, BoxHalfSize, BoxHalfSize);
-
-
+	
 	if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
@@ -369,7 +368,8 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		return;
 	}
 	
-	HitInfoObj->HitData.HitDirection = MeleeWeaponActor->HitDirection;
+	// HitInfoObj->HitData.HitDirection = MeleeWeaponActor->HitDirection;
+	HitInfoObj->HitData.HitDirection = TestHitDirection;
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 	

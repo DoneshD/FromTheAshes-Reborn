@@ -3,6 +3,7 @@
 
 #include "CoreMinimal.h"
 #include "../GA_FromEquipment.h"
+#include "EventObjects/HitEventObject.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
 class UNiagaraSystem;
@@ -105,6 +106,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
 	float AfterImageDistance = 200.0f;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Test")
+	EHitReactionDirection TestHitDirection;
 
 protected:
 
