@@ -55,30 +55,40 @@ void UWarpingManagerComponent::AddWarpTarget(FVector TargetLocation, FRotator Ta
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(CurrentWarpTargetName, TargetLocation,  FRotator(0, TargetRotation.Yaw, 0));
 }
 
-AActor* UWarpingManagerComponent::FilterBestActor(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation)
+float UWarpingManagerComponent::GetDistanceFromActorToAxis(AActor* ActorToCheck, FVector TraceStartLocation, FVector TraceEndLocation)
+{
+	FVector TraceAxis = (TraceEndLocation - TraceStartLocation).GetSafeNormal();
+	
+	FVector StartToActor = ActorToCheck->GetActorLocation() - TraceStartLocation;
+	float Dot = FVector::DotProduct(StartToActor, TraceAxis);
+	FVector ClosestPointToAxis = TraceStartLocation + Dot * TraceAxis;
+			
+	float Distance = FVector::Dist(ActorToCheck->GetActorLocation(), ClosestPointToAxis);
+
+	return Distance;
+}
+
+AActor* UWarpingManagerComponent::FilterClosestActorToAxisTrace(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation)
 {
 	TSet<AActor*> UniqueHitActors;
 	float DistanceToClosestActor = FLT_MAX;
 	AActor* ClosestActor = nullptr;
 
-	FVector CylindricalAxis = (TraceEndLocation - TraceStartLocation).GetSafeNormal();
+	// FVector TraceAxis = (TraceEndLocation - TraceStartLocation).GetSafeNormal();
 	
 	for(FHitResult Hit : HitArray)
 	{
 		if(Hit.GetActor() && !UniqueHitActors.Contains(Hit.GetActor()))
 		{
 			UniqueHitActors.Add(Hit.GetActor());
-			// float DistanceFromActor = FVector::Dist(Hit.GetActor()->GetActorLocation(), GetOwner()->GetActorLocation());
-			// if(DistanceFromActor < DistanceToClosestActor)
-			// {
-			// 	DistanceToClosestActor = DistanceFromActor;
-			// 	ClosestActor = Hit.GetActor();
-			// }
-			FVector StartToActor = Hit.GetActor()->GetActorLocation() - TraceStartLocation;
-			float Dot = FVector::DotProduct(StartToActor, CylindricalAxis);
-			FVector ClosestPointToAxis = TraceStartLocation + Dot * CylindricalAxis;
+			
+			// FVector StartToActor = Hit.GetActor()->GetActorLocation() - TraceStartLocation;
+			// float Dot = FVector::DotProduct(StartToActor, TraceAxis);
+			// FVector ClosestPointToAxis = TraceStartLocation + Dot * TraceAxis;
 
-			float Distance = FVector::DistSquared(Hit.GetActor()->GetActorLocation(), ClosestPointToAxis);
+			// float Distance = FVector::DistSquared(Hit.GetActor()->GetActorLocation(), ClosestPointToAxis);
+			
+			float Distance = GetDistanceFromActorToAxis(Hit.GetActor(), TraceStartLocation, TraceEndLocation);
 			
 			if(Distance < DistanceToClosestActor)
 			{
@@ -98,6 +108,34 @@ AActor* UWarpingManagerComponent::FilterBestActor(TArray<FHitResult> HitArray, F
 	}
 }
 
+AActor* UWarpingManagerComponent::FilterClosestActorToOwner(TArray<FHitResult> HitArray)
+{
+	TSet<AActor*> UniqueHitActors;
+	float DistanceToClosestActor = FLT_MAX;
+	AActor* ClosestActor = nullptr;
+	
+	for(FHitResult Hit : HitArray)
+	{
+		if(Hit.GetActor() && !UniqueHitActors.Contains(Hit.GetActor()))
+		{
+			UniqueHitActors.Add(Hit.GetActor());
+			float DistanceFromActor = FVector::Dist(Hit.GetActor()->GetActorLocation(), GetOwner()->GetActorLocation());
+			if(DistanceFromActor < DistanceToClosestActor)
+			{
+				DistanceToClosestActor = DistanceFromActor;
+				ClosestActor = Hit.GetActor();
+			}
+		}
+	}
+
+	if(!ClosestActor)
+	{
+		return HitArray[0].GetActor();
+	}
+	
+	return ClosestActor;
+}
+
 void UWarpingManagerComponent::RemoveWarpTarget()
 {
 	MotionWarpingComponent->RemoveWarpTarget(CurrentWarpTargetName);
@@ -107,8 +145,6 @@ void UWarpingManagerComponent::TraceForTargets(FName WarpTargetName, float Start
 {
 	CurrentWarpTargetName = WarpTargetName;
 	
-	// FHitResult OutHit;
-
 	TArray<FHitResult> OutHits;
 	FVector TraceStartLocation = GetOwner()->GetActorLocation() + GetTraceDirection() * StartLocationOffset;
 	FVector TraceEndLocation =  GetOwner()->GetActorLocation() + GetTraceDirection() * EndLocationDistance;
@@ -119,22 +155,6 @@ void UWarpingManagerComponent::TraceForTargets(FName WarpTargetName, float Start
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(FTACharacter->TargetObjectTraceChannel));
 	
-	// bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
-	// 	GetWorld(),
-	// 	TraceStartLocation,
-	// 	TraceEndLocation,
-	// 	TraceRadius,
-	// 	ObjectTypes,
-	// 	false,
-	// 	ActorArray,
-	// 	EDrawDebugTrace::ForDuration,
-	// 	OutHit,
-	// 	true,
-	// 	FLinearColor::Red,
-	// 	FLinearColor::Green,
-	// 	5.0f
-	// );
-
 	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
 		GetWorld(),
 		TraceStartLocation,
@@ -153,8 +173,47 @@ void UWarpingManagerComponent::TraceForTargets(FName WarpTargetName, float Start
 
 	if(bHit)
 	{
-		AActor* BestActor = FilterBestActor(OutHits, TraceStartLocation, TraceEndLocation);
-		// DrawDebugSphere(GetWorld(), BestActor->GetActorLocation(), 25.0f, 12, FColor::Blue, false, 5.0f);
+		AActor* BestActor = nullptr;
+		AActor* ClosestActorToOwner = FilterClosestActorToOwner(OutHits);
+		AActor* ClosestActorToAxis = FilterClosestActorToAxisTrace(OutHits, TraceStartLocation, TraceEndLocation);
+
+		if(ClosestActorToOwner == ClosestActorToAxis)
+		{
+			BestActor = ClosestActorToOwner;
+		}
+		else
+		{
+			
+			float DistanceFromClosestActor = FVector::Dist(ClosestActorToOwner->GetActorLocation(), GetOwner()->GetActorLocation());
+			float DistanceFromAxisActor = FVector::Dist(ClosestActorToAxis->GetActorLocation(), GetOwner()->GetActorLocation());
+
+			float AxisDistanceForAxisActor = GetDistanceFromActorToAxis(ClosestActorToAxis, TraceStartLocation, TraceEndLocation);
+			float AxisDistanceForClosestActor = GetDistanceFromActorToAxis(ClosestActorToOwner, TraceStartLocation, TraceEndLocation);
+
+			float DifferenceRawDistance = FMath::Abs(DistanceFromClosestActor - DistanceFromAxisActor);
+			float DifferenceAxisDistance = FMath::Abs(AxisDistanceForAxisActor - AxisDistanceForClosestActor);
+
+			/*
+
+			UE_LOG(LogTemp, Warning, TEXT("Closest Actor Raw Distance: %f"), DistanceFromClosestActor);
+			UE_LOG(LogTemp, Warning, TEXT("Axis Actor Raw Distance: %f"), DistanceFromAxisActor);
+
+			UE_LOG(LogTemp, Warning, TEXT("Axis Actor Axis Distance: %f"), AxisDistanceForAxisActor);
+			UE_LOG(LogTemp, Warning, TEXT("Closest Actor Axis Distance: %f"), AxisDistanceForClosestActor);
+
+			UE_LOG(LogTemp, Warning, TEXT("DifferenceRawDistance: %f"), DifferenceRawDistance);
+			UE_LOG(LogTemp, Warning, TEXT("DifferenceAxisDistance: %f"), DifferenceAxisDistance);
+			*/
+			
+			if (DifferenceRawDistance / (DifferenceAxisDistance) < 0.33f)
+			{
+				BestActor =  ClosestActorToOwner;
+			}
+			else
+			{
+				BestActor = ClosestActorToAxis;
+			}
+		}
 		
 		//TODO: Change later
 		AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(BestActor);
@@ -179,6 +238,10 @@ void UWarpingManagerComponent::TraceForTargets(FName WarpTargetName, float Start
 			// 	0,
 			// 	2.0f
 			// );
+
+			DrawDebugSphere(GetWorld(), ClosestActorToOwner->GetActorLocation(), 25.0f, 12, FColor::Blue, false, 5.0f);
+			DrawDebugSphere(GetWorld(), ClosestActorToAxis->GetActorLocation(), 25.0f, 12, FColor::Red, false, 5.0f);
+			
 		
 			AddWarpTarget(WarpTargetLocation, WarpTargetRotation);
 		}
