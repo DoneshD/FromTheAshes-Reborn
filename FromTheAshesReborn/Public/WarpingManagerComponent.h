@@ -38,12 +38,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void AddWarpTarget(FVector TargetLocation, FRotator TargetRotation);
+
+	AActor* FilterBestActor(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation);
 	
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
-	void TraceForTarget(FName WarpTargetName,
+	void TraceForTargets(FName WarpTargetName,
 		float StartTraceLocationOffset = 100,
 		float EndTraceLocationDistance = 800,
-		float TraceRadius = 100.0f,
+		float TraceRadius = 600.0f,
 		float WarpTargetLocationOffset = 165.0f);
 
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")

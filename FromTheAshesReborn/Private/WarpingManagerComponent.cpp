@@ -55,16 +55,61 @@ void UWarpingManagerComponent::AddWarpTarget(FVector TargetLocation, FRotator Ta
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(CurrentWarpTargetName, TargetLocation,  FRotator(0, TargetRotation.Yaw, 0));
 }
 
+AActor* UWarpingManagerComponent::FilterBestActor(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation)
+{
+	TSet<AActor*> UniqueHitActors;
+	float DistanceToClosestActor = FLT_MAX;
+	AActor* ClosestActor = nullptr;
+
+	FVector CylindricalAxis = (TraceEndLocation - TraceStartLocation).GetSafeNormal();
+	
+	for(FHitResult Hit : HitArray)
+	{
+		if(Hit.GetActor() && !UniqueHitActors.Contains(Hit.GetActor()))
+		{
+			UniqueHitActors.Add(Hit.GetActor());
+			// float DistanceFromActor = FVector::Dist(Hit.GetActor()->GetActorLocation(), GetOwner()->GetActorLocation());
+			// if(DistanceFromActor < DistanceToClosestActor)
+			// {
+			// 	DistanceToClosestActor = DistanceFromActor;
+			// 	ClosestActor = Hit.GetActor();
+			// }
+			FVector StartToActor = Hit.GetActor()->GetActorLocation() - TraceStartLocation;
+			float Dot = FVector::DotProduct(StartToActor, CylindricalAxis);
+			FVector ClosestPointToAxis = TraceStartLocation + Dot * CylindricalAxis;
+
+			float Distance = FVector::DistSquared(Hit.GetActor()->GetActorLocation(), ClosestPointToAxis);
+			
+			if(Distance < DistanceToClosestActor)
+			{
+				DistanceToClosestActor = Distance;
+				ClosestActor = Hit.GetActor();
+			}
+		}
+	}
+
+	if(!ClosestActor)
+	{
+		return HitArray[0].GetActor();
+	}
+	else
+	{
+		return ClosestActor;
+	}
+}
+
 void UWarpingManagerComponent::RemoveWarpTarget()
 {
 	MotionWarpingComponent->RemoveWarpTarget(CurrentWarpTargetName);
 }
 
-void UWarpingManagerComponent::TraceForTarget(FName WarpTargetName, float StartLocationOffset, float EndLocationDistance, float TraceRadius, float WarpTargetLocationOffset)
+void UWarpingManagerComponent::TraceForTargets(FName WarpTargetName, float StartLocationOffset, float EndLocationDistance, float TraceRadius, float WarpTargetLocationOffset)
 {
 	CurrentWarpTargetName = WarpTargetName;
 	
-	FHitResult OutHit;
+	// FHitResult OutHit;
+
+	TArray<FHitResult> OutHits;
 	FVector TraceStartLocation = GetOwner()->GetActorLocation() + GetTraceDirection() * StartLocationOffset;
 	FVector TraceEndLocation =  GetOwner()->GetActorLocation() + GetTraceDirection() * EndLocationDistance;
 	
@@ -74,7 +119,23 @@ void UWarpingManagerComponent::TraceForTarget(FName WarpTargetName, float StartL
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(FTACharacter->TargetObjectTraceChannel));
 	
-	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+	// bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
+	// 	GetWorld(),
+	// 	TraceStartLocation,
+	// 	TraceEndLocation,
+	// 	TraceRadius,
+	// 	ObjectTypes,
+	// 	false,
+	// 	ActorArray,
+	// 	EDrawDebugTrace::ForDuration,
+	// 	OutHit,
+	// 	true,
+	// 	FLinearColor::Red,
+	// 	FLinearColor::Green,
+	// 	5.0f
+	// );
+
+	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
 		GetWorld(),
 		TraceStartLocation,
 		TraceEndLocation,
@@ -83,40 +144,46 @@ void UWarpingManagerComponent::TraceForTarget(FName WarpTargetName, float StartL
 		false,
 		ActorArray,
 		EDrawDebugTrace::None,
-		OutHit,
+		OutHits,
 		true,
 		FLinearColor::Red,
 		FLinearColor::Green,
 		5.0f
-	);
-	
+		);
 
-	//TODO: Change later
-	AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(OutHit.GetActor());
-	if (bHit && EnemyActor && !EnemyActor->IsDead)
+	if(bHit)
 	{
-		FVector OffsetDirection = (GetOwner()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
+		AActor* BestActor = FilterBestActor(OutHits, TraceStartLocation, TraceEndLocation);
+		// DrawDebugSphere(GetWorld(), BestActor->GetActorLocation(), 25.0f, 12, FColor::Blue, false, 5.0f);
 		
-		FVector WarpTargetLocation = EnemyActor->GetActorLocation() + OffsetDirection * WarpTargetLocationOffset;
-		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), EnemyActor->GetActorLocation());
-		FRotator WarpTargetRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
-
-		// DrawDebugSphere(GetWorld(), WarpTargetLocation, 25.0f, 12, FColor::Blue, false, 5.0f);
-
-		const FVector Forward = WarpTargetRotation.Vector();
-		// DrawDebugLine(
-		// 	GetWorld(),
-		// 	WarpTargetLocation,
-		// 	WarpTargetLocation + Forward * 100.0f,
-		// 	FColor::Cyan,
-		// 	false,
-		// 	5.0f,
-		// 	0,
-		// 	2.0f
-		// );
-
-		AddWarpTarget(WarpTargetLocation, WarpTargetRotation);
+		//TODO: Change later
+		AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(BestActor);
+		if (bHit && EnemyActor && !EnemyActor->IsDead)
+		{
+			FVector OffsetDirection = (GetOwner()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
+			
+			FVector WarpTargetLocation = EnemyActor->GetActorLocation() + OffsetDirection * WarpTargetLocationOffset;
+			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), EnemyActor->GetActorLocation());
+			FRotator WarpTargetRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
+		
+			// DrawDebugSphere(GetWorld(), WarpTargetLocation, 25.0f, 12, FColor::Blue, false, 5.0f);
+		
+			// const FVector Forward = WarpTargetRotation.Vector();
+			// DrawDebugLine(
+			// 	GetWorld(),
+			// 	WarpTargetLocation,
+			// 	WarpTargetLocation + Forward * 100.0f,
+			// 	FColor::Cyan,
+			// 	false,
+			// 	5.0f,
+			// 	0,
+			// 	2.0f
+			// );
+		
+			AddWarpTarget(WarpTargetLocation, WarpTargetRotation);
+		}
 	}
+	
 }
 
 FVector UWarpingManagerComponent::GetTraceDirection()
