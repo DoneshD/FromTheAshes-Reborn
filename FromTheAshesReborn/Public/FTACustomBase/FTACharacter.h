@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UWarpingManagerComponent;
 class UAerialCombatComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
@@ -37,6 +38,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "FTACharacter | Ability Set")
 	TObjectPtr<UFTACharacterData> FTACharacterAbilitySetData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace")
+	TEnumAsByte<ECollisionChannel> TargetObjectTraceChannel;
+
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
 
@@ -45,6 +49,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
+	TObjectPtr<UWarpingManagerComponent> WarpingManagerComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;

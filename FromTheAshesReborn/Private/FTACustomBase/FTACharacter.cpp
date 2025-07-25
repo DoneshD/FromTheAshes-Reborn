@@ -3,6 +3,7 @@
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
 #include "NiagaraComponent.h"
+#include "WarpingManagerComponent.h"
 #include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
@@ -37,6 +38,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	this->AddOwnedComponent(MotionWarpingComponent);
 
+	WarpingManagerComponent = CreateDefaultSubobject<UWarpingManagerComponent>(TEXT("WarpingManagerComponent"));
+	this->AddOwnedComponent(WarpingManagerComponent);
+
 	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
 	this->AddOwnedComponent(ComboManagerComponent);
 
@@ -65,6 +69,13 @@ void AFTACharacter::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - AirCombatComponent is null"), *GetActorNameOrLabel());
 		return;
 	}
+
+	if (!WarpingManagerComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - WarpingManagerComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 }
 

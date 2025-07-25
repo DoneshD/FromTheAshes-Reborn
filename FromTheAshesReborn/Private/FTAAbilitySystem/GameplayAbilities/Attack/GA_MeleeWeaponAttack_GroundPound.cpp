@@ -151,7 +151,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 		TSet<AActor*> UniqueHitActors;
 
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(GetFTACharacterFromActorInfo()->TargetObjectTraceChannel));
 
 		TArray<AActor*> ActorsToIgnore;
 		ActorsToIgnore.Add(GetFTACharacterFromActorInfo());
@@ -171,7 +171,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 			ObjectTypes,
 			false,
 			ActorsToIgnore,
-			EDrawDebugTrace::None, 
+			EDrawDebugTrace::ForDuration, 
 			HitResults,
 			true,                    
 			FLinearColor::Red,

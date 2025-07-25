@@ -208,84 +208,11 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		ComboManagerComponent->PauseCurrentAttack = false;
 
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
-		MotionWarpToTarget();
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
 		ResetMeleeAttack();
-	}
-}
-
-void UGA_MeleeWeaponAttack::MotionWarpToTarget()
-{
-	Super::MotionWarpToTarget();
-
-	if(!WarpTargetName.IsValid())
-	{
-		UE_LOG(LogTemp, Error, TEXT("WarpTargetName is Invalid"));
-		return;
-	}
-	
-	AFTAPlayerState* PS = Cast<AFTAPlayerState>(CurrentActorInfo->OwnerActor.Get());
-	if(!PS)
-	{
-		return;
-	}
-	
-	FVector TraceDirection;
-	
-	if(!PS->HardLockedTargetActor)
-	{
-		TraceDirection = UInputReadingFunctionLibrary::CheckInputVector(GetFTACharacterFromActorInfo()->GetCharacterMovement());
-	}
-	else
-	{
-		TraceDirection = (PS->HardLockedTargetActor->GetActorLocation() - GetFTACharacterFromActorInfo()->GetActorLocation()).GetSafeNormal();
-	}
-	
-	FHitResult OutHit;
-	FVector TraceStartLocation = GetFTACharacterFromActorInfo()->GetActorLocation() + TraceDirection * 100;
-	FVector TraceEndLocation = GetFTACharacterFromActorInfo()->GetActorLocation() + TraceDirection * 800;
-	
-	TArray<AActor*> ActorArray;
-	ActorArray.Add(GetFTACharacterFromActorInfo());
-
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-	
-	bool bHit = UKismetSystemLibrary::SphereTraceSingleForObjects(
-		GetWorld(),
-		TraceStartLocation,
-		TraceEndLocation,
-		100.f,
-		ObjectTypes,
-		false,
-		ActorArray,
-		EDrawDebugTrace::None,
-		OutHit,
-		true,
-		FLinearColor::Red,
-		FLinearColor::Green,
-		5.0f
-	);
-
-	//TODO: Change later
-	AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(OutHit.GetActor());
-	if (bHit && EnemyActor && !EnemyActor->IsDead)
-	{
-		FVector OffsetDirection = (GetFTACharacterFromActorInfo()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
-		
-		FVector WarpTargetLocation = OutHit.ImpactPoint + OffsetDirection * MotionWarpLocationOffset;
-		FRotator WarpTargetRotation = UKismetMathLibrary::FindLookAtRotation(GetFTACharacterFromActorInfo()->GetActorLocation(), EnemyActor->GetActorLocation());
-		
-		GetFTACharacterFromActorInfo()->MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(WarpTargetName, WarpTargetLocation,  FRotator(0, WarpTargetRotation.Yaw, 0));
-
-
-		if(FVector::Dist(FTAChar->GetActorLocation(), WarpTargetLocation) > AfterImageDistance)
-		{
-			SpawnAfterImage();
-		}
 	}
 }
 

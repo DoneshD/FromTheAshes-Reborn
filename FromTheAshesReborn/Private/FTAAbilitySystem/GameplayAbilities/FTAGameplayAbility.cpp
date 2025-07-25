@@ -426,12 +426,6 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 
 	OutAbilitySource = Cast<IFTAAbilitySourceInterface>(SourceObject);
 }
-
-void UFTAGameplayAbility::MotionWarpToTarget()
-{
-	
-}
-
 void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
 	if(!AnimMontage)
@@ -449,7 +443,6 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 	PlayMontageTask->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
 	PlayMontageTask->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
 	
-	MotionWarpToTarget();
 
 	PlayMontageTask->ReadyForActivation();
 
