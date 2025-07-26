@@ -109,6 +109,7 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Test")
 	EHitReactionDirection TestHitDirection;
+	
 
 protected:
 

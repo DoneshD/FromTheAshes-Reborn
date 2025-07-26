@@ -308,6 +308,7 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	
 	if(DamageEffect)
 	{
 		TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
@@ -320,34 +321,58 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
-
-	if(CurrentHitReactionEffect)
+	if (!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag13")))
 	{
-		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		TargetDataHandle,
-		CurrentHitReactionEffect, 
-		1,
-		1
-		);
-	}
-	else
-	{
-		if(HitReactionEffect)
+		if(CurrentHitReactionEffect)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("CurrentHitReactionEffect valid"));
 			TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
 			CurrentSpecHandle,
 			CurrentActorInfo,
 			CurrentActivationInfo,
 			TargetDataHandle,
-			HitReactionEffect, 
+			CurrentHitReactionEffect, 
 			1,
 			1
 			);
 		}
+		else
+		{
+			if(HitReactionEffect)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("HitReactionEffect valid"));
+				
+				// TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
+				// CurrentSpecHandle,
+				// CurrentActorInfo,
+				// CurrentActivationInfo,
+				// TargetDataHandle,
+				// HitReactionEffect, 
+				// 1,
+				// 1
+				// );
+
+				FGameplayEffectSpecHandle TestHandle = MakeOutgoingGameplayEffectSpec(HitReactionEffect, 1.0f);
+				
+				TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+						CurrentSpecHandle,
+						CurrentActorInfo,
+						CurrentActivationInfo,
+						TestHandle,
+						TargetDataHandle
+					);
+
+				if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag13")))
+				{
+					GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("TestTag.Tag13")));
+					UE_LOG(LogTemp, Warning, TEXT("Removing!"));
+		
+				}
+			}
+			
+		}
 	}
+	
 	
 }
 
