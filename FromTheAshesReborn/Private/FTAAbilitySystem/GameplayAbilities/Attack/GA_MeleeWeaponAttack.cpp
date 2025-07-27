@@ -321,59 +321,37 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
-	if (!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag13")))
+	
+	if(CurrentHitReactionEffect)
 	{
-		if(CurrentHitReactionEffect)
+		UE_LOG(LogTemp, Warning, TEXT("CurrentHitReactionEffect valid"));
+		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		TargetDataHandle,
+		CurrentHitReactionEffect, 
+		1,
+		1
+		);
+	}
+	else
+	{
+		if(HitReactionEffect)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("CurrentHitReactionEffect valid"));
-			TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
-			CurrentSpecHandle,
-			CurrentActorInfo,
-			CurrentActivationInfo,
-			TargetDataHandle,
-			CurrentHitReactionEffect, 
-			1,
-			1
-			);
-		}
-		else
-		{
-			if(HitReactionEffect)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("HitReactionEffect valid"));
-				
-				// TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
-				// CurrentSpecHandle,
-				// CurrentActorInfo,
-				// CurrentActivationInfo,
-				// TargetDataHandle,
-				// HitReactionEffect, 
-				// 1,
-				// 1
-				// );
-
-				FGameplayEffectSpecHandle TestHandle = MakeOutgoingGameplayEffectSpec(HitReactionEffect, 1.0f);
-				
-				TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
-						CurrentSpecHandle,
-						CurrentActorInfo,
-						CurrentActivationInfo,
-						TestHandle,
-						TargetDataHandle
-					);
-
-				if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag13")))
-				{
-					GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("TestTag.Tag13")));
-					UE_LOG(LogTemp, Warning, TEXT("Removing!"));
-		
-				}
-			}
+			UE_LOG(LogTemp, Warning, TEXT("HitReactionEffect valid"));
 			
+			FGameplayEffectSpecHandle TestHandle = MakeOutgoingGameplayEffectSpec(HitReactionEffect, 1.0f);
+			
+			TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+					CurrentSpecHandle,
+					CurrentActorInfo,
+					CurrentActivationInfo,
+					TestHandle,
+					TargetDataHandle
+				);
 		}
 	}
-	
-	
 }
 
 void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
