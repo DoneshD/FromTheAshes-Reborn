@@ -16,6 +16,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
+	FGameplayTag HitReactionTag;
+
 public:
 
 	UGA_ReceiveHit();

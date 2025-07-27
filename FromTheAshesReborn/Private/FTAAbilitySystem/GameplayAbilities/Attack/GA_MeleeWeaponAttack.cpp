@@ -12,6 +12,7 @@
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemGlobals.h"
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "NiagaraSystem.h"
@@ -324,7 +325,6 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 	
 	if(CurrentHitReactionEffect)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("CurrentHitReactionEffect valid"));
 		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
@@ -339,8 +339,6 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 	{
 		if(HitReactionEffect)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HitReactionEffect valid"));
-			
 			FGameplayEffectSpecHandle TestHandle = MakeOutgoingGameplayEffectSpec(HitReactionEffect, 1.0f);
 			
 			TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(

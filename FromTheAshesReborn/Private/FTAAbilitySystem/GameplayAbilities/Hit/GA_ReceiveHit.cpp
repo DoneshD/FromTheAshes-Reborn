@@ -21,15 +21,17 @@ void UGA_ReceiveHit::OnAbilityTick(float DeltaTime)
 
 bool UGA_ReceiveHit::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-
-	
-	
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
 
 void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitReactionTag))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(HitReactionTag);
+	}
 
 	if(GetFTACharacterFromActorInfo()->IsDead || GetFTACharacterFromActorInfo()->IsAlreadyDead)
 	{
@@ -67,15 +69,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
 
-	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Cast<AEnemyBaseCharacter>(ActorInfo->AvatarActor));
-
-	if(Enemy)
-	{
-		if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AITag.Hit")))
-		{
-			GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AITag.Hit"));
-		}
-	}
 	
 	if(!NonMontageAbility)
 	{
@@ -114,15 +107,17 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(ActorInfo->AvatarActor);
-
-	if(Enemy)
+	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitReactionTag))
 	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AITag.Hit"));
-		// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("HitTag.GameplayEvent.Stagger")));
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HitReactionTag);
 	}
 
-	// GetFTAAbilitySystemComponentFromActorInfo()->ClearAbility(CurrentSpecHandle);
+	// if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitReactionTag))
+	// {
+		// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitReactionTag));
+		// GetFTAAbilitySystemComponentFromActorInfo()->RemoveDynamicTagGameplayEffect(HitReactionTag);
+		// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithTags(FGameplayTagContainer(HitReactionTag));
+	// }
 }
 
 void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -134,13 +129,6 @@ void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventDat
 void UGA_ReceiveHit::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
-
-	if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag13")))
-	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("TestTag.Tag13")));
-		UE_LOG(LogTemp, Warning, TEXT("Removing!"));
-		
-	}
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 

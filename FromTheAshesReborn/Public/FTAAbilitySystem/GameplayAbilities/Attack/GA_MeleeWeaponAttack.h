@@ -63,10 +63,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
 	TSubclassOf<UGameplayEffect> HitReactionEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit", Meta = (Categories = "HitTag"))
 	FGameplayTag HitReactionTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
@@ -136,6 +136,7 @@ public:
 
 protected:
 	
+	void TempApplyHitReaction(const FGameplayAbilityTargetDataHandle& TargetHitDataHandle);
 	UFUNCTION()
 	void OnHitAdded(FHitResult LastItem);
 
