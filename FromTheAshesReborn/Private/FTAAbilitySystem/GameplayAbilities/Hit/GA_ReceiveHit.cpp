@@ -10,9 +10,13 @@
 
 UGA_ReceiveHit::UGA_ReceiveHit()
 {
-	
+	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Stagger")));
+	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Suspend")));
+	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Launch")));
+	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Knockdown")));
+	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Knockback")));
+	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Slam")));
 }
-
 void UGA_ReceiveHit::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
@@ -28,9 +32,13 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitReactionTag))
+	for (const FGameplayTag& Tag : HitAbilityTagContainer)
 	{
-		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(HitReactionTag);
+		if (!Tag.MatchesTagExact(HitReactionTag))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Canceling tag: %s"), *Tag.ToString());
+			GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(Tag));
+		}
 	}
 
 	if(GetFTACharacterFromActorInfo()->IsDead || GetFTACharacterFromActorInfo()->IsAlreadyDead)
@@ -101,34 +109,37 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
 {
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
+
 }
 
 void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitReactionTag))
+	if(!bCanceled)
 	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(HitReactionTag);
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitReactionTag));
 	}
 
-	// if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitReactionTag))
-	// {
-		// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitReactionTag));
-		// GetFTAAbilitySystemComponentFromActorInfo()->RemoveDynamicTagGameplayEffect(HitReactionTag);
-		// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithTags(FGameplayTagContainer(HitReactionTag));
-	// }
 }
 
 void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCancelled(EventTag, EventData);
+
+	UE_LOG(LogTemp, Warning, TEXT("Cancel"));
+
+	bCanceled = true;
+	
 	
 }
 
 void UGA_ReceiveHit::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
+
+	UE_LOG(LogTemp, Warning, TEXT("End"));
+	
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 

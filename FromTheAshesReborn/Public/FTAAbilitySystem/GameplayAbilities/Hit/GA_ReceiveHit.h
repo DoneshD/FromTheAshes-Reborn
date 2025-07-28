@@ -12,6 +12,8 @@ class FROMTHEASHESREBORN_API UGA_ReceiveHit : public UFTAGameplayAbility
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	FGameplayTagContainer HitAbilityTagContainer;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
@@ -20,6 +22,8 @@ protected:
 	FGameplayTag HitReactionTag;
 
 public:
+
+	bool bCanceled = false;
 
 	UGA_ReceiveHit();
 
