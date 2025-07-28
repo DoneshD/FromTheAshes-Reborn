@@ -32,10 +32,6 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Launcher Ability")
-	FGameplayTagContainer QueueableAbilities;
-	
-
 protected:
 	
 	UGA_MeleeWeaponAttack_Launcher();

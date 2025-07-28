@@ -275,16 +275,6 @@ void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
 			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 			{
-				if(TargetASC->HasMatchingGameplayTag(HitReactionTag))
-				{
-					// UE_LOG(LogTemp, Warning, TEXT("Found Matching Gameplay Tag"));
-				}
-				else
-				{
-					ApplyMeleeHitEffects(TargetHitDataHandle);
-					// UE_LOG(LogTemp, Warning, TEXT("No Matching Gameplay Tag"));
-					
-				}
 				ExecuteMeleeHitLogic(TargetHitDataHandle);
 			}
 		}
@@ -312,8 +302,10 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	ApplyMeleeHitEffects(TargetDataHandle);
 	SendMeleeHitGameplayEvents(TargetDataHandle);
 	AddMeleeHitCues(TargetDataHandle);
+	
 }
 
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -346,15 +338,15 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 	}
 	else
 	{
-		if(HitReactionEffect)
+		if(GrantHitReactionEffect)
 		{
-			FGameplayEffectSpecHandle TestHandle = MakeOutgoingGameplayEffectSpec(HitReactionEffect, 1.0f);
+			FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(GrantHitReactionEffect, 1.0f);
 			
 			TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
 					CurrentSpecHandle,
 					CurrentActorInfo,
 					CurrentActivationInfo,
-					TestHandle,
+					HitEffectHandle,
 					TargetDataHandle
 				);
 		}
@@ -378,7 +370,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		return;
 	}
 	
-	// HitInfoObj->HitData.HitDirection = MeleeWeaponActor->HitDirection;
 	HitInfoObj->HitData.HitDirection = TestHitDirection;
 	
 	OnHitEventData.OptionalObject = HitInfoObj;

@@ -34,6 +34,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
 
+	TArray<FHitResult> HitResults;
+	TSet<AActor*> UniqueHitActors;
+
 public:
 	
 	UGA_MeleeWeaponAttack_GroundPound(const FObjectInitializer& = FObjectInitializer::Get());
@@ -48,6 +51,8 @@ public:
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	void TempApplyGPEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	
 	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle) override;
 	void TraceForActors();

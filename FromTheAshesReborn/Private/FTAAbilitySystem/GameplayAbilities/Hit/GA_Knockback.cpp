@@ -43,7 +43,7 @@ void UGA_Knockback::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData
 void UGA_Knockback::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	
 
 }
 

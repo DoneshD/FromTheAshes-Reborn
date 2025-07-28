@@ -138,6 +138,38 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 	}
 }
 
+void UGA_MeleeWeaponAttack_GroundPound::TempApplyGPEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Calling"))
+	if(CurrentHitReactionEffect)
+	{
+		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		TargetDataHandle,
+		CurrentHitReactionEffect, 
+		1,
+		1
+		);
+	}
+	else
+	{
+		if(GrantHitReactionEffect)
+		{
+			FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(GrantHitReactionEffect, 1.0f);
+			
+			TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+					CurrentSpecHandle,
+					CurrentActorInfo,
+					CurrentActivationInfo,
+					HitEffectHandle,
+					TargetDataHandle
+				);
+		}
+	}
+}
+
 void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	Super::SendMeleeHitGameplayEvents(TargetDataHandle);
@@ -147,8 +179,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 {
 	//Testing sweep
-		TArray<FHitResult> HitResults;
-		TSet<AActor*> UniqueHitActors;
+	
 
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(GetFTACharacterFromActorInfo()->TargetObjectTraceChannel));
@@ -171,7 +202,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 			ObjectTypes,
 			false,
 			ActorsToIgnore,
-			EDrawDebugTrace::ForDuration, 
+			EDrawDebugTrace::None, 
 			HitResults,
 			true,                    
 			FLinearColor::Red,
@@ -204,8 +235,26 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 						else
 						{
 							UE_LOG(LogTemp, Error, TEXT("Ground not found"));
+							EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+							return;
 						}
-						SendHitGPEvent(GPHitResult, EnemyGroundPoundEndLocation, GroundPoundSpeed, SlamDuration);
+
+						if (GPHitResult.GetActor() && GPHitResult.GetActor()->Implements<UAbilitySystemInterface>())
+						{
+							IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(GPHitResult.GetActor());
+							UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+							if (TargetASC)
+							{
+								FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(GPHitResult);
+								if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
+								{
+									TempApplyGPEffects(TargetHitDataHandle);
+									SendHitGPEvent(GPHitResult, EnemyGroundPoundEndLocation, GroundPoundSpeed, SlamDuration);
+								}
+							}
+
+						}
 					}
 				}
 			}
@@ -230,9 +279,8 @@ void UGA_MeleeWeaponAttack_GroundPound::SendHitGPEvent(FHitResult HitItemToAdd, 
 	OnSlamHitEventData.Instigator = GetAvatarActorFromActorInfo();
 	OnSlamHitEventData.Target = TargetActor;
 	OnSlamHitEventData.ContextHandle.AddHitResult(*TargetHitDataHandle.Get(0)->GetHitResult());
-	
 
-	OnSlamHitEventData.EventTag = FGameplayTag::RequestGameplayTag("TestTag.Tag7");
+	OnSlamHitEventData.EventTag = HitReactionTag;
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnSlamHitEventData.EventTag, OnSlamHitEventData);
 }

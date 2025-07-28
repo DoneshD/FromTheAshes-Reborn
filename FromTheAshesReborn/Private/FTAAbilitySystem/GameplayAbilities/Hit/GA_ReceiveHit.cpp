@@ -1,21 +1,18 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
-
 #include "DataAsset/HitReactionDataAsset.h"
-#include "Enemy/EnemyBaseCharacter.h"
 #include "EventObjects/HitEventObject.h"
-
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UGA_ReceiveHit::UGA_ReceiveHit()
 {
-	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Stagger")));
-	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Suspend")));
-	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Launch")));
-	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Knockdown")));
-	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Knockback")));
-	HitAbilityTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Slam")));
+	HitTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Stagger")));
+	HitTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Suspend")));
+	HitTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Launch")));
+	HitTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Knockdown")));
+	HitTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Knockback")));
+	HitTagContainer.AddTag(FGameplayTag::RequestGameplayTag(TEXT("HitTag.Effect.GrantAbility.Slam")));
 }
 void UGA_ReceiveHit::OnAbilityTick(float DeltaTime)
 {
@@ -32,11 +29,11 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	for (const FGameplayTag& Tag : HitAbilityTagContainer)
+	for (const FGameplayTag& Tag : HitTagContainer)
 	{
 		if (!Tag.MatchesTagExact(HitReactionTag))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Canceling tag: %s"), *Tag.ToString());
+			
 			GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(Tag));
 		}
 	}
@@ -127,19 +124,13 @@ void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventDat
 {
 	Super::OnMontageCancelled(EventTag, EventData);
 
-	UE_LOG(LogTemp, Warning, TEXT("Cancel"));
-
 	bCanceled = true;
-	
 	
 }
 
 void UGA_ReceiveHit::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
-
-	UE_LOG(LogTemp, Warning, TEXT("End"));
-	
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 

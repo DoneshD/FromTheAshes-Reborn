@@ -39,9 +39,6 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
 	FMeleeAttackForms MeleeAttackAssets;
 
@@ -64,7 +61,7 @@ protected:
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TSubclassOf<UGameplayEffect> HitReactionEffect;
+	TSubclassOf<UGameplayEffect> GrantHitReactionEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit", Meta = (Categories = "HitTag"))
 	FGameplayTag HitReactionTag;
@@ -88,6 +85,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
+
+	UPROPERTY()
+	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
 	UPROPERTY()
 	TSubclassOf<UGameplayEffect> CurrentHitReactionEffect = nullptr;
@@ -136,7 +136,6 @@ public:
 
 protected:
 	
-	void TempApplyHitReaction(const FGameplayAbilityTargetDataHandle& TargetHitDataHandle);
 	UFUNCTION()
 	void OnHitAdded(FHitResult LastItem);
 
