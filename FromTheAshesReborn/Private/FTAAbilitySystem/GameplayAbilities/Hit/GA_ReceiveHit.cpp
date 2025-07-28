@@ -33,7 +33,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		if (!Tag.MatchesTagExact(HitReactionTag))
 		{
-			
 			GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(Tag));
 		}
 	}
@@ -113,10 +112,10 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	if(!bCanceled)
-	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitReactionTag));
-	}
+	// if(!bCanceled)
+	// {
+	// 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitReactionTag));
+	// }
 
 }
 

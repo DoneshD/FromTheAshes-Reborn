@@ -25,6 +25,8 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	UE_LOG(LogTemp, Log, TEXT("UGA_AerialSuspension ActivateAbility "));
+
 	// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("HitTag.Effect.Suspend")));
 	// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail")));
 
@@ -53,6 +55,7 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	if(!AerialCombatComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_AerialSuspension::ActivateAbility - AerialCombatComponent"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 	
