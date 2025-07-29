@@ -79,6 +79,29 @@ void AFTACharacter::BeginPlay()
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 }
 
+void AFTACharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if(CheckForZVelocity)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("[%s] Velocity: %s"), *GetActorNameOrLabel(), *GetCharacterMovement()->Velocity.ToString());
+		if(GetCharacterMovement()->Velocity.Z < 0.0f)
+		{
+			CheckForZVelocity = false;
+			
+			FGameplayEffectContextHandle EffectContext = GetFTAAbilitySystemComponent()->MakeEffectContext();
+			EffectContext.AddSourceObject(this);
+
+			FGameplayEffectSpecHandle SpecHandle = GetFTAAbilitySystemComponent()->MakeOutgoingSpec(AirCombatComponent->EnableAerialCombatEffect, 1.f, EffectContext);
+			if (SpecHandle.IsValid())
+			{
+				GetFTAAbilitySystemComponent()->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+			}
+		}
+	}
+}
+
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 {

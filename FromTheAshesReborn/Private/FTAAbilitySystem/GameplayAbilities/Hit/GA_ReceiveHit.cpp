@@ -112,18 +112,11 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	// if(!bCanceled)
-	// {
-	// 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitReactionTag));
-	// }
-
 }
 
 void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCancelled(EventTag, EventData);
-
-	bCanceled = true;
 	
 }
 

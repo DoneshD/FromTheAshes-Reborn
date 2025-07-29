@@ -7,6 +7,7 @@
 #include "AerialCombatComponent.generated.h"
 
 
+class UGameplayEffect;
 class UCharacterMovementComponent;
 class UFTAAbilitySystemComponent;
 class AFTACharacter;
@@ -15,6 +16,10 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UAerialCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
 
 private:
 	int32 PreviousCount;
@@ -30,6 +35,8 @@ private:
 	
 
 protected:
+
+	
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag EnableTag;

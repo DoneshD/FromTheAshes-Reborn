@@ -22,8 +22,6 @@ protected:
 
 public:
 
-	bool bCanceled = false;
-
 	UGA_ReceiveHit();
 
 	virtual void OnAbilityTick(float DeltaTime) override;

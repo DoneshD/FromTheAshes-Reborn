@@ -56,7 +56,7 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		// PrintGravity();
+		PrintGravity();
 		
 		TotalAirTime += DeltaTime;
 		CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
@@ -134,7 +134,7 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 {
 	if (NewCount > PreviousCount)
 	{
-		CalculateAttackAntiGravityMultiplier(NewCount);
+		// CalculateAttackAntiGravityMultiplier(NewCount);
 	}
 
 	PreviousCount = NewCount;
@@ -174,8 +174,8 @@ float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCoun
 
 float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier() const
 {
-	float CurrentGravityScale = FMath::Square(TotalAirTime) * TimeGravityMultiplier;
-	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, 1.0, 4.0f);
+	float CurrentGravityScale = (TotalAirTime) * TimeGravityMultiplier;
+	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, 0.5, 4.0f);
 	return CurrentGravityScale;
 }
 

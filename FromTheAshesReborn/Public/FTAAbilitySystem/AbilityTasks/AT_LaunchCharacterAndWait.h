@@ -3,6 +3,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "AT_LaunchCharacterAndWait.generated.h"
 
+class AFTACharacter;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLaunchComplete);
 
 class UCharacterMovementComponent;
@@ -19,8 +20,12 @@ public:
 	FOnLaunchComplete OnLaunchComplete;
 
 protected:
-	
+
+	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CMC;
+
+	UPROPERTY()
+	TObjectPtr<AFTACharacter> FTAChar;
 
 	bool IsLaunching = false;
 
@@ -36,6 +41,7 @@ protected:
 	float LaunchOffset;
 
 	FTimerHandle AerialStallTimerHandle;
+
 
 public:
 	

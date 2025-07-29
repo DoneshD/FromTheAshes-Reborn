@@ -1,7 +1,9 @@
 ﻿#include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
 
+#include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "WorldPartition/ContentBundle/ContentBundleLog.h"
 
 UAT_LaunchCharacterAndWait* UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(UGameplayAbility* OwningAbility, float VerticalDistance, float Duration, float StallTime, float Offset)
 {
@@ -32,10 +34,18 @@ void UAT_LaunchCharacterAndWait::Activate()
 	Super::Activate();
 
 	ACharacter* Character = Cast<ACharacter>(GetAvatarActor());
+	FTAChar = Cast<AFTACharacter>(Character);
 
 	if(!Character)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UAT_LaunchCharacterAndWait::Activate - Character is Null"));
+		EndTask();
+		return;
+	}
+	
+	if(!FTAChar)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UAT_LaunchCharacterAndWait::Activate - FTAChar is Null"));
 		EndTask();
 		return;
 	}
@@ -49,6 +59,7 @@ void UAT_LaunchCharacterAndWait::Activate()
 		return;
 	}
 
+
 	LaunchElapsedTime = 0.0f;
 	LaunchedStartTime = GetWorld()->GetTimeSeconds();
 	
@@ -56,6 +67,8 @@ void UAT_LaunchCharacterAndWait::Activate()
 	LaunchEndLocation = GetAvatarActor()->GetActorLocation() + FVector(0.0f, 0.0f, LaunchVerticalDistance);
 
 	IsLaunching = true;
+
+	FTAChar->CheckForZVelocity = true;
 }
 
 void UAT_LaunchCharacterAndWait::ExternalCancel()

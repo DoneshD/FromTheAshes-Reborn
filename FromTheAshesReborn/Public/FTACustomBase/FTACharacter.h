@@ -82,11 +82,14 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool IsAlreadyDead = false;
+
+	bool CheckForZVelocity = false;
 	
 public:
 	
 	AFTACharacter(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const  { return FTAAbilitySystemComponent; }
