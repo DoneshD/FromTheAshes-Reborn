@@ -239,8 +239,8 @@ void UWarpingManagerComponent::TraceForTargets(FName WarpTargetName, float Start
 			// 	2.0f
 			// );
 
-			DrawDebugSphere(GetWorld(), ClosestActorToOwner->GetActorLocation(), 25.0f, 12, FColor::Blue, false, 5.0f);
-			DrawDebugSphere(GetWorld(), ClosestActorToAxis->GetActorLocation(), 25.0f, 12, FColor::Red, false, 5.0f);
+			// DrawDebugSphere(GetWorld(), ClosestActorToOwner->GetActorLocation(), 25.0f, 12, FColor::Blue, false, 5.0f);
+			// DrawDebugSphere(GetWorld(), ClosestActorToAxis->GetActorLocation(), 25.0f, 12, FColor::Red, false, 5.0f);
 			
 		
 			AddWarpTarget(WarpTargetLocation, WarpTargetRotation);
