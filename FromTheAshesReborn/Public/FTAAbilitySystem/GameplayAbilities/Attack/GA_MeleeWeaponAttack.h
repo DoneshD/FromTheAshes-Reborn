@@ -32,6 +32,28 @@ struct FMeleeAttackForms
 	
 };
 
+USTRUCT(BlueprintType)
+struct FMeleeMeleeWarpData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Warp Data")
+	FName WarpTargetName = "MeleeAttackTarget";
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
+	float StartTraceLocationOffset = 100.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
+	float EndTraceLocationOffset = 800.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
+	float TraceRadius = 600.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
+	float WarpTargetLocationOffset = 165.0f;
+	
+};
+
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 {

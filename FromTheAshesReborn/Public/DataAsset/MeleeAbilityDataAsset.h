@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "FTAAbilityDataAsset.h"
+#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "MeleeAbilityDataAsset.generated.h"
 
 class UGameplayEffect;
@@ -28,6 +29,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> HitVFxImpact;
+
+	UPROPERTY(EditDefaultsOnly)
+	float TraceSize;
+
+	UPROPERTY(EditDefaultsOnly)
+	FMeleeMeleeWarpData MeleeWarpData;
 	
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> SlashFX;

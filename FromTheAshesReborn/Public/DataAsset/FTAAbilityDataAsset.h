@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "EnumHelpers.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
 #include "FTAAbilityDataAsset.generated.h"
@@ -12,13 +13,16 @@ class FROMTHEASHESREBORN_API UFTAAbilityDataAsset : public UPrimaryDataAsset
 
 public:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Direction")
+	ESpatialDirection Direction;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability Asset Tag")
 	FGameplayTag UniqueIdentifierTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability Asset Tag")
 	FGameplayTagContainer RequiredTags;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation ")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 	
 };

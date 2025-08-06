@@ -6,6 +6,7 @@
 #include "WarpingManagerComponent.h"
 #include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
@@ -41,6 +42,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	WarpingManagerComponent = CreateDefaultSubobject<UWarpingManagerComponent>(TEXT("WarpingManagerComponent"));
 	this->AddOwnedComponent(WarpingManagerComponent);
 
+	MeleeWarpingComponent = CreateDefaultSubobject<UMeleeWarpingComponent>(TEXT("MeleeWarpingComponent"));
+	this->AddOwnedComponent(MeleeWarpingComponent);
+
 	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
 	this->AddOwnedComponent(ComboManagerComponent);
 
@@ -73,6 +77,12 @@ void AFTACharacter::BeginPlay()
 	if (!WarpingManagerComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - WarpingManagerComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (!MeleeWarpingComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - MeleeWarpingComponent is null"), *GetActorNameOrLabel());
 		return;
 	}
 	

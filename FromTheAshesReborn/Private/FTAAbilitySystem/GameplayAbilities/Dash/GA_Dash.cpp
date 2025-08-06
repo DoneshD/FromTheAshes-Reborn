@@ -119,7 +119,7 @@ bool UGA_Dash::FindMatchingDashAssetToInputDirection(const TArray<UDashAbilityDa
 	{
 		if (CurrentAsset)
 		{
-			if (CurrentAsset->Direction == InputDirection)
+			if (CurrentAsset->DashDirection == InputDirection)
 			{
 				OutMatchingAbilityDataAsset = CurrentAsset;
 				return true;

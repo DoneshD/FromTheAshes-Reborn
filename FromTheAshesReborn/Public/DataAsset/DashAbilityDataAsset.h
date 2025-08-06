@@ -13,6 +13,7 @@ class FROMTHEASHESREBORN_API UDashAbilityDataAsset : public UFTAAbilityDataAsset
 	GENERATED_BODY()
 
 public:
+	//TODO: Change later
 	UPROPERTY(EditDefaultsOnly)
-	ELockOnInputOrientationDirection Direction;
+	ELockOnInputOrientationDirection DashDirection;
 };
