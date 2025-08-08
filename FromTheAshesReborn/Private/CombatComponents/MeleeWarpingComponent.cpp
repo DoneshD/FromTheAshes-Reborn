@@ -50,7 +50,7 @@ void UMeleeWarpingComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 }
 
-void UMeleeWarpingComponent::AddWarpTarget(FVector TargetLocation, FRotator TargetRotation)
+void UMeleeWarpingComponent::UpdateWarpTarget(FVector TargetLocation, FRotator TargetRotation)
 {
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(CurrentWarpTargetName, TargetLocation,  FRotator(0, TargetRotation.Yaw, 0));
 }
@@ -141,7 +141,7 @@ void UMeleeWarpingComponent::RemoveWarpTarget()
 	MotionWarpingComponent->RemoveWarpTarget(CurrentWarpTargetName);
 }
 
-void UMeleeWarpingComponent::TraceForTargets(FMeleeMeleeWarpData WarpData)
+void UMeleeWarpingComponent::WarpToTarget(FMeleeMeleeWarpData WarpData)
 {
 	CurrentWarpTargetName = WarpData.WarpTargetName;
 	
@@ -183,7 +183,6 @@ void UMeleeWarpingComponent::TraceForTargets(FMeleeMeleeWarpData WarpData)
 		}
 		else
 		{
-			
 			float DistanceFromClosestActor = FVector::Dist(ClosestActorToOwner->GetActorLocation(), GetOwner()->GetActorLocation());
 			float DistanceFromAxisActor = FVector::Dist(ClosestActorToAxis->GetActorLocation(), GetOwner()->GetActorLocation());
 
@@ -194,7 +193,6 @@ void UMeleeWarpingComponent::TraceForTargets(FMeleeMeleeWarpData WarpData)
 			float DifferenceAxisDistance = FMath::Abs(AxisDistanceForAxisActor - AxisDistanceForClosestActor);
 
 			/*
-
 			UE_LOG(LogTemp, Warning, TEXT("Closest Actor Raw Distance: %f"), DistanceFromClosestActor);
 			UE_LOG(LogTemp, Warning, TEXT("Axis Actor Raw Distance: %f"), DistanceFromAxisActor);
 
@@ -241,9 +239,8 @@ void UMeleeWarpingComponent::TraceForTargets(FMeleeMeleeWarpData WarpData)
 
 			// DrawDebugSphere(GetWorld(), ClosestActorToOwner->GetActorLocation(), 25.0f, 12, FColor::Blue, false, 5.0f);
 			// DrawDebugSphere(GetWorld(), ClosestActorToAxis->GetActorLocation(), 25.0f, 12, FColor::Red, false, 5.0f);
-			
 		
-			AddWarpTarget(WarpTargetLocation, WarpTargetRotation);
+			UpdateWarpTarget(WarpTargetLocation, WarpTargetRotation);
 		}
 	}
 	

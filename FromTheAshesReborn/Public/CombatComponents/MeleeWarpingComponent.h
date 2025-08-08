@@ -36,17 +36,18 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void AddWarpTarget(FVector TargetLocation, FRotator TargetRotation);
+	void UpdateWarpTarget(FVector TargetLocation, FRotator TargetRotation);
 	float GetDistanceFromActorToAxis(AActor* ActorToCheck, FVector TraceStartLocation, FVector TraceAxis);
 
 	AActor* FilterClosestActorToAxisTrace(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation);
 	AActor* FilterClosestActorToOwner(TArray<FHitResult> HitArray);
 	
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
-	void TraceForTargets(FMeleeMeleeWarpData WarpData);
+	void WarpToTarget(FMeleeMeleeWarpData WarpData);
 
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
 	void RemoveWarpTarget();
 	
 	FVector GetTraceDirection();
+	
 };

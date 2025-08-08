@@ -3,7 +3,6 @@
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
 #include "NiagaraComponent.h"
-#include "WarpingManagerComponent.h"
 #include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
@@ -39,9 +38,6 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	this->AddOwnedComponent(MotionWarpingComponent);
 
-	WarpingManagerComponent = CreateDefaultSubobject<UWarpingManagerComponent>(TEXT("WarpingManagerComponent"));
-	this->AddOwnedComponent(WarpingManagerComponent);
-
 	MeleeWarpingComponent = CreateDefaultSubobject<UMeleeWarpingComponent>(TEXT("MeleeWarpingComponent"));
 	this->AddOwnedComponent(MeleeWarpingComponent);
 
@@ -59,8 +55,6 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	
 }
 
-
-
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -71,12 +65,6 @@ void AFTACharacter::BeginPlay()
 	if (!AirCombatComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - AirCombatComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
-
-	if (!WarpingManagerComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - WarpingManagerComponent is null"), *GetActorNameOrLabel());
 		return;
 	}
 
