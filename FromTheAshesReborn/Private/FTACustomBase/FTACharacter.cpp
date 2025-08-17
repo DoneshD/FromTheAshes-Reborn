@@ -5,6 +5,7 @@
 #include "NiagaraComponent.h"
 #include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -37,6 +38,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	this->AddOwnedComponent(MotionWarpingComponent);
+
+	MeleePropertiesComponent = CreateDefaultSubobject<UMeleePropertiesComponent>(TEXT("MeleePropertiesComponent"));
+	this->AddOwnedComponent(MeleePropertiesComponent);
 
 	MeleeWarpingComponent = CreateDefaultSubobject<UMeleeWarpingComponent>(TEXT("MeleeWarpingComponent"));
 	this->AddOwnedComponent(MeleeWarpingComponent);

@@ -16,6 +16,7 @@
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "NiagaraSystem.h"
+#include "CombatComponents/MeleePropertiesComponent.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTACustomBase/AfterImageActor.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
@@ -103,6 +104,14 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
 		return;
 	}
+
+	MeleePropertiesComponent = FTAChar->MeleePropertiesComponent;
+
+	if(!MeleePropertiesComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleePropertiesComponent is Null"));
+		return;
+	}
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(BoxHalfSize, BoxHalfSize, BoxHalfSize);
@@ -115,6 +124,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 	
 	PerformMeleeAttack(MeleeAttackAssets);
+	
 
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
@@ -370,7 +380,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		return;
 	}
 	
-	HitInfoObj->HitData.HitDirection = TestHitDirection;
+	HitInfoObj->HitData.HitDirection = MeleePropertiesComponent->HitDirection;
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 	

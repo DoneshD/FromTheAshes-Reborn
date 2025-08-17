@@ -15,7 +15,7 @@ struct FHitInfo
 	FHitInfo()
 		: Location(FVector::ZeroVector)
 		, Instigator(nullptr)
-		, HitDirection(EHitReactionDirection::Front) // Or whatever your default direction should be
+		, HitDirection(ESpatialDirection::Front)
 	{}
 
 	UPROPERTY()
@@ -25,7 +25,7 @@ struct FHitInfo
 	TObjectPtr<AActor> Instigator;
 
 	UPROPERTY()
-	EHitReactionDirection HitDirection;
+	ESpatialDirection HitDirection;
 };
 
 

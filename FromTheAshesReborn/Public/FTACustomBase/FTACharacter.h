@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UMeleePropertiesComponent;
 class UMeleeWarpingComponent;
 class UWarpingManagerComponent;
 class UAerialCombatComponent;
@@ -50,6 +51,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
+	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UMeleeWarpingComponent> MeleeWarpingComponent;

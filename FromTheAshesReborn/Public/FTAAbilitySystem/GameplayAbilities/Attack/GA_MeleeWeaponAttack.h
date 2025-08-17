@@ -6,6 +6,7 @@
 #include "EventObjects/HitEventObject.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
+class UMeleePropertiesComponent;
 class UNiagaraSystem;
 class UComboManagerComponent;
 class UMeleeAbilityDataAsset;
@@ -109,6 +110,9 @@ protected:
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
 	UPROPERTY()
+	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
+
+	UPROPERTY()
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
 	UPROPERTY()
@@ -130,7 +134,7 @@ protected:
 	float AfterImageDistance = 200.0f;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Test")
-	EHitReactionDirection TestHitDirection;
+	ESpatialDirection HitDirection;
 
 protected:
 

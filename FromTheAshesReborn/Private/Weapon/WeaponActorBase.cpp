@@ -25,16 +25,3 @@ void AWeaponActorBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
-
-void AWeaponActorBase::StartWeaponTracing()
-{
-	TracingComponent->ToggleTraceCheck(true);
-}
-
-void AWeaponActorBase::EndWeaponTracing()
-{
-	TracingComponent->ToggleTraceCheck(false);
-	TracingComponent->ClearHitArray();
-
-}
-

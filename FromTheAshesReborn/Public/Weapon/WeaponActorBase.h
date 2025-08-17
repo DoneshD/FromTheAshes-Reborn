@@ -36,20 +36,10 @@ public:
 
 	float TrailLength;
 
-	//TODO: Change later
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Direction")
-	EHitReactionDirection HitDirection;
-
 public:
 	
 	AWeaponActorBase();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	void StartWeaponTracing();
-
-	UFUNCTION(BlueprintCallable)
-	void EndWeaponTracing();
 	
 };
