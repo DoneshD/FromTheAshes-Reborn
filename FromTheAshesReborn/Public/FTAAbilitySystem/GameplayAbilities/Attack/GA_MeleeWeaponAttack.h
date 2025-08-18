@@ -14,8 +14,6 @@ class UFTAAbilityDataAsset;
 class UMeleeAttackDataAsset;
 class AWeaponActorBase;
 class UMeleeWeaponInstance;
-class UFTAAT_PlayMontageAndWaitForEvent;
-
 
 USTRUCT(BlueprintType)
 struct FMeleeAttackForms
@@ -150,6 +148,7 @@ protected:
 	void SpawnAfterImage();
 	
 public:
+	
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
 	void ResetMeleeAttack();
 

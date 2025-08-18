@@ -379,8 +379,15 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
 		return;
 	}
-	
-	HitInfoObj->HitData.HitDirection = MeleePropertiesComponent->HitDirection;
+
+	if(MeleePropertiesComponent->HitDirection != ESpatialDirection::None)
+	{
+		HitInfoObj->HitData.HitDirection = MeleePropertiesComponent->HitDirection;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - Hit Direction is None"))
+	}
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 	

@@ -8,6 +8,6 @@ enum class ESpatialDirection : uint8 {
 	Left		UMETA(DisplayName = "Left"),
 	Right		UMETA(DisplayName = "Right"),
 	Up			UMETA(DisplayName = "Up"),
-	Down		UMETA(DisplayName = "Down")
-	
+	Down		UMETA(DisplayName = "Down"),
+	None		UMETA(DisplayName = "None")
 };

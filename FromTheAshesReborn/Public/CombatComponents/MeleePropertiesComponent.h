@@ -6,6 +6,7 @@
 #include "MeleePropertiesComponent.generated.h"
 
 
+class UNiagaraSystem;
 class AFTACharacter;
 class UEquipmentManagerComponent;
 
@@ -15,12 +16,12 @@ class FROMTHEASHESREBORN_API UMeleePropertiesComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ESpatialDirection HitDirection;
-
+	
 	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTAChar;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ESpatialDirection HitDirection = ESpatialDirection::None;
 
 public:
 	
@@ -29,7 +30,7 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	void StartWeaponTrace();
+	void StartMeleeWeaponTrace(float TraceSize, ESpatialDirection Direction, UNiagaraSystem* Slash, UNiagaraSystem* Impact);
 
 	UFUNCTION(BlueprintCallable)
 	void EndWeaponTrace();

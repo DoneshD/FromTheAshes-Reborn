@@ -32,15 +32,17 @@ void UMeleePropertiesComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 }
 
+void UMeleePropertiesComponent::StartMeleeWeaponTrace(float TraceSize, ESpatialDirection Direction, UNiagaraSystem* Slash, UNiagaraSystem* Impact)
+{
+	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(true);
+	
+}
+
 void UMeleePropertiesComponent::SetMontagePlayRate(UAnimInstance* Mesh, UAnimMontage* Montage, float PlayRate)
 {
 	
 }
 
-void UMeleePropertiesComponent::StartWeaponTrace()
-{
-	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(true);
-}
 
 void UMeleePropertiesComponent::EndWeaponTrace()
 {
