@@ -45,6 +45,11 @@ UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
 	return CastChecked<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
 }
 
+void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeRuntimeDataStruct InMeleeData)
+{
+	
+}
+
 bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
@@ -67,6 +72,8 @@ bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle 
 
 	return !Character->GetCharacterMovement()->IsFalling() || !Character->GetCharacterMovement()->IsFlying();
 }
+
+
 
 void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
@@ -112,6 +119,8 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleePropertiesComponent is Null"));
 		return;
 	}
+
+	MeleePropertiesComponent->OnSetMeleeData.AddUniqueDynamic(this, &UGA_MeleeWeaponAttack::SetRuntimeMeleeData);
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
 	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(BoxHalfSize, BoxHalfSize, BoxHalfSize);
@@ -208,6 +217,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 	}
 
 	ExtractMeleeAssetProperties(MatchingDataAsset);
+	MeleeAbilityAsset = MatchingDataAsset;
 	
 	if (MatchingDataAsset->MontageToPlay)
 	{
@@ -223,7 +233,19 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 	{
 		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
 		ResetMeleeAttack();
-	}
+	}                                                                                 
+}
+
+void UGA_MeleeWeaponAttack::StartMeleeWeaponTrace()
+{
+	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(true);
+	
+}
+
+void UGA_MeleeWeaponAttack::EndMeleeWeaponTrace()
+{
+	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(false);
+	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ClearHitArray();
 }
 
 void UGA_MeleeWeaponAttack::SpawnAfterImage()
@@ -379,15 +401,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
 		return;
 	}
-
-	if(MeleePropertiesComponent->HitDirection != ESpatialDirection::None)
-	{
-		HitInfoObj->HitData.HitDirection = MeleePropertiesComponent->HitDirection;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - Hit Direction is None"))
-	}
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 	
@@ -502,11 +515,13 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 		{
 			SlashCueParams.SourceObject = static_cast<const UObject*>(SlashFX);
 		}
+		StartMeleeWeaponTrace();
 		K2_AddGameplayCueWithParams(SlashVfxCueTag, SlashCueParams);
 	}
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
+		EndMeleeWeaponTrace();
 		K2_RemoveGameplayCue(SlashVfxCueTag);
 	}
 }

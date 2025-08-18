@@ -1,10 +1,10 @@
-﻿
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "../GA_FromEquipment.h"
 #include "EventObjects/HitEventObject.h"
 #include "GA_MeleeWeaponAttack.generated.h"
+
 
 class UMeleePropertiesComponent;
 class UNiagaraSystem;
@@ -50,6 +50,33 @@ struct FMeleeMeleeWarpData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
 	float WarpTargetLocationOffset = 165.0f;
+	
+};
+
+USTRUCT(BlueprintType)
+struct FMeleeRuntimeDataStruct
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
+	float TraceRange;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
+	ESpatialDirection HitDirection;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
+	TObjectPtr<UNiagaraSystem> SlashFX;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
+	TObjectPtr<UNiagaraSystem> HitFX;
+
+	FMeleeRuntimeDataStruct()
+	:
+	TraceRange(0.0f),
+	HitDirection(ESpatialDirection::None),
+	SlashFX(nullptr),
+	HitFX(nullptr)
+	{}
 	
 };
 
@@ -154,9 +181,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
 	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
+	void StartMeleeWeaponTrace();
+	void EndMeleeWeaponTrace();
 
 	UFUNCTION(BlueprintCallable, Category="FTAAbility")
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
+
+	UFUNCTION()
+	void SetRuntimeMeleeData(FMeleeRuntimeDataStruct InMeleeRuntimeData);
 
 protected:
 	

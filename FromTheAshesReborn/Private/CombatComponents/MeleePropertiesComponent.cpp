@@ -31,23 +31,3 @@ void UMeleePropertiesComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
-
-void UMeleePropertiesComponent::StartMeleeWeaponTrace(float TraceSize, ESpatialDirection Direction, UNiagaraSystem* Slash, UNiagaraSystem* Impact)
-{
-	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(true);
-	
-}
-
-void UMeleePropertiesComponent::SetMontagePlayRate(UAnimInstance* Mesh, UAnimMontage* Montage, float PlayRate)
-{
-	
-}
-
-
-void UMeleePropertiesComponent::EndWeaponTrace()
-{
-	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(false);
-	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ClearHitArray();
-
-}
-

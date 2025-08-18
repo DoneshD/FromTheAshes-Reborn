@@ -3,8 +3,10 @@
 #include "CoreMinimal.h"
 #include "EnumHelpers.h"
 #include "Components/ActorComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "MeleePropertiesComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMeleeRuntimeDataSetSignature, FMeleeRuntimeDataStruct, InMeleeData);
 
 class UNiagaraSystem;
 class AFTACharacter;
@@ -19,22 +21,13 @@ public:
 	
 	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTAChar;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ESpatialDirection HitDirection = ESpatialDirection::None;
 
 public:
+
+	UPROPERTY(BlueprintCallable, Category = "Events")
+	FOnMeleeRuntimeDataSetSignature OnSetMeleeData;
 	
 	UMeleePropertiesComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-	UFUNCTION(BlueprintCallable)
-	void StartMeleeWeaponTrace(float TraceSize, ESpatialDirection Direction, UNiagaraSystem* Slash, UNiagaraSystem* Impact);
-
-	UFUNCTION(BlueprintCallable)
-	void EndWeaponTrace();
-	
-	UFUNCTION(BlueprintCallable)
-	void SetMontagePlayRate(UAnimInstance* Mesh, UAnimMontage* Montage, float PlayRate);
 };
