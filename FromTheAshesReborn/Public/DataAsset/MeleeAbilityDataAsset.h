@@ -33,7 +33,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
 	TObjectPtr<UNiagaraSystem> SlashVFX;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Range")
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon Trace Size")
 	float TraceSize;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "WarpData")

@@ -57,6 +57,16 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeRuntimeDataStruct InMeleeD
 		CurrentSlashFX = InMeleeData.SlashFX;
 	}
 
+	if(InMeleeData.TraceSize)
+	{
+		CurrentTraceSize = InMeleeData.TraceSize;
+	}
+
+	if(InMeleeData.HitDirection != ESpatialDirection::None)
+	{
+		CurrentHitDirection = InMeleeData.HitDirection;
+	}
+
 	if(InMeleeData.HitReactionEffect)
 	{
 		CurrentHitReactionEffect = InMeleeData.HitReactionEffect;
@@ -417,6 +427,8 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	}
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
+
+	HitInfoObj->HitData.HitDirection = CurrentHitDirection;
 	
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
 	{

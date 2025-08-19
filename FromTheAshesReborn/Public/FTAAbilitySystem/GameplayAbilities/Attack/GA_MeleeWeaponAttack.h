@@ -59,7 +59,7 @@ struct FMeleeRuntimeDataStruct
 	GENERATED_BODY()
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
-	float TraceRange;
+	float TraceSize;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
 	ESpatialDirection HitDirection;
@@ -78,7 +78,7 @@ struct FMeleeRuntimeDataStruct
 
 	FMeleeRuntimeDataStruct()
 	:
-	TraceRange(0.0f),
+	TraceSize(0.0f),
 	HitDirection(ESpatialDirection::None),
 	SlashFX(nullptr),
 	HitFX(nullptr),
