@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "CoreMinimal.h"
 
+class UNiagaraSystem;
+
 UENUM(BlueprintType)
 enum class ESpatialDirection : uint8 {
 	Front		UMETA(DisplayName = "Front"),

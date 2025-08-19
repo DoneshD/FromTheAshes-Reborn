@@ -141,7 +141,7 @@ void UMeleeWarpingComponent::RemoveWarpTarget()
 	MotionWarpingComponent->RemoveWarpTarget(CurrentWarpTargetName);
 }
 
-void UMeleeWarpingComponent::WarpToTarget(FMeleeMeleeWarpData WarpData)
+void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData)
 {
 	CurrentWarpTargetName = WarpData.WarpTargetName;
 	

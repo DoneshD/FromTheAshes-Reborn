@@ -28,7 +28,7 @@ private:
 public:
 
 	FName CurrentWarpTargetName;
-	FMeleeMeleeWarpData CurrentWarpData;
+	FMeleeWarpData CurrentWarpData;
 
 public:
 	
@@ -43,7 +43,7 @@ public:
 	AActor* FilterClosestActorToOwner(TArray<FHitResult> HitArray);
 	
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
-	void WarpToTarget(FMeleeMeleeWarpData WarpData);
+	void WarpToTarget(FMeleeWarpData WarpData);
 
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
 	void RemoveWarpTarget();

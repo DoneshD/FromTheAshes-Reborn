@@ -15,27 +15,28 @@ class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UFTAAbilityDataAsse
 
 public:
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Required")
 	int RequiredIndex;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category = "Required")
 	bool RequiredPause = false;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UGameplayEffect> HitEffect;
+	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
+	TSubclassOf<UGameplayEffect> HitGameplayEffect;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly,  Category = "Gameplay Effect")
 	FGameplayTag HitReactionTag;
 
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UNiagaraSystem> HitVFxImpact;
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> HitEffectImpact;
 
-	UPROPERTY(EditDefaultsOnly)
-	float TraceSize;
-
-	UPROPERTY(EditDefaultsOnly)
-	FMeleeMeleeWarpData MeleeWarpData;
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> SlashEffect;
 	
-	UPROPERTY(EditDefaultsOnly)
-	TObjectPtr<UNiagaraSystem> SlashFX;
+	UPROPERTY(EditDefaultsOnly, Category = "Range")
+	float TraceSize;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
+	FMeleeWarpData MeleeWarpData;
+	
 };

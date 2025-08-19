@@ -13,16 +13,15 @@ class FROMTHEASHESREBORN_API UFTAAbilityDataAsset : public UPrimaryDataAsset
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Direction")
-	ESpatialDirection Direction;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability Asset Tag")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params | Tags")
 	FGameplayTag UniqueIdentifierTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability Asset Tag")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Required Tagss")
 	FGameplayTagContainer RequiredTags;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Direction")
+	ESpatialDirection Direction;
 };

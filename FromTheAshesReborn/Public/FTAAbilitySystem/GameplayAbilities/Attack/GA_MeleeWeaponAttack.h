@@ -32,7 +32,7 @@ struct FMeleeAttackForms
 };
 
 USTRUCT(BlueprintType)
-struct FMeleeMeleeWarpData
+struct FMeleeWarpData
 {
 	GENERATED_BODY()
 	
@@ -70,12 +70,20 @@ struct FMeleeRuntimeDataStruct
 	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
 	TObjectPtr<UNiagaraSystem> HitFX;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
+	TSubclassOf<UGameplayEffect> HitReactionEffect;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
+	FGameplayTag HitReactionTag;
+
 	FMeleeRuntimeDataStruct()
 	:
 	TraceRange(0.0f),
 	HitDirection(ESpatialDirection::None),
 	SlashFX(nullptr),
-	HitFX(nullptr)
+	HitFX(nullptr),
+	HitReactionEffect(nullptr),
+	HitReactionTag(FGameplayTag::EmptyTag)
 	{}
 	
 };
@@ -92,39 +100,33 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Attacks")
 	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
-
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	FGameplayTag StateTreeStartedTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	FGameplayTag StateTreeRunningTag;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	FGameplayTag StateTreeFinishedTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attacks")
-	float BoxHalfSize;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> DamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit")
 	TSubclassOf<UGameplayEffect> GrantHitReactionEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit", Meta = (Categories = "HitTag"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit", Meta = (Categories = "HitTag"))
 	FGameplayTag HitReactionTag;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
-	FGameplayTag SlashVfxCueTag;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | VFX")
 	TObjectPtr<UNiagaraSystem> HitFX;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX", Meta = (Categories = "GameplayCue"))
-	FGameplayTag HitVfxCueTag;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Size")
+	float BoxHalfSize;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue")
+	FGameplayTag SlashEffectCueTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue", Meta = (Categories = "GameplayCue"))
+	FGameplayTag HitEffectCueTag;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "After Image")
+	float AfterImageDistance = 200.0f;
 	
 	FGameplayEventData OnHitEventData;
 
@@ -151,15 +153,15 @@ protected:
 
 	UPROPERTY()
 	FGameplayTag CurrentHitReactionTag = FGameplayTag::EmptyTag;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
-	float MotionWarpLocationOffset = 125.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
-	float AfterImageDistance = 200.0f;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Test")
-	ESpatialDirection HitDirection;
+	
+	// UPROPERTY(EditDefaultsOnly, Category = "AI")
+	// FGameplayTag StateTreeStartedTag;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category = "AI")
+	// FGameplayTag StateTreeRunningTag;
+	//
+	// UPROPERTY(EditDefaultsOnly, Category = "AI")
+	// FGameplayTag StateTreeFinishedTag;
 
 protected:
 
@@ -176,15 +178,15 @@ protected:
 	
 public:
 	
-	UFUNCTION(BlueprintCallable, Category="FTAAbility")
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	void ResetMeleeAttack();
 
-	UFUNCTION(BlueprintCallable, Category="FTAAbility")
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
 	void StartMeleeWeaponTrace();
 	void EndMeleeWeaponTrace();
 
-	UFUNCTION(BlueprintCallable, Category="FTAAbility")
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
 
 	UFUNCTION()
@@ -202,7 +204,6 @@ protected:
 	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
-
 	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);
 
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
