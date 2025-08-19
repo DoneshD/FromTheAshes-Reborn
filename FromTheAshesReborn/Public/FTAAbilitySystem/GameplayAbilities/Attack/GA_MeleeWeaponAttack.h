@@ -95,14 +95,25 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
 
 protected:
 
+	UPROPERTY()
+	TObjectPtr<AFTACharacter> FTAChar;
+
+	UPROPERTY()
+	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
+
+	UPROPERTY()
+	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
+
+	UPROPERTY()
+	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
+
+protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
 	FMeleeAttackForms MeleeAttackAssets;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Attacks")
-	TObjectPtr<UMeleeAbilityDataAsset> MeleeAbilityAsset;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> DamageEffect;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
+	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit")
 	TSubclassOf<UGameplayEffect> GrantHitReactionEffect;
@@ -117,7 +128,7 @@ protected:
 	TObjectPtr<UNiagaraSystem> HitFX;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Size")
-	float BoxHalfSize;
+	float TraceSize = 20.0f;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue")
 	FGameplayTag SlashEffectCueTag;
@@ -130,17 +141,7 @@ protected:
 	
 	FGameplayEventData OnHitEventData;
 
-	UPROPERTY()
-	TObjectPtr<AFTACharacter> FTAChar;
-
-	UPROPERTY()
-	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
-
-	UPROPERTY()
-	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
-
-	UPROPERTY()
-	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
+	//Current
 
 	UPROPERTY()
 	TSubclassOf<UGameplayEffect> CurrentHitReactionEffect = nullptr;
@@ -153,15 +154,6 @@ protected:
 
 	UPROPERTY()
 	FGameplayTag CurrentHitReactionTag = FGameplayTag::EmptyTag;
-	
-	// UPROPERTY(EditDefaultsOnly, Category = "AI")
-	// FGameplayTag StateTreeStartedTag;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category = "AI")
-	// FGameplayTag StateTreeRunningTag;
-	//
-	// UPROPERTY(EditDefaultsOnly, Category = "AI")
-	// FGameplayTag StateTreeFinishedTag;
 
 protected:
 

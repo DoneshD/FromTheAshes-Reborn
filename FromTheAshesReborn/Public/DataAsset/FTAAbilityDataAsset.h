@@ -16,7 +16,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params | Tags")
 	FGameplayTag UniqueIdentifierTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Required Tagss")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Tags")
 	FGameplayTagContainer RequiredTags;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")

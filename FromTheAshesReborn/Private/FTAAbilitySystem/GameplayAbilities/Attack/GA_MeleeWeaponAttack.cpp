@@ -139,7 +139,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	MeleePropertiesComponent->OnSetMeleeData.AddUniqueDynamic(this, &UGA_MeleeWeaponAttack::SetRuntimeMeleeData);
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
-	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(BoxHalfSize, BoxHalfSize, BoxHalfSize);
+	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(TraceSize, TraceSize, TraceSize);
 	
 	if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
 	{
@@ -179,17 +179,6 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(20.0f, 20.0f, 20.0f);
-
-	/*if (UAbilitySystemComponent* ASC = GetAbilitySystemComponentFromActorInfo())
-	{
-		if (!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(StateTreeFinishedTag))
-		{
-			return;
-		}
-
-		ASC->AddLooseGameplayTag(StateTreeFinishedTag);
-		ASC->RemoveLooseGameplayTag(StateTreeFinishedTag);
-	}*/
 
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
@@ -233,7 +222,6 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 	}
 
 	ExtractMeleeAssetProperties(MatchingDataAsset);
-	MeleeAbilityAsset = MatchingDataAsset;
 	
 	if (MatchingDataAsset->MontageToPlay)
 	{
@@ -359,14 +347,14 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	
-	if(DamageEffect)
+	if(ApplyDamageEffect)
 	{
 		TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
 		CurrentSpecHandle,
 		CurrentActorInfo,
 		CurrentActivationInfo,
 		TargetDataHandle,
-		DamageEffect, 
+		ApplyDamageEffect, 
 		1,
 		1
 		);
@@ -469,9 +457,9 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	CurrentSlashFX = nullptr;
 	CurrentHitReactionTag = FGameplayTag::EmptyTag;
 	
-	if(MeleeAsset->HitGameplayEffect)
+	if(MeleeAsset->GrantHitReactionEffect)
 	{
-		CurrentHitReactionEffect = MeleeAsset->HitGameplayEffect;
+		CurrentHitReactionEffect = MeleeAsset->GrantHitReactionEffect;
 	}
 
 	if(MeleeAsset->HitEffectImpact)
@@ -481,7 +469,6 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 
 	if(MeleeAsset->SlashEffect)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("SLASHING"))
 		CurrentSlashFX = MeleeAsset->SlashEffect;
 	}
 

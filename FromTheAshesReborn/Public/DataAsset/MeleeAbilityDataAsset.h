@@ -22,7 +22,7 @@ public:
 	bool RequiredPause = false;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
-	TSubclassOf<UGameplayEffect> HitGameplayEffect;
+	TSubclassOf<UGameplayEffect> GrantHitReactionEffect;
 
 	UPROPERTY(EditDefaultsOnly,  Category = "Gameplay Effect")
 	FGameplayTag HitReactionTag;
