@@ -28,10 +28,10 @@ public:
 	FGameplayTag HitReactionTag;
 
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	TObjectPtr<UNiagaraSystem> HitEffectImpact;
+	TObjectPtr<UNiagaraSystem> HitVFX;
 
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	TObjectPtr<UNiagaraSystem> SlashEffect;
+	TObjectPtr<UNiagaraSystem> SlashVFX;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Range")
 	float TraceSize;

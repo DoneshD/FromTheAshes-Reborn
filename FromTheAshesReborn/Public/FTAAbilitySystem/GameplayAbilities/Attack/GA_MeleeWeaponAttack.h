@@ -155,6 +155,13 @@ protected:
 	UPROPERTY()
 	FGameplayTag CurrentHitReactionTag = FGameplayTag::EmptyTag;
 
+	UPROPERTY()
+	ESpatialDirection CurrentHitDirection = ESpatialDirection::None;
+
+	UPROPERTY()
+	float CurrentTraceSize = 0.0f;
+	
+
 protected:
 
 	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());

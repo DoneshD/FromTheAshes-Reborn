@@ -103,6 +103,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if(!FTAChar)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - Avatar Actor Not FTAChar"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 	
@@ -111,12 +112,14 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if(!ComboManagerComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - ComboManagerComponent is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 
 	if(!FTAChar->EquipmentManagerComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - EquipmentManagerComponent is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 	
@@ -125,6 +128,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if(!MeleeWeaponActor)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 
@@ -133,6 +137,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	if(!MeleePropertiesComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleePropertiesComponent is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 
@@ -149,7 +154,6 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 	
 	PerformMeleeAttack(MeleeAttackAssets);
-	
 
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
@@ -178,7 +182,6 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	}
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
-	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(20.0f, 20.0f, 20.0f);
 
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
@@ -220,8 +223,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-
-	ExtractMeleeAssetProperties(MatchingDataAsset);
+	
 	
 	if (MatchingDataAsset->MontageToPlay)
 	{
@@ -231,6 +233,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 		ComboManagerComponent->PauseCurrentAttack = false;
 
+		ExtractMeleeAssetProperties(MatchingDataAsset);
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 	}
 	else
@@ -242,14 +245,21 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 
 void UGA_MeleeWeaponAttack::StartMeleeWeaponTrace()
 {
-	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(true);
-	
+	if(CurrentTraceSize > 0.0f)
+	{
+		MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(CurrentTraceSize, CurrentTraceSize, CurrentTraceSize);
+	}
+	else
+	{
+		MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(TraceSize, TraceSize, TraceSize);
+	}
+	MeleeWeaponActor->TracingComponent->ToggleTraceCheck(true);
 }
 
 void UGA_MeleeWeaponAttack::EndMeleeWeaponTrace()
 {
-	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ToggleTraceCheck(false);
-	FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor()->TracingComponent->ClearHitArray();
+	MeleeWeaponActor->TracingComponent->ToggleTraceCheck(false);
+	MeleeWeaponActor->TracingComponent->ClearHitArray();
 }
 
 void UGA_MeleeWeaponAttack::SpawnAfterImage()
@@ -453,23 +463,35 @@ void UGA_MeleeWeaponAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> Anim
 void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
 {
 	CurrentHitReactionEffect = nullptr;
+	CurrentHitReactionTag = FGameplayTag::EmptyTag;
 	CurrentHitFX = nullptr;
 	CurrentSlashFX = nullptr;
-	CurrentHitReactionTag = FGameplayTag::EmptyTag;
+	CurrentHitDirection = ESpatialDirection::None;
+	CurrentTraceSize = 0.0f;
 	
 	if(MeleeAsset->GrantHitReactionEffect)
 	{
 		CurrentHitReactionEffect = MeleeAsset->GrantHitReactionEffect;
 	}
 
-	if(MeleeAsset->HitEffectImpact)
+	if(MeleeAsset->HitVFX)
 	{
-		CurrentHitFX = MeleeAsset->HitEffectImpact;
+		CurrentHitFX = MeleeAsset->HitVFX;
 	}
 
-	if(MeleeAsset->SlashEffect)
+	if(MeleeAsset->SlashVFX)
 	{
-		CurrentSlashFX = MeleeAsset->SlashEffect;
+		CurrentSlashFX = MeleeAsset->SlashVFX;
+	}
+
+	if(MeleeAsset->TraceSize > 0.0f)
+	{
+		CurrentTraceSize = MeleeAsset->TraceSize;
+	}
+
+	if(MeleeAsset->HitDirection != ESpatialDirection::None)
+	{
+		CurrentHitDirection = MeleeAsset->HitDirection;
 	}
 
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->HitReactionTag))

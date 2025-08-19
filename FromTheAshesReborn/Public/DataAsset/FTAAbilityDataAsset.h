@@ -23,5 +23,5 @@ public:
 	TObjectPtr<UAnimMontage> MontageToPlay;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Direction")
-	ESpatialDirection Direction;
+	ESpatialDirection HitDirection;
 };
