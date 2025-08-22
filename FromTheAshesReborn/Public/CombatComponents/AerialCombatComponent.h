@@ -16,10 +16,7 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UAerialCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
+	
 
 private:
 	int32 PreviousCount;
@@ -57,6 +54,8 @@ protected:
 	float LaunchStrengthMultiplier = 1.0f;
 
 	bool IsComponentActive = false;
+	bool CheckForZVelocity = false;
+	
 	int AttackCounter = 0;
 
 	float AttackLastResetTime;

@@ -46,23 +46,6 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	// 	SuspendTask->ReadyForActivation();
 	// }
 
-	AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
-
-	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0;
-
-	if(!AerialCombatComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_AerialSuspension::ActivateAbility - AerialCombatComponent"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-	
-	if(EnableAerialCombatEffect)
-	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-	}
-
 	if(AddAerialCombatGravity)
 	{
 		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AddAerialCombatGravity, 1.0f);

@@ -56,10 +56,13 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		PrintGravity();
+		if(CMC->Velocity.Z < 0.0f)
+		{
+			CheckForZVelocity = false;
 		
-		TotalAirTime += DeltaTime;
-		CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+			TotalAirTime += DeltaTime;
+			CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+		}
 	}
 }
 

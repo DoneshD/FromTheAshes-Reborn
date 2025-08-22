@@ -88,7 +88,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool IsAlreadyDead = false;
 
-	bool CheckForZVelocity = false;
 	
 public:
 	

@@ -68,7 +68,6 @@ void UAT_LaunchCharacterAndWait::Activate()
 
 	IsLaunching = true;
 
-	FTAChar->CheckForZVelocity = true;
 }
 
 void UAT_LaunchCharacterAndWait::ExternalCancel()
