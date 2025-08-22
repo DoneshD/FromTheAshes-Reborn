@@ -44,9 +44,6 @@ public:
 	TArray<FFTAAppliedEquipmentItem> Entries;
 
 	UPROPERTY()
-	TObjectPtr<UActorComponent> OwnerComponent;
-
-	UPROPERTY()
 	UWeaponInstance* CurrentEquippedWeaponInstance;
 
 	UPROPERTY()
@@ -56,8 +53,7 @@ public:
 	
 	UEquipmentManagerComponent();
 	virtual void BeginPlay() override;
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	UFUNCTION(BlueprintCallable)
 	void RemoveEquipmentItem(UWeaponInstance* Instance);

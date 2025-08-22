@@ -6,6 +6,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UGA_AerialSuspension::UGA_AerialSuspension()
 {
@@ -46,6 +47,8 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	// }
 
 	AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+
+	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0;
 
 	if(!AerialCombatComponent)
 	{

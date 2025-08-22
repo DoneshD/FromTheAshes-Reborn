@@ -175,7 +175,7 @@ float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCoun
 float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier() const
 {
 	float CurrentGravityScale = (TotalAirTime) * TimeGravityMultiplier;
-	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, 0.5, 4.0f);
+	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, 0.0, 4.0f);
 	return CurrentGravityScale;
 }
 
