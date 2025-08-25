@@ -56,10 +56,26 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		if(CMC->Velocity.Z <= 0.0f)
+		if(ActivateFromLauncher)
 		{
-
-			PrintGravity();
+			if(CMC->Velocity.Z <= 0.0f)
+			{
+				ActivateFromLauncher = false;
+				// PrintGravity();
+				TotalAirTime += DeltaTime;
+				CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Not printing"))
+				// PrintGravity();
+				TotalAirTime += DeltaTime;
+				CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
+			}
+		}
+		else
+		{
+			// PrintGravity();
 			TotalAirTime += DeltaTime;
 			CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
 		}
@@ -136,7 +152,7 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 {
 	if (NewCount > PreviousCount)
 	{
-		// CalculateAttackAntiGravityMultiplier(NewCount);
+		CalculateAttackAntiGravityMultiplier(NewCount);
 	}
 
 	PreviousCount = NewCount;
@@ -145,7 +161,7 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCount)
 {
 	AttackCounter = InNewCount;
-	
+	UE_LOG(LogTemp, Warning, TEXT("TEST"));
 	if (AttackCounter <= 3)
 	{
 		LaunchStrength = 100.0f;

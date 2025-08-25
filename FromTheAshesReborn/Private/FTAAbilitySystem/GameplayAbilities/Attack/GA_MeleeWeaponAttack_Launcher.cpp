@@ -3,7 +3,9 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Camera/CameraSystemComponent.h"
 #include "MotionWarpingComponent.h"
+#include "CombatComponents/AerialCombatComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Engine/EngineCustomTimeStep.h"
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
@@ -77,6 +79,13 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 
 	if(EnableAerialCombatEffect)
 	{
+		UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+
+		if(!ACC->IsValidLowLevel())
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::EndAbility - ACC invalid"))
+		}
+		ACC->ActivateFromLauncher = true;
 		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}

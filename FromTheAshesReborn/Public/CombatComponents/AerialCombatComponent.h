@@ -16,6 +16,10 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UAerialCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+	
+	bool ActivateFromLauncher = false;
 	
 
 private:
