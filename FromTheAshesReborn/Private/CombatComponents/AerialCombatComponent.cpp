@@ -56,10 +56,10 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
-		if(CMC->Velocity.Z < 0.0f)
+		if(CMC->Velocity.Z <= 0.0f)
 		{
-			CheckForZVelocity = false;
-		
+
+			PrintGravity();
 			TotalAirTime += DeltaTime;
 			CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
 		}
@@ -74,7 +74,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-	AlreadyLaunched = false;
 
 	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
 	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
@@ -161,7 +160,6 @@ float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCoun
 	}
 	else
 	{
-		CMC->GravityScale = 4.0f;
 		LaunchStrength = 0.0f;
 	}
 
@@ -178,7 +176,7 @@ float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCoun
 float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier() const
 {
 	float CurrentGravityScale = (TotalAirTime) * TimeGravityMultiplier;
-	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, 0.0, 4.0f);
+	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, MinimumGravityScale, MaximumGravityScale);
 	return CurrentGravityScale;
 }
 

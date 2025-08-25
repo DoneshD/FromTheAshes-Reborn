@@ -29,17 +29,13 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CMC;
-	
 
 protected:
 
+	bool IsComponentActive = false;
 	
-
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag EnableTag;
-
-	UPROPERTY()
-	FGameplayTag FlailTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail");
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag AerialAttackCounterTag;
@@ -52,20 +48,20 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Parameters")
 	float LaunchStrengthMultiplier = 1.0f;
-
-	bool IsComponentActive = false;
-	bool CheckForZVelocity = false;
 	
 	int AttackCounter = 0;
-
 	float AttackLastResetTime;
 	float AttackTimeInAir = 0.0f;
-
 	float TotalAirTime = 0.0f;
 
 	float LaunchStrength = 100.0f;
 
-	bool AlreadyLaunched = false;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
+	float MinimumGravityScale = 2.5f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
+	float MaximumGravityScale = 4.0f;
+
 
 protected:
 
