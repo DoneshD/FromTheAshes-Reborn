@@ -105,6 +105,7 @@ void UGA_MeleeWeaponAttack_GroundPound::CancelAbility(const FGameplayAbilitySpec
 void UGA_MeleeWeaponAttack_GroundPound::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	UniqueHitActors.Empty();
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -140,7 +141,6 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 
 void UGA_MeleeWeaponAttack_GroundPound::TempApplyGPEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Calling"))
 	if(CurrentHitReactionEffect)
 	{
 		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
@@ -179,86 +179,84 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 {
 	//Testing sweep
-	
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(GetFTACharacterFromActorInfo()->TargetObjectTraceChannel));
 
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(GetFTACharacterFromActorInfo()->TargetObjectTraceChannel));
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetFTACharacterFromActorInfo());
 
-		TArray<AActor*> ActorsToIgnore;
-		ActorsToIgnore.Add(GetFTACharacterFromActorInfo());
+	FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
+	FVector End = Start + GetFTACharacterFromActorInfo()->GetActorForwardVector() * 250.0f;
 
-		FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
-		FVector End = Start + GetFTACharacterFromActorInfo()->GetActorForwardVector() * 250.0f;
+	FVector HalfSize = FVector(200.0f, 200.0f, 200.0f); 
+	FRotator Orientation = FRotator::ZeroRotator;
 
-		FVector HalfSize = FVector(100.0f, 100.0f, 100.0f); 
-		FRotator Orientation = FRotator::ZeroRotator;
-
-		UKismetSystemLibrary::BoxTraceMultiForObjects(
-			GetWorld(),
-			Start,
-			End,
-			HalfSize,
-			Orientation,
-			ObjectTypes,
-			false,
-			ActorsToIgnore,
-			EDrawDebugTrace::ForDuration, 
-			HitResults,
-			true,                    
-			FLinearColor::Red,
-			FLinearColor::Green,
-			2.0f
-		);
+	UKismetSystemLibrary::BoxTraceMultiForObjects(
+		GetWorld(),
+		Start,
+		End,
+		HalfSize,
+		Orientation,
+		ObjectTypes,
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::None, 
+		HitResults,
+		true,                    
+		FLinearColor::Red,
+		FLinearColor::Green,
+		2.0f
+	);
 
 
-		if(HitResults.Num() > 0 && HitResults.IsValidIndex(0))
+	if(HitResults.Num() > 0 && HitResults.IsValidIndex(0))
+	{
+		for(FHitResult GPHitResult : HitResults)
 		{
-			for(FHitResult GPHitResult : HitResults)
+			if(GPHitResult.GetActor() && !UniqueHitActors.Contains(GPHitResult.GetActor()))
 			{
-				if(GPHitResult.GetActor() && !UniqueHitActors.Contains(GPHitResult.GetActor()))
+				UniqueHitActors.Add(GPHitResult.GetActor());
+				if(AEnemyBaseCharacter* EnemyBaseCharacter = Cast<AEnemyBaseCharacter>(GPHitResult.GetActor()))
 				{
-					UniqueHitActors.Add(GPHitResult.GetActor());
-					if(AEnemyBaseCharacter* EnemyBaseCharacter = Cast<AEnemyBaseCharacter>(GPHitResult.GetActor()))
+					FHitResult TempHitResult;
+					FVector EnemyGroundPoundEndLocation;
+
+					FCollisionObjectQueryParams GroundCollisionQueryParams;
+					GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+					GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+					
+					if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(TempHitResult, EnemyBaseCharacter->GetActorLocation(), TraceEndLocation, GroundCollisionQueryParams))
 					{
-						FHitResult TempHitResult;
-						FVector EnemyGroundPoundEndLocation;
+						EnemyGroundPoundEndLocation = TempHitResult.ImpactPoint;
+						DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
+					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("Ground not found"));
+						EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+						return;
+					}
 
-						FCollisionObjectQueryParams GroundCollisionQueryParams;
-						GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-						GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-						
-						if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(TempHitResult, EnemyBaseCharacter->GetActorLocation(), TraceEndLocation, GroundCollisionQueryParams))
-						{
-							EnemyGroundPoundEndLocation = TempHitResult.ImpactPoint;
-							DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
-						}
-						else
-						{
-							UE_LOG(LogTemp, Error, TEXT("Ground not found"));
-							EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-							return;
-						}
+					if (GPHitResult.GetActor() && GPHitResult.GetActor()->Implements<UAbilitySystemInterface>())
+					{
+						IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(GPHitResult.GetActor());
+						UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
 
-						if (GPHitResult.GetActor() && GPHitResult.GetActor()->Implements<UAbilitySystemInterface>())
+						if (TargetASC)
 						{
-							IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(GPHitResult.GetActor());
-							UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
-
-							if (TargetASC)
+							FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(GPHitResult);
+							if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 							{
-								FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(GPHitResult);
-								if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
-								{
-									TempApplyGPEffects(TargetHitDataHandle);
-									SendHitGPEvent(GPHitResult, EnemyGroundPoundEndLocation, GroundPoundSpeed, SlamDuration);
-								}
+								TempApplyGPEffects(TargetHitDataHandle);
+								SendHitGPEvent(GPHitResult, EnemyGroundPoundEndLocation, GroundPoundSpeed, SlamDuration);
 							}
-
 						}
+
 					}
 				}
 			}
 		}
+	}
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::SendHitGPEvent(FHitResult HitItemToAdd, FVector LocationEnd, float Speed, float Duration)

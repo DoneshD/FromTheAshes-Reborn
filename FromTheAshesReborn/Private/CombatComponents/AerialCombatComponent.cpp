@@ -67,7 +67,6 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			}
 			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Not printing"))
 				// PrintGravity();
 				TotalAirTime += DeltaTime;
 				CMC->GravityScale = CalculateTimeSpentGravityMultiplier();

@@ -54,24 +54,25 @@ void UGA_Slammed::CancelAbility(const FGameplayAbilitySpecHandle Handle, const F
 void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	
 
-	// GetFTACharacterFromActorInfo()->RemoveAerialEffects();
-	//
-	// FGameplayEventData RecoverEventData;
-	//
-	// RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
-	// RecoverEventData.Target = GetAvatarActorFromActorInfo();
-	//
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.GrantRecovery.GetUp")))
-	// {
-	// 	RecoverEventData.EventTag = FGameplayTag::RequestGameplayTag("EffectTag.GrantRecovery.GetUp");
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
-	// }
-	// 	
-	// UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
+	GetFTACharacterFromActorInfo()->RemoveAerialEffects();
+	
+	FGameplayEventData RecoverEventData;
+	
+	RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
+	RecoverEventData.Target = GetAvatarActorFromActorInfo();
+	
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("EffectTag.GrantRecovery.GetUp")))
+	{
+		RecoverEventData.EventTag = FGameplayTag::RequestGameplayTag("EffectTag.GrantRecovery.GetUp");
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
+	}
+		
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
 	
 }
 

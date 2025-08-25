@@ -7,6 +7,10 @@
 
 UGA_KnockDown::UGA_KnockDown()
 {
+	FAbilityTriggerData TriggerData;
+	TriggerData.TriggerTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Knockdown");
+	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::OwnedTagAdded;
+	AbilityTriggers.Add(TriggerData);
 }
 
 void UGA_KnockDown::OnAbilityTick(float DeltaTime)
