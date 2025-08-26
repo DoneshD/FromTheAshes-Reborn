@@ -17,6 +17,9 @@ protected:
 	TSubclassOf<UGameplayEffect> GetUpAbilityEffect;
 
 	UPROPERTY(EditAnywhere)
+	TSubclassOf<UGameplayEffect> EnableDownedCombatEffect;
+
+	UPROPERTY(EditAnywhere)
 	FGameplayTag RecoveryTag;
 
 protected:

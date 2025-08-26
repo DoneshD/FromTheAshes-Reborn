@@ -5,6 +5,7 @@
 #include "NiagaraComponent.h"
 #include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
@@ -50,6 +51,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	AirCombatComponent = CreateDefaultSubobject<UAerialCombatComponent>(TEXT("AerialCombatComponent"));
 	this->AddOwnedComponent(AirCombatComponent);
+
+	DownedCombatComponent = CreateDefaultSubobject<UDownedCombatComponent>(TEXT("DownedCombatComponent"));
+	this->AddOwnedComponent(DownedCombatComponent);
 	
 	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
 	this->AddOwnedComponent(WallRunningComponent);
@@ -254,6 +258,11 @@ bool AFTACharacter::HasSlammedTag() const
 bool AFTACharacter::HasSlammingTag() const
 {
 	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
+}
+
+bool AFTACharacter::HasDownedTag() const
+{
+	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 }
 
 void AFTACharacter::RemoveAerialEffects()

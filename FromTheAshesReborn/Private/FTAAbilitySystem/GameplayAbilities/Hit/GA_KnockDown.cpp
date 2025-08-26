@@ -60,27 +60,37 @@ void UGA_KnockDown::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventDa
 	Super::OnMontageBlendingOut(EventTag, EventData);
 
 	// FGameplayEffectContextHandle ContextHandle;
-	// FGameplayEffectSpecHandle SpecHandle = GetFTAAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(GetUpAbilityEffect, 1, ContextHandle);
+	// FGameplayEffectSpecHandle SpecHandle = GetFTAAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(EnableDownedCombatEffect, 1, ContextHandle);
 	//
 	// FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
 	// 	CurrentSpecHandle,
 	// 	CurrentActorInfo,
 	// 	CurrentActivationInfo,
 	// 	SpecHandle);
+
+	FGameplayEffectSpecHandle DownedEffectHandle = MakeOutgoingGameplayEffectSpec(EnableDownedCombatEffect, 1.0f);
+			
+	FActiveGameplayEffectHandle AppliedDownedEffects = ApplyGameplayEffectSpecToOwner(
+			CurrentSpecHandle,
+			CurrentActorInfo,
+			CurrentActivationInfo,
+			DownedEffectHandle
+		);
+
 	
-	FGameplayEventData RecoverEventData;
-	
-	RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
-	RecoverEventData.Target = GetAvatarActorFromActorInfo();
-	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(RecoveryTag))
-	{
-		RecoverEventData.EventTag = RecoveryTag;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
-	}
+	// FGameplayEventData RecoverEventData;
+	//
+	// RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
+	// RecoverEventData.Target = GetAvatarActorFromActorInfo();
+	//
+	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(RecoveryTag))
+	// {
+	// 	RecoverEventData.EventTag = RecoveryTag;
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
+	// }
 		
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
+	// UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
 }

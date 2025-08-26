@@ -11,6 +11,7 @@ class UMeleePropertiesComponent;
 class UMeleeWarpingComponent;
 class UWarpingManagerComponent;
 class UAerialCombatComponent;
+class UDownedCombatComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
 class UHealthComponent;
@@ -66,6 +67,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
 	TObjectPtr<UAerialCombatComponent> AirCombatComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
+	TObjectPtr<UDownedCombatComponent> DownedCombatComponent;
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UWallRunningComponent> WallRunningComponent;
@@ -113,6 +117,7 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 	
+	void RemoveAerialEffects();
 
 	//TODO: Allplaceholder below
 	UFUNCTION(BlueprintPure)
@@ -127,11 +132,13 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool HasSlammingTag() const;
 
+	UFUNCTION(BlueprintPure)
+	bool HasDownedTag() const;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void StartHitStop(float Duration);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndHitStop();
 	
-	void RemoveAerialEffects();
 };
