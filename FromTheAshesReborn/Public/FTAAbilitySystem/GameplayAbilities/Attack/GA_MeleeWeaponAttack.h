@@ -76,6 +76,8 @@ struct FMeleeRuntimeDataStruct
 	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
 	FGameplayTag HitReactionTag;
 
+	
+
 	FMeleeRuntimeDataStruct()
 	:
 	TraceSize(0.0f),
@@ -118,8 +120,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit")
 	TSubclassOf<UGameplayEffect> GrantHitReactionEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit")
+	TSubclassOf<UGameplayEffect> GrantDownedHitReactionEffect;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit", Meta = (Categories = "HitTag"))
 	FGameplayTag HitReactionTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit", Meta = (Categories = "HitTag"))
+	FGameplayTag DownedHitReactionTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | VFX")
 	TObjectPtr<UNiagaraSystem> SlashFX;
@@ -160,7 +168,6 @@ protected:
 
 	UPROPERTY()
 	float CurrentTraceSize = 0.0f;
-	
 
 protected:
 
