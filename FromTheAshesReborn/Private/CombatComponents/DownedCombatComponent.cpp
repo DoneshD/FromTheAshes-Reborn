@@ -1,4 +1,4 @@
-﻿#include "DownedCombatComponent.h"
+﻿#include "CombatComponents/DownedCombatComponent.h"
 
 UDownedCombatComponent::UDownedCombatComponent()
 {

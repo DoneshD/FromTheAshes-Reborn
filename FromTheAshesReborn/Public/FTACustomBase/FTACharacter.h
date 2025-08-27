@@ -7,6 +7,8 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UCombatStateComponent;
+class UCentralStateComponent;
 class UMeleePropertiesComponent;
 class UMeleeWarpingComponent;
 class UWarpingManagerComponent;
@@ -70,6 +72,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
 	TObjectPtr<UDownedCombatComponent> DownedCombatComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
+	TObjectPtr<UCentralStateComponent> CentralStateComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
+	TObjectPtr<UCombatStateComponent> CombatStateComponent;
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UWallRunningComponent> WallRunningComponent;

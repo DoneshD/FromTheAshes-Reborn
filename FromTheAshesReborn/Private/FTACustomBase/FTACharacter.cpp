@@ -1,10 +1,13 @@
 #include "FTACustomBase/FTACharacter.h"
+
+#include "CentralStateComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
 #include "NiagaraComponent.h"
 #include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/CombatStateComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
@@ -54,6 +57,12 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	DownedCombatComponent = CreateDefaultSubobject<UDownedCombatComponent>(TEXT("DownedCombatComponent"));
 	this->AddOwnedComponent(DownedCombatComponent);
+
+	CentralStateComponent = CreateDefaultSubobject<UCentralStateComponent>(TEXT("CentralStateComponent"));
+	this->AddOwnedComponent(CentralStateComponent);
+
+	CombatStateComponent = CreateDefaultSubobject<UCombatStateComponent>(TEXT("CombatStateComponent"));
+	this->AddOwnedComponent(CombatStateComponent);
 	
 	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
 	this->AddOwnedComponent(WallRunningComponent);
