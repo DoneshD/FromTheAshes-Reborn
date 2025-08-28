@@ -1,7 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "CentralStateComponent.h"
 #include "../GA_FromEquipment.h"
+#include "CombatComponents/CombatStateComponent.h"
 #include "EventObjects/HitEventObject.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
@@ -169,6 +171,9 @@ protected:
 	UPROPERTY()
 	float CurrentTraceSize = 0.0f;
 
+	 UPROPERTY()
+	 FHitReactionStruct CurrentHitReactionStruct;
+
 protected:
 
 	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());
@@ -204,6 +209,11 @@ protected:
 	void OnHitAdded(FHitResult LastItem);
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
+
+	void SelectHitReactionPart2(UAbilitySystemComponent* TargetASC,
+	                            UCentralStateComponent* CentralStateComponent, UCombatStateComponent* CombatStateComponent, FHitReactionStruct
+	                            & TestHitReactionStruct);
+	FHitReactionStruct SelectHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	virtual void ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle);

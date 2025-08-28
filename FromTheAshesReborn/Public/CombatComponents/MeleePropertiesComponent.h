@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "EnumHelpers.h"
+#include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "MeleePropertiesComponent.generated.h"
@@ -20,31 +21,6 @@ class FROMTHEASHESREBORN_API UMeleePropertiesComponent : public UActorComponent
 private:
 	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTAChar;
-
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> StaggerEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> SuspendEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> LaunchEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> KnockdownEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> KnockbackEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> SlamEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> DownFlinchEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	TSubclassOf<UGameplayEffect> BounceEffect;
 
 public:
 
