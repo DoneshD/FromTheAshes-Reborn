@@ -17,10 +17,34 @@ class FROMTHEASHESREBORN_API UMeleePropertiesComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:
-	
+private:
 	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTAChar;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> StaggerEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> SuspendEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> LaunchEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> KnockdownEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> KnockbackEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> SlamEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> DownFlinchEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
+	TSubclassOf<UGameplayEffect> BounceEffect;
 
 public:
 
