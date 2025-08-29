@@ -368,6 +368,7 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 		{
 			if (TempPossibleHitReactions[i].CharacterOrientationTag.MatchesTagExact(CentralStateComponent->AirborneTag))
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i].HitTag.GetTagName().ToString());
 				TempPossibleHitReactions.RemoveAt(i);
 			}
 		}
@@ -379,6 +380,7 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 		{
 			if (TempPossibleHitReactions[i].CharacterOrientationTag.MatchesTagExact(CentralStateComponent->GroundedTag))
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i].HitTag.GetTagName().ToString());
 				TempPossibleHitReactions.RemoveAt(i);
 			}
 		}
@@ -391,6 +393,7 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 			//TODO: Fix later
 			if (TempPossibleHitReactions[i].CharacterStateTags.HasTagExact(CombatStateComponent->DownedTag))
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i].HitTag.GetTagName().ToString());
 				TempPossibleHitReactions.RemoveAt(i);
 			}
 		}
@@ -403,13 +406,14 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 			//TODO: Fix later
 			if (TempPossibleHitReactions[i].CharacterStateTags.HasTagExact(CombatStateComponent->NeutralTag))
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i].HitTag.GetTagName().ToString());
 				TempPossibleHitReactions.RemoveAt(i);
 			}
 		}
 	}
 	if(TempPossibleHitReactions.Num() > 1)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SelectHitReaction - More than 2 possible hit reactions"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SelectHitReaction - More than 1 possible hit reaction"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
@@ -420,6 +424,8 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Hit reaction found"));
 	
 	InHitReactionStruct = TempPossibleHitReactions[0];
 }
