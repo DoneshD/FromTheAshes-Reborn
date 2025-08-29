@@ -76,6 +76,9 @@ struct FMeleeRuntimeDataStruct
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
 	FGameplayTag HitReactionTag;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
+	FHitReactionStruct HitReactionStruct;
 	
 	FMeleeRuntimeDataStruct()
 	:

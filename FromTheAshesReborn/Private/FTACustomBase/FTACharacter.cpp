@@ -92,6 +92,8 @@ void AFTACharacter::BeginPlay()
 	}
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(CombatStateComponent->NeutralTag);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
 }
 
 void AFTACharacter::Tick(float DeltaTime)

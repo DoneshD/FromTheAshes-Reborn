@@ -10,6 +10,7 @@ void UCombatStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	
 }
 
 void UCombatStateComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

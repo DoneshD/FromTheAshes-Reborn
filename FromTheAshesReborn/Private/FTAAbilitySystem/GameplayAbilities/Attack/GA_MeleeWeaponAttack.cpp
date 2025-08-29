@@ -593,23 +593,22 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 
 	HitInfoObj->HitData.HitDirection = CurrentHitDirection;
 	
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
-	// {
-	// 	OnHitEventData.EventTag = CurrentHitReactionTag;
-	// 	
-	// }
-	// else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
-	// {
-	// 	OnHitEventData.EventTag = HitReactionTag;
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
-	// }
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct.HitTag))
+	{
+		OnHitEventData.EventTag = CurrentHitReactionStruct.HitTag;
+		
+	}
+	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct.HitTag))
+	{
+		OnHitEventData.EventTag = CurrentHitReactionStruct.HitTag;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
+	}
 
 	const FGameplayAbilityTargetData* HitActors = TargetDataHandle.Get(0);
 	TArray<TWeakObjectPtr<AActor>> HitActor = HitActors->GetActors();
-	UE_LOG(LogTemp, Warning, TEXT("The name is: %s"), *HitActor[0]->GetName());
 	
 	AActor* EnemyActor = HitActor[0].Get();
 	
