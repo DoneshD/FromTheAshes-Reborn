@@ -15,25 +15,24 @@ struct FHitReactionStruct
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
 	TSubclassOf<UGameplayEffect> HitEffect;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Hit")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
 	FGameplayTag HitTag;
 
-	UPROPERTY(BlueprintReadWrite, Category = "Hit")
-	FGameplayTag CharacterStateTag;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Hit")
-	FGameplayTag CharacterOrientationTag; 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
+	FGameplayTag CharacterOrientationTag;
 	
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
+	FGameplayTagContainer CharacterStateTags;
+	
 	FHitReactionStruct()
 	:
 	HitEffect(nullptr),
-	HitTag(FGameplayTag::EmptyTag)
+	HitTag(FGameplayTag::EmptyTag),
+	CharacterOrientationTag(FGameplayTag::EmptyTag),
+	CharacterStateTags(FGameplayTag::EmptyTag)
 	{}
 	
 };
-
-
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UCombatStateComponent : public UActorComponent

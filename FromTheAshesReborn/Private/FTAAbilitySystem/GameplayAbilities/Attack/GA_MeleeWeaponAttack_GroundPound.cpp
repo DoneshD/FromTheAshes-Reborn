@@ -170,9 +170,9 @@ void UGA_MeleeWeaponAttack_GroundPound::TempApplyGPEffects(const FGameplayAbilit
 	}
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionStruct CurrentHitReactionStruct)
 {
-	Super::SendMeleeHitGameplayEvents(TargetDataHandle);
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 	
 }
 
