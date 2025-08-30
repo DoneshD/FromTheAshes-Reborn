@@ -25,9 +25,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack")
 	FMeleeAttackDataStruct AttackData;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Hit")
-	TObjectPtr<UHitReactionDataAsset> HitDataAsset;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
 	FMeleeWarpData MeleeWarpData;

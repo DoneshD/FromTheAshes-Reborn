@@ -141,36 +141,21 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 
 void UGA_MeleeWeaponAttack_GroundPound::TempApplyGPEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	if(CurrentHitReactionEffect)
+	if(FinalHitData.HitEffect)
 	{
-		TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectToTarget(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		TargetDataHandle,
-		CurrentHitReactionEffect, 
-		1,
-		1
-		);
-	}
-	else
-	{
-		if(GrantHitReactionEffect)
-		{
-			FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(GrantHitReactionEffect, 1.0f);
-			
-			TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
-					CurrentSpecHandle,
-					CurrentActorInfo,
-					CurrentActivationInfo,
-					HitEffectHandle,
-					TargetDataHandle
-				);
-		}
+		FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(FinalHitData.HitEffect, 1.0f);
+
+		TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+				CurrentSpecHandle,
+				CurrentActorInfo,
+				CurrentActivationInfo,
+				HitEffectHandle,
+				TargetDataHandle
+			);
 	}
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct)
 {
 	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 	
@@ -278,7 +263,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendHitGPEvent(FHitResult HitItemToAdd, 
 	OnSlamHitEventData.Target = TargetActor;
 	OnSlamHitEventData.ContextHandle.AddHitResult(*TargetHitDataHandle.Get(0)->GetHitResult());
 
-	OnSlamHitEventData.EventTag = HitReactionTag;
+	OnSlamHitEventData.EventTag = FinalHitData.HitTag;
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnSlamHitEventData.EventTag, OnSlamHitEventData);
 }

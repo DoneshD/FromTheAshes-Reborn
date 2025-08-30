@@ -83,7 +83,7 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 	//TODO: This is being called from a grounded attack, check later 
 }
 
-void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct)
 {
 	// Super::SendMeleeHitGameplayEvents(TargetDataHandle);
 	
@@ -100,17 +100,13 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 	OnAerialHitEventData.Target = TargetActor;
 	OnAerialHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FinalHitData.HitTag))
 	{
-		OnAerialHitEventData.EventTag = CurrentHitReactionTag;
-	}
-	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
-	{
-		OnAerialHitEventData.EventTag = HitReactionTag;
+		OnHitEventData.EventTag = FinalHitData.HitTag;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - Not a valid Gameplay Tag"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
 	}
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnAerialHitEventData.EventTag, OnAerialHitEventData);

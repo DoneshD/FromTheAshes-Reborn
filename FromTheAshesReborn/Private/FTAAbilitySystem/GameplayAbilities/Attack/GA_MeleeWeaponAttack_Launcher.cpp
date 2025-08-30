@@ -92,7 +92,7 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 	
 }
 
-void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct)
 {
 	ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
@@ -110,17 +110,13 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 	OnLaunchHitEventData.Target = TargetActor;
 	OnLaunchHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FinalHitData.HitTag))
 	{
-		OnLaunchHitEventData.EventTag = CurrentHitReactionTag;
-	}
-	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
-	{
-		OnLaunchHitEventData.EventTag = HitReactionTag;
+		OnHitEventData.EventTag = FinalHitData.HitTag;
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - Not a valid Gameplay Tag"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
 	}
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnLaunchHitEventData.EventTag, OnLaunchHitEventData);

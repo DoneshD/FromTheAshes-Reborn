@@ -4,14 +4,9 @@
 #include "EnumHelpers.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
-#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "MeleePropertiesComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMeleeRuntimeDataSetSignature, FMeleeRuntimeDataStruct, InMeleeData);
-
-class UNiagaraSystem;
-class AFTACharacter;
-class UEquipmentManagerComponent;
+class UHitReactionDataAsset;
 
 USTRUCT(BlueprintType)
 struct FMeleeAttackDataStruct
@@ -35,6 +30,9 @@ struct FMeleeAttackDataStruct
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
 	FGameplayTag HitFXCueTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
+	TObjectPtr<UHitReactionDataAsset> HitDataAsset;
 	
 	FMeleeAttackDataStruct()
 	:
@@ -45,6 +43,14 @@ struct FMeleeAttackDataStruct
 	{}
 	
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMeleeRuntimeDataSetSignature, FMeleeAttackDataStruct, InMeleeData);
+
+class UNiagaraSystem;
+class AFTACharacter;
+class UEquipmentManagerComponent;
+
+
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UMeleePropertiesComponent : public UActorComponent
