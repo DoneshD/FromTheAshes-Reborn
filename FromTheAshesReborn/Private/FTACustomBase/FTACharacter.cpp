@@ -1,6 +1,5 @@
 #include "FTACustomBase/FTACharacter.h"
 
-#include "CentralStateComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
@@ -58,9 +57,6 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	DownedCombatComponent = CreateDefaultSubobject<UDownedCombatComponent>(TEXT("DownedCombatComponent"));
 	this->AddOwnedComponent(DownedCombatComponent);
 
-	CentralStateComponent = CreateDefaultSubobject<UCentralStateComponent>(TEXT("CentralStateComponent"));
-	this->AddOwnedComponent(CentralStateComponent);
-
 	CombatStateComponent = CreateDefaultSubobject<UCombatStateComponent>(TEXT("CombatStateComponent"));
 	this->AddOwnedComponent(CombatStateComponent);
 
@@ -96,16 +92,14 @@ void AFTACharacter::BeginPlay()
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 	FTAAbilitySystemComponent->AddLooseGameplayTag(CombatStateComponent->NeutralTag);
-	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(CombatStateComponent->GroundedTag);
 }
 
 void AFTACharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	
 }
-
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 {

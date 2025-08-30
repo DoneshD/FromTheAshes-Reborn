@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "CentralStateComponent.h"
 #include "../GA_FromEquipment.h"
 #include "CombatComponents/CombatStateComponent.h"
 #include "EventObjects/HitEventObject.h"
@@ -213,7 +212,7 @@ protected:
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
 
-	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCentralStateComponent* CentralStateComponent, UCombatStateComponent* CombatStateComponent, FHitReactionStruct& InHitReactionStruct);
+	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, FHitReactionStruct& InHitReactionStruct);
 	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionStruct& InHitReactionStruct);
 	
 	virtual void ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);

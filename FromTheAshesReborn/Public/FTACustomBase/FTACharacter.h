@@ -8,7 +8,6 @@
 #include "FTACharacter.generated.h"
 
 class UCombatStateComponent;
-class UCentralStateComponent;
 class UMeleePropertiesComponent;
 class UMeleeWarpingComponent;
 class UHitReactionComponent;
@@ -73,9 +72,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
 	TObjectPtr<UDownedCombatComponent> DownedCombatComponent;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
-	TObjectPtr<UCentralStateComponent> CentralStateComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
 	TObjectPtr<UCombatStateComponent> CombatStateComponent;

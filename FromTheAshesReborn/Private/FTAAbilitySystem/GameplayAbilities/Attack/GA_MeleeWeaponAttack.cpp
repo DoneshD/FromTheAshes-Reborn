@@ -13,7 +13,6 @@
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
-#include "CentralStateComponent.h"
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "NiagaraSystem.h"
@@ -369,16 +368,16 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	
 }
 
-void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCentralStateComponent* CentralStateComponent,
+void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC,
 	UCombatStateComponent* CombatStateComponent, FHitReactionStruct& InHitReactionStruct)
 {
 	TArray<FHitReactionStruct> TempPossibleHitReactions = PossibleHitReactions;
 
-	if (TargetASC->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
+	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->GroundedTag))
 	{
 		for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
 		{
-			if (TempPossibleHitReactions[i].CharacterOrientationTag.MatchesTagExact(CentralStateComponent->AirborneTag))
+			if (TempPossibleHitReactions[i].CharacterOrientationTag.MatchesTagExact(CombatStateComponent->AirborneTag))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i].HitTag.GetTagName().ToString());
 				TempPossibleHitReactions.RemoveAt(i);
@@ -386,11 +385,11 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 		}
 	}
 	
-	if (TargetASC->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
+	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->AirborneTag))
 	{
 		for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
 		{
-			if (TempPossibleHitReactions[i].CharacterOrientationTag.MatchesTagExact(CentralStateComponent->GroundedTag))
+			if (TempPossibleHitReactions[i].CharacterOrientationTag.MatchesTagExact(CombatStateComponent->GroundedTag))
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i].HitTag.GetTagName().ToString());
 				TempPossibleHitReactions.RemoveAt(i);
@@ -478,12 +477,9 @@ bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGamepl
 	
 		if(TargetASC)
 		{
-			UCentralStateComponent* CentralStateComponent = HitActor->FindComponentByClass<UCentralStateComponent>();
-			UCombatStateComponent* CombatStateComponent = HitActor->FindComponentByClass<UCombatStateComponent>();
-	
-			if(CentralStateComponent && CombatStateComponent)
+			if(UCombatStateComponent* CombatStateComponent = HitActor->FindComponentByClass<UCombatStateComponent>())
 			{
-				SelectHitReaction(TargetASC, CentralStateComponent, CombatStateComponent, InHitReactionStruct);
+				SelectHitReaction(TargetASC, CombatStateComponent, InHitReactionStruct);
 				return true;
 			}
 		}
