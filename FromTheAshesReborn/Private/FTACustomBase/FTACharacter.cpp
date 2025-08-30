@@ -63,6 +63,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	CombatStateComponent = CreateDefaultSubobject<UCombatStateComponent>(TEXT("CombatStateComponent"));
 	this->AddOwnedComponent(CombatStateComponent);
+
+	HitReactionComponent = CreateDefaultSubobject<UHitReactionComponent>(TEXT("HitReactionComponent"));
+	this->AddOwnedComponent(HitReactionComponent);
 	
 	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
 	this->AddOwnedComponent(WallRunningComponent);

@@ -69,15 +69,27 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeRuntimeDataStruct InMeleeD
 		CurrentHitDirection = InMeleeData.HitDirection;
 	}
 
-	if(InMeleeData.HitReactionEffect)
+	// if(InMeleeData.HitReactionEffect)
+	// {
+	// 	CurrentHitReactionEffect = InMeleeData.HitReactionEffect;
+	// }
+	//
+	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.HitReactionTag))
+	// {
+	// 	CurrentHitReactionTag = InMeleeData.HitReactionTag;
+	// }
+	
+	if(InMeleeData.HitReactionStruct.HitEffect)
 	{
-		CurrentHitReactionEffect = InMeleeData.HitReactionEffect;
+		UE_LOG(LogTemp, Warning, TEXT("OK"))
+		CurrentHitReactionEffect = InMeleeData.HitReactionStruct.HitEffect;
 	}
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.HitReactionTag))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.HitReactionStruct.HitTag))
 	{
-		CurrentHitReactionTag = InMeleeData.HitReactionTag;
+		CurrentHitReactionTag = InMeleeData.HitReactionStruct.HitTag;
 	}
+	
 }
 
 bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -593,14 +605,14 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 
 	HitInfoObj->HitData.HitDirection = CurrentHitDirection;
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct.HitTag))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
 	{
-		OnHitEventData.EventTag = CurrentHitReactionStruct.HitTag;
+		OnHitEventData.EventTag = CurrentHitReactionTag;
 		
 	}
-	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct.HitTag))
+	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
 	{
-		OnHitEventData.EventTag = CurrentHitReactionStruct.HitTag;
+		OnHitEventData.EventTag = CurrentHitReactionTag;
 	}
 	else
 	{

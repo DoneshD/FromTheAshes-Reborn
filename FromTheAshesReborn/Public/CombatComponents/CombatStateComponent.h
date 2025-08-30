@@ -2,37 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "HitReactionComponent.h"
 #include "Components/ActorComponent.h"
 #include "CombatStateComponent.generated.h"
 
 class UGameplayEffect;
-
-USTRUCT(BlueprintType)
-struct FHitReactionStruct
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TSubclassOf<UGameplayEffect> HitEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	FGameplayTag HitTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	FGameplayTag CharacterOrientationTag;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	FGameplayTagContainer CharacterStateTags;
-	
-	FHitReactionStruct()
-	:
-	HitEffect(nullptr),
-	HitTag(FGameplayTag::EmptyTag),
-	CharacterOrientationTag(FGameplayTag::EmptyTag),
-	CharacterStateTags(FGameplayTag::EmptyTag)
-	{}
-	
-};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UCombatStateComponent : public UActorComponent

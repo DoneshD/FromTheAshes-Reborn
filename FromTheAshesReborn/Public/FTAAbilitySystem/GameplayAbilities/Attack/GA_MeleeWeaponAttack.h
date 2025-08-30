@@ -174,8 +174,8 @@ protected:
 	UPROPERTY()
 	float CurrentTraceSize = 0.0f;
 
-	UPROPERTY()
-	FHitReactionStruct SelectedHitReactionStruct;
+	// UPROPERTY()
+	// FHitReactionStruct SelectedHitReactionStruct;
 
 protected:
 
