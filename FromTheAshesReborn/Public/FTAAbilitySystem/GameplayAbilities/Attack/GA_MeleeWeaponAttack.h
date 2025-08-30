@@ -32,28 +32,6 @@ struct FMeleeAttackForms
 };
 
 USTRUCT(BlueprintType)
-struct FMeleeWarpData
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Warp Data")
-	FName WarpTargetName = "MeleeAttackTarget";
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
-	float StartTraceLocationOffset = 100.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
-	float EndTraceLocationOffset = 800.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
-	float TraceRadius = 600.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
-	float WarpTargetLocationOffset = 165.0f;
-	
-};
-
-USTRUCT(BlueprintType)
 struct FMeleeRuntimeDataStruct
 {
 	GENERATED_BODY()
@@ -77,7 +55,7 @@ struct FMeleeRuntimeDataStruct
 	FGameplayTag HitReactionTag;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Runtime Data")
-	FHitReactionStruct HitReactionStruct;
+	FHitReactionDataStruct HitReactionStruct;
 	
 	FMeleeRuntimeDataStruct()
 	:
@@ -119,7 +97,7 @@ protected:
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TArray<FHitReactionStruct> PossibleHitReactions;
+	TArray<FHitReactionDataStruct> PossibleHitReactions;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "MeleeAssetData | Hit")
 	TSubclassOf<UGameplayEffect> GrantHitReactionEffect;
@@ -212,13 +190,13 @@ protected:
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
 
-	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, FHitReactionStruct& InHitReactionStruct);
-	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionStruct& InHitReactionStruct);
+	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, FHitReactionDataStruct& InHitReactionStruct);
+	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct& InHitReactionStruct);
 	
 	virtual void ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
-	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionStruct CurrentHitReactionStruct);
-	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionStruct CurrentHitReactionStruct);
-	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionStruct CurrentHitReactionStruct);
+	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct CurrentHitReactionStruct);
+	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct CurrentHitReactionStruct);
+	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct CurrentHitReactionStruct);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);

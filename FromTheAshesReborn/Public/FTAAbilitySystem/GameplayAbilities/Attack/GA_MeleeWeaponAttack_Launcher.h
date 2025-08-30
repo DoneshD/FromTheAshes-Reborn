@@ -43,7 +43,7 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionStruct CurrentHitReactionStruct) override;
+	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitReactionDataStruct CurrentHitReactionStruct) override;
 	
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;

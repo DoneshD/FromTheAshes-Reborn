@@ -8,7 +8,7 @@
 class UGameplayEffect;
 
 USTRUCT(BlueprintType)
-struct FHitReactionStruct
+struct FHitReactionDataStruct
 {
 	GENERATED_BODY()
 	
@@ -24,7 +24,7 @@ struct FHitReactionStruct
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
 	FGameplayTagContainer CharacterStateTags;
 	
-	FHitReactionStruct()
+	FHitReactionDataStruct()
 	:
 	HitEffect(nullptr),
 	HitTag(FGameplayTag::EmptyTag),
@@ -42,7 +42,7 @@ class FROMTHEASHESREBORN_API UHitReactionComponent : public UActorComponent
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TArray<FHitReactionStruct> HitReactions;
+	TArray<FHitReactionDataStruct> HitReactions;
 
 
 protected:
@@ -51,6 +51,6 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Hit")
-	FHitReactionStruct GetAssociatedHitReaction(FGameplayTag Index);
+	FHitReactionDataStruct GetAssociatedHitReaction(FGameplayTag Index);
 	
 };

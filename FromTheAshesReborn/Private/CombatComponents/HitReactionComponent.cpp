@@ -20,9 +20,9 @@ void UHitReactionComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 }
 
-FHitReactionStruct UHitReactionComponent::GetAssociatedHitReaction(FGameplayTag Index)
+FHitReactionDataStruct UHitReactionComponent::GetAssociatedHitReaction(FGameplayTag Index)
 {
-	for (FHitReactionStruct HitReaction : HitReactions)
+	for (FHitReactionDataStruct HitReaction : HitReactions)
 	{
 		if(HitReaction.HitTag == Index)
 		{
@@ -31,6 +31,6 @@ FHitReactionStruct UHitReactionComponent::GetAssociatedHitReaction(FGameplayTag 
 	}
 
 	UE_LOG(LogTemp, Error, TEXT("HitReaction does not exist"));
-	return FHitReactionStruct();
+	return FHitReactionDataStruct();
 }
 

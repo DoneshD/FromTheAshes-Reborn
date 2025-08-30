@@ -32,28 +32,28 @@ public:
 protected:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct StaggerInfo;
+	FHitReactionDataStruct StaggerInfo;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct SuspendInfo;
+	FHitReactionDataStruct SuspendInfo;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct LaunchInfo;
+	FHitReactionDataStruct LaunchInfo;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct KnockdownInfo;
+	FHitReactionDataStruct KnockdownInfo;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct KnockbackInfo;
+	FHitReactionDataStruct KnockbackInfo;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct SlamInfo;
+	FHitReactionDataStruct SlamInfo;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct DownFlinchInfo;
+	FHitReactionDataStruct DownFlinchInfo;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionStruct BounceInfo;
+	FHitReactionDataStruct BounceInfo;
 
 protected:
 	UCombatStateComponent();

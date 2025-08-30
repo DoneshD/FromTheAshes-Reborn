@@ -13,6 +13,39 @@ class UNiagaraSystem;
 class AFTACharacter;
 class UEquipmentManagerComponent;
 
+USTRUCT(BlueprintType)
+struct FMeleeAttackDataStruct
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	FVector WeaponTraceSize;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	ESpatialDirection HitDirection;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TObjectPtr<UNiagaraSystem> SlashFX;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
+	FGameplayTag SlashFXCueTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TObjectPtr<UNiagaraSystem> HitFX;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
+	FGameplayTag HitFXCueTag;
+	
+	FMeleeAttackDataStruct()
+	:
+	WeaponTraceSize(20.0f, 20.0f, 20.0f),
+	HitDirection(ESpatialDirection::Front),
+	SlashFX(nullptr),
+	HitFX(nullptr)
+	{}
+	
+};
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UMeleePropertiesComponent : public UActorComponent
 {
