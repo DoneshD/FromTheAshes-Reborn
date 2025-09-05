@@ -365,8 +365,7 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	
 }
 
-void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC,
-	UCombatStateComponent* CombatStateComponent, TObjectPtr<UHitReactionDataAsset>& InHitReactionStruct)
+void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TObjectPtr<UHitReactionDataAsset>& InHitReactionStruct)
 {
 	TArray<TObjectPtr<UHitReactionDataAsset>> TempPossibleHitReactions = PossibleHitReactions;
 
