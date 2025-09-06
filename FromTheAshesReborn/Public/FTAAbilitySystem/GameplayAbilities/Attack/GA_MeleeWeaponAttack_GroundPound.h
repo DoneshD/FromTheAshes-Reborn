@@ -54,7 +54,7 @@ public:
 
 	void TempApplyGPEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	
-	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct) override;
+	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct) override;
 	
 	void TraceForActors();
 

@@ -155,7 +155,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TempApplyGPEffects(const FGameplayAbilit
 	}
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
 	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 	

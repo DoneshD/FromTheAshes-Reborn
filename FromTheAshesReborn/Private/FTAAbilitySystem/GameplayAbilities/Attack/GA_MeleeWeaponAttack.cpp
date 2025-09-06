@@ -19,6 +19,7 @@
 #include "SWarningOrErrorBox.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "EventObjects/HitEventObject.h"
+#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 #include "FTACustomBase/AfterImageActor.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
@@ -365,28 +366,40 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	
 }
 
-void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TObjectPtr<UHitReactionDataAsset>>& TempPossibleHitReactions)
+void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TSubclassOf<UGA_ReceiveHit>>& TempPossibleHitReactions)
 {
 	for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
 	{
-		if(TempPossibleHitReactions[i]->IsValidLowLevel() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag))
+		// Validate class pointer
+		const TSubclassOf<UGA_ReceiveHit> ReceiveHitClass = TempPossibleHitReactions[i];
+		if (ReceiveHitClass)
 		{
-			if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(RemovalTag))
+			// Get the class default object to read default property values
+			const UGA_ReceiveHit* const CDO = ReceiveHitClass->GetDefaultObject<UGA_ReceiveHit>();
+			if (CDO && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->CharacterOrientationTag))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-				TempPossibleHitReactions.RemoveAt(i);
+				if (CDO->CharacterOrientationTag.MatchesTagExact(RemovalTag))
+				{
+					// UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *CDO->HitTag.GetTagName().ToString());
+					TempPossibleHitReactions.RemoveAt(i);
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::RemoveHitReaction - Invalid CDO or Tag on class %s"), *GetNameSafe(*ReceiveHitClass));
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::RemoveHitReaction - Invalid Asset or Tag"));
+			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::RemoveHitReaction - Null ReceiveHit class at index %d"), i);
 		}
 	}
 }
 
-void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TObjectPtr<UHitReactionDataAsset>& InHitReactionStruct)
+
+void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>& InHitReactionStruct)
 {
-	TArray<TObjectPtr<UHitReactionDataAsset>> TempPossibleHitReactions = PossibleHitReactions;
+	TArray<TSubclassOf<UGA_ReceiveHit>> TempPossibleHitReactions = PossibleHitReactions;
 
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->GroundedTag))
 	{
@@ -467,9 +480,8 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 	InHitReactionStruct = TempPossibleHitReactions[0];
 }
 
-bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset>& InHitReactionStruct)
+bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitReactionStruct)
 {
-	
 	const FGameplayAbilityTargetData* HitTargetData = TargetDataHandle.Get(0);
 	
 	if(!HitTargetData)
@@ -521,7 +533,7 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	TObjectPtr<UHitReactionDataAsset> OutHitReactionStruct;
+	TSubclassOf<UGA_ReceiveHit> OutHitReactionStruct;
 	bool FoundHitReaction = GetTargetStateComponentsAndHitReaction(TargetDataHandle, OutHitReactionStruct);
 
 	if(!FoundHitReaction)
@@ -536,7 +548,7 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 	
 }
 
-void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
 	
 	if(ApplyDamageEffect)
@@ -551,23 +563,33 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		1
 		);
 	}
-	
-	if(CurrentHitReactionStruct->HitReactionData.HitEffect)
-	{
-		FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CurrentHitReactionStruct->HitReactionData.HitEffect, 1.0f);
 
-		TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
-				CurrentSpecHandle,
-				CurrentActorInfo,
-				CurrentActivationInfo,
-				HitEffectHandle,
-				TargetDataHandle
-			);
+	if (CurrentHitReactionStruct)
+	{
+		// Get the class default object to read default property values
+		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(CDO->HitEffect)
+			{
+				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
+	
+				TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+						CurrentSpecHandle,
+						CurrentActorInfo,
+						CurrentActivationInfo,
+						HitEffectHandle,
+						TargetDataHandle
+					);
+			}
+		}
 	}
+	
+	
 	
 }
 
-void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
@@ -585,23 +607,41 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	}
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
-
-	HitInfoObj->HitData.HitDirection = CurrentHitReactionStruct->HitReactionDirection;
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct->HitReactionData.HitTag))
+	// HitInfoObj->HitData.HitDirection = CurrentHitReactionStruct->HitReactionDirection;
+	//
+	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct->HitReactionData.HitTag))
+	// {
+	// 	OnHitEventData.EventTag = CurrentHitReactionStruct->HitReactionData.HitTag;
+	// }
+	// else
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
+	// }
+
+	if (CurrentHitReactionStruct)
 	{
-		OnHitEventData.EventTag = CurrentHitReactionStruct->HitReactionData.HitTag;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
+		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			HitInfoObj->HitData.HitDirection = CDO->Direction;
+	
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
+			{
+				OnHitEventData.EventTag = CDO->HitTag;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
+			}
+		}
 	}
 	
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 }
 
-void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	

@@ -4,6 +4,7 @@
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "GA_ReceiveHit.generated.h"
 
+enum class ESpatialDirection : uint8;
 class UHitReactionDataAsset;
 
 UCLASS()
@@ -11,13 +12,27 @@ class FROMTHEASHESREBORN_API UGA_ReceiveHit : public UFTAGameplayAbility
 {
 	GENERATED_BODY()
 
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tags")
+	FGameplayTag CharacterOrientationTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+	TSubclassOf<UGameplayEffect> HitEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+	FGameplayTag HitTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
+	ESpatialDirection Direction;
+
 protected:
 	FGameplayTagContainer HitTagContainer;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE", Meta = (Categories = "HitTag"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tags", Meta = (Categories = "HitTag"))
 	FGameplayTag HitReactionTag;
 
 public:

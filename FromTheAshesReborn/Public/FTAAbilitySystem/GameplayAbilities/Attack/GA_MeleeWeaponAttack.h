@@ -7,6 +7,7 @@
 #include "EventObjects/HitEventObject.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
+class UGA_ReceiveHit;
 struct FMeleeAttackDataStruct;
 class UMeleePropertiesComponent;
 class UNiagaraSystem;
@@ -61,16 +62,13 @@ protected:
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TArray<TObjectPtr<UHitReactionDataAsset>> PossibleHitReactions;
+	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	FMeleeAttackDataStruct FinalAttackData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
 	FHitReactionDataStruct FinalHitData;
-	
-	
-	
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "After Image")
 	float AfterImageDistance = 200.0f;
@@ -116,17 +114,17 @@ protected:
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
 
-	void RemoveHitReaction(FGameplayTag RemovalTag, TArray<TObjectPtr<UHitReactionDataAsset>>& TempPossibleHitReactions);
+	void RemoveHitReaction(FGameplayTag RemovalTag, TArray<TSubclassOf<UGA_ReceiveHit>>& TempPossibleHitReactions);
 
-	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TObjectPtr<UHitReactionDataAsset>&
+	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>&
 	                       InHitReactionStruct);
-	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset>& InHitReactionStruct);
+	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitReactionStruct);
 	
 	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);
 	virtual void ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
-	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct);
-	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct);
-	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset> CurrentHitReactionStruct);
+	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct);
+	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct);
+	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 
