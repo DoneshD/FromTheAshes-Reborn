@@ -365,58 +365,88 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	
 }
 
+void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TObjectPtr<UHitReactionDataAsset>>& TempPossibleHitReactions)
+{
+	for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
+	{
+		if(TempPossibleHitReactions[i]->IsValidLowLevel() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag))
+		{
+			if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(RemovalTag))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
+				TempPossibleHitReactions.RemoveAt(i);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::RemoveHitReaction - Invalid Asset or Tag"));
+		}
+	}
+}
+
 void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TObjectPtr<UHitReactionDataAsset>& InHitReactionStruct)
 {
 	TArray<TObjectPtr<UHitReactionDataAsset>> TempPossibleHitReactions = PossibleHitReactions;
 
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->GroundedTag))
 	{
-		for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		{
-			if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(CombatStateComponent->AirborneTag))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-				TempPossibleHitReactions.RemoveAt(i);
-			}
-		}
+		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
+		// {
+		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(CombatStateComponent->AirborneTag))
+		// 	{
+		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
+		// 		TempPossibleHitReactions.RemoveAt(i);
+		// 	}
+		// }
+
+		RemoveHitReaction(CombatStateComponent->AirborneTag, TempPossibleHitReactions);
 	}
 	
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->AirborneTag))
 	{
-		for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		{
-			if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(CombatStateComponent->GroundedTag))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-				TempPossibleHitReactions.RemoveAt(i);
-			}
-		}
+		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
+		// {
+		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(CombatStateComponent->GroundedTag))
+		// 	{
+		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
+		// 		TempPossibleHitReactions.RemoveAt(i);
+		// 	}
+		// }
+
+		RemoveHitReaction(CombatStateComponent->GroundedTag, TempPossibleHitReactions);
+		
 	}
 	
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->NeutralTag))
 	{
-		for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		{
-			//TODO: Fix later
-			if (TempPossibleHitReactions[i]->HitReactionData.CharacterStateTags.HasTagExact(CombatStateComponent->DownedTag))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-				TempPossibleHitReactions.RemoveAt(i);
-			}
-		}
+		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
+		// {
+		// 	//TODO: Fix later
+		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterStateTags.HasTagExact(CombatStateComponent->DownedTag))
+		// 	{
+		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
+		// 		TempPossibleHitReactions.RemoveAt(i);
+		// 	}
+		// }
+
+		RemoveHitReaction(CombatStateComponent->DownedTag, TempPossibleHitReactions);
+		
 	}
 
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->DownedTag))
 	{
-		for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		{
-			//TODO: Fix later
-			if (TempPossibleHitReactions[i]->HitReactionData.CharacterStateTags.HasTagExact(CombatStateComponent->NeutralTag))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-				TempPossibleHitReactions.RemoveAt(i);
-			}
-		}
+		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
+		// {
+		// 	//TODO: Fix later
+		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterStateTags.HasTagExact(CombatStateComponent->NeutralTag))
+		// 	{
+		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
+		// 		TempPossibleHitReactions.RemoveAt(i);
+		// 	}
+		// }
+
+		RemoveHitReaction(CombatStateComponent->NeutralTag, TempPossibleHitReactions);
+		
 	}
 	if(TempPossibleHitReactions.Num() > 1)
 	{
@@ -522,9 +552,9 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		);
 	}
 	
-	if(FinalHitData.HitEffect)
+	if(CurrentHitReactionStruct->HitReactionData.HitEffect)
 	{
-		FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(FinalHitData.HitEffect, 1.0f);
+		FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CurrentHitReactionStruct->HitReactionData.HitEffect, 1.0f);
 
 		TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
 				CurrentSpecHandle,
@@ -556,11 +586,11 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 
-	HitInfoObj->HitData.HitDirection = FinalAttackData.HitDirection;
+	HitInfoObj->HitData.HitDirection = CurrentHitReactionStruct->HitReactionDirection;
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FinalHitData.HitTag))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct->HitReactionData.HitTag))
 	{
-		OnHitEventData.EventTag = FinalHitData.HitTag;
+		OnHitEventData.EventTag = CurrentHitReactionStruct->HitReactionData.HitTag;
 	}
 	else
 	{

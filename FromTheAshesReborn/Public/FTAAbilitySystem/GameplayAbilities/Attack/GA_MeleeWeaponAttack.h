@@ -116,6 +116,8 @@ protected:
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
 
+	void RemoveHitReaction(FGameplayTag RemovalTag, TArray<TObjectPtr<UHitReactionDataAsset>>& TempPossibleHitReactions);
+
 	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TObjectPtr<UHitReactionDataAsset>&
 	                       InHitReactionStruct);
 	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TObjectPtr<UHitReactionDataAsset>& InHitReactionStruct);
