@@ -1,10 +1,12 @@
 #include "FTACustomBase/FTACharacter.h"
+
 #include "CombatComponents/ComboManagerComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
 #include "NiagaraComponent.h"
 #include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/CombatStateComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
@@ -54,6 +56,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 
 	DownedCombatComponent = CreateDefaultSubobject<UDownedCombatComponent>(TEXT("DownedCombatComponent"));
 	this->AddOwnedComponent(DownedCombatComponent);
+
+	CombatStateComponent = CreateDefaultSubobject<UCombatStateComponent>(TEXT("CombatStateComponent"));
+	this->AddOwnedComponent(CombatStateComponent);
 	
 	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
 	this->AddOwnedComponent(WallRunningComponent);
@@ -83,15 +88,15 @@ void AFTACharacter::BeginPlay()
 	}
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(CombatStateComponent->NeutralTag);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(CombatStateComponent->GroundedTag);
 }
 
 void AFTACharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 	
 }
-
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 {

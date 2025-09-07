@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "FTAAbilityDataAsset.h"
+#include "CombatComponents/MeleePropertiesComponent.h"
+#include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "MeleeAbilityDataAsset.generated.h"
 
@@ -15,28 +17,15 @@ class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UFTAAbilityDataAsse
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
 	int RequiredIndex;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Required")
+	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
 	bool RequiredPause = false;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effect")
-	TSubclassOf<UGameplayEffect> GrantHitReactionEffect;
-
-	UPROPERTY(EditDefaultsOnly,  Category = "Gameplay Effect")
-	FGameplayTag HitReactionTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	TObjectPtr<UNiagaraSystem> HitVFX;
-
-	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	TObjectPtr<UNiagaraSystem> SlashVFX;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Weapon Trace Size")
-	float TraceSize;
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	FMeleeAttackDataStruct AttackData;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
 	FMeleeWarpData MeleeWarpData;
-	
 };

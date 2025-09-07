@@ -68,15 +68,16 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 	
 	RecoverEventData.OptionalObject = HitInfoObj;
 	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Knockdown")))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Bounce")))
 	{
-		RecoverEventData.EventTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Knockdown");
-		UE_LOG(LogTemp, Warning, TEXT("Grant Knockdown"));
+		RecoverEventData.EventTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Bounce");
+		UE_LOG(LogTemp, Warning, TEXT("Grant Bounce"));
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - RecoveryTag is NULL"));
 	}
+
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
 	

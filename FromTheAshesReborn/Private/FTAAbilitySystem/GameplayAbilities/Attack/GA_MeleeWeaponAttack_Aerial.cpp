@@ -6,6 +6,7 @@
 #include "CombatComponents/AerialCombatComponent.h"
 #include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
+#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -83,7 +84,7 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 	//TODO: This is being called from a grounded attack, check later 
 }
 
-void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
 	// Super::SendMeleeHitGameplayEvents(TargetDataHandle);
 	
@@ -99,18 +100,21 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 	OnAerialHitEventData.Instigator = GetAvatarActorFromActorInfo();
 	OnAerialHitEventData.Target = TargetActor;
 	OnAerialHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
-	
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionTag))
+
+	if (CurrentHitReactionStruct)
 	{
-		OnAerialHitEventData.EventTag = CurrentHitReactionTag;
-	}
-	else if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(HitReactionTag))
-	{
-		OnAerialHitEventData.EventTag = HitReactionTag;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - Not a valid Gameplay Tag"));
+		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
+			{
+				OnHitEventData.EventTag = CDO->HitTag;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
+			}
+		}
 	}
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnAerialHitEventData.EventTag, OnAerialHitEventData);
