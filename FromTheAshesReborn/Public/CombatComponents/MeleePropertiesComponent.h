@@ -32,7 +32,7 @@ struct FMeleeAttackDataStruct
 	FGameplayTag HitFXCueTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TSubclassOf<UGA_ReceiveHit> HitAbility;
+	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
 	
 	FMeleeAttackDataStruct()
 	:

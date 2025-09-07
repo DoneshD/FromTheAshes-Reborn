@@ -59,41 +59,18 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 		FinalAttackData.HitFX = InMeleeData.SlashFX;
 	}
 
-	// if(InMeleeData.WeaponTraceSize)
-	// {
-	// 	FinalAttackData = InMeleeData.TraceSize;
-	// }
-
 	if(InMeleeData.HitDirection != ESpatialDirection::None)
 	{
 		FinalAttackData.HitDirection = InMeleeData.HitDirection;
 	}
 
-
-	//TODO: SetHitReactionData()
-	
-	// if(InMeleeData.HitReactionEffect)
-	// {
-	// 	CurrentHitReactionEffect = InMeleeData.HitReactionEffect;
-	// }
-	//
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.HitReactionTag))
-	// {
-	// 	CurrentHitReactionTag = InMeleeData.HitReactionTag;
-	// }
-	
-	
-	// if(InMeleeData.HitReactionStruct.HitEffect)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("OK"))
-	// 	CurrentHitReactionEffect = InMeleeData.HitReactionStruct.HitEffect;
-	// }
-	//
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.HitReactionStruct.HitTag))
-	// {
-	// 	CurrentHitReactionTag = InMeleeData.HitReactionStruct.HitTag;
-	// }
-	
+	if(InMeleeData.PossibleHitReactions.Num() > 0)
+	{
+		for (TSubclassOf<UGA_ReceiveHit> HitReaction : InMeleeData.PossibleHitReactions)
+		{
+			FinalAttackData.PossibleHitReactions.AddUnique(HitReaction);
+		}
+	}
 }
 
 bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
@@ -370,17 +347,14 @@ void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TS
 {
 	for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
 	{
-		// Validate class pointer
 		const TSubclassOf<UGA_ReceiveHit> ReceiveHitClass = TempPossibleHitReactions[i];
 		if (ReceiveHitClass)
 		{
-			// Get the class default object to read default property values
 			const UGA_ReceiveHit* const CDO = ReceiveHitClass->GetDefaultObject<UGA_ReceiveHit>();
 			if (CDO && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->CharacterOrientationTag))
 			{
 				if (CDO->CharacterOrientationTag.MatchesTagExact(RemovalTag))
 				{
-					// UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *CDO->HitTag.GetTagName().ToString());
 					TempPossibleHitReactions.RemoveAt(i);
 				}
 			}
@@ -399,72 +373,31 @@ void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TS
 
 void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>& InHitReactionStruct)
 {
-	TArray<TSubclassOf<UGA_ReceiveHit>> TempPossibleHitReactions = PossibleHitReactions;
+	TArray<TSubclassOf<UGA_ReceiveHit>> TempPossibleHitReactions = FinalAttackData.PossibleHitReactions;
 
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->GroundedTag))
 	{
-		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		// {
-		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(CombatStateComponent->AirborneTag))
-		// 	{
-		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-		// 		TempPossibleHitReactions.RemoveAt(i);
-		// 	}
-		// }
-
 		RemoveHitReaction(CombatStateComponent->AirborneTag, TempPossibleHitReactions);
 	}
 	
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->AirborneTag))
 	{
-		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		// {
-		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterOrientationTag.MatchesTagExact(CombatStateComponent->GroundedTag))
-		// 	{
-		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-		// 		TempPossibleHitReactions.RemoveAt(i);
-		// 	}
-		// }
-
 		RemoveHitReaction(CombatStateComponent->GroundedTag, TempPossibleHitReactions);
-		
 	}
 	
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->NeutralTag))
 	{
-		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		// {
-		// 	//TODO: Fix later
-		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterStateTags.HasTagExact(CombatStateComponent->DownedTag))
-		// 	{
-		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-		// 		TempPossibleHitReactions.RemoveAt(i);
-		// 	}
-		// }
-
 		RemoveHitReaction(CombatStateComponent->DownedTag, TempPossibleHitReactions);
-		
 	}
 
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->DownedTag))
 	{
-		// for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
-		// {
-		// 	//TODO: Fix later
-		// 	if (TempPossibleHitReactions[i]->HitReactionData.CharacterStateTags.HasTagExact(CombatStateComponent->NeutralTag))
-		// 	{
-		// 		UE_LOG(LogTemp, Warning, TEXT("Hit reaction to remove: %s"), *TempPossibleHitReactions[i]->HitReactionData.HitTag.GetTagName().ToString());
-		// 		TempPossibleHitReactions.RemoveAt(i);
-		// 	}
-		// }
-
 		RemoveHitReaction(CombatStateComponent->NeutralTag, TempPossibleHitReactions);
-		
 	}
+	
 	if(TempPossibleHitReactions.Num() > 1)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SelectHitReaction - More than 1 possible hit reaction"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		InHitReactionStruct = TempPossibleHitReactions.Last();
 		return;
 	}
 
@@ -474,8 +407,6 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	
-	UE_LOG(LogTemp, Warning, TEXT("Hit reaction found"));
 	
 	InHitReactionStruct = TempPossibleHitReactions[0];
 }
@@ -528,7 +459,28 @@ bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGamepl
 
 void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
 {
-	
+	if(!FinalAttackData.HitFX->IsValidLowLevel())
+	{
+		FinalAttackData.HitFX = MeleeAsset->AttackData.HitFX;
+	}
+
+	if(!FinalAttackData.SlashFX->IsValidLowLevel())
+	{
+		FinalAttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
+	}
+
+	if(FinalAttackData.HitDirection != ESpatialDirection::None)
+	{
+		FinalAttackData.HitDirection = MeleeAsset->AttackData.HitDirection;
+	}
+
+	if(MeleeAsset->AttackData.PossibleHitReactions.Num() > 0)
+	{
+		for (TSubclassOf<UGA_ReceiveHit> HitReaction : MeleeAsset->AttackData.PossibleHitReactions)
+		{
+			FinalAttackData.PossibleHitReactions.AddUnique(HitReaction);
+		}
+	}
 }
 
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -564,16 +516,15 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		);
 	}
 
-	if (CurrentHitReactionStruct)
+	if (CurrentHitReactionStruct->IsValidLowLevel())
 	{
-		// Get the class default object to read default property values
 		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
 			if(CDO->HitEffect)
 			{
 				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
-	
+
 				TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
 						CurrentSpecHandle,
 						CurrentActorInfo,
@@ -607,17 +558,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	}
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
-	
-	// HitInfoObj->HitData.HitDirection = CurrentHitReactionStruct->HitReactionDirection;
-	//
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentHitReactionStruct->HitReactionData.HitTag))
-	// {
-	// 	OnHitEventData.EventTag = CurrentHitReactionStruct->HitReactionData.HitTag;
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
-	// }
 
 	if (CurrentHitReactionStruct)
 	{

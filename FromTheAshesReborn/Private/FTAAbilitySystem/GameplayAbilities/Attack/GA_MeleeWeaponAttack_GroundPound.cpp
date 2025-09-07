@@ -141,18 +141,20 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 
 void UGA_MeleeWeaponAttack_GroundPound::TempApplyGPEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	if(FinalHitData.HitEffect)
-	{
-		FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(FinalHitData.HitEffect, 1.0f);
+	// if(FinalHitData.HitEffect)
+	// {
+	// 	FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(FinalHitData.HitEffect, 1.0f);
+	//
+	// 	TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+	// 			CurrentSpecHandle,
+	// 			CurrentActorInfo,
+	// 			CurrentActivationInfo,
+	// 			HitEffectHandle,
+	// 			TargetDataHandle
+	// 		);
+	// }
 
-		TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
-				CurrentSpecHandle,
-				CurrentActorInfo,
-				CurrentActivationInfo,
-				HitEffectHandle,
-				TargetDataHandle
-			);
-	}
+	
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
@@ -263,7 +265,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendHitGPEvent(FHitResult HitItemToAdd, 
 	OnSlamHitEventData.Target = TargetActor;
 	OnSlamHitEventData.ContextHandle.AddHitResult(*TargetHitDataHandle.Get(0)->GetHitResult());
 
-	OnSlamHitEventData.EventTag = FinalHitData.HitTag;
+	// OnSlamHitEventData.EventTag = FinalHitData.HitTag;
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnSlamHitEventData.EventTag, OnSlamHitEventData);
 }

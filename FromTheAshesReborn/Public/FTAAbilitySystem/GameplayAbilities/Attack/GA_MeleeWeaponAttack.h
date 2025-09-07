@@ -61,14 +61,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	FMeleeAttackDataStruct FinalAttackData;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	FHitReactionDataStruct FinalHitData;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "After Image")
 	float AfterImageDistance = 200.0f;
