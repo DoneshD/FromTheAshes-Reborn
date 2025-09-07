@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "HitReactionComponent.h"
 #include "Components/ActorComponent.h"
 #include "CombatStateComponent.generated.h"
 
@@ -26,34 +25,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag DownedTag = FGameplayTag::RequestGameplayTag("Character.State.Downed");
-
-public:
-
-protected:
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct StaggerInfo;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct SuspendInfo;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct LaunchInfo;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct KnockdownInfo;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct KnockbackInfo;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct SlamInfo;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct DownFlinchInfo;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Effects")
-	FHitReactionDataStruct BounceInfo;
 
 protected:
 	UCombatStateComponent();

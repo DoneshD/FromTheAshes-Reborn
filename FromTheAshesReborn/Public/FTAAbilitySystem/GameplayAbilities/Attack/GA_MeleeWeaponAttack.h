@@ -75,8 +75,6 @@ protected:
 	
 	FGameplayEventData OnHitEventData;
 
-	// UPROPERTY()
-	// FHitReactionStruct SelectedHitReactionStruct;
 
 protected:
 
