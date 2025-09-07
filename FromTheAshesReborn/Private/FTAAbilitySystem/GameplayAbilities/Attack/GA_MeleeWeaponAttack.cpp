@@ -59,9 +59,9 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 		FinalAttackData.HitFX = InMeleeData.SlashFX;
 	}
 
-	if(InMeleeData.HitDirection != ESpatialDirection::None)
+	if(InMeleeData.AttackDirection != ESpatialDirection::None)
 	{
-		FinalAttackData.HitDirection = InMeleeData.HitDirection;
+		FinalAttackData.AttackDirection = InMeleeData.AttackDirection;
 	}
 
 	if(InMeleeData.PossibleHitReactions.Num() > 0)
@@ -469,9 +469,9 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 		FinalAttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
 	}
 
-	if(FinalAttackData.HitDirection != ESpatialDirection::None)
+	if(FinalAttackData.AttackDirection != ESpatialDirection::None)
 	{
-		FinalAttackData.HitDirection = MeleeAsset->AttackData.HitDirection;
+		FinalAttackData.AttackDirection = MeleeAsset->AttackData.AttackDirection;
 	}
 
 	if(MeleeAsset->AttackData.PossibleHitReactions.Num() > 0)
@@ -564,8 +564,8 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
-			HitInfoObj->HitData.HitDirection = CDO->Direction;
-	
+			HitInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+			
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
 			{
 				OnHitEventData.EventTag = CDO->HitTag;

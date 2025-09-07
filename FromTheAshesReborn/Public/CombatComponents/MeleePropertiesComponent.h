@@ -17,7 +17,7 @@ struct FMeleeAttackDataStruct
 	FVector WeaponTraceSize;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	ESpatialDirection HitDirection;
+	ESpatialDirection AttackDirection;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TObjectPtr<UNiagaraSystem> SlashFX;
@@ -37,7 +37,7 @@ struct FMeleeAttackDataStruct
 	FMeleeAttackDataStruct()
 	:
 	WeaponTraceSize(20.0f, 20.0f, 20.0f),
-	HitDirection(ESpatialDirection::Front),
+	AttackDirection(ESpatialDirection::Front),
 	SlashFX(nullptr),
 	HitFX(nullptr)
 	{}

@@ -23,9 +23,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
 	FGameplayTag HitTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
-	ESpatialDirection Direction;
-
 protected:
 	FGameplayTagContainer HitTagContainer;
 

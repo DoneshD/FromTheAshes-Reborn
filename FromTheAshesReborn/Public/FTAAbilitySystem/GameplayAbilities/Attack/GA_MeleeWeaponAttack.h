@@ -69,7 +69,6 @@ protected:
 	
 	FGameplayEventData OnHitEventData;
 
-
 protected:
 
 	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());
