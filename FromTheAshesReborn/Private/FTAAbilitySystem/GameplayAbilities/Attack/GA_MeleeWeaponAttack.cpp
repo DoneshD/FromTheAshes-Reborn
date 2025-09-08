@@ -348,27 +348,27 @@ void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag)
 }
 
 
-void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
+void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
 {
 
-	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->GroundedTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->GroundedTag))
 	{
-		RemoveHitReaction(CombatStateComponent->AirborneTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->AirborneTag);
 	}
 	
-	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->AirborneTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->AirborneTag))
 	{
-		RemoveHitReaction(CombatStateComponent->GroundedTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->GroundedTag);
 	}
 	
-	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->NeutralTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->NeutralTag))
 	{
-		RemoveHitReaction(CombatStateComponent->DownedTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->DownedTag);
 	}
 
-	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->DownedTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->DownedTag))
 	{
-		RemoveHitReaction(CombatStateComponent->NeutralTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->NeutralTag);
 	}
 	
 	if(FinalAttackData.PossibleHitReactions.Num() > 1)
@@ -421,13 +421,9 @@ bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGamepl
 
 		if(UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent())
 		{
-			if(UCombatStateComponent* CombatStateComponent = HitActor->FindComponentByClass<UCombatStateComponent>())
-			{
-				SelectHitReaction(TargetASC, CombatStateComponent, InHitAbilityClass);
-				return true;
-			}
+			SelectHitReaction(TargetASC, InHitAbilityClass);
+			return true;
 		}
-		
 	}
 	return false;
 }

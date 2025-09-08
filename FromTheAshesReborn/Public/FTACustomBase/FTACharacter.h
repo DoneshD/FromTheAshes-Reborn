@@ -33,11 +33,22 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilityS
 {
 	GENERATED_BODY()
 
-protected:
+public:
 
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
+
+	UPROPERTY()
+	FGameplayTag GroundedTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Grounded");
 	
+	UPROPERTY()
+	FGameplayTag AirborneTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne");
+	
+	UPROPERTY()
+	FGameplayTag NeutralTag = FGameplayTag::RequestGameplayTag("Character.State.Neutral");
+	
+	UPROPERTY()
+	FGameplayTag DownedTag = FGameplayTag::RequestGameplayTag("Character.State.Downed");
 	
 public:
 	
@@ -65,20 +76,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
-	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
-	// TObjectPtr<UAerialCombatComponent> AerialCombatComponent;
-
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
 	TObjectPtr<UAerialCombatComponent> AirCombatComponent;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
-	TObjectPtr<UDownedCombatComponent> DownedCombatComponent;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
-	TObjectPtr<UCombatStateComponent> CombatStateComponent;
-	
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
-	TObjectPtr<UWallRunningComponent> WallRunningComponent;
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UNiagaraComponent> CharacterAfterImageComponent;

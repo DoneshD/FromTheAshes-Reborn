@@ -4,10 +4,7 @@
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
 #include "NiagaraComponent.h"
-#include "ParkourSystem/WallRunningComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
-#include "CombatComponents/CombatStateComponent.h"
-#include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
@@ -54,15 +51,6 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	AirCombatComponent = CreateDefaultSubobject<UAerialCombatComponent>(TEXT("AerialCombatComponent"));
 	this->AddOwnedComponent(AirCombatComponent);
 
-	DownedCombatComponent = CreateDefaultSubobject<UDownedCombatComponent>(TEXT("DownedCombatComponent"));
-	this->AddOwnedComponent(DownedCombatComponent);
-
-	CombatStateComponent = CreateDefaultSubobject<UCombatStateComponent>(TEXT("CombatStateComponent"));
-	this->AddOwnedComponent(CombatStateComponent);
-	
-	WallRunningComponent = CreateDefaultSubobject<UWallRunningComponent>(TEXT("WallRunningComponent"));
-	this->AddOwnedComponent(WallRunningComponent);
-
 	CharacterAfterImageComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CharacterAfterImageComponent"));
 	this->AddOwnedComponent(GetMesh());
 	
@@ -88,8 +76,8 @@ void AFTACharacter::BeginPlay()
 	}
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
-	FTAAbilitySystemComponent->AddLooseGameplayTag(CombatStateComponent->NeutralTag);
-	FTAAbilitySystemComponent->AddLooseGameplayTag(CombatStateComponent->GroundedTag);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(NeutralTag);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(GroundedTag);
 }
 
 void AFTACharacter::Tick(float DeltaTime)

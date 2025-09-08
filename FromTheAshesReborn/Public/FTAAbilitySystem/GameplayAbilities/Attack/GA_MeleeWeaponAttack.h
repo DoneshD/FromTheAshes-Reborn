@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "../GA_FromEquipment.h"
-#include "CombatComponents/CombatStateComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
@@ -104,7 +103,7 @@ protected:
 
 	void RemoveHitReaction(FGameplayTag RemovalTag);
 
-	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass);
+	void SelectHitReaction(UAbilitySystemComponent* TargetASC, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass);
 	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass);
 	
 	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);
