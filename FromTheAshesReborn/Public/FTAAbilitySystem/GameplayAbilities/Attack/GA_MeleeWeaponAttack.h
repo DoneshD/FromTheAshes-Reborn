@@ -4,7 +4,6 @@
 #include "../GA_FromEquipment.h"
 #include "CombatComponents/CombatStateComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
-#include "EventObjects/HitEventObject.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
 class UGA_ReceiveHit;
@@ -23,13 +22,13 @@ struct FMeleeAttackForms
 {
 	GENERATED_BODY()
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Forms")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UMeleeAbilityDataAsset>> NormalAttacks;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Forms")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UMeleeAbilityDataAsset>> PauseAttacks;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee Attack Forms")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UMeleeAbilityDataAsset>> VariantAttacks;
 	
 };
@@ -57,17 +56,16 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
 	FMeleeAttackForms MeleeAttackAssets;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Damage")
-	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	FMeleeAttackDataStruct DefaultAttackData;
+
 	FMeleeAttackDataStruct FinalAttackData;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "After Image")
-	float AfterImageDistance = 200.0f;
-	
 	FGameplayEventData OnHitEventData;
+	
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "After Image")
+	// float AfterImageDistance = 200.0f;
 
 protected:
 
@@ -79,8 +77,6 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-
-	void SpawnAfterImage();
 	
 public:
 	
@@ -89,6 +85,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
+	
 	void StartMeleeWeaponTrace();
 	void EndMeleeWeaponTrace();
 
@@ -105,22 +102,23 @@ protected:
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
 
-	void RemoveHitReaction(FGameplayTag RemovalTag, TArray<TSubclassOf<UGA_ReceiveHit>>& TempPossibleHitReactions);
+	void RemoveHitReaction(FGameplayTag RemovalTag, TArray<TSubclassOf<UGA_ReceiveHit>>& InPossibleHitReactions);
 
-	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>&
-	                       InHitReactionStruct);
-	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitReactionStruct);
+	void SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass);
+	bool GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass);
 	
 	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);
 	virtual void ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
-	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct);
-	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct);
-	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct);
+	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	void SpawnAfterImage();
 
 };

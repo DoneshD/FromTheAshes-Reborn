@@ -47,32 +47,6 @@ UMeleeWeaponInstance* UGA_MeleeWeaponAttack::GetMeleeWeaponInstance() const
 	return CastChecked<UMeleeWeaponInstance>(GetAssociatedWeaponInstance());
 }
 
-void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeData)
-{
-	if(InMeleeData.HitFX)
-	{
-		FinalAttackData.HitFX = InMeleeData.HitFX;
-	}
-	
-	if(InMeleeData.SlashFX)
-	{
-		FinalAttackData.HitFX = InMeleeData.SlashFX;
-	}
-
-	if(InMeleeData.AttackDirection != ESpatialDirection::None)
-	{
-		FinalAttackData.AttackDirection = InMeleeData.AttackDirection;
-	}
-
-	if(InMeleeData.PossibleHitReactions.Num() > 0)
-	{
-		for (TSubclassOf<UGA_ReceiveHit> HitReaction : InMeleeData.PossibleHitReactions)
-		{
-			FinalAttackData.PossibleHitReactions.AddUnique(HitReaction);
-		}
-	}
-}
-
 bool UGA_MeleeWeaponAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
@@ -229,7 +203,6 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		return;
 	}
 	
-	
 	if (MatchingDataAsset->MontageToPlay)
 	{
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
@@ -238,6 +211,8 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 		ComboManagerComponent->PauseCurrentAttack = false;
 
+		FinalAttackData = DefaultAttackData;
+		
 		ExtractMeleeAssetProperties(MatchingDataAsset);
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 	}
@@ -245,6 +220,8 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 	{
 		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
 		ResetMeleeAttack();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
 	}                                                                                 
 }
 
@@ -411,7 +388,7 @@ void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC
 	InHitReactionStruct = TempPossibleHitReactions[0];
 }
 
-bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitReactionStruct)
+bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
 {
 	const FGameplayAbilityTargetData* HitTargetData = TargetDataHandle.Get(0);
 	
@@ -448,13 +425,39 @@ bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGamepl
 		{
 			if(UCombatStateComponent* CombatStateComponent = HitActor->FindComponentByClass<UCombatStateComponent>())
 			{
-				SelectHitReaction(TargetASC, CombatStateComponent, InHitReactionStruct);
+				SelectHitReaction(TargetASC, CombatStateComponent, InHitAbilityClass);
 				return true;
 			}
 		}
 		
 	}
 	return false;
+}
+
+void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeData)
+{
+	if(InMeleeData.HitFX)
+	{
+		FinalAttackData.HitFX = InMeleeData.HitFX;
+	}
+	
+	if(InMeleeData.SlashFX)
+	{
+		FinalAttackData.HitFX = InMeleeData.SlashFX;
+	}
+
+	if(InMeleeData.AttackDirection != ESpatialDirection::None)
+	{
+		FinalAttackData.AttackDirection = InMeleeData.AttackDirection;
+	}
+
+	if(InMeleeData.PossibleHitReactions.Num() > 0)
+	{
+		for (TSubclassOf HitReaction : InMeleeData.PossibleHitReactions)
+		{
+			FinalAttackData.PossibleHitReactions.AddUnique(HitReaction);
+		}
+	}
 }
 
 void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
@@ -476,7 +479,7 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 
 	if(MeleeAsset->AttackData.PossibleHitReactions.Num() > 0)
 	{
-		for (TSubclassOf<UGA_ReceiveHit> HitReaction : MeleeAsset->AttackData.PossibleHitReactions)
+		for (TSubclassOf HitReaction : MeleeAsset->AttackData.PossibleHitReactions)
 		{
 			FinalAttackData.PossibleHitReactions.AddUnique(HitReaction);
 		}
@@ -485,8 +488,8 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	TSubclassOf<UGA_ReceiveHit> OutHitReactionStruct;
-	bool FoundHitReaction = GetTargetStateComponentsAndHitReaction(TargetDataHandle, OutHitReactionStruct);
+	TSubclassOf<UGA_ReceiveHit> OutHitAbilityClass;
+	bool FoundHitReaction = GetTargetStateComponentsAndHitReaction(TargetDataHandle, OutHitAbilityClass);
 
 	if(!FoundHitReaction)
 	{
@@ -494,33 +497,32 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	ApplyMeleeHitEffects(TargetDataHandle, OutHitReactionStruct);
-	SendMeleeHitGameplayEvents(TargetDataHandle, OutHitReactionStruct);
-	AddMeleeHitCues(TargetDataHandle, OutHitReactionStruct);
+	ApplyMeleeHitEffects(TargetDataHandle, OutHitAbilityClass);
+	SendMeleeHitGameplayEvents(TargetDataHandle, OutHitAbilityClass);
+	AddMeleeHitCues(TargetDataHandle, OutHitAbilityClass);
 	
 }
 
-void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
-	
-	if(ApplyDamageEffect)
+	if (InHitAbilityClass->IsValidLowLevel())
 	{
-		TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
-		CurrentSpecHandle,
-		CurrentActorInfo,
-		CurrentActivationInfo,
-		TargetDataHandle,
-		ApplyDamageEffect, 
-		1,
-		1
-		);
-	}
-
-	if (CurrentHitReactionStruct->IsValidLowLevel())
-	{
-		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
+		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
+			if(FinalAttackData.ApplyDamageEffect)
+			{
+				TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
+				CurrentSpecHandle,
+				CurrentActorInfo,
+				CurrentActivationInfo,
+				TargetDataHandle,
+				FinalAttackData.ApplyDamageEffect, 
+				1,
+				1
+				);
+			}
+			
 			if(CDO->HitEffect)
 			{
 				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
@@ -535,12 +537,15 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 			}
 		}
 	}
-	
-	
-	
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
 }
 
-void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
@@ -559,9 +564,9 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	
 	OnHitEventData.OptionalObject = HitInfoObj;
 
-	if (CurrentHitReactionStruct)
+	if (InHitAbilityClass)
 	{
-		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
+		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
 			HitInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
@@ -581,7 +586,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 }
 
-void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	

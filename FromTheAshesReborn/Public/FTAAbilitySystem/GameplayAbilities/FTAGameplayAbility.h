@@ -33,8 +33,14 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool NonMontageAbility = false;
+	UPROPERTY()
+	TObjectPtr<UFTAAT_OnTick> TickTask;
+
+	UPROPERTY()
+	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
 
 	UPROPERTY()
 	FGameplayTag ActivationIndependentTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Independent");
@@ -45,6 +51,9 @@ protected:
 	UPROPERTY()
 	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability Activation")
+	bool NonMontageAbility = false;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	EFTAAbilityActivationPolicy ActivationPolicy;
 
@@ -54,19 +63,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
 	bool bEnableTick;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-	FCameraSystemParams CameraParams;
-
-	UPROPERTY()
-	TObjectPtr<UFTAAT_OnTick> TickTask;
-
-	UPROPERTY()
-	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
-
-	UPROPERTY()
-	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
-
 	FDelegateHandle AdjustFOVDelegateHandle;
+
 
 public:
 
@@ -105,6 +103,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
 	FName WarpTargetName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	FCameraSystemParams CameraParams;
 
 public:
 	
@@ -172,6 +173,5 @@ public:
 
 	UFUNCTION()
 	void AdjustFOV(const FGameplayTag InEnableTag, int32 NewCount);
-	
 	
 };

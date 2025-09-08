@@ -64,9 +64,9 @@ void UGA_Launched::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
 	
-	if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitReactionTag))
+	if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitTag))
 	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitReactionTag));
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitTag));
 	}
 	
 }

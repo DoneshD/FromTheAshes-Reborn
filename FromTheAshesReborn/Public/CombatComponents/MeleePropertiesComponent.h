@@ -6,16 +6,23 @@
 #include "Components/ActorComponent.h"
 #include "MeleePropertiesComponent.generated.h"
 
+class UGameplayEffect;
 class UGA_ReceiveHit;
 
 USTRUCT(BlueprintType)
 struct FMeleeAttackDataStruct
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FVector WeaponTraceSize;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	ESpatialDirection AttackDirection;
 
@@ -30,9 +37,6 @@ struct FMeleeAttackDataStruct
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
 	FGameplayTag HitFXCueTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit")
-	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
 	
 	FMeleeAttackDataStruct()
 	:

@@ -12,25 +12,23 @@ class FROMTHEASHESREBORN_API UGA_ReceiveHit : public UFTAGameplayAbility
 {
 	GENERATED_BODY()
 
-public:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tags")
-	FGameplayTag CharacterOrientationTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
-	TSubclassOf<UGameplayEffect> HitEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect")
-	FGameplayTag HitTag;
-
 protected:
+	
 	FGameplayTagContainer HitTagContainer;
 
-	UPROPERTY(EditAnywhere)
+public:
+	
+	UPROPERTY(EditDefaultsOnly)
 	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
+	TSubclassOf<UGameplayEffect> HitEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Tags", Meta = (Categories = "HitTag"))
-	FGameplayTag HitReactionTag;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
+	FGameplayTag HitTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
+	FGameplayTag CharacterOrientationTag;
 
 public:
 

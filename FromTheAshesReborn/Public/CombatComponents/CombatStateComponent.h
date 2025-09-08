@@ -16,13 +16,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag GroundedTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Grounded");
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag AirborneTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne");
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag NeutralTag = FGameplayTag::RequestGameplayTag("Character.State.Neutral");
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FGameplayTag DownedTag = FGameplayTag::RequestGameplayTag("Character.State.Downed");
 

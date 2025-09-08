@@ -34,7 +34,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	for (const FGameplayTag& Tag : HitTagContainer)
 	{
-		if (!Tag.MatchesTagExact(HitReactionTag))
+		if (!Tag.MatchesTagExact(HitTag))
 		{
 			GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(Tag));
 		}
