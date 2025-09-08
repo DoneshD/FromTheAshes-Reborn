@@ -38,6 +38,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 	
+	
 public:
 	
 	UPROPERTY(EditAnywhere, Category = "FTACharacter | Ability Set")

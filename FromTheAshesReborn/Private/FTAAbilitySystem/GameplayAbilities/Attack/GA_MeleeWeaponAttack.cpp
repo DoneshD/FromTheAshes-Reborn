@@ -320,11 +320,11 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	
 }
 
-void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TSubclassOf<UGA_ReceiveHit>>& TempPossibleHitReactions)
+void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag)
 {
-	for (int32 i = 0; i < TempPossibleHitReactions.Num(); i++)
+	for (int32 i = 0; i < FinalAttackData.PossibleHitReactions.Num(); i++)
 	{
-		const TSubclassOf<UGA_ReceiveHit> ReceiveHitClass = TempPossibleHitReactions[i];
+		const TSubclassOf<UGA_ReceiveHit> ReceiveHitClass = FinalAttackData.PossibleHitReactions[i];
 		if (ReceiveHitClass)
 		{
 			const UGA_ReceiveHit* const CDO = ReceiveHitClass->GetDefaultObject<UGA_ReceiveHit>();
@@ -332,7 +332,7 @@ void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TS
 			{
 				if (CDO->CharacterOrientationTag.MatchesTagExact(RemovalTag))
 				{
-					TempPossibleHitReactions.RemoveAt(i);
+					FinalAttackData.PossibleHitReactions.RemoveAt(i);
 				}
 			}
 			else
@@ -348,44 +348,43 @@ void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag, TArray<TS
 }
 
 
-void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>& InHitReactionStruct)
+void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, UCombatStateComponent* CombatStateComponent, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
 {
-	TArray<TSubclassOf<UGA_ReceiveHit>> TempPossibleHitReactions = FinalAttackData.PossibleHitReactions;
 
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->GroundedTag))
 	{
-		RemoveHitReaction(CombatStateComponent->AirborneTag, TempPossibleHitReactions);
+		RemoveHitReaction(CombatStateComponent->AirborneTag);
 	}
 	
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->AirborneTag))
 	{
-		RemoveHitReaction(CombatStateComponent->GroundedTag, TempPossibleHitReactions);
+		RemoveHitReaction(CombatStateComponent->GroundedTag);
 	}
 	
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->NeutralTag))
 	{
-		RemoveHitReaction(CombatStateComponent->DownedTag, TempPossibleHitReactions);
+		RemoveHitReaction(CombatStateComponent->DownedTag);
 	}
 
 	if (TargetASC->HasMatchingGameplayTag(CombatStateComponent->DownedTag))
 	{
-		RemoveHitReaction(CombatStateComponent->NeutralTag, TempPossibleHitReactions);
+		RemoveHitReaction(CombatStateComponent->NeutralTag);
 	}
 	
-	if(TempPossibleHitReactions.Num() > 1)
+	if(FinalAttackData.PossibleHitReactions.Num() > 1)
 	{
-		InHitReactionStruct = TempPossibleHitReactions.Last();
+		InHitAbilityClass = FinalAttackData.PossibleHitReactions.Last();
 		return;
 	}
 
-	if(TempPossibleHitReactions.Num() < 1)
+	if(FinalAttackData.PossibleHitReactions.Num() < 1)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SelectHitReaction - No possible hit reactions"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 	
-	InHitReactionStruct = TempPossibleHitReactions[0];
+	InHitAbilityClass = FinalAttackData.PossibleHitReactions[0];
 }
 
 bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
@@ -419,9 +418,8 @@ bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGamepl
 	if (HitActor->Implements<UAbilitySystemInterface>())
 	{
 		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(HitActor);
-		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
-	
-		if(TargetASC)
+
+		if(UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent())
 		{
 			if(UCombatStateComponent* CombatStateComponent = HitActor->FindComponentByClass<UCombatStateComponent>())
 			{
