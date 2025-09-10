@@ -21,8 +21,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 	
 	if (!PS)
 	{
-		//TODO: Unnecessary checks
-		//UE_LOG(LogTemp, Error, TEXT("UAT_WaitInputTagAndQueueWindowEvent::Activate - PS is Null"));
 		return;
 	}
 	
@@ -38,7 +36,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 
 	TArray<FGameplayAbilitySpecHandle> SpecArray;
 
-	//TODO:Get cancelable abilities rather than all abilities
 	FTAASC->GetAllAbilities(SpecArray);
 
 	for (FGameplayAbilitySpecHandle& Handle : SpecArray)
@@ -73,7 +70,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 		if (FTAASC->HasMatchingGameplayTag(WindowTag))
 		{
 			bool bHasTag = FTAASC->HasMatchingGameplayTag(WindowTag);
-			// UE_LOG(LogTemp, Warning, TEXT("FTAASC has tag %s: %s"), *WindowTag.ToString(), bHasTag ? TEXT("true") : TEXT("false"));
 			TArray<UFTAGameplayAbility*>* AbilitiesPtr = QueueableAbilities.Find(WindowTag);
 			if (!AbilitiesPtr) continue;
 
@@ -88,7 +84,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
 
-					// UE_LOG(LogTemp, Warning, TEXT("Activate here 1"))
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
@@ -148,8 +143,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 					{
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
 					}
-
-					// UE_LOG(LogTemp, Warning, TEXT("Activate here 2"))
 					
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)

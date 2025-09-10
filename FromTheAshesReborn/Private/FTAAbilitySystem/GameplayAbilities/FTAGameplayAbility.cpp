@@ -195,29 +195,27 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			TickTask->ReadyForActivation();
 		}
 	}
-	//TODO: check if owner is player first
-	if(!InputTag.MatchesTagExact(FGameplayTag::RequestGameplayTag("InputTag.Hold.Ability.LockOn")))
+	
+	WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
+	if (WaitInputTagAndQueueWindowEventTask)
 	{
-		WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
-		if (WaitInputTagAndQueueWindowEventTask)
-		{
-			
-			WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
-		}
+		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
+	
 
+	/*
 	AdjustFOVDelegateHandle = GetFTAAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("CameraTag.Event.AdjustFOV"), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UFTAGameplayAbility::AdjustFOV);
 
-	// UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
-	// if(!CSC)
-	// {
-	// 	return;
-	// }
-	//
-	// // CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
-	// // CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
-	//
-	// CSC->HandleCameraSystemAdjustment(CameraParams);
+	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	if(!CSC)
+	{
+		return;
+	}
+	
+	CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
+	CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
+	
+	CSC->HandleCameraSystemAdjustment(CameraParams);*/
 }
 
 void UFTAGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

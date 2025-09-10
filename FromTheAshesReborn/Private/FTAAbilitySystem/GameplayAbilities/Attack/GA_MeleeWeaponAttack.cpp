@@ -237,37 +237,6 @@ void UGA_MeleeWeaponAttack::EndMeleeWeaponTrace()
 	MeleeWeaponActor->TracingComponent->ClearHitArray();
 }
 
-void UGA_MeleeWeaponAttack::SpawnAfterImage()
-{
-	FVector SpawnLocation = FTAChar->GetMesh()->GetComponentLocation();
-	FRotator SpawnRotation = FTAChar->GetMesh()->GetComponentRotation();
-
-	AActor* Image = GetWorld()->SpawnActor<AActor>(FTAChar->AfterImageActor, SpawnLocation, SpawnRotation);
-
-	if(!Image)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Image is Null"));
-		return;
-	}
-
-	AAfterImageActor* AfterImage = Cast<AAfterImageActor>(Image);
-	if(!AfterImage)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AfterImageActor is Null"));
-		return;
-	}
-
-	AfterImage->MeshToCopy = FTAChar->GetMesh();
-
-	if(!AfterImage->MeshToCopy)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AfterImage->MeshToCopy is Null"));
-		return;
-	}
-
-	AfterImage->SpawnAfterImageActor();
-}
-
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
 {
 	AActor* TargetActor = LastItem.GetActor();
@@ -678,4 +647,35 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFXCueTag is invalid"));
 		}
 	}
+}
+
+void UGA_MeleeWeaponAttack::SpawnAfterImage()
+{
+	FVector SpawnLocation = FTAChar->GetMesh()->GetComponentLocation();
+	FRotator SpawnRotation = FTAChar->GetMesh()->GetComponentRotation();
+
+	AActor* Image = GetWorld()->SpawnActor<AActor>(FTAChar->AfterImageActor, SpawnLocation, SpawnRotation);
+
+	if(!Image)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Image is Null"));
+		return;
+	}
+
+	AAfterImageActor* AfterImage = Cast<AAfterImageActor>(Image);
+	if(!AfterImage)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AfterImageActor is Null"));
+		return;
+	}
+
+	AfterImage->MeshToCopy = FTAChar->GetMesh();
+
+	if(!AfterImage->MeshToCopy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AfterImage->MeshToCopy is Null"));
+		return;
+	}
+
+	AfterImage->SpawnAfterImageActor();
 }
