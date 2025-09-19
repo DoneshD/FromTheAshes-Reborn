@@ -95,6 +95,9 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 
 void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
+
+	UE_LOG(LogTemp, Warning, TEXT("SendMeleeHitGameplayEvents"))
+	
 	ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
 	LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
@@ -104,7 +107,7 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 	
 	FGameplayEventData OnLaunchHitEventData;
 	OnLaunchHitEventData.OptionalObject = LaunchInfoObj;
-
+	
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
 	OnLaunchHitEventData.Instigator = GetAvatarActorFromActorInfo();
@@ -118,17 +121,28 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 		{
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
 			{
-				OnHitEventData.EventTag = CDO->HitTag;
+				OnLaunchHitEventData.EventTag = CDO->HitTag;
 			}
 			else
 			{
 				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
 			}
 		}
+		else
+		{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - CDO is invalid"));
+			
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - CurrentHitReactionStruct is invalid"));
+		
 	}
 
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnLaunchHitEventData.EventTag, OnLaunchHitEventData);
+	UE_LOG(LogTemp, Warning, TEXT("SendGameplayEventToActor"))
 	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnLaunchHitEventData.EventTag, OnLaunchHitEventData);
 }
 
 

@@ -59,21 +59,12 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CheckForInvalidComponents();
 	
 	InitAbilitySystemComponent();
 	AddCharacterBaseAbilities();
 	
-	if (!AirCombatComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - AirCombatComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
-
-	if (!MeleeWarpingComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - MeleeWarpingComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 	FTAAbilitySystemComponent->AddLooseGameplayTag(NeutralTag);
@@ -166,6 +157,46 @@ bool AFTACharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagC
 		return FTA_ASC->HasAnyMatchingGameplayTags(TagContainer);
 	}
 	return false;
+	
+}
+
+void AFTACharacter::CheckForInvalidComponents()
+{
+	if (!AirCombatComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - AirCombatComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (!MeleeWarpingComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - MeleeWarpingComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (!EquipmentManagerComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - EquipmentManagerComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (!HealthComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - HealthComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (!MotionWarpingComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - MotionWarpingComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
+
+	if (!MeleePropertiesComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - MeleePropertiesComponent is null"), *GetActorNameOrLabel());
+		return;
+	}
 	
 }
 

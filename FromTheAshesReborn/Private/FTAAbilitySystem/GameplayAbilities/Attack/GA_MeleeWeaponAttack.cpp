@@ -414,6 +414,8 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 		FinalAttackData.AttackDirection = InMeleeData.AttackDirection;
 	}
 
+	// FinalAttackData.WeaponTraceSize = InMeleeData.WeaponTraceSize;
+
 	if(InMeleeData.PossibleHitReactions.Num() > 0)
 	{
 		for (TSubclassOf HitReaction : InMeleeData.PossibleHitReactions)
@@ -434,6 +436,10 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	{
 		FinalAttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
 	}
+
+	
+	FinalAttackData.WeaponTraceSize = MeleeAsset->AttackData.WeaponTraceSize;
+	
 
 	if(FinalAttackData.AttackDirection != ESpatialDirection::None)
 	{
@@ -544,7 +550,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 			}
 		}
 	}
-	
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 }

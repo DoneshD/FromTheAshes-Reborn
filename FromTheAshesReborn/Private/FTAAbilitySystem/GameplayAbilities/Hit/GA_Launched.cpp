@@ -24,6 +24,8 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	const ULaunchEventObject* LaunchInfoObject = Cast<ULaunchEventObject>(CurrentEventData.OptionalObject);
+
+	UE_LOG(LogTemp, Warning, TEXT("Launch activated"))
 	
 	if(!LaunchInfoObject)
 	{

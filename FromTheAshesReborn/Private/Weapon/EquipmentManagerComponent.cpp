@@ -74,7 +74,7 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 		{
 			if (AbilitySet)
 			{
-				AbilitySet->GiveToAbilitySystem(ASC, /*inout*/ &NewEntry.GrantedHandles, Result);
+				AbilitySet->GiveToAbilitySystem(ASC, &NewEntry.GrantedHandles, Result);
 			}
 		}
 	}

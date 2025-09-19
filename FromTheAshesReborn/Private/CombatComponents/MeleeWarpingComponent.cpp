@@ -34,11 +34,10 @@ void UMeleeWarpingComponent::BeginPlay()
 		return;
 	}
 
-	//TODO: WIll support AI use later
 	PlayerState = Cast<AFTAPlayerState>(FTACharacter->GetPlayerState());
 	if(!PlayerState)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] UMeleeWarpingComponent::BeginPlay - PlayerState is null"), *GetOwner()->GetActorNameOrLabel());
+		// UE_LOG(LogTemp, Error, TEXT("[%s] UMeleeWarpingComponent::BeginPlay - PlayerState is null"), *GetOwner()->GetActorNameOrLabel());
 		return;
 	}
 	

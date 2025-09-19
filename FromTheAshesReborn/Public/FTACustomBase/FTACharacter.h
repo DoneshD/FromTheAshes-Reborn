@@ -101,6 +101,7 @@ public:
 public:
 	
 	AFTACharacter(const FObjectInitializer& ObjectInitializer);
+	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
@@ -115,6 +116,8 @@ public:
 	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;
 	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+
+	void CheckForInvalidComponents();
 
 	virtual void InitAbilitySystemComponent();
 
