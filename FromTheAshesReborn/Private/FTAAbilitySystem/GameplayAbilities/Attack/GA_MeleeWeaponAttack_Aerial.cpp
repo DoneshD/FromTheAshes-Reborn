@@ -86,20 +86,19 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 
 void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
-	// Super::SendMeleeHitGameplayEvents(TargetDataHandle);
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 	
 	USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
 	SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
 	SuspendInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
 
-	FGameplayEventData OnAerialHitEventData;
-	OnAerialHitEventData.OptionalObject = SuspendInfoObj;
+	OnHitEventData.OptionalObject = SuspendInfoObj;
 
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
-	OnAerialHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	OnAerialHitEventData.Target = TargetActor;
-	OnAerialHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
+	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnHitEventData.Target = TargetActor;
+	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
 
 	if (CurrentHitReactionStruct)
 	{
@@ -116,8 +115,6 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 			}
 		}
 	}
-
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnAerialHitEventData.EventTag, OnAerialHitEventData);
 	
 }
 

@@ -414,7 +414,7 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 		FinalAttackData.AttackDirection = InMeleeData.AttackDirection;
 	}
 
-	// FinalAttackData.WeaponTraceSize = InMeleeData.WeaponTraceSize;
+	FinalAttackData.WeaponTraceSize = InMeleeData.WeaponTraceSize;
 
 	if(InMeleeData.PossibleHitReactions.Num() > 0)
 	{
@@ -436,10 +436,8 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	{
 		FinalAttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
 	}
-
 	
 	FinalAttackData.WeaponTraceSize = MeleeAsset->AttackData.WeaponTraceSize;
-	
 
 	if(FinalAttackData.AttackDirection != ESpatialDirection::None)
 	{
