@@ -187,7 +187,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 		ObjectTypes,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None, 
+		EDrawDebugTrace::ForDuration, 
 		HitResults,
 		true,                    
 		FLinearColor::Red,

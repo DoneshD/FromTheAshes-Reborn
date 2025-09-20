@@ -95,8 +95,6 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 
 void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("SendMeleeHitGameplayEvents"))
 	
 	ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
@@ -140,7 +138,6 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 		
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("SendGameplayEventToActor"))
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnLaunchHitEventData.EventTag, OnLaunchHitEventData);
 }

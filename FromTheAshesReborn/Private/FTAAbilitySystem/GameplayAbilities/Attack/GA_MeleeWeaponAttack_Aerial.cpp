@@ -86,7 +86,7 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 
 void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
-	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
+	// Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 	
 	USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
 	SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
@@ -105,6 +105,10 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
+
+			//TODO: Redundant code, need to figure out how to properly override
+			SuspendInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+			
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
 			{
 				OnHitEventData.EventTag = CDO->HitTag;
@@ -115,7 +119,7 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 			}
 		}
 	}
-	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 }
 
 

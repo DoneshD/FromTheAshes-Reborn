@@ -160,7 +160,6 @@ void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCoun
 float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCount)
 {
 	AttackCounter = InNewCount;
-	UE_LOG(LogTemp, Warning, TEXT("TEST"));
 	if (AttackCounter <= 3)
 	{
 		LaunchStrength = 100.0f;
