@@ -165,44 +165,17 @@ void UGA_MeleeWeaponAttack_GroundPound::ApplyMeleeHitEffects(const FGameplayAbil
 
 void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
-	
 	USlamEventObject* SlamInfoObj = NewObject<USlamEventObject>(this);
 	SlamInfoObj->SlamData.Speed = DescentSpeed;
 	SlamInfoObj->SlamData.DownwardDistance = TraceVerticalDownwardDistance;
 	SlamInfoObj->SlamData.Duration = SlamDuration;
 	SlamInfoObj->SlamData.Location = EnemyGroundPoundEndLocation;
 	SlamInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
-
+	SlamInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+	
 	OnHitEventData.OptionalObject = SlamInfoObj;
-
-	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
-	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	OnHitEventData.Target = TargetActor;
-	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
-
-	if (CurrentHitReactionStruct)
-	{
-		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
-		if (CDO)
-		{
-
-			//TODO: Redundant code, need to figure out how to properly override
-			
-			// SlamInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
-			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
-			{
-				OnHitEventData.EventTag = CDO->HitTag;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
-			}
-		}
-	}
-	
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 	
 }
 
@@ -288,29 +261,6 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 	}
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::SendHitGPEvent(FHitResult HitItemToAdd, FVector LocationEnd, float Speed, float Duration)
-{
-	FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(HitItemToAdd);
-	
-	USlamEventObject* SlamInfoObj = NewObject<USlamEventObject>(this);
-	SlamInfoObj->SlamData.Location = LocationEnd;
-	SlamInfoObj->SlamData.Speed = Speed;
-	SlamInfoObj->SlamData.Duration = Duration;
-	SlamInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
-	
-	FGameplayEventData OnSlamHitEventData;
-	OnSlamHitEventData.OptionalObject = SlamInfoObj;
-
-	AActor* TargetActor = TargetHitDataHandle.Get(0)->GetHitResult()->GetActor();
-	
-	OnSlamHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	OnSlamHitEventData.Target = TargetActor;
-	OnSlamHitEventData.ContextHandle.AddHitResult(*TargetHitDataHandle.Get(0)->GetHitResult());
-
-	// OnSlamHitEventData.EventTag = FinalHitData.HitTag;
-
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnSlamHitEventData.EventTag, OnSlamHitEventData);
-}
 
 void UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete()
 {

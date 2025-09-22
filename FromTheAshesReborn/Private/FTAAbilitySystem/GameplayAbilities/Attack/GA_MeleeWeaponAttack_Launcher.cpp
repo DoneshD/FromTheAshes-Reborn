@@ -95,51 +95,18 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 
 void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
-	
 	ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
 	LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;
 	LaunchInfoObj->LaunchData.StallDuration = StallDuration;
 	LaunchInfoObj->LaunchData.Offset = LaunchOffset;
 	LaunchInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
+	LaunchInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
 	
-	FGameplayEventData OnLaunchHitEventData;
-	OnLaunchHitEventData.OptionalObject = LaunchInfoObj;
+	OnHitEventData.OptionalObject = LaunchInfoObj;
 	
-	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
-	
-	OnLaunchHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	OnLaunchHitEventData.Target = TargetActor;
-	OnLaunchHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
-	
-	if (CurrentHitReactionStruct)
-	{
-		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
-		if (CDO)
-		{
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
-			{
-				OnLaunchHitEventData.EventTag = CDO->HitTag;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
-			}
-		}
-		else
-		{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - CDO is invalid"));
-			
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - CurrentHitReactionStruct is invalid"));
-		
-	}
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 
-	
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnLaunchHitEventData.EventTag, OnLaunchHitEventData);
 }
 
 

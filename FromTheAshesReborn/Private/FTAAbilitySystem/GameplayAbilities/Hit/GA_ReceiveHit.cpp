@@ -83,7 +83,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		{
 			if(Asset->HitReactionDirection == HitInfoObject->HitData.HitDirection)
 			{
-				
 				if(Asset->MontageToPlay)
 				{
 					AssetsToTry.Add(Asset);
