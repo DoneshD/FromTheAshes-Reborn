@@ -17,6 +17,7 @@
 #include "Camera/CameraSystemParams.h"
 #include "NiagaraSystem.h"
 #include "SWarningOrErrorBox.h"
+#include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
@@ -316,28 +317,26 @@ void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag)
 	}
 }
 
-
 void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
 {
-
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->GroundedTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedTag))
 	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->AirborneTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->AirborneTag);
 	}
 	
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->AirborneTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->AirborneTag))
 	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->GroundedTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedTag);
 	}
 	
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->NeutralTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->NeutralTag))
 	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->DownedTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->DownedTag);
 	}
 
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->DownedTag))
+	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->DownedTag))
 	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->NeutralTag);
+		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->NeutralTag);
 	}
 	
 	if(FinalAttackData.PossibleHitReactions.Num() > 1)

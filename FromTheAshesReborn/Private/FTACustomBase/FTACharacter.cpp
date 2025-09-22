@@ -5,6 +5,7 @@
 #include "MotionWarpingComponent.h"
 #include "NiagaraComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
@@ -29,51 +30,73 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	FTAAbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 
 	CreateDefaultSubobject<UHealthAttributeSet>(TEXT("HealthSet"));
+
+	CentralStateComponent = CreateDefaultSubobject<UCentralStateComponent>(TEXT("CentralStateComponent"));
+	this->AddOwnedComponent(CentralStateComponent);
+	InitializedActorComponents.AddUnique(CentralStateComponent);
 	
 	EquipmentManagerComponent = CreateDefaultSubobject<UEquipmentManagerComponent>("EquipmentManagerComponent");
 	this->AddOwnedComponent(EquipmentManagerComponent);
+	InitializedActorComponents.AddUnique(EquipmentManagerComponent);
 
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	this->AddOwnedComponent(HealthComponent);
+	InitializedActorComponents.AddUnique(HealthComponent);
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	this->AddOwnedComponent(MotionWarpingComponent);
+	InitializedActorComponents.AddUnique(MotionWarpingComponent);
 
 	MeleePropertiesComponent = CreateDefaultSubobject<UMeleePropertiesComponent>(TEXT("MeleePropertiesComponent"));
 	this->AddOwnedComponent(MeleePropertiesComponent);
-
+	InitializedActorComponents.AddUnique(MeleePropertiesComponent);
+	
 	MeleeWarpingComponent = CreateDefaultSubobject<UMeleeWarpingComponent>(TEXT("MeleeWarpingComponent"));
 	this->AddOwnedComponent(MeleeWarpingComponent);
-
+	InitializedActorComponents.AddUnique(MeleeWarpingComponent);
+	
 	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
 	this->AddOwnedComponent(ComboManagerComponent);
+	InitializedActorComponents.AddUnique(ComboManagerComponent);
 
 	AirCombatComponent = CreateDefaultSubobject<UAerialCombatComponent>(TEXT("AerialCombatComponent"));
 	this->AddOwnedComponent(AirCombatComponent);
-
+	InitializedActorComponents.AddUnique(AirCombatComponent);
+	
 	CharacterAfterImageComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CharacterAfterImageComponent"));
 	this->AddOwnedComponent(GetMesh());
+	InitializedActorComponents.AddUnique(CharacterAfterImageComponent);
 	
 }
 
 void AFTACharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CheckForInvalidComponents();
 	
 	InitAbilitySystemComponent();
 	AddCharacterBaseAbilities();
 	
-	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
-	FTAAbilitySystemComponent->AddLooseGameplayTag(NeutralTag);
-	FTAAbilitySystemComponent->AddLooseGameplayTag(GroundedTag);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->NeutralTag);
+	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
+
 }
 
 void AFTACharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+}
+
+void AFTACharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
+	if(!CheckForInvalidComponents())
+	{
+		ensureMsgf(false, TEXT("[%s] AFTACharacter::PostInitializeComponents() failed validation. Check the log for details."),
+			*GetActorNameOrLabel());
+	}
 	
 }
 
@@ -84,11 +107,6 @@ UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const
 
 TObjectPtr<UMotionWarpingComponent> AFTACharacter::GetMotionWarpingComponent() const
 {
-	if(!MotionWarpingComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AFTACharacter::GetMotionWarpingComponent - MotionWarpingComponent is invalid"))
-		return nullptr;
-	}
 	return MotionWarpingComponent;
 }
 
@@ -160,44 +178,32 @@ bool AFTACharacter::HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagC
 	
 }
 
-void AFTACharacter::CheckForInvalidComponents()
+bool AFTACharacter::CheckForInvalidComponents()
 {
-	if (!AirCombatComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - AirCombatComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
+	bool bAllComponentsValid = true;
 
-	if (!MeleeWarpingComponent)
+	for(int32 i = 0; i < InitializedActorComponents.Num(); i++)
 	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - MeleeWarpingComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
+		TObjectPtr<UActorComponent> Component = InitializedActorComponents[i];
 
-	if (!EquipmentManagerComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - EquipmentManagerComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
+		if(!Component)
+		{
+			UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::CheckForInvalidComponents() - Invalid Component at index %d: Pointer is NULL"),
+				*GetActorNameOrLabel(), i);
+			
+			bAllComponentsValid = false;
+			continue;
+		}
 
-	if (!HealthComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - HealthComponent is null"), *GetActorNameOrLabel());
-		return;
+		if(!Component->IsValidLowLevel())
+		{
+			UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::CheckForInvalidComponents() - Invalid Component at index %d: %s is not a valid UObject"),
+				*GetActorNameOrLabel(), i, *Component->GetName());
+			
+			bAllComponentsValid = false;
+		}
 	}
-
-	if (!MotionWarpingComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - MotionWarpingComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
-
-	if (!MeleePropertiesComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] AFTACharacter::BeginPlay - MeleePropertiesComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
-	
+	return bAllComponentsValid;
 }
 
 void AFTACharacter::InitAbilitySystemComponent()
@@ -262,14 +268,12 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 bool AFTACharacter::HasFlailTag() const
 {
 	bool bHasTag = FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
-	// UE_LOG(LogTemp, Warning, TEXT("HasFlailTag: %s"), bHasTag ? TEXT("true") : TEXT("false"));
 	return bHasTag;
 }
 
 bool AFTACharacter::HasLaunchedTag() const
 {
 	bool bHasTag = FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
-	// UE_LOG(LogTemp, Warning, TEXT("HasLaunchedTag: %s"), bHasTag ? TEXT("true") : TEXT("false"));
 	return bHasTag;
 }
 

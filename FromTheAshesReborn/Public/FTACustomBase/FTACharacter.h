@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UCentralStateComponent;
 class UCombatStateComponent;
 class UMeleePropertiesComponent;
 class UMeleeWarpingComponent;
@@ -38,17 +39,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
-	UPROPERTY()
-	FGameplayTag GroundedTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Grounded");
-	
-	UPROPERTY()
-	FGameplayTag AirborneTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne");
-	
-	UPROPERTY()
-	FGameplayTag NeutralTag = FGameplayTag::RequestGameplayTag("Character.State.Neutral");
-	
-	UPROPERTY()
-	FGameplayTag DownedTag = FGameplayTag::RequestGameplayTag("Character.State.Downed");
+protected:
+
+	TArray<TObjectPtr<UActorComponent>> InitializedActorComponents;
 	
 public:
 	
@@ -57,6 +50,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Trace")
 	TEnumAsByte<ECollisionChannel> TargetObjectTraceChannel;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
+	TObjectPtr<UCentralStateComponent> CentralStateComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
@@ -101,9 +97,10 @@ public:
 public:
 	
 	AFTACharacter(const FObjectInitializer& ObjectInitializer);
-	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+
+	virtual void PostInitializeComponents() override;
 
 	UFUNCTION(BlueprintCallable, Category = "Character|ASComponent")
 	UFTAAbilitySystemComponent* GetFTAAbilitySystemComponent() const  { return FTAAbilitySystemComponent; }
@@ -117,7 +114,7 @@ public:
 	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 
-	void CheckForInvalidComponents();
+	bool CheckForInvalidComponents();
 
 	virtual void InitAbilitySystemComponent();
 
