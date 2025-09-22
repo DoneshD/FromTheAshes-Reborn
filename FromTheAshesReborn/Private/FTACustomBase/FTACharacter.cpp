@@ -77,8 +77,16 @@ void AFTACharacter::BeginPlay()
 	AddCharacterBaseAbilities();
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
-	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->NeutralTag);
-	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
+	
+	if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->NeutralTag))
+	{
+		FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->NeutralTag);
+	}
+
+	if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
+	{
+		FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
+	}
 
 }
 

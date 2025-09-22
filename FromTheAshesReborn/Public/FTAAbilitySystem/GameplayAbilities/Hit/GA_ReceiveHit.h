@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
 	FGameplayTag CharacterOrientationTag;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
+
 public:
 
 	UGA_ReceiveHit();

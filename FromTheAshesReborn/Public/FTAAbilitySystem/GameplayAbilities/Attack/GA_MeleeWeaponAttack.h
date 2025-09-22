@@ -5,6 +5,7 @@
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "GA_MeleeWeaponAttack.generated.h"
 
+class UCentralStateComponent;
 class UGA_ReceiveHit;
 struct FMeleeAttackDataStruct;
 class UMeleePropertiesComponent;
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
+	UPROPERTY()
+	TObjectPtr<UCentralStateComponent> CentralStateComponent;
+	
 
 	UPROPERTY()
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
