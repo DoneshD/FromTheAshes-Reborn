@@ -86,40 +86,14 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 
 void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
-	// Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
-	
 	USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
 	SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
 	SuspendInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
+	SuspendInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
 
 	OnHitEventData.OptionalObject = SuspendInfoObj;
 
-	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
-	
-	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
-	OnHitEventData.Target = TargetActor;
-	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
-
-	if (CurrentHitReactionStruct)
-	{
-		const UGA_ReceiveHit* const CDO = CurrentHitReactionStruct->GetDefaultObject<UGA_ReceiveHit>();
-		if (CDO)
-		{
-
-			//TODO: Redundant code, need to figure out how to properly override
-			SuspendInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
-			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
-			{
-				OnHitEventData.EventTag = CDO->HitTag;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
-			}
-		}
-	}
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
 }
 
 

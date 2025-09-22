@@ -529,7 +529,10 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		return;
 	}
 	
-	OnHitEventData.OptionalObject = HitInfoObj;
+	if(!OnHitEventData.OptionalObject)
+	{
+		OnHitEventData.OptionalObject = HitInfoObj;
+	}
 
 	if (InHitAbilityClass)
 	{
@@ -550,6 +553,8 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+
+	OnHitEventData.OptionalObject = nullptr;
 }
 
 void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
