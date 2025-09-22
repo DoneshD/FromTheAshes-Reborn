@@ -61,9 +61,6 @@ public:
 	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct) override;
 	
 	void TraceForActors();
-
-	UFUNCTION()
-	void SendHitGPEvent(FHitResult HitItemToAdd, FVector LocationEnd, float Speed, float Duration);
 	
 	UFUNCTION()
 	void OnSlamComplete();
