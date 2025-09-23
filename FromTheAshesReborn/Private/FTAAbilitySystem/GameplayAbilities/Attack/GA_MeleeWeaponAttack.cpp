@@ -357,11 +357,15 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	TSubclassOf<UGA_ReceiveHit> OutHitAbilityClass;
-	
-	ApplyMeleeHitEffects(TargetDataHandle, OutHitAbilityClass);
-	SendMeleeHitGameplayEvents(TargetDataHandle, OutHitAbilityClass);
-	AddMeleeHitCues(TargetDataHandle, OutHitAbilityClass);
+	for(TSubclassOf HitAbilityClass : FinalAttackData.PossibleHitReactions)
+	{
+		if(HitAbilityClass && HitAbilityClass->IsValidLowLevel())
+		{
+			ApplyMeleeHitEffects(TargetDataHandle, HitAbilityClass);
+			SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
+			AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
+		}
+	}
 	
 }
 
@@ -448,8 +452,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
-
-	// OnHitEventData.OptionalObject = nullptr;
 }
 
 void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
