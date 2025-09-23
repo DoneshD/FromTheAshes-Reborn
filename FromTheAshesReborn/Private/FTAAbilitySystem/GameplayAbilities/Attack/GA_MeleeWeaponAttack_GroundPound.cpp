@@ -59,7 +59,7 @@ bool UGA_MeleeWeaponAttack_GroundPound::CanActivateAbility(const FGameplayAbilit
 void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
+	
 	//TODO: Need to change this
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")));
 	
@@ -140,30 +140,12 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 	}
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::TempApplyGPEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
-{
-	// if(FinalHitData.HitEffect)
-	// {
-	// 	FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(FinalHitData.HitEffect, 1.0f);
-	//
-	// 	TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
-	// 			CurrentSpecHandle,
-	// 			CurrentActorInfo,
-	// 			CurrentActivationInfo,
-	// 			HitEffectHandle,
-	// 			TargetDataHandle
-	// 		);
-	// }
-	
-}
-
-void UGA_MeleeWeaponAttack_GroundPound::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle,
-	TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+void UGA_MeleeWeaponAttack_GroundPound::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
 	Super::ApplyMeleeHitEffects(TargetDataHandle, InHitAbilityClass);
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
 	USlamEventObject* SlamInfoObj = NewObject<USlamEventObject>(this);
 	SlamInfoObj->SlamData.Speed = DescentSpeed;
@@ -175,7 +157,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 	
 	OnHitEventData.OptionalObject = SlamInfoObj;
 	
-	UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
+	UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(TargetDataHandle, InHitAbilityClass);
 	
 }
 

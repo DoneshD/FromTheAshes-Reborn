@@ -34,7 +34,6 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 		return;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("TEST111"))
 	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(this,
 	SlamInfoObject->SlamData.Location,
 	SlamInfoObject->SlamData.Speed,
@@ -56,40 +55,50 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	
-	// GetFTACharacterFromActorInfo()->RemoveAerialEffects();
-	//
-	// FGameplayEventData RecoverEventData;
-	//
-	// RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
-	// RecoverEventData.Target = GetAvatarActorFromActorInfo();
-	//
-	// UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
-	// HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
-	//
-	//
-	// RecoverEventData.OptionalObject = HitInfoObj;
-	//
-	// if(PossibleHitReactions[0] && PossibleHitReactions[0]->IsValidLowLevel() && PossibleHitReactions.Num() > 0 && !PossibleHitReactions.IsEmpty())
-	// {
-	// 	const UGA_ReceiveHit* const CDO = PossibleHitReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
-	// 	if (CDO)
-	// 	{
-	// 		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
-	// 		{
-	// 			RecoverEventData.EventTag = CDO->HitTag;
-	// 			UE_LOG(LogTemp, Warning, TEXT("Grant Bounce"));
-	// 		}
-	// 		else
-	// 		{
-	// 			UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - RecoveryTag is NULL"));
-	// 		}
-	// 		
-	// 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
-	// 	}
-	// 	
-	// }
+	GetFTACharacterFromActorInfo()->RemoveAerialEffects();
+	
+	FGameplayEventData RecoverEventData;
+	
+	RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
+	RecoverEventData.Target = GetAvatarActorFromActorInfo();
+	
+	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
+	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	
+	RecoverEventData.OptionalObject = HitInfoObj;
+	
+	if(PossibleHitReactions[0] && PossibleHitReactions[0]->IsValidLowLevel() && PossibleHitReactions.Num() > 0 && !PossibleHitReactions.IsEmpty())
+	{
+		const UGA_ReceiveHit* const CDO = PossibleHitReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(CDO->HitEffect)
+			{
+				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
+
+				FActiveGameplayEffectHandle AppliedDownedEffects = ApplyGameplayEffectSpecToOwner(
+					CurrentSpecHandle,
+					CurrentActorInfo,
+					CurrentActivationInfo,
+					HitEffectHandle
+				);
+				
+
+			}
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
+			{
+				RecoverEventData.EventTag = CDO->HitTag;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - RecoveryTag is NULL"));
+			}
+			
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
+		}
+		
+	}
 	
 }
 
