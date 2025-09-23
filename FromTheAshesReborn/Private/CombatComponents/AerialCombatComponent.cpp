@@ -89,6 +89,7 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
+	MovementMode = MOVE_Falling;
 
 	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
 	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
@@ -112,8 +113,16 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 	IsComponentActive = true;
 
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	CMC->SetMovementMode(MovementMode);
 	ResetAttackTimer();
 	
+}
+
+
+
+void UAerialCombatComponent::ChangeMovementMode(EMovementMode InMovementMode)
+{
+	MovementMode = InMovementMode;
 }
 
 void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int32 NewCount)
@@ -121,6 +130,7 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	if (NewCount > 0)
 	{
 		InitializeStateAndVariables();
+		
 	}
 	else
 	{

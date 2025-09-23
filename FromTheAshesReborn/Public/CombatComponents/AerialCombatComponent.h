@@ -42,6 +42,9 @@ protected:
 	FGameplayTag EnableTag;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
+	TEnumAsByte<EMovementMode> MovementMode = MOVE_Falling;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag AerialAttackCounterTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
@@ -71,6 +74,8 @@ protected:
 
 	void ClearStateAndVariables();
 	void InitializeStateAndVariables();
+	
+	
 	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
 	
 	void AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount);
@@ -87,6 +92,8 @@ public:
 
 	void SetGravity(float NewGravity);
 	void PrintGravity();
+
+	void ChangeMovementMode(EMovementMode InMovementMode);
 	
 	float CalculateAttackAntiGravityMultiplier(int InNewCount);
 	

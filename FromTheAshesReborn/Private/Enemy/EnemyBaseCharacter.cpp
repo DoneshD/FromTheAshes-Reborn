@@ -16,9 +16,16 @@ void AEnemyBaseCharacter::BeginPlay()
 void AEnemyBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 }
 
 void AEnemyBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+void AEnemyBaseCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	
 }

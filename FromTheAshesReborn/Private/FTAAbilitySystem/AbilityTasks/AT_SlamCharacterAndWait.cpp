@@ -94,4 +94,5 @@ void UAT_SlamCharacterAndWait::LocationReached()
 	IsSlamming = false;
 	OnSlamComplete.Broadcast();
 	EndTask();
+	
 }

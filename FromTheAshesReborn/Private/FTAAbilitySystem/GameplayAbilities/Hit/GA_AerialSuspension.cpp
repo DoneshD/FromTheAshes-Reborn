@@ -26,15 +26,21 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
+	// const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
+	//
+	// if(!SuspendEventObj)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("SuspendEventObj is Null"));
+	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	// 	return;
+	// 	
+	// }
 
-	if(!SuspendEventObj)
-	{
-		UE_LOG(LogTemp, Error, TEXT("SuspendEventObj is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-		
-	}
+	UE_LOG(LogTemp, Warning, TEXT("TEST 1"));
+
+	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+
+	ACC->ChangeMovementMode(MOVE_Falling);
 
 	// SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
 	// SuspendEventObj->SuspendData.DescentSpeed,
