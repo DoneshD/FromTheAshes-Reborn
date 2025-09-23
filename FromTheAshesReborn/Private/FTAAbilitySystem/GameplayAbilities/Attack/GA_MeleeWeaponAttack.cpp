@@ -299,112 +299,6 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 	
 }
 
-void UGA_MeleeWeaponAttack::RemoveHitReaction(FGameplayTag RemovalTag)
-{
-	for (int32 i = 0; i < FinalAttackData.PossibleHitReactions.Num(); i++)
-	{
-		const TSubclassOf<UGA_ReceiveHit> ReceiveHitClass = FinalAttackData.PossibleHitReactions[i];
-		if (ReceiveHitClass)
-		{
-			const UGA_ReceiveHit* const CDO = ReceiveHitClass->GetDefaultObject<UGA_ReceiveHit>();
-			if (CDO && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->CharacterOrientationTag))
-			{
-				if (CDO->CharacterOrientationTag.MatchesTagExact(RemovalTag))
-				{
-					FinalAttackData.PossibleHitReactions.RemoveAt(i);
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::RemoveHitReaction - Invalid CDO or Tag on class %s"), *GetNameSafe(*ReceiveHitClass));
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::RemoveHitReaction - Null ReceiveHit class at index %d"), i);
-		}
-	}
-}
-
-void UGA_MeleeWeaponAttack::SelectHitReaction(UAbilitySystemComponent* TargetASC, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
-{
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedTag))
-	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->AirborneTag);
-	}
-	
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->AirborneTag))
-	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedTag);
-	}
-	
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->NeutralTag))
-	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->DownedTag);
-	}
-
-	if (TargetASC->HasMatchingGameplayTag(GetFTACharacterFromActorInfo()->CentralStateComponent->DownedTag))
-	{
-		RemoveHitReaction(GetFTACharacterFromActorInfo()->CentralStateComponent->NeutralTag);
-	}
-	
-	if(FinalAttackData.PossibleHitReactions.Num() > 1)
-	{
-		InHitAbilityClass = FinalAttackData.PossibleHitReactions.Last();
-		return;
-	}
-
-	if(FinalAttackData.PossibleHitReactions.Num() < 1)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SelectHitReaction - No possible hit reactions"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-	
-	InHitAbilityClass = FinalAttackData.PossibleHitReactions[0];
-}
-
-bool UGA_MeleeWeaponAttack::GetTargetStateComponentsAndHitReaction(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit>& InHitAbilityClass)
-{
-	const FGameplayAbilityTargetData* HitTargetData = TargetDataHandle.Get(0);
-	
-	if(!HitTargetData)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::SelectHitReaction - No Target Data"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return false;
-	}
-	
-	if(HitTargetData->GetActors().Num() < 1)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Target Actors"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return false;
-	}
-	
-	TArray<TWeakObjectPtr<AActor>> AllHitActors = HitTargetData->GetActors();
-	AActor* HitActor = AllHitActors[0].Get();
-	
-	if(!HitActor->IsValidLowLevel())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Hit Actor"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return false;
-	}
-	
-	if (HitActor->Implements<UAbilitySystemInterface>())
-	{
-		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(HitActor);
-
-		if(UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent())
-		{
-			SelectHitReaction(TargetASC, InHitAbilityClass);
-			return true;
-		}
-	}
-	return false;
-}
-
 void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeData)
 {
 	if(InMeleeData.HitFX)
@@ -464,14 +358,7 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	TSubclassOf<UGA_ReceiveHit> OutHitAbilityClass;
-	bool FoundHitReaction = GetTargetStateComponentsAndHitReaction(TargetDataHandle, OutHitAbilityClass);
-
-	if(!FoundHitReaction)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic - Hit reaction not found"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
+	
 	ApplyMeleeHitEffects(TargetDataHandle, OutHitAbilityClass);
 	SendMeleeHitGameplayEvents(TargetDataHandle, OutHitAbilityClass);
 	AddMeleeHitCues(TargetDataHandle, OutHitAbilityClass);
