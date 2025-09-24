@@ -53,7 +53,11 @@ void UDownedCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if(IsComponentActive)
 	{
-		
+		TotalDownedTime += DeltaTime;
+		if(TotalDownedTime >= 2.0f)
+		{
+			DisableComponent();
+		}
 	}
 
 }
@@ -73,7 +77,9 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 
 void UDownedCombatComponent::DisableComponent()
 {
+	IsComponentActive = false;
 	FGameplayEventData OnRecoverEventData;
+	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 
 	if(PossibleRecoveries[0] && PossibleRecoveries[0]->IsValidLowLevel() && PossibleRecoveries.Num() > 0 && !PossibleRecoveries.IsEmpty())
 	{
