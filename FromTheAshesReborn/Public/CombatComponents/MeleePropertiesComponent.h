@@ -6,8 +6,11 @@
 #include "Components/ActorComponent.h"
 #include "MeleePropertiesComponent.generated.h"
 
+class UNiagaraSystem;
 class UGameplayEffect;
 class UGA_ReceiveHit;
+class AFTACharacter;
+class UEquipmentManagerComponent;
 
 USTRUCT(BlueprintType)
 struct FMeleeAttackDataStruct
@@ -49,10 +52,6 @@ struct FMeleeAttackDataStruct
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMeleeRuntimeDataSetSignature, FMeleeAttackDataStruct, InMeleeData);
-
-class UNiagaraSystem;
-class AFTACharacter;
-class UEquipmentManagerComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UMeleePropertiesComponent : public UActorComponent

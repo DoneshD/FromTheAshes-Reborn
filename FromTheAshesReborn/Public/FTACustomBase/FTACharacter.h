@@ -121,6 +121,7 @@ public:
 	void AddCharacterBaseAbilities() const;
 
 	virtual void Landed(const FHitResult& Hit) override;
+	virtual void Falling() override;
 	
 	void RemoveAerialEffects();
 

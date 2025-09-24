@@ -3,6 +3,7 @@
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UGA_ReceiveHit::UGA_ReceiveHit()
@@ -81,11 +82,17 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		TArray<UHitReactionDataAsset*> AssetsToTry;
 		for (UHitReactionDataAsset* Asset : HitAbilityAssets)
 		{
-			if(Asset->HitReactionDirection == HitInfoObject->HitData.HitDirection)
+			if(Asset->Direction == HitInfoObject->HitData.HitDirection)
 			{
-				if(Asset->MontageToPlay)
+				if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(Asset->Orientation))
 				{
-					AssetsToTry.Add(Asset);
+					if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(Asset->Orientation))
+					{
+						if(Asset->MontageToPlay)
+						{
+							AssetsToTry.Add(Asset);
+						}
+					}
 				}
 			}
 		}

@@ -271,7 +271,34 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
+	if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
+	{
+		GetFTAAbilitySystemComponent()->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
+	}
+
+	if(GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
+	{
+		GetFTAAbilitySystemComponent()->RemoveLooseGameplayTag(CentralStateComponent->AirborneTag);
+	}
+
 	RemoveAerialEffects();
+}
+
+void AFTACharacter::Falling()
+{
+	Super::Falling();
+
+	if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
+	{
+		GetFTAAbilitySystemComponent()->AddLooseGameplayTag(CentralStateComponent->AirborneTag);
+	}
+
+	if(GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
+	{
+		GetFTAAbilitySystemComponent()->RemoveLooseGameplayTag(CentralStateComponent->GroundedTag);
+	}
+
+
 }
 
 bool AFTACharacter::HasFlailTag() const
