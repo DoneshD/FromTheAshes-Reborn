@@ -1,5 +1,6 @@
 #include "CombatComponents/AerialCombatComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "Components/CapsuleComponent.h"

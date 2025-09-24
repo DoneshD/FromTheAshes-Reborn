@@ -1,35 +1,17 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
-#include "GA_Recover.generated.h"
+#include "GA_ReceiveHit.h"
+#include "GA_DownedFlinch.generated.h"
 
-
-class URecoverAbilityDataAsset;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_Recover : public UFTAGameplayAbility
+class FROMTHEASHESREBORN_API UGA_DownedFlinch : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
-
+	
 public:
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayEffect> RecoverEffect;
-
-	UPROPERTY(EditAnywhere)
-	FGameplayTag RecoverTag;
-
-protected:
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<URecoverAbilityDataAsset> RecoverAbilityAsset;
-
-	UPROPERTY(EditAnywhere)
-	TArray<TObjectPtr<URecoverAbilityDataAsset>> RecoverAbilityAssets;
-	
-protected:
-	
-	UGA_Recover(const FObjectInitializer& = FObjectInitializer::Get());
+	UGA_DownedFlinch();
 
 	virtual void OnAbilityTick(float DeltaTime) override;
 	
@@ -38,8 +20,8 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	
-	
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	
 };

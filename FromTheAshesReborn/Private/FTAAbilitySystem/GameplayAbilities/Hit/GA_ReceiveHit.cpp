@@ -82,6 +82,11 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		TArray<UHitReactionDataAsset*> AssetsToTry;
 		for (UHitReactionDataAsset* Asset : HitAbilityAssets)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Asset Direction: %s"), *UEnum::GetValueAsString(Asset->Direction))
+			UE_LOG(LogTemp, Warning, TEXT("Attack Direction: %s"), *UEnum::GetValueAsString(HitInfoObject->HitData.HitDirection))
+			UE_LOG(LogTemp, Warning, TEXT("Asset orientation Direction: %s"), *Asset->Orientation.ToString())
+			
+			
 			if(Asset->Direction == HitInfoObject->HitData.HitDirection)
 			{
 				if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(Asset->Orientation))

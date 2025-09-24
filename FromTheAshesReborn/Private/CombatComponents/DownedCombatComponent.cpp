@@ -1,9 +1,12 @@
 ﻿#include "CombatComponents/DownedCombatComponent.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 UDownedCombatComponent::UDownedCombatComponent()
 {
@@ -66,5 +69,40 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	{
 		
 	}
+}
+
+void UDownedCombatComponent::DisableComponent()
+{
+	FGameplayEventData OnRecoverEventData;
+
+	if(PossibleRecoveries[0] && PossibleRecoveries[0]->IsValidLowLevel() && PossibleRecoveries.Num() > 0 && !PossibleRecoveries.IsEmpty())
+	{
+		const UGA_Recover* const CDO = PossibleRecoveries[0]->GetDefaultObject<UGA_Recover>();
+		if (CDO)
+		{
+			if(CDO->RecoverEffect)
+			{
+				FGameplayEffectContextHandle ContentHandle = FTAAbilitySystemComponent->MakeEffectContext();
+				ContentHandle.AddInstigator(GetOwner(), nullptr);
+				ContentHandle.AddSourceObject(this);
+				
+				FGameplayEffectSpecHandle SpecHandle = FTAAbilitySystemComponent->MakeOutgoingSpec(CDO->RecoverEffect, 1.0, ContentHandle);
+		
+				const FActiveGameplayEffectHandle Active = FTAAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		
+			}
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->RecoverTag))
+			{
+				OnRecoverEventData.EventTag = CDO->RecoverTag;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - RecoveryTag is NULL"));
+			}
+		}
+	}
+			
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwner(), OnRecoverEventData.EventTag, OnRecoverEventData);
 }
 

@@ -6,6 +6,7 @@
 #include "DownedCombatComponent.generated.h"
 
 
+class UGA_Recover;
 class UCharacterMovementComponent;
 class UFTAAbilitySystemComponent;
 class AFTACharacter;
@@ -14,6 +15,11 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UDownedCombatComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TArray<TSubclassOf<UGA_Recover>> PossibleRecoveries;
 
 protected:
 
@@ -30,6 +36,8 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CMC;
+
+	
 	
 protected:
 	
@@ -38,4 +46,6 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
+
+	void DisableComponent();
 };
