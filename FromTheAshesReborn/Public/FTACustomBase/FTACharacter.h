@@ -74,6 +74,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
 	TObjectPtr<UAerialCombatComponent> AirCombatComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "FTACharacter | Core Components")
+	TObjectPtr<UDownedCombatComponent> DownedCombatComponent;
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UNiagaraComponent> CharacterAfterImageComponent;

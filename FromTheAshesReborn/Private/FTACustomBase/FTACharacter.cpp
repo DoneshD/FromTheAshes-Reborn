@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
+#include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
@@ -62,6 +63,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	AirCombatComponent = CreateDefaultSubobject<UAerialCombatComponent>(TEXT("AerialCombatComponent"));
 	this->AddOwnedComponent(AirCombatComponent);
 	InitializedActorComponents.AddUnique(AirCombatComponent);
+
+	DownedCombatComponent = CreateDefaultSubobject<UDownedCombatComponent>(TEXT("DownedCombatComponent"));
+	this->AddOwnedComponent(DownedCombatComponent);
+	InitializedActorComponents.AddUnique(DownedCombatComponent);
 	
 	CharacterAfterImageComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CharacterAfterImageComponent"));
 	this->AddOwnedComponent(GetMesh());
