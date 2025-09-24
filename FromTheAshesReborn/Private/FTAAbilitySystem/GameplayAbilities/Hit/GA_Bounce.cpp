@@ -49,6 +49,7 @@ void UGA_Bounce::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	
 }
 
 void UGA_Bounce::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -59,6 +60,17 @@ void UGA_Bounce::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData Ev
 void UGA_Bounce::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCompleted(EventTag, EventData);
+}
+
+void UGA_Bounce::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageBlendingOut(EventTag, EventData);
+
+	if(EnableDownedCombatEffect)
+	{
+		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableDownedCombatEffect, 1.0f);
+		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+	}
 }
 
 void UGA_Bounce::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
