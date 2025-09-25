@@ -1,7 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
-#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_DownedFlinch.h"
+﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_DownedFlinch.h"
 
 #include "CombatComponents/CentralStateComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -30,7 +27,6 @@ bool UGA_DownedFlinch::CanActivateAbility(const FGameplayAbilitySpecHandle Handl
 	UAbilitySystemComponent* ASC = ActorInfo ? ActorInfo->AbilitySystemComponent.Get() : nullptr;
 	if (!ASC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_DownedFlinch::CanActivateAbility - ASC is null"));
 		return false;
 	}
 
@@ -48,7 +44,6 @@ void UGA_DownedFlinch::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	UE_LOG(LogTemp, Warning, TEXT("UGA_DownedFlinch Active Ability"));
 }
 
 void UGA_DownedFlinch::CancelAbility(const FGameplayAbilitySpecHandle Handle,
