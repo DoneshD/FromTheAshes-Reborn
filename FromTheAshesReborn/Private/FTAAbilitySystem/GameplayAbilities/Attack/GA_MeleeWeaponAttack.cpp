@@ -13,6 +13,7 @@
 #include "Weapon/EquipmentManagerComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
+#include "InterchangeResult.h"
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "NiagaraSystem.h"
@@ -318,13 +319,17 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 
 	FinalAttackData.WeaponTraceSize = InMeleeData.WeaponTraceSize;
 
-	if(InMeleeData.PossibleHitReactions.Num() > 0)
+	if (InMeleeData.PossibleHitReactions.Num() > 0)
 	{
-		for (TSubclassOf HitReaction : InMeleeData.PossibleHitReactions)
+		for (TSubclassOf<UGA_ReceiveHit> HitReaction : InMeleeData.PossibleHitReactions)
 		{
-			FinalAttackData.PossibleHitReactions.AddUnique(HitReaction);
+			if (!FinalAttackData.PossibleHitReactions.Contains(HitReaction))
+			{
+				FinalAttackData.PossibleHitReactions.Insert(HitReaction, 0);
+			}
 		}
 	}
+
 }
 
 void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
@@ -357,16 +362,40 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	UAbilitySystemComponent* TargetASC =
+		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+
+	
+
+	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
+	
 	for(TSubclassOf HitAbilityClass : FinalAttackData.PossibleHitReactions)
 	{
 		if(HitAbilityClass && HitAbilityClass->IsValidLowLevel())
 		{
-			ApplyMeleeHitEffects(TargetDataHandle, HitAbilityClass);
-			SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
-			AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
+			
+			
+			const UGA_ReceiveHit* const CDO = HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+			if (CDO)
+			{
+				
+				ApplyMeleeHitEffects(TargetDataHandle, HitAbilityClass);
+				
+				const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitAbilityClass);
+				if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
+				{
+					SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
+					AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
+					break;
+				}
+				else
+				{
+					
+				}
+			}
 		}
 	}
-	
 }
 
 void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
@@ -376,23 +405,24 @@ void UGA_MeleeWeaponAttack::ApplyMeleeHitEffects(const FGameplayAbilityTargetDat
 		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
-			if(FinalAttackData.ApplyDamageEffect)
-			{
-				TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
-				CurrentSpecHandle,
-				CurrentActorInfo,
-				CurrentActivationInfo,
-				TargetDataHandle,
-				FinalAttackData.ApplyDamageEffect, 
-				1,
-				1
-				);
-			}
+			
+			// if(FinalAttackData.ApplyDamageEffect)
+			// {
+			// 	TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
+			// 	CurrentSpecHandle,
+			// 	CurrentActorInfo,
+			// 	CurrentActivationInfo,
+			// 	TargetDataHandle,
+			// 	FinalAttackData.ApplyDamageEffect, 
+			// 	1,
+			// 	1
+			// 	);
+			// }
 			
 			if(CDO->HitEffect)
 			{
 				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
-
+				
 				TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
 						CurrentSpecHandle,
 						CurrentActorInfo,

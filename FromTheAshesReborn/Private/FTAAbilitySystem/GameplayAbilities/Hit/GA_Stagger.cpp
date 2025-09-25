@@ -18,11 +18,6 @@ bool UGA_Stagger::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return false;
 	}
 
-	if(ActorInfo->AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed")))
-	{
-		return false;
-	}
-
 	return true;
 }
 

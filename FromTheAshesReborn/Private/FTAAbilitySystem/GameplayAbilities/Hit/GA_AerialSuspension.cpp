@@ -29,12 +29,7 @@ bool UGA_AerialSuspension::CanActivateAbility(const FGameplayAbilitySpecHandle H
 	{
 		return false;
 	}
-
-	if(ActorInfo->AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed")))
-	{
-		return false;
-	}
-
+	
 
 	if(Character->GetCharacterMovement()->IsWalking())
 	{

@@ -17,18 +17,28 @@ void UGA_DownedFlinch::OnAbilityTick(float DeltaTime)
 }
 
 bool UGA_DownedFlinch::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
-	const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+	const FGameplayAbilityActorInfo* ActorInfo,
+	const FGameplayTagContainer* SourceTags,
+	const FGameplayTagContainer* TargetTags,
+	FGameplayTagContainer* OptionalRelevantTags) const
 {
-	if(!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
 	{
 		return false;
 	}
-	
-	if(!ActorInfo->AbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed")))
+
+	UAbilitySystemComponent* ASC = ActorInfo ? ActorInfo->AbilitySystemComponent.Get() : nullptr;
+	if (!ASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_DownedFlinch::CanActivateAbility - ASC is null"));
+		return false;
+	}
+
+	if (!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag(FName("Character.State.Downed"))))
 	{
 		return false;
 	}
+
 	return true;
 }
 
