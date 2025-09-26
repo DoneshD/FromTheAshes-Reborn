@@ -7,6 +7,8 @@
 
 UGA_Bounce::UGA_Bounce()
 {
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Bounce");
+	
 }
 
 void UGA_Bounce::OnAbilityTick(float DeltaTime)

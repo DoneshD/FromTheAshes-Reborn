@@ -7,6 +7,7 @@
 
 UGA_Launched::UGA_Launched()
 {
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Launch");
 }
 
 void UGA_Launched::OnAbilityTick(float DeltaTime)
@@ -65,9 +66,9 @@ void UGA_Launched::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
 	
-	if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(HitTag))
+	if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(ReceiveHitTag))
 	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(HitTag));
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(ReceiveHitTag));
 	}
 	
 }

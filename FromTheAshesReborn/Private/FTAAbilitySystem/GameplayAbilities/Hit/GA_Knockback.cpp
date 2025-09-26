@@ -4,6 +4,8 @@
 
 UGA_Knockback::UGA_Knockback()
 {
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Knockback");
+	
 }
 
 void UGA_Knockback::OnAbilityTick(float DeltaTime)

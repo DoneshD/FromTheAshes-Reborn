@@ -7,6 +7,8 @@
 
 UGA_KnockDown::UGA_KnockDown()
 {
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Knockdown");
+	
 	FAbilityTriggerData TriggerData;
 	TriggerData.TriggerTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Knockdown");
 	TriggerData.TriggerSource = EGameplayAbilityTriggerSource::OwnedTagAdded;

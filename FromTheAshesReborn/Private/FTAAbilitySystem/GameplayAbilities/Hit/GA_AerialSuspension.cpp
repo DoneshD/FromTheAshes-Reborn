@@ -10,6 +10,8 @@
 
 UGA_AerialSuspension::UGA_AerialSuspension()
 {
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Suspend");
+	
 }
 
 void UGA_AerialSuspension::OnAbilityTick(float DeltaTime)

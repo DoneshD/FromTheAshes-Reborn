@@ -140,9 +140,9 @@ void UGA_MeleeWeaponAttack_GroundPound::EventMontageReceived(FGameplayTag EventT
 	}
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+void UGA_MeleeWeaponAttack_GroundPound::GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
-	Super::ApplyMeleeHitEffects(TargetDataHandle, InHitAbilityClass);
+	Super::GrantHitAbility(TargetDataHandle, InHitAbilityClass);
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
@@ -231,7 +231,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 							FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(GPHitResult);
 							if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 							{
-								ApplyMeleeHitEffects(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
+								GrantHitAbility(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
 								SendMeleeHitGameplayEvents(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
 							}
 						}

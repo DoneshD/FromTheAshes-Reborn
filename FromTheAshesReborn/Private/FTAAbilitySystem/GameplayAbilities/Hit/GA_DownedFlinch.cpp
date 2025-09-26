@@ -6,6 +6,8 @@
 
 UGA_DownedFlinch::UGA_DownedFlinch()
 {
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.DownedFlinch");
+	
 }
 
 void UGA_DownedFlinch::OnAbilityTick(float DeltaTime)

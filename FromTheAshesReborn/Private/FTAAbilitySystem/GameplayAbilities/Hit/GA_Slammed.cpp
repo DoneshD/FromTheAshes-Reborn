@@ -8,7 +8,7 @@
 
 UGA_Slammed::UGA_Slammed()
 {
-	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Slammed");
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Slam");
 }
 
 void UGA_Slammed::OnAbilityTick(float DeltaTime)
@@ -73,22 +73,39 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 		const UGA_ReceiveHit* const CDO = PossibleHitReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
-			if(CDO->HitEffect)
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
 			{
-				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
+				const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
 
-				FActiveGameplayEffectHandle AppliedDownedEffects = ApplyGameplayEffectSpecToOwner(
-					CurrentSpecHandle,
-					CurrentActorInfo,
-					CurrentActivationInfo,
-					HitEffectHandle
-				);
-				
+				if(GrantAbilityEffect)
+				{
+					FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
 
+					FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
+						CurrentSpecHandle,
+						CurrentActorInfo,
+						CurrentActivationInfo,
+						GrantAbilityEffectHandle
+					);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
+					EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+					return;
+				}
 			}
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
+			else
 			{
-				RecoverEventData.EventTag = CDO->HitTag;
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+				return;
+			}
+			
+			
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			{
+				RecoverEventData.EventTag = CDO->ReceiveHitTag;
 			}
 			else
 			{
