@@ -1,5 +1,8 @@
 ﻿#include "CombatComponents/CentralStateComponent.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
+
 UCentralStateComponent::UCentralStateComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -10,6 +13,19 @@ void UCentralStateComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner());
+
+	if(!ASC)
+	{
+		UE_LOG(LogTemp, Error , TEXT("ASC not found on [%s]"), *GetOwner()->GetActorNameOrLabel());
+		return;
+	}
+	
+	if(!ASC->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Error , TEXT("Invalid ASC found on [%s]"), *GetOwner()->GetActorNameOrLabel())
+		return;
+	}	
 }
 
 void UCentralStateComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -82,21 +98,53 @@ void UCentralStateComponent::SetCurrentOrientation(FGameplayTag OrientationTag)
 
 void UCentralStateComponent::HandleNeutralState()
 {
-	
+	if(!ASC->HasMatchingGameplayTag(NeutralStateTag))
+	{
+		ASC->AddLooseGameplayTag(NeutralStateTag);
+	}
+	if(ASC->HasMatchingGameplayTag(DownedStateTag))
+	{
+		ASC->RemoveLooseGameplayTag(DownedStateTag);
+	}
+	CurrentStateTag = NeutralStateTag;
 }
 
 void UCentralStateComponent::HandleDownedState()
 {
-	
+	if(!ASC->HasMatchingGameplayTag(DownedStateTag))
+	{
+		ASC->AddLooseGameplayTag(DownedStateTag);
+	}
+	if(ASC->HasMatchingGameplayTag(NeutralStateTag))
+	{
+		ASC->RemoveLooseGameplayTag(NeutralStateTag);
+	}
+	CurrentStateTag = DownedStateTag;
 }
 
 void UCentralStateComponent::HandleGroundedOrientation()
 {
-	
+	if(!ASC->HasMatchingGameplayTag(GroundedOrientationTag))
+	{
+		ASC->AddLooseGameplayTag(GroundedOrientationTag);
+	}
+	if(ASC->HasMatchingGameplayTag(AirborneOrientationTag))
+	{
+		ASC->RemoveLooseGameplayTag(AirborneOrientationTag);
+	}
+	CurrentStateTag = GroundedOrientationTag;
 }
 
 void UCentralStateComponent::HandeAirborneOrientation()
 {
-	
+	if(!ASC->HasMatchingGameplayTag(AirborneOrientationTag))
+	{
+		ASC->AddLooseGameplayTag(AirborneOrientationTag);
+	}
+	if(ASC->HasMatchingGameplayTag(GroundedOrientationTag))
+	{
+		ASC->RemoveLooseGameplayTag(GroundedOrientationTag);
+	}
+	CurrentStateTag = AirborneOrientationTag;
 }
 

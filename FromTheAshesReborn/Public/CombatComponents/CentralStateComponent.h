@@ -6,6 +6,8 @@
 #include "CentralStateComponent.generated.h"
 
 
+class UAbilitySystemComponent;
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UCentralStateComponent : public UActorComponent
 {
@@ -18,6 +20,9 @@ private:
 
 	UPROPERTY()
 	FGameplayTag CurrentOrientationTag = FGameplayTag::EmptyTag;
+
+	UPROPERTY()
+	TObjectPtr<UAbilitySystemComponent> ASC;
 
 public:
 	
