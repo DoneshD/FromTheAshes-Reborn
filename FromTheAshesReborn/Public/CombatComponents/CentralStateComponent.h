@@ -11,24 +11,42 @@ class FROMTHEASHESREBORN_API UCentralStateComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:
+private:
 
 	UPROPERTY()
-	FGameplayTag GroundedTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Grounded");
+	FGameplayTag CurrentStateTag = FGameplayTag::EmptyTag;
+
+	UPROPERTY()
+	FGameplayTag CurrentOrientationTag = FGameplayTag::EmptyTag;
+
+public:
 	
 	UPROPERTY()
-	FGameplayTag AirborneTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne");
+	FGameplayTag GroundedOrientationTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Grounded");
 	
 	UPROPERTY()
-	FGameplayTag NeutralTag = FGameplayTag::RequestGameplayTag("Character.State.Neutral");
+	FGameplayTag AirborneOrientationTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne");
 	
 	UPROPERTY()
-	FGameplayTag DownedTag = FGameplayTag::RequestGameplayTag("Character.State.Downed");
+	FGameplayTag NeutralStateTag = FGameplayTag::RequestGameplayTag("Character.State.Neutral");
+	
+	UPROPERTY()
+	FGameplayTag DownedStateTag = FGameplayTag::RequestGameplayTag("Character.State.Downed");
 
 protected:
 	
 	UCentralStateComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	FGameplayTag GetCurrentState();
+	FGameplayTag GetCurrentOrientation();
+
+	void SetCurrentState(FGameplayTag StateTag);
+	void SetCurrentOrientation(FGameplayTag OrientationTag);
 	
+	void HandleNeutralState();
+	void HandleDownedState();
+	void HandleGroundedOrientation();
+	void HandeAirborneOrientation();
 };

@@ -83,15 +83,15 @@ void AFTACharacter::BeginPlay()
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 	
-	if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->NeutralTag))
-	{
-		FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->NeutralTag);
-	}
-
-	if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
-	{
-		FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
-	}
+	// if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->NeutralTag))
+	// {
+	// 	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->NeutralTag);
+	// }
+	//
+	// if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
+	// {
+	// 	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
+	// }
 
 }
 
@@ -276,7 +276,7 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 
-	if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
+	/*if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
 	{
 		GetFTAAbilitySystemComponent()->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
 	}
@@ -284,7 +284,7 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 	if(GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
 	{
 		GetFTAAbilitySystemComponent()->RemoveLooseGameplayTag(CentralStateComponent->AirborneTag);
-	}
+	}*/
 
 	RemoveAerialEffects();
 }
@@ -293,7 +293,7 @@ void AFTACharacter::Falling()
 {
 	Super::Falling();
 
-	if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
+	/*if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
 	{
 		GetFTAAbilitySystemComponent()->AddLooseGameplayTag(CentralStateComponent->AirborneTag);
 	}
@@ -301,7 +301,7 @@ void AFTACharacter::Falling()
 	if(GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
 	{
 		GetFTAAbilitySystemComponent()->RemoveLooseGameplayTag(CentralStateComponent->GroundedTag);
-	}
+	}*/
 
 
 }
