@@ -2,6 +2,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagContainer.h"
+#include "CombatComponents/CentralStateComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -53,11 +54,11 @@ void UDownedCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if(IsComponentActive)
 	{
-		// TotalDownedTime += DeltaTime;
-		// if(TotalDownedTime >= 2.0f)
-		// {
-		// 	DisableComponent();
-		// }
+		TotalDownedTime += DeltaTime;
+		if(TotalDownedTime >= 2.0f)
+		{
+			DisableComponent();
+		}
 	}
 
 }
@@ -67,7 +68,7 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	if (NewCount > 0)
 	{
 		IsComponentActive = true;
-		
+		FTACharacter->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 	}
 	else
 	{
@@ -79,6 +80,8 @@ void UDownedCombatComponent::DisableComponent()
 {
 	IsComponentActive = false;
 	FGameplayEventData OnRecoverEventData;
+
+	//TODO: Native approach, fix later
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 
 	if(PossibleRecoveries[0] && PossibleRecoveries[0]->IsValidLowLevel() && PossibleRecoveries.Num() > 0 && !PossibleRecoveries.IsEmpty())

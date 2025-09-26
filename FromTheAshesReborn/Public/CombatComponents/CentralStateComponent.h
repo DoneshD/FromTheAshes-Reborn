@@ -44,14 +44,17 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	FGameplayTag GetCurrentState();
-	FGameplayTag GetCurrentOrientation();
-
-	void SetCurrentState(FGameplayTag StateTag);
-	void SetCurrentOrientation(FGameplayTag OrientationTag);
 	
 	void HandleNeutralState();
 	void HandleDownedState();
 	void HandleGroundedOrientation();
 	void HandeAirborneOrientation();
+
+public:
+	
+	void SetCurrentState(FGameplayTag StateTag);
+	void SetCurrentOrientation(FGameplayTag OrientationTag);
+
+	FGameplayTag GetCurrentState();
+	FGameplayTag GetCurrentOrientation();
 };

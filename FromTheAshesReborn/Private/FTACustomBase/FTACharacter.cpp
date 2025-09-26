@@ -83,15 +83,8 @@ void AFTACharacter::BeginPlay()
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 	
-	// if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->NeutralTag))
-	// {
-	// 	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->NeutralTag);
-	// }
-	//
-	// if (!FTAAbilitySystemComponent->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
-	// {
-	// 	FTAAbilitySystemComponent->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
-	// }
+	CentralStateComponent->SetCurrentState(CentralStateComponent->NeutralStateTag);
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag);
 
 }
 
@@ -275,16 +268,8 @@ void AFTACharacter::AddCharacterBaseAbilities() const
 void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
-
-	/*if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
-	{
-		GetFTAAbilitySystemComponent()->AddLooseGameplayTag(CentralStateComponent->GroundedTag);
-	}
-
-	if(GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
-	{
-		GetFTAAbilitySystemComponent()->RemoveLooseGameplayTag(CentralStateComponent->AirborneTag);
-	}*/
+	
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag);
 
 	RemoveAerialEffects();
 }
@@ -292,18 +277,8 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 void AFTACharacter::Falling()
 {
 	Super::Falling();
-
-	/*if(!GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->AirborneTag))
-	{
-		GetFTAAbilitySystemComponent()->AddLooseGameplayTag(CentralStateComponent->AirborneTag);
-	}
-
-	if(GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(CentralStateComponent->GroundedTag))
-	{
-		GetFTAAbilitySystemComponent()->RemoveLooseGameplayTag(CentralStateComponent->GroundedTag);
-	}*/
-
-
+	
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag);
 }
 
 bool AFTACharacter::HasFlailTag() const

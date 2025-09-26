@@ -145,6 +145,11 @@ void UCentralStateComponent::HandeAirborneOrientation()
 	{
 		ASC->RemoveLooseGameplayTag(GroundedOrientationTag);
 	}
+	if(ASC->HasMatchingGameplayTag(DownedStateTag))
+	{
+		ASC->RemoveLooseGameplayTag(DownedStateTag);
+		
+	}
 	CurrentStateTag = AirborneOrientationTag;
 }
 
