@@ -82,17 +82,11 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		TArray<UHitReactionDataAsset*> AssetsToTry;
 		for (UHitReactionDataAsset* Asset : HitAbilityAssets)
 		{
-			if(Asset->Direction == HitInfoObject->HitData.HitDirection)
+			if(Asset->Direction == HitInfoObject->HitData.HitDirection || Asset->Direction == ESpatialDirection::Any)
 			{
-				if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(Asset->Orientation))
+				if(Asset->MontageToPlay)
 				{
-					if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(Asset->Orientation))
-					{
-						if(Asset->MontageToPlay)
-						{
-							AssetsToTry.Add(Asset);
-						}
-					}
+					AssetsToTry.Add(Asset);
 				}
 			}
 		}

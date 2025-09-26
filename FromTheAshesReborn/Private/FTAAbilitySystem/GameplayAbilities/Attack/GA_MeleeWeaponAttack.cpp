@@ -179,6 +179,8 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 		return;
 	}
 
+	FinalAttackData.AttackDirection = ESpatialDirection::None;
+
 }
 
 void UGA_MeleeWeaponAttack::ResetMeleeAttack()
@@ -452,6 +454,8 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
+	HitInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+	
 	if(!MeleeWeaponActor)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
@@ -462,13 +466,13 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	{
 		OnHitEventData.OptionalObject = HitInfoObj;
 	}
-
+	
 	if (InHitAbilityClass)
 	{
 		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
-			HitInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+			
 			
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
 			{
@@ -482,6 +486,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	}
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	OnHitEventData.OptionalObject = nullptr;
 }
 
 void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
