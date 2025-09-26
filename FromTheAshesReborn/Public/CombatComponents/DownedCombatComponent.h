@@ -6,6 +6,7 @@
 #include "DownedCombatComponent.generated.h"
 
 
+class UGameplayEffect;
 class UGA_Recover;
 class UCharacterMovementComponent;
 class UFTAAbilitySystemComponent;
@@ -17,6 +18,9 @@ class FROMTHEASHESREBORN_API UDownedCombatComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	TSubclassOf<UGameplayEffect> EnableDownedCombatEffect;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TArray<TSubclassOf<UGA_Recover>> PossibleRecoveries;

@@ -35,6 +35,7 @@ protected:
 	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
 
 	TArray<FHitResult> HitResults;
+	
 	TSet<AActor*> UniqueHitActors;
 	
 	FVector EnemyGroundPoundEndLocation;

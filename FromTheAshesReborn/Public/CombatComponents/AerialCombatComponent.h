@@ -20,6 +20,9 @@ class FROMTHEASHESREBORN_API UAerialCombatComponent : public UActorComponent
 public:
 	
 	bool ActivateFromLauncher = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	TSubclassOf<UGameplayEffect> AddAerialCombatGravity;
 	
 
 private:
@@ -68,6 +71,11 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
 	float MaximumGravityScale = 4.0f;
+
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
 
 
 protected:

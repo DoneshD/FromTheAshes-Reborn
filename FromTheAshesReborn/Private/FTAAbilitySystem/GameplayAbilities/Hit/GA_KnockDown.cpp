@@ -1,8 +1,10 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_KnockDown.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "CombatComponents/DownedCombatComponent.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 UGA_KnockDown::UGA_KnockDown()
@@ -60,39 +62,14 @@ void UGA_KnockDown::EventMontageReceived(FGameplayTag EventTag, FGameplayEventDa
 void UGA_KnockDown::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageBlendingOut(EventTag, EventData);
-
-	// FGameplayEffectContextHandle ContextHandle;
-	// FGameplayEffectSpecHandle SpecHandle = GetFTAAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(EnableDownedCombatEffect, 1, ContextHandle);
-	//
-	// FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
-	// 	CurrentSpecHandle,
-	// 	CurrentActorInfo,
-	// 	CurrentActivationInfo,
-	// 	SpecHandle);
-
-	FGameplayEffectSpecHandle DownedEffectHandle = MakeOutgoingGameplayEffectSpec(EnableDownedCombatEffect, 1.0f);
-			
-	FActiveGameplayEffectHandle AppliedDownedEffects = ApplyGameplayEffectSpecToOwner(
-			CurrentSpecHandle,
-			CurrentActorInfo,
-			CurrentActivationInfo,
-			DownedEffectHandle
-		);
-
 	
-	// FGameplayEventData RecoverEventData;
-	//
-	// RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
-	// RecoverEventData.Target = GetAvatarActorFromActorInfo();
-	//
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(RecoveryTag))
-	// {
-	// 	RecoverEventData.EventTag = RecoveryTag;
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_KnockDown::OnMontageBlendingOut - RecoveryTag is NULL"));
-	// }
+	UDownedCombatComponent* DCC = GetFTACharacterFromActorInfo()->FindComponentByClass<UDownedCombatComponent>();
+
+	if(DCC->EnableDownedCombatEffect)
+	{
+		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(DCC->EnableDownedCombatEffect, 1.0f);
+		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+	}
 		
 	// UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
 }

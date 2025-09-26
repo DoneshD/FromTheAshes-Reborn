@@ -18,16 +18,16 @@ protected:
 
 public:
 	
+	FGameplayTag ReceiveHitTag = FGameplayTag::EmptyTag;
+	
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
-
-	FGameplayTag ReceiveHitTag = FGameplayTag::EmptyTag;
 
 	UPROPERTY(EditDefaultsOnly, Category="Hit")
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> ReceiveHitEffectMap;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
-	FGameplayTag CharacterOrientationTag;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
+	// FGameplayTag CharacterOrientationTag;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;

@@ -10,14 +10,6 @@ class FROMTHEASHESREBORN_API UGA_Bounce : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
 
-protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> EnableDownedCombatEffect;
-
 public:
 	
 	UGA_Bounce();

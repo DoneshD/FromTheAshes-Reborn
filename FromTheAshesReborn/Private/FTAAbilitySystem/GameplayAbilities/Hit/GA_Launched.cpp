@@ -1,9 +1,11 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Launched.h"
 
+#include "CombatComponents/AerialCombatComponent.h"
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
+#include "FTACustomBase/FTACharacter.h"
 
 UGA_Launched::UGA_Launched()
 {
@@ -60,10 +62,19 @@ void UGA_Launched::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 	
 	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
 
-	if(EnableAerialCombatEffect)
+	UAerialCombatComponent* AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+
+	if(AerialCombatComponent && AerialCombatComponent->IsValidLowLevel())
 	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+		if(AerialCombatComponent->EnableAerialCombatEffect)
+		{
+			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AerialCombatComponent->EnableAerialCombatEffect, 1.0f);
+			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid pointer or null"))
 	}
 	
 	if (GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(ReceiveHitTag))

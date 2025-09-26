@@ -13,9 +13,6 @@ class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Launcher : public UGA_MeleeWe
 	GENERATED_BODY()
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Launcher Ability")
 	float LauncherVerticalDistance = 600.0f;

@@ -20,12 +20,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Aerial Ability")
 	float DescentSpeed = 10;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> AddAerialCombatGravity;
-
 	UPROPERTY()
 	TObjectPtr<UAerialCombatComponent> AerialCombatComponent;
 

@@ -21,8 +21,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
 	float LaunchOffset;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	// TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
 
 public:
 

@@ -78,17 +78,16 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
 
-	if(EnableAerialCombatEffect)
-	{
-		UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
 
-		if(!ACC->IsValidLowLevel())
+	if(ACC && ACC->IsValidLowLevel())
+	{
+		if(ACC->EnableAerialCombatEffect)
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::EndAbility - ACC invalid"))
+			ACC->ActivateFromLauncher = true;
+			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
+			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 		}
-		ACC->ActivateFromLauncher = true;
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
 	
 }

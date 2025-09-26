@@ -3,6 +3,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/DownedCombatComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 
 UGA_Bounce::UGA_Bounce()
@@ -30,13 +31,17 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
 
-	ACC->ChangeMovementMode(MOVE_Flying);
-
-	if(EnableAerialCombatEffect)
+	if(ACC && ACC->IsValidLowLevel())
 	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableAerialCombatEffect, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+		ACC->ChangeMovementMode(MOVE_Flying);
+		
+		if(ACC->EnableAerialCombatEffect)
+		{
+			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
+			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+		}
 	}
+
 }
 
 void UGA_Bounce::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -66,9 +71,11 @@ void UGA_Bounce::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData 
 {
 	Super::OnMontageBlendingOut(EventTag, EventData);
 
-	if(EnableDownedCombatEffect)
+	UDownedCombatComponent* DCC = GetFTACharacterFromActorInfo()->FindComponentByClass<UDownedCombatComponent>();
+
+	if(DCC->EnableDownedCombatEffect)
 	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(EnableDownedCombatEffect, 1.0f);
+		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(DCC->EnableDownedCombatEffect, 1.0f);
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
 }
