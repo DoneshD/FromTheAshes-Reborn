@@ -153,7 +153,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 	SlamInfoObj->SlamData.Duration = SlamDuration;
 	SlamInfoObj->SlamData.Location = EnemyGroundPoundEndLocation;
 	SlamInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
-	SlamInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+	SlamInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 	
 	OnHitEventData.OptionalObject = SlamInfoObj;
 	
@@ -231,8 +231,8 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 							FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(GPHitResult);
 							if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 							{
-								ApplyMeleeHitEffects(TargetHitDataHandle, FinalAttackData.PossibleHitReactions[0]);
-								SendMeleeHitGameplayEvents(TargetHitDataHandle, FinalAttackData.PossibleHitReactions[0]);
+								ApplyMeleeHitEffects(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
+								SendMeleeHitGameplayEvents(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
 							}
 						}
 

@@ -101,7 +101,7 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 	LaunchInfoObj->LaunchData.StallDuration = StallDuration;
 	LaunchInfoObj->LaunchData.Offset = LaunchOffset;
 	LaunchInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
-	LaunchInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+	LaunchInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 	
 	OnHitEventData.OptionalObject = LaunchInfoObj;
 	

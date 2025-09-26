@@ -48,10 +48,10 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
+	
 	UPROPERTY()
 	TObjectPtr<UCentralStateComponent> CentralStateComponent;
 	
-
 	UPROPERTY()
 	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
 
@@ -63,7 +63,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FMeleeAttackDataStruct DefaultAttackData;
 
-	FMeleeAttackDataStruct FinalAttackData;
+	FMeleeAttackDataStruct AttackData;
 	
 	FGameplayEventData OnHitEventData;
 	

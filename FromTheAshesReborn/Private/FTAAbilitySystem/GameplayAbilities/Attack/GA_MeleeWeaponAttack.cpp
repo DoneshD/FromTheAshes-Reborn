@@ -134,7 +134,13 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	MeleePropertiesComponent->OnSetMeleeData.AddUniqueDynamic(this, &UGA_MeleeWeaponAttack::SetRuntimeMeleeData);
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
-	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(FinalAttackData.WeaponTraceSize.X, FinalAttackData.WeaponTraceSize.Y, FinalAttackData.WeaponTraceSize.Z);
+
+	
+		MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(
+			DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
+			DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
+			DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+	
 	
 	if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
 	{
@@ -179,7 +185,7 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 		return;
 	}
 
-	FinalAttackData.AttackDirection = ESpatialDirection::None;
+	AttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 
 }
 
@@ -224,7 +230,7 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 		ComboManagerComponent->PauseCurrentAttack = false;
 
-		FinalAttackData = DefaultAttackData;
+		AttackData = DefaultAttackData;
 		
 		ExtractMeleeAssetProperties(MatchingDataAsset);
 		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
@@ -240,7 +246,11 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 
 void UGA_MeleeWeaponAttack::StartMeleeWeaponTrace()
 {
-	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(FinalAttackData.WeaponTraceSize.X, FinalAttackData.WeaponTraceSize.Y, FinalAttackData.WeaponTraceSize.Z);
+	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(
+		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
+		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
+		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+	
 	MeleeWeaponActor->TracingComponent->ToggleTraceCheck(true);
 }
 
@@ -304,62 +314,106 @@ FGameplayAbilityTargetDataHandle UGA_MeleeWeaponAttack::AddHitResultToTargetData
 
 void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeData)
 {
-	if(InMeleeData.HitFX)
+	//Damage
+	if(InMeleeData.ApplyDamageEffect && InMeleeData.ApplyDamageEffect->IsValidLowLevel())
 	{
-		FinalAttackData.HitFX = InMeleeData.HitFX;
+		AttackData.ApplyDamageEffect = InMeleeData.ApplyDamageEffect;
 	}
 	
-	if(InMeleeData.SlashFX)
-	{
-		FinalAttackData.HitFX = InMeleeData.SlashFX;
-	}
 
-	if(InMeleeData.AttackDirection != ESpatialDirection::None)
+	//Hit Reactions
+	if (InMeleeData.PossibleHitReactions.Num() > 0 && !InMeleeData.PossibleHitReactions.IsEmpty())
 	{
-		FinalAttackData.AttackDirection = InMeleeData.AttackDirection;
-	}
-
-	FinalAttackData.WeaponTraceSize = InMeleeData.WeaponTraceSize;
-
-	if (InMeleeData.PossibleHitReactions.Num() > 0)
-	{
-		for (TSubclassOf<UGA_ReceiveHit> HitReaction : InMeleeData.PossibleHitReactions)
+		for (TSubclassOf HitReaction : InMeleeData.PossibleHitReactions)
 		{
-			if (!FinalAttackData.PossibleHitReactions.Contains(HitReaction))
+			if(HitReaction && HitReaction->IsValidLowLevel())
 			{
-				FinalAttackData.PossibleHitReactions.Insert(HitReaction, 0);
+				if (!AttackData.PossibleHitReactions.Contains(HitReaction))
+				{
+					AttackData.PossibleHitReactions.Insert(HitReaction, 0);
+				}
 			}
 		}
+	}
+
+	//Weapon trace
+
+	if(InMeleeData.WeaponTraceSizeStruct.bEnabled)
+	{
+		AttackData.WeaponTraceSizeStruct.WeaponTraceSize = InMeleeData.WeaponTraceSizeStruct.WeaponTraceSize;
+	}
+
+	//Direction
+	if(InMeleeData.AttackDirectionStruct.bEnabled)
+	{
+		if(InMeleeData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
+		{
+			AttackData.AttackDirectionStruct.AttackDirection = InMeleeData.AttackDirectionStruct.AttackDirection;
+		}
+	}
+
+	//Hit VFX
+	if(InMeleeData.HitFX && InMeleeData.HitFX->IsValidLowLevel())
+	{
+		AttackData.HitFX = InMeleeData.HitFX;
+	}
+
+	//Slash VFX
+	if(InMeleeData.SlashFX && InMeleeData.SlashFX->IsValidLowLevel())
+	{
+		AttackData.HitFX = InMeleeData.SlashFX;
 	}
 
 }
 
 void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset)
 {
-	if(!FinalAttackData.HitFX->IsValidLowLevel())
+	//Damage
+	if(MeleeAsset->AttackData.ApplyDamageEffect && MeleeAsset->AttackData.ApplyDamageEffect->IsValidLowLevel())
 	{
-		FinalAttackData.HitFX = MeleeAsset->AttackData.HitFX;
+		AttackData.ApplyDamageEffect = MeleeAsset->AttackData.ApplyDamageEffect;
 	}
 
-	if(!FinalAttackData.SlashFX->IsValidLowLevel())
-	{
-		FinalAttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
-	}
-	
-	FinalAttackData.WeaponTraceSize = MeleeAsset->AttackData.WeaponTraceSize;
-
-	if(FinalAttackData.AttackDirection != ESpatialDirection::None)
-	{
-		FinalAttackData.AttackDirection = MeleeAsset->AttackData.AttackDirection;
-	}
-
-	if(MeleeAsset->AttackData.PossibleHitReactions.Num() > 0)
+	//Hit Reactions
+	if(MeleeAsset->AttackData.PossibleHitReactions.Num() > 0 && !MeleeAsset->AttackData.PossibleHitReactions.IsEmpty())
 	{
 		for (TSubclassOf HitReaction : MeleeAsset->AttackData.PossibleHitReactions)
 		{
-			FinalAttackData.PossibleHitReactions.AddUnique(HitReaction);
+			if(HitReaction && HitReaction->IsValidLowLevel())
+			{
+				if (!AttackData.PossibleHitReactions.Contains(HitReaction))
+				{
+					AttackData.PossibleHitReactions.Insert(HitReaction, 0);
+				}
+			}
+			
 		}
 	}
+	
+	//Weapon trace
+	if(MeleeAsset->AttackData.WeaponTraceSizeStruct.bEnabled)
+	{
+		AttackData.WeaponTraceSizeStruct.WeaponTraceSize = MeleeAsset->AttackData.WeaponTraceSizeStruct.WeaponTraceSize;
+	}
+
+	//Direction
+	if(MeleeAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
+	{
+		AttackData.AttackDirectionStruct.AttackDirection = MeleeAsset->AttackData.AttackDirectionStruct.AttackDirection;
+	}
+
+	//Hit VFX
+	if(MeleeAsset->AttackData.HitFX && MeleeAsset->AttackData.HitFX->IsValidLowLevel())
+	{
+		AttackData.HitFX = MeleeAsset->AttackData.HitFX;
+	}
+
+	//Slash VFX
+	if(MeleeAsset->AttackData.SlashFX && MeleeAsset->AttackData.SlashFX->IsValidLowLevel())
+	{
+		AttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
+	}
+	
 }
 
 void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
@@ -372,7 +426,7 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
 	
-	for(TSubclassOf HitAbilityClass : FinalAttackData.PossibleHitReactions)
+	for(TSubclassOf HitAbilityClass : AttackData.PossibleHitReactions)
 	{
 		if(HitAbilityClass && HitAbilityClass->IsValidLowLevel())
 		{
@@ -454,7 +508,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
-	HitInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+	HitInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 	
 	if(!MeleeWeaponActor)
 	{
@@ -472,8 +526,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
-			
-			
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->HitTag))
 			{
 				OnHitEventData.EventTag = CDO->HitTag;
@@ -494,9 +546,9 @@ void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHand
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
 	FGameplayCueParameters HitCueParams;
-	if(FinalAttackData.HitFX)
+	if(AttackData.HitFX)
 	{
-		HitCueParams.SourceObject = static_cast<const UObject*>(FinalAttackData.HitFX);
+		HitCueParams.SourceObject = static_cast<const UObject*>(AttackData.HitFX);
 	}
 	else
 	{
@@ -506,9 +558,9 @@ void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHand
 	HitCueParams.EffectCauser = TargetActor;
 	HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
 
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FinalAttackData.HitFXCueTag))
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackData.HitFXCueTag))
 	{
-		K2_AddGameplayCueWithParams(FinalAttackData.HitFXCueTag, HitCueParams);
+		K2_AddGameplayCueWithParams(AttackData.HitFXCueTag, HitCueParams);
 	}
 	else
 	{
@@ -556,17 +608,17 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		FGameplayCueParameters SlashCueParams;
-		if(FinalAttackData.SlashFX)
+		if(AttackData.SlashFX)
 		{
-			SlashCueParams.SourceObject = static_cast<const UObject*>(FinalAttackData.SlashFX);
+			SlashCueParams.SourceObject = static_cast<const UObject*>(AttackData.SlashFX);
 		}
 		else
 		{
 			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFX is invalid"));
 		}
-		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FinalAttackData.SlashFXCueTag))
+		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackData.SlashFXCueTag))
 		{
-			K2_AddGameplayCueWithParams(FinalAttackData.SlashFXCueTag, SlashCueParams);
+			K2_AddGameplayCueWithParams(AttackData.SlashFXCueTag, SlashCueParams);
 			StartMeleeWeaponTrace();
 		}
 		else
@@ -577,9 +629,9 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
-		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FinalAttackData.SlashFXCueTag))
+		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackData.SlashFXCueTag))
 		{
-			K2_RemoveGameplayCue(FinalAttackData.SlashFXCueTag);
+			K2_RemoveGameplayCue(AttackData.SlashFXCueTag);
 			EndMeleeWeaponTrace();
 		}
 		else

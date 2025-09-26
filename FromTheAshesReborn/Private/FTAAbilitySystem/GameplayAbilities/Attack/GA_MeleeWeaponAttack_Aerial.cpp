@@ -89,7 +89,7 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 	USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
 	SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
 	SuspendInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
-	SuspendInfoObj->HitData.HitDirection = FinalAttackData.AttackDirection;
+	SuspendInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 
 	OnHitEventData.OptionalObject = SuspendInfoObj;
 

@@ -13,6 +13,46 @@ class AFTACharacter;
 class UEquipmentManagerComponent;
 
 USTRUCT(BlueprintType)
+struct FAttackDirectionStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bEnabled;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	ESpatialDirection AttackDirection;
+
+	FAttackDirectionStruct()
+	:
+	bEnabled(false),
+	AttackDirection(ESpatialDirection::None)
+	{}
+	
+	
+};
+
+USTRUCT(BlueprintType)
+struct FWeaponTraceSizeStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bEnabled;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FVector WeaponTraceSize;
+
+	FWeaponTraceSizeStruct()
+	:
+	bEnabled(false),
+	WeaponTraceSize(20.0f, 20.0f, 20.0f)
+	{}
+	
+	
+};
+
+USTRUCT(BlueprintType)
 struct FMeleeAttackDataStruct
 {
 	GENERATED_BODY()
@@ -24,10 +64,10 @@ struct FMeleeAttackDataStruct
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	FVector WeaponTraceSize;
+	FWeaponTraceSizeStruct WeaponTraceSizeStruct;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	ESpatialDirection AttackDirection;
+	FAttackDirectionStruct AttackDirectionStruct;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TObjectPtr<UNiagaraSystem> SlashFX;
@@ -43,8 +83,8 @@ struct FMeleeAttackDataStruct
 	
 	FMeleeAttackDataStruct()
 	:
-	WeaponTraceSize(20.0f, 20.0f, 20.0f),
-	AttackDirection(ESpatialDirection::Front),
+	WeaponTraceSizeStruct(),
+	AttackDirectionStruct(),
 	SlashFX(nullptr),
 	HitFX(nullptr)
 	{}
