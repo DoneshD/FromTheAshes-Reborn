@@ -91,13 +91,7 @@ void UDownedCombatComponent::DisableComponent()
 		{
 			if(CDO->RecoverEffect)
 			{
-				FGameplayEffectContextHandle ContentHandle = FTAAbilitySystemComponent->MakeEffectContext();
-				ContentHandle.AddInstigator(GetOwner(), nullptr);
-				ContentHandle.AddSourceObject(this);
 				
-				FGameplayEffectSpecHandle SpecHandle = FTAAbilitySystemComponent->MakeOutgoingSpec(CDO->RecoverEffect, 1.0, ContentHandle);
-		
-				const FActiveGameplayEffectHandle Active = FTAAbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 		
 			}
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->RecoverTag))

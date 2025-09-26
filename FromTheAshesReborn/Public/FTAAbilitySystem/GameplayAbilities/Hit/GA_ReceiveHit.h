@@ -20,12 +20,17 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TObjectPtr<UHitReactionDataAsset>> HitAbilityAssets;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
-	TSubclassOf<UGameplayEffect> HitEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
-	FGameplayTag HitTag;
+	FGameplayTag ReceiveHitTag = FGameplayTag::EmptyTag;
+	
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
+	// TSubclassOf<UGameplayEffect> HitEffect;
+	//
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
+	// FGameplayTag HitTag;
+
+	UPROPERTY(EditDefaultsOnly, Category="Hit")
+	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> ReceiveHit;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Hit Data")
 	FGameplayTag CharacterOrientationTag;

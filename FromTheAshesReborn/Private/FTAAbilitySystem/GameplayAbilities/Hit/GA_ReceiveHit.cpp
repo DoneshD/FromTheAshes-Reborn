@@ -41,6 +41,15 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		}
 	}
 
+	TSubclassOf<UGameplayEffect>* ReceiveHitEffect = ReceiveHit.Find(ReceiveHitTag);
+
+	if(!ReceiveHitEffect)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Receive Hit Effect is invalid"))
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Receive Hit Effect is valid"))
+	
 	if(GetFTACharacterFromActorInfo()->IsDead || GetFTACharacterFromActorInfo()->IsAlreadyDead)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);

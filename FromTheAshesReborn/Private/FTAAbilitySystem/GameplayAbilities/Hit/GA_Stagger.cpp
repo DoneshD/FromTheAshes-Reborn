@@ -3,7 +3,7 @@
 
 UGA_Stagger::UGA_Stagger()
 {
-	
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Stagger");
 }
 
 void UGA_Stagger::OnAbilityTick(float DeltaTime)

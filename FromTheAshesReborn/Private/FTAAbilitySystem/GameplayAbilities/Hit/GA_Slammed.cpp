@@ -8,7 +8,7 @@
 
 UGA_Slammed::UGA_Slammed()
 {
-	
+	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Slammed");
 }
 
 void UGA_Slammed::OnAbilityTick(float DeltaTime)
