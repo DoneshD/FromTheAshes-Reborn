@@ -18,8 +18,6 @@ public:
 
 private:
 
-	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
-
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 
@@ -28,11 +26,13 @@ private:
 
 protected:
 	
-	virtual void OnPossess(APawn* InPawn) override;
-
+	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
 	
+	virtual void OnPossess(APawn* InPawn) override;
+
 	UFUNCTION()
-	void ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors);
+	virtual void ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors) override;
+
 	
 };
