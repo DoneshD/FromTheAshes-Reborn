@@ -12,11 +12,7 @@ class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
 protected:
 	
 	AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer);
-	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	virtual void Landed(const FHitResult& Hit) override;
 
 };

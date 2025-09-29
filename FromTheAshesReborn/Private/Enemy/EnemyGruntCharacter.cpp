@@ -18,8 +18,3 @@ void AEnemyGruntCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AEnemyGruntCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
