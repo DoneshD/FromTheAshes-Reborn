@@ -8,18 +8,7 @@
 AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
-	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>("PerceptionComponent");
-	
-	AISenseConfigDamage = CreateDefaultSubobject<UAISenseConfig_Damage>("SenseDamage");
-	AISenseConfigDamage->SetMaxAge(5.0f);
-
-	AIPerceptionComponent->ConfigureSense(*AISenseConfigDamage);
-	AIPerceptionComponent->SetDominantSense(UAISenseConfig_Damage::StaticClass());
-
-	AIPerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &AAIControllerEnemyBase::ActorsPerceptionUpdated);
-
 	StateTreeComponent = CreateDefaultSubobject<UStateTreeAIComponent>("StateTreeAIComponent");
-
 	
 }
 
@@ -40,10 +29,4 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 void AAIControllerEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
-}
-
-void AAIControllerEnemyBase::ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors)
-{
-	Super::ActorsPerceptionUpdated(UpdatedActors);
-	
 }

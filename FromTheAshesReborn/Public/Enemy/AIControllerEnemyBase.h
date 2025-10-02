@@ -16,23 +16,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	TObjectPtr<UStateTreeAIComponent> StateTreeComponent;
 
-private:
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
-
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAISenseConfig_Damage> AISenseConfigDamage;
-
 protected:
 	
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
 	
 	virtual void OnPossess(APawn* InPawn) override;
-
-	UFUNCTION()
-	virtual void ActorsPerceptionUpdated(const TArray<AActor*>& UpdatedActors) override;
 
 	
 };
