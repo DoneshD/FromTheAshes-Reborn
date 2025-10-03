@@ -17,7 +17,6 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 	AEnemyBaseCharacter* EnemyCharacter = Cast<AEnemyBaseCharacter>(InPawn);
-
 	
 	if (!EnemyCharacter)
 	{
