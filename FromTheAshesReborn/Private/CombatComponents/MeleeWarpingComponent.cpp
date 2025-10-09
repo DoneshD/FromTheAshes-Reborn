@@ -250,16 +250,20 @@ FVector UMeleeWarpingComponent::GetTraceDirection()
 	FVector TraceDirection;
 
 	//TODO: Error here, fix later
-	if(!PlayerState->HardLockedTargetActor)
+	if(PlayerState)
 	{
-		TraceDirection = UInputReadingFunctionLibrary::CheckInputVector(FTACharacter->GetCharacterMovement());
-	}
-	else
-	{
-		TraceDirection = (PlayerState->HardLockedTargetActor->GetActorLocation() - FTACharacter->GetActorLocation()).GetSafeNormal();
-	}
+		if(!PlayerState->HardLockedTargetActor)
+		{
+			TraceDirection = UInputReadingFunctionLibrary::CheckInputVector(FTACharacter->GetCharacterMovement());
+		}
+		else
+		{
+			TraceDirection = (PlayerState->HardLockedTargetActor->GetActorLocation() - FTACharacter->GetActorLocation()).GetSafeNormal();
+		}
 
-	return TraceDirection;
+		return TraceDirection;
+	}
+	return FVector::ZeroVector;
 }
 	
 
