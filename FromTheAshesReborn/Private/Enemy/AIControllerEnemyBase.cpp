@@ -1,8 +1,7 @@
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Navigation/CrowdFollowingComponent.h"
-#include "Perception/AIPerceptionComponent.h"
-#include "Perception/AISenseConfig_Damage.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
@@ -23,9 +22,13 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 		UE_LOG(LogTemp, Error, TEXT("[%s] AAIControllerEnemyBase::OnPossess - EnemyCharacter is null"), *GetActorNameOrLabel());
 		return;
 	}
+
+	OwnerPawn = InPawn;
 }
 
 void AAIControllerEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PlayerTarget = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 }

@@ -5,14 +5,19 @@
 #include "Components/StateTreeAIComponent.h"
 #include "AIControllerEnemyBase.generated.h"
 
-class UAISenseConfig_Damage;
-
 UCLASS()
 class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
 {
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY()
+	TObjectPtr<AActor> PlayerTarget;
+
+	UPROPERTY()
+	TObjectPtr<APawn> OwnerPawn;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	TObjectPtr<UStateTreeAIComponent> StateTreeComponent;
 
