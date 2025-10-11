@@ -12,7 +12,7 @@ class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
 
 public:
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<AActor> PlayerTarget;
 
 	UPROPERTY()
@@ -25,8 +25,6 @@ protected:
 	
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
 	virtual void BeginPlay() override;
-	
 	virtual void OnPossess(APawn* InPawn) override;
-
 	
 };
