@@ -1,8 +1,6 @@
 ﻿#include "StateTree/Tasks/STT_MoveToLocation.h"
-
 #include "AIController.h"
 #include "StateTreeExecutionContext.h"
-#include "Kismet/GameplayStatics.h"
 #include "Navigation/PathFollowingComponent.h"
 
 EStateTreeRunStatus FStateTreeTask_MoveToLocation::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const

@@ -31,4 +31,10 @@ void AAIControllerEnemyBase::BeginPlay()
 	Super::BeginPlay();
 
 	PlayerTarget = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+	if(!PlayerTarget || !PlayerTarget->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Player Target not set"));
+		return;
+	}
 }
