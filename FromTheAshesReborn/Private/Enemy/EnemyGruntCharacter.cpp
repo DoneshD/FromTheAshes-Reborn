@@ -5,6 +5,7 @@ AEnemyGruntCharacter::AEnemyGruntCharacter(const class FObjectInitializer& Objec
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
+	
 }
 
 void AEnemyGruntCharacter::BeginPlay()
