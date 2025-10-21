@@ -2,7 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "StateTreeTaskBase.h"
+#include "Navigation/PathFollowingComponent.h"
 #include "STT_MoveToLocation.generated.h"
+
 
 class AAIController;
 
@@ -23,6 +25,7 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_MoveToLocation_InstanceData
 	UPROPERTY(EditAnywhere, Category = Input)
 	float AcceptableRadius = 300.0f;
 	
+	
 };
 
 USTRUCT(DisplayName = "Move To Location")
@@ -36,6 +39,8 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_MoveToLocation : public FStateTreeT
 		return FInstanceDataType::StaticStruct();
 	}
 
+	mutable FPathFollowingRequestResult PathFollowingRequestResult;
+	
 	virtual EStateTreeRunStatus EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
 	virtual EStateTreeRunStatus Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const override;
 	virtual void ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
