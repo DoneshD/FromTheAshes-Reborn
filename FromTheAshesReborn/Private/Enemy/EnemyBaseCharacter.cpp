@@ -16,7 +16,6 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
 	
 }
 

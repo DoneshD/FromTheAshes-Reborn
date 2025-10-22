@@ -1,6 +1,8 @@
 ﻿#include "StateTree/Tasks/STT_MoveToLocation.h"
 #include "AIController.h"
 #include "StateTreeExecutionContext.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 
 EStateTreeRunStatus FStateTreeTask_MoveToLocation::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
@@ -12,10 +14,26 @@ EStateTreeRunStatus FStateTreeTask_MoveToLocation::EnterState(FStateTreeExecutio
 		return EStateTreeRunStatus::Failed;
 	}
 
+	if(!InstanceData.InputActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Input InputActor is null"))
+		return EStateTreeRunStatus::Failed;
+	}
+
 	FAIMoveRequest MoveRequest;
 	
 	MoveRequest.SetGoalLocation(InstanceData.Location);
 	MoveRequest.SetAcceptanceRadius(InstanceData.AcceptableRadius);
+
+	ACharacter* Character = Cast<ACharacter>(InstanceData.InputActor);
+
+	if(!Character)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Input InputActor is null"))
+		return EStateTreeRunStatus::Failed;
+	}
+
+	Character->GetCharacterMovement()->MaxWalkSpeed = InstanceData.MovementSpeed;
 	
 	PathFollowingRequestResult = InstanceData.AIController->MoveTo(MoveRequest);
 	
