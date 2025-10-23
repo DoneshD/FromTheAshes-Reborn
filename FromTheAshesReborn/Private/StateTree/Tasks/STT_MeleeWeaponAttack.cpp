@@ -13,6 +13,7 @@ EStateTreeRunStatus FStateTreeTask_MeleeWeaponAttack::Tick(FStateTreeExecutionCo
 {
 	if (IsTaskFinished)
 	{
+		IsTaskFinished = false;
 		return EStateTreeRunStatus::Succeeded;
 	}
 	return EStateTreeRunStatus::Running;
@@ -44,7 +45,7 @@ EStateTreeRunStatus FStateTreeTask_MeleeWeaponAttack::ActivateMeleeAttack(const 
 	
 	FGameplayEventData EventData;
 	EventData.Instigator = InstanceData.InputActor;
-	EventData.EventTag = FGameplayTag::RequestGameplayTag("TestTag.Tag9");
+	EventData.EventTag = FGameplayTag::RequestGameplayTag("StateTreeEvent.Attack.Light");
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(InstanceData.InputActor, EventData.EventTag, EventData);
 

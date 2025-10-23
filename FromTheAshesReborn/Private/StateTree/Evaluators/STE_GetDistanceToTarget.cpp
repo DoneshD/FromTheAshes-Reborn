@@ -32,5 +32,7 @@ void FStateTreeEvaluator_GetDistanceToTarget::Tick(FStateTreeExecutionContext& C
 	}
 
 	InstanceData->DistanceToTarget = FVector::Dist(InstanceData->TargetActor->GetActorLocation(), InstanceData->OwningActor->GetActorLocation());
+
+	// UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), InstanceData->DistanceToTarget);
 	
 }

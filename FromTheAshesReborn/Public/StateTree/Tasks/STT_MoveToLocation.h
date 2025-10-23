@@ -22,10 +22,10 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_MoveToLocation_InstanceData
 	UPROPERTY(EditAnywhere, Category = Input)
 	FVector Location;
 
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere)
 	float MovementSpeed = 600.0f;
 
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere)
 	float AcceptableRadius = 300.0f;
 	
 	

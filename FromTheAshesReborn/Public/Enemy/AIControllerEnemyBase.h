@@ -24,6 +24,7 @@ public:
 protected:
 	
 	AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer);
+	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 	virtual void OnPossess(APawn* InPawn) override;
 	

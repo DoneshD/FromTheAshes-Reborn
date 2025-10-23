@@ -11,6 +11,12 @@ AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectI
 	
 }
 
+void AAIControllerEnemyBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	
+}
+
 void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
@@ -37,4 +43,5 @@ void AAIControllerEnemyBase::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Player Target not set"));
 		return;
 	}
+	
 }

@@ -170,6 +170,7 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
+
 	if(!MeleeWeaponActor)
 	{
 		//TODO: Printing incorrectly, fix later
@@ -179,13 +180,20 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	
 	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 
+	AttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
+
+
+	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Finished")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Finished"));
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Finished"));
+	}
+
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
 	{
 		return;
 	}
-
-	AttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 
 }
 
