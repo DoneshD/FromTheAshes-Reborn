@@ -16,6 +16,9 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_MoveToLocation_InstanceData
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<AActor> InputActor = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<AActor> TargetActor = nullptr;
+
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<AAIController> AIController = nullptr;
 

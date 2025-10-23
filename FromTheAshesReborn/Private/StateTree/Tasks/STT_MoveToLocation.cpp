@@ -7,7 +7,15 @@
 
 EStateTreeRunStatus FStateTreeTask_MoveToLocation::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
+	return EStateTreeRunStatus::Running;
+}
+
+EStateTreeRunStatus FStateTreeTask_MoveToLocation::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const
+{
+	FStateTreeTaskCommonBase::Tick(Context, DeltaTime);
+	
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+
 	if(!InstanceData.AIController)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Input AIController is null"))
@@ -25,6 +33,11 @@ EStateTreeRunStatus FStateTreeTask_MoveToLocation::EnterState(FStateTreeExecutio
 	MoveRequest.SetGoalLocation(InstanceData.Location);
 	MoveRequest.SetAcceptanceRadius(InstanceData.AcceptableRadius);
 
+	if(InstanceData.TargetActor)
+	{
+		MoveRequest.SetGoalActor(InstanceData.TargetActor);
+	}
+
 	ACharacter* Character = Cast<ACharacter>(InstanceData.InputActor);
 
 	if(!Character)
@@ -36,15 +49,7 @@ EStateTreeRunStatus FStateTreeTask_MoveToLocation::EnterState(FStateTreeExecutio
 	Character->GetCharacterMovement()->MaxWalkSpeed = InstanceData.MovementSpeed;
 	
 	PathFollowingRequestResult = InstanceData.AIController->MoveTo(MoveRequest);
-	
-	return EStateTreeRunStatus::Running;
-}
 
-EStateTreeRunStatus FStateTreeTask_MoveToLocation::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const
-{
-	FStateTreeTaskCommonBase::Tick(Context, DeltaTime);
-
-	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 	if(!InstanceData.AIController)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Input AIController is null"))
