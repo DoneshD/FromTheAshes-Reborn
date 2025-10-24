@@ -1,5 +1,6 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
 
+#include "CombatComponents/GroupCombatComponent.h"
 #include "Enemy/GroupCombatSubsystem.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -12,6 +13,8 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 	PrimaryActorTick.bCanEverTick = true;
 	
 	bUseControllerRotationYaw = false;
+
+	GroupCombatComponent->AttackTokensCount = 0;
 	
 }
 

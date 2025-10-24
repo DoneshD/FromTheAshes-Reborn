@@ -11,14 +11,13 @@ class FROMTHEASHESREBORN_API UGroupCombatSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
-protected:
-	
-	UPROPERTY()
-	TArray<AEnemyBaseCharacter*> AllEnemiesArray;
 
 public:
 
 	int32 AttackTokensCount;
+
+	UPROPERTY()
+	TArray<AEnemyBaseCharacter*> AllEnemiesArray;
 
 protected:
 	

@@ -1,18 +1,15 @@
 ﻿#include "Enemy/GroupCombatSubsystem.h"
 
-
-
 void UGroupCombatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("UGroupCombatSubsystem::Initialize"));
 }
 
 void UGroupCombatSubsystem::Deinitialize()
 {
 	Super::Deinitialize();
-
-	UE_LOG(LogTemp, Warning, TEXT("Instance Init num: %d"), AllEnemiesArray.Num());
 	
 }
 
@@ -20,3 +17,4 @@ void UGroupCombatSubsystem::RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseChar
 {
 	AllEnemiesArray.Add(Actor);
 }
+
