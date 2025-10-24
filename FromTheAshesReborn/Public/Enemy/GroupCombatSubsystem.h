@@ -9,6 +9,10 @@ class FROMTHEASHESREBORN_API UGroupCombatSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
+public:
+
+	int32 AttackTokensCount;
+
 protected:
 	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
