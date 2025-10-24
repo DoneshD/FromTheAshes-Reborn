@@ -8,4 +8,5 @@ UCLASS()
 class FROMTHEASHESREBORN_API AFTAGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+	
 };

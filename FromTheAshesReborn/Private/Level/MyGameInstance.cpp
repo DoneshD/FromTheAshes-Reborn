@@ -1,11 +1,14 @@
 ﻿#include "Level/MyGameInstance.h"
 #include "MoviePlayer.h"
+#include "Kismet/GameplayStatics.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "Level/SMyLoadingScreen.h"
 
 void UMyGameInstance::Init()
 {
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UMyGameInstance::BeginLoadingScreen);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UMyGameInstance::EndLoadingScreen);
+	
 }
 
 void UMyGameInstance::BeginLoadingScreen(const FString& MapName)

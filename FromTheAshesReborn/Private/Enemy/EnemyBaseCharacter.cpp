@@ -1,4 +1,6 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
+
+#include "Enemy/GroupCombatSubsystem.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -16,6 +18,16 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+
+	if(!GCS)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GCS is Null"))
+		return;
+	}
+
+	GCS->RegisterEnemyToGroupCombat(this);
 	
 }
 

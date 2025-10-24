@@ -3,6 +3,8 @@
 #include "Engine/GameInstance.h"
 #include "MyGameInstance.generated.h"
 
+class AEnemyBaseCharacter;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UMyGameInstance : public UGameInstance
 {
