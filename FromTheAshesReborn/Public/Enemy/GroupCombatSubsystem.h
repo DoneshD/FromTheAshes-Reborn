@@ -27,5 +27,5 @@ protected:
 public:
 
 	void RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseCharacter> Actor);
-	
+	void GrantRandomInitialAttackTokens();
 };

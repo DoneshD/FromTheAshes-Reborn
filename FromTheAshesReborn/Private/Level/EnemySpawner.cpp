@@ -1,9 +1,11 @@
 ﻿#include "Level/EnemySpawner.h"
 
 #include "NavigationSystem.h"
+#include "CombatComponents/GroupCombatComponent.h"
 #include "Enemy/AIControllerEnemyGrunt.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/EnemyGruntCharacter.h"
+#include "Enemy/GroupCombatSubsystem.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -79,6 +81,15 @@ void AEnemySpawner::BeginPlay()
 	
 	UE_LOG(LogTemp, Warning, TEXT("Done"));
 	
+	UGroupCombatSubsystem* GCC = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+
+	if(!GCC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AEnemySpawner::BeginPlay() - Invalid group combat subsystem"))
+		return;
+	}
+	
+	GCC->GrantRandomInitialAttackTokens();
 }
 
 void AEnemySpawner::Tick(float DeltaTime)

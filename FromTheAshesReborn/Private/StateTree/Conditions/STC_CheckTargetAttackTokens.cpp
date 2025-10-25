@@ -22,7 +22,30 @@ bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecut
 
 	}
 
-	AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.Target);
+	AFTACharacter* FTACharOwner = Cast<AFTACharacter>(InstanceData.Owner);
+
+	if(!FTACharOwner && !FTACharOwner->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Error, TEXT("FTACharOwner is null"))
+		return false;
+	}
+
+	UGroupCombatComponent* OwnerGCC = FTACharOwner->FindComponentByClass<UGroupCombatComponent>();
+
+	if(!OwnerGCC && !OwnerGCC->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Error, TEXT("OwnerGCC is null"))
+		return false;
+	}
+
+	if(OwnerGCC->AttackTokensCount < InstanceData.AmountToCheck)
+	{
+		return false;
+	}
+
+	//-----------------------------------------------------------
+
+	/*AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.Target);
 
 	if(!FTACharTarget && !FTACharTarget->IsValidLowLevel())
 	{
@@ -30,17 +53,18 @@ bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecut
 		return false;
 	}
 
-	UGroupCombatComponent* GroupCombatComponent = FTACharTarget->FindComponentByClass<UGroupCombatComponent>();
+	UGroupCombatComponent* TargetGCC = FTACharTarget->FindComponentByClass<UGroupCombatComponent>();
 
-	if(!GroupCombatComponent && !GroupCombatComponent->IsValidLowLevel())
+	if(!TargetGCC && !TargetGCC->IsValidLowLevel())
 	{
-		UE_LOG(LogTemp, Error, TEXT("GroupCombatComponent is null"))
+		UE_LOG(LogTemp, Error, TEXT("TargetGCC is null"))
 		return false;
 	}
 
-	if(GroupCombatComponent->AttackTokensCount < InstanceData.AmountToCheck)
+	if(TargetGCC->AttackTokensCount < OwnerGCC->AttackTokensCount)
 	{
 		return false;
-	}
+	}*/
+	
 	return true;
 }

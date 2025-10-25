@@ -12,7 +12,7 @@ class FROMTHEASHESREBORN_API UGroupCombatComponent : public UActorComponent
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 AttackTokensCount = 1 ;
+	int32 AttackTokensCount;
 	
 protected:
 	
