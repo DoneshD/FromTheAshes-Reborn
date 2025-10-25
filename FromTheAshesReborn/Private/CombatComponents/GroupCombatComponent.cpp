@@ -18,6 +18,19 @@ void UGroupCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 }
 
+bool UGroupCombatComponent::AttackStart(AActor* AttackTarget, int TokensNeeded)
+{
+	return false;
+}
+
+void UGroupCombatComponent::StoreAttackTokens(AActor* AttackTarget, int Amount)
+{
+}
+
+void UGroupCombatComponent::AttackEnd(AActor* AttackTarget)
+{
+}
+
 bool UGroupCombatComponent::ReserveAttackToken(int32 Amount)
 {
 	if(AttackTokensCount >= Amount)

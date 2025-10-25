@@ -21,31 +21,8 @@ bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecut
 		return false;
 
 	}
-
-	AFTACharacter* FTACharOwner = Cast<AFTACharacter>(InstanceData.Owner);
-
-	if(!FTACharOwner && !FTACharOwner->IsValidLowLevel())
-	{
-		UE_LOG(LogTemp, Error, TEXT("FTACharOwner is null"))
-		return false;
-	}
-
-	UGroupCombatComponent* OwnerGCC = FTACharOwner->FindComponentByClass<UGroupCombatComponent>();
-
-	if(!OwnerGCC && !OwnerGCC->IsValidLowLevel())
-	{
-		UE_LOG(LogTemp, Error, TEXT("OwnerGCC is null"))
-		return false;
-	}
-
-	if(OwnerGCC->AttackTokensCount < InstanceData.AmountToCheck)
-	{
-		return false;
-	}
-
-	//-----------------------------------------------------------
-
-	/*AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.Target);
+	
+	AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.Target);
 
 	if(!FTACharTarget && !FTACharTarget->IsValidLowLevel())
 	{
@@ -61,10 +38,12 @@ bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecut
 		return false;
 	}
 
-	if(TargetGCC->AttackTokensCount < OwnerGCC->AttackTokensCount)
+	if(TargetGCC->AttackTokensCount < InstanceData.AmountToCheck)
 	{
+		UE_LOG(LogTemp, Error, TEXT("Not enough tokens"));
+		
 		return false;
-	}*/
+	}
 	
 	return true;
 }

@@ -59,8 +59,6 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	TargetSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>(TEXT("TargetingSystemComponent"));
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
 	CameraManagerComponent = CreateDefaultSubobject<UCameraSystemComponent>(TEXT("CameraSystemComponent"));
-
-	GroupCombatComponent->AttackTokensCount = 1;
 	
 }
 

@@ -88,8 +88,6 @@ void AEnemySpawner::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("AEnemySpawner::BeginPlay() - Invalid group combat subsystem"))
 		return;
 	}
-	
-	GCC->GrantRandomInitialAttackTokens();
 }
 
 void AEnemySpawner::Tick(float DeltaTime)

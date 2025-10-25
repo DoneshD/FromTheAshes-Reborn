@@ -11,10 +11,7 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	PrimaryActorTick.bCanEverTick = true;
-	
 	bUseControllerRotationYaw = false;
-
-	GroupCombatComponent->AttackTokensCount = 0;
 	
 }
 
