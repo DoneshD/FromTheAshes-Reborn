@@ -22,12 +22,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	bool AttackStart(AActor* AttackTarget, int TokensNeeded);
 	bool ReserveAttackToken(int32 Amount);
-
-	void StoreAttackTokens(AActor* AttackTarget, int Amount);
-	
 	void ReturnAttackToken(int32 Amount);
-	void AttackEnd(AActor* AttackTarget);
 	
 };

@@ -12,7 +12,6 @@ EStateTreeRunStatus FStateTreeTask_ReserveAttackTokens::EnterState(FStateTreeExe
 	{
 		UE_LOG(LogTemp, Error, TEXT("Target is null"))
 		return EStateTreeRunStatus::Failed;
-
 	}
 	
 	AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.Target);
@@ -32,9 +31,6 @@ EStateTreeRunStatus FStateTreeTask_ReserveAttackTokens::EnterState(FStateTreeExe
 	}
 
 	TargetGCC->AttackTokensCount -= InstanceData.TokenAmount;
-
-	// UE_LOG(LogTemp, Warning, TEXT("Test Reserve"));
-
 	return EStateTreeRunStatus::Succeeded;
 	
 }

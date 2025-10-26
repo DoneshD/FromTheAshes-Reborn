@@ -13,9 +13,7 @@ class FROMTHEASHESREBORN_API UGroupCombatSubsystem : public UWorldSubsystem
 
 
 public:
-
-	int32 AttackTokensCount;
-
+	
 	UPROPERTY()
 	TArray<AEnemyBaseCharacter*> AllEnemiesArray;
 

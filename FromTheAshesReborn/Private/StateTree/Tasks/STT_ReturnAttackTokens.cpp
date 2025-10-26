@@ -11,7 +11,6 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 	{
 		UE_LOG(LogTemp, Error, TEXT("Target is null"))
 		return EStateTreeRunStatus::Failed;
-
 	}
 	
 	AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.TargetActor);
@@ -31,9 +30,6 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 	}
 
 	TargetGCC->AttackTokensCount += InstanceData.TokensUsedInCurrentAttack;
-
-	// UE_LOG(LogTemp, Warning, TEXT("Test Return"));
-
 	return EStateTreeRunStatus::Succeeded;
 }
 
