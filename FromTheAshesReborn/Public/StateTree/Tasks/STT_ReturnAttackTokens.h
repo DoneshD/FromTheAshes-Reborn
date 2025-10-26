@@ -10,7 +10,10 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_ReturnAttackTokens_InstanceData
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<AActor> InputActor = nullptr;
+	TObjectPtr<AActor> TargetActor = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	int32 TokensUsedInCurrentAttack = 0;
 	
 };
 

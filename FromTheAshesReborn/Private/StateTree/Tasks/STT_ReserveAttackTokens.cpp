@@ -33,7 +33,7 @@ EStateTreeRunStatus FStateTreeTask_ReserveAttackTokens::EnterState(FStateTreeExe
 
 	TargetGCC->AttackTokensCount -= InstanceData.TokenAmount;
 
-	UE_LOG(LogTemp, Warning, TEXT("Test Reserve"));
+	// UE_LOG(LogTemp, Warning, TEXT("Test Reserve"));
 
 	return EStateTreeRunStatus::Succeeded;
 	
