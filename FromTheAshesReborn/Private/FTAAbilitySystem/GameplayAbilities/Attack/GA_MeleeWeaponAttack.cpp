@@ -366,10 +366,20 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 		AttackData.HitFX = InMeleeData.HitFX;
 	}
 
+	if(InMeleeData.HitFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.HitFXCueTag))
+	{
+		AttackData.HitFXCueTag = InMeleeData.HitFXCueTag;
+	}
+
 	//Slash VFX
 	if(InMeleeData.SlashFX && InMeleeData.SlashFX->IsValidLowLevel())
 	{
 		AttackData.HitFX = InMeleeData.SlashFX;
+	}
+
+	if(InMeleeData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.SlashFXCueTag))
+	{
+		AttackData.SlashFXCueTag = InMeleeData.SlashFXCueTag;
 	}
 
 }
@@ -416,10 +426,20 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 		AttackData.HitFX = MeleeAsset->AttackData.HitFX;
 	}
 
+	if(MeleeAsset->AttackData.HitFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->AttackData.HitFXCueTag))
+	{
+		AttackData.HitFXCueTag = MeleeAsset->AttackData.HitFXCueTag;
+	}
+
 	//Slash VFX
 	if(MeleeAsset->AttackData.SlashFX && MeleeAsset->AttackData.SlashFX->IsValidLowLevel())
 	{
 		AttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
+	}
+
+	if(MeleeAsset->AttackData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->AttackData.SlashFXCueTag))
+	{
+		AttackData.SlashFXCueTag = MeleeAsset->AttackData.SlashFXCueTag;
 	}
 	
 }
