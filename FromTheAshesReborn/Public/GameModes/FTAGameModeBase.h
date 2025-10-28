@@ -13,11 +13,18 @@ class FROMTHEASHESREBORN_API AFTAGameModeBase : public AGameModeBase
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Enemy")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Testing")
+	TObjectPtr<UAudioComponent> CombatMusic;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Testing")
 	int32 InitialEnemyCount = 3;
 
-public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Testing")
+	bool PlayMusic = false;
 	
+public:
+
+	AFTAGameModeBase();
 	virtual void BeginPlay() override;
 	
 };
