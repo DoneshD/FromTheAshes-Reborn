@@ -40,6 +40,10 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UAnimMontage> DeathMontage;
+	
+
 protected:
 
 	TArray<TObjectPtr<UActorComponent>> InitializedActorComponents;
