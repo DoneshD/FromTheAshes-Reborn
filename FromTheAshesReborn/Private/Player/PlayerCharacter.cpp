@@ -3,12 +3,15 @@
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
+#include "Weapon/EquipmentManagerComponent.h"
 
 
 APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitializer) :
@@ -86,6 +89,10 @@ void APlayerCharacter::BeginPlay()
 
 	// ParkourSystemComponent->SetIntializeReference(this, SpringArmComponent, CameraComponent, MotionWarpingComponent);
 
+	EquipmentManagerComponent->SetEquippedWeapon(WeaponClass);
+	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
+	TargetSystemComponent->OnTargetLockedOn.AddDynamic(this, &APlayerCharacter::OnTargetLockedOn);
+	TargetSystemComponent->OnTargetLockedOff.AddDynamic(this, &APlayerCharacter::OnTargetLockedOff);
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)
@@ -145,4 +152,25 @@ UCameraComponent* APlayerCharacter::GetCameraComponentComponent()
 		return nullptr;
 	}
 	return CameraComponent;
+}
+
+
+void APlayerCharacter::OnTargetLockedOn(AActor* Target)
+{
+	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Target);
+
+	if(Enemy)
+	{
+		Enemy->HealthWidget->SetVisibility(true);
+	}
+}
+
+void APlayerCharacter::OnTargetLockedOff(AActor* Target)
+{
+	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Target);
+
+	if(Enemy)
+	{
+		Enemy->HealthWidget->SetVisibility(false);
+	}
 }

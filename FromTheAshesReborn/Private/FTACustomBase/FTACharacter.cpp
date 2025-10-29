@@ -1,5 +1,6 @@
 #include "FTACustomBase/FTACharacter.h"
 
+#include "ContextualAnimSceneActorComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
@@ -76,6 +77,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	CharacterAfterImageComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CharacterAfterImageComponent"));
 	this->AddOwnedComponent(GetMesh());
 	InitializedActorComponents.AddUnique(CharacterAfterImageComponent);
+
+	ContextualAnimSceneActorComponent = CreateDefaultSubobject<UContextualAnimSceneActorComponent>(TEXT("ContextualAnimSceneActorComponent"));
+	this->AddOwnedComponent(GetMesh());
+	InitializedActorComponents.AddUnique(ContextualAnimSceneActorComponent);
 	
 }
 

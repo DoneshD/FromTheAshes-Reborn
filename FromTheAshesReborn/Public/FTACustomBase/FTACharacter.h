@@ -7,6 +7,9 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UContextualAnimSceneAsset;
+class UContextualAnimSceneActorComponent;
+class UWeaponDefinition;
 class UGroupCombatComponent;
 class UCentralStateComponent;
 class UCombatStateComponent;
@@ -42,6 +45,15 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UAnimMontage> DeathMontage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
+	TSubclassOf<UWeaponDefinition> WeaponClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UContextualAnimSceneActorComponent> ContextualAnimSceneActorComponent;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UContextualAnimSceneAsset> ContextualAnimSceneAsset;
 	
 
 protected:

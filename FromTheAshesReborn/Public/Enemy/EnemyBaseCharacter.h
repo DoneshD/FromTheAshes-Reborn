@@ -15,6 +15,9 @@ class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
 
 public:
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UWidgetComponent> HealthWidget;
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Dissolve")
 	TObjectPtr<UNiagaraComponent> DissolveNiagaraComponent;
 
@@ -75,15 +78,7 @@ public:
 	void TimelineFinished();
 
 	bool ShouldDissolveTimelineTick = false;
-
-protected:
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<UWidgetComponent> HealthWidget;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
-	TSubclassOf<UWeaponDefinition> WeaponClass;
-
 	bool ShouldRotate = true;
 	
 

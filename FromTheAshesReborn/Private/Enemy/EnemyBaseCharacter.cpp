@@ -118,9 +118,7 @@ void AEnemyBaseCharacter::TimelineProgress(float Value)
 	if(CodeDynamicDissolveMaterial3)
 	{
 		CodeDynamicDissolveMaterial3->SetScalarParameterValue(TEXT("DissolveAmount"), ReturnVal);
-		
 	}
-	
 }
 
 void AEnemyBaseCharacter::TimelineFinished()

@@ -91,5 +91,11 @@ public:
 	USceneComponent* GetCameraAnchorComponent();
 	USpringArmComponent* GetSpringArmComponent();
 	UCameraComponent* GetCameraComponentComponent();
+	
+	UFUNCTION()
+	void OnTargetLockedOn(AActor* Target);
+
+	UFUNCTION()
+	void OnTargetLockedOff(AActor* Target);
 
 };
