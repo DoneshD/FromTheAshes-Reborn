@@ -54,11 +54,16 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Dissolve")
 	FVector2D CodeDissolveTextureUV = FVector2D(1.0f, 1.0f);
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Dissolve")
+	float CodeDissolveStart = 1.1f;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Dissolve")
+	float CodeDissolveEnd = 0.0f;
 
 public:
 
 	UPROPERTY()
-	FTimeline MyTimeline;
+	FTimeline DissolveTimeline;
 
 	UPROPERTY(EditAnywhere, Category="Timeline")
 	UCurveFloat* FloatCurve;
@@ -68,6 +73,8 @@ public:
 
 	UFUNCTION()
 	void TimelineFinished();
+
+	bool ShouldDissolveTimelineTick = false;
 
 protected:
 	
