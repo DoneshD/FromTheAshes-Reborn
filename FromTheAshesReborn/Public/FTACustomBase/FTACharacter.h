@@ -54,6 +54,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UContextualAnimSceneAsset> ContextualAnimSceneAsset;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<USoundBase> DeathSound;
 	
 
 protected:

@@ -168,6 +168,12 @@ void AEnemyBaseCharacter::Death()
 		ShouldRotate = false;
 		PlayAnimMontage(DeathMontage);
 		
+		if (DeathSound)
+		{
+			UGameplayStatics::PlaySound2D(this, DeathSound);
+		}
+
+		
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
