@@ -1,5 +1,6 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
 
+#include "NiagaraComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -10,7 +11,6 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
 
-
 AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
@@ -19,6 +19,12 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 
 	HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
 	HealthWidget->SetupAttachment(RootComponent);
+
+	DissolveNiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DissolveNiagaraComponent"));
+	DissolveNiagaraComponent->SetupAttachment(GetMesh());
+
+	DissolveMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DissolveMeshComponent"));
+	DissolveMeshComponent->SetupAttachment(GetMesh());
 	
 }
 
@@ -60,6 +66,21 @@ void AEnemyBaseCharacter::BeginPlay()
 	}
 	
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AEnemyBaseCharacter::HealthChanged);
+
+	if (FloatCurve)
+	{
+		FOnTimelineFloat ProgressFunction;
+		ProgressFunction.BindUFunction(this, FName("TimelineProgress"));
+
+		FOnTimelineEvent FinishedFunction;
+		FinishedFunction.BindUFunction(this, FName("TimelineFinished"));
+
+		MyTimeline.AddInterpFloat(FloatCurve, ProgressFunction);
+		MyTimeline.SetTimelineFinishedFunc(FinishedFunction);
+
+		MyTimeline.SetLooping(false);
+		MyTimeline.PlayFromStart();
+	}
 	
 }
 
@@ -72,6 +93,18 @@ void AEnemyBaseCharacter::Tick(float DeltaTime)
 		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
 		SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
 	}
+
+	MyTimeline.TickTimeline(DeltaTime);
+	
+}
+
+void AEnemyBaseCharacter::TimelineProgress(float Value)
+{
+	UE_LOG(LogTemp, Log, TEXT("Timeline progress: %f"), Value);
+}
+
+void AEnemyBaseCharacter::TimelineFinished()
+{
 	
 }
 
@@ -120,6 +153,51 @@ void AEnemyBaseCharacter::Death()
 		
 	
 	}
+}
+
+
+void AEnemyBaseCharacter::SetDissolveParams()
+{
+	CodeDynamicDissolveMaterial1 = GetMesh()->CreateDynamicMaterialInstance(0, CodeDissolveMaterial1);
+	CodeDynamicDissolveMaterial2 = GetMesh()->CreateDynamicMaterialInstance(1, CodeDissolveMaterial2);
+	CodeDynamicDissolveMaterial3 = GetMesh()->CreateDynamicMaterialInstance(2, CodeDissolveMaterial2);
+	
+	DissolveNiagaraComponent->SetAsset(CodeSetDissolveNiagara, true);
+
+	DissolveNiagaraComponent->SetVariableFloat(TEXT("DissolveAmount"), CodeDissolveAmount);
+
+	DissolveNiagaraComponent->SetVariableVec3(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
+	DissolveNiagaraComponent->SetVariableTexture(TEXT("DissolveTexture"), CodeDissolveTexture);
+	DissolveNiagaraComponent->SetVariableVec2(TEXT("DissolveTextureUV"), CodeDissolveTextureUV);
+	
+	CodeDynamicDissolveMaterial1->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
+	CodeDynamicDissolveMaterial1->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
+	
+	CodeDynamicDissolveMaterial1->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
+	CodeDynamicDissolveMaterial1->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
+	
+	CodeDynamicDissolveMaterial2->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
+	CodeDynamicDissolveMaterial2->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
+
+	CodeDynamicDissolveMaterial2->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
+	CodeDynamicDissolveMaterial2->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
+
+	CodeDynamicDissolveMaterial3->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
+	CodeDynamicDissolveMaterial3->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
+
+	CodeDynamicDissolveMaterial3->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
+	CodeDynamicDissolveMaterial3->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
+
+	Dissolve();
+	
+	
+}
+
+void AEnemyBaseCharacter::Dissolve()
+{
+	MyTimeline.Play();
+
+	
 }
 
 
