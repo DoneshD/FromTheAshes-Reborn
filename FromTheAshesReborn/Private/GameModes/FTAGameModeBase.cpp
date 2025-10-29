@@ -23,5 +23,9 @@ void AFTAGameModeBase::BeginPlay()
 			UE_LOG(LogTemp, Error, TEXT("Combat Music is null or already playing"));
 		}
 	}
+	else
+	{
+		CombatMusic->Stop();
+	}
 	
 }

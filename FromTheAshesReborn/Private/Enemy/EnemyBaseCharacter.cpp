@@ -66,9 +66,12 @@ void AEnemyBaseCharacter::BeginPlay()
 void AEnemyBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
-	SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
+
+	if(ShouldRotate)
+	{
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+		SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
+	}
 	
 }
 
@@ -98,17 +101,24 @@ void AEnemyBaseCharacter::Death()
 
 	EnemyController->BrainComponent->StopLogic("");
 	
-	if(!DeathMontage && !DeathMontage->IsValidLowLevel())
+	if(DeathMontage && DeathMontage->IsValidLowLevel())
 	{
+		ShouldRotate = false;
 		PlayAnimMontage(DeathMontage);
 		
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
+		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	
 		GetMesh()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
+		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+		
+	
 	}
 }
 

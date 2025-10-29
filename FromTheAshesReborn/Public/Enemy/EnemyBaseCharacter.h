@@ -19,6 +19,8 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
 	TSubclassOf<UWeaponDefinition> WeaponClass;
+
+	bool ShouldRotate = true;
 	
 
 protected:
