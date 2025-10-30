@@ -702,7 +702,7 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFX is invalid"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - Slash Cue ckass is invalid"));
 	}
 	
 	
