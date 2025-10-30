@@ -170,9 +170,9 @@ void AEnemyBaseCharacter::Death()
 		
 		if (DeathSound)
 		{
-			UGameplayStatics::PlaySound2D(this, DeathSound);
+			float RandomPitch = UKismetMathLibrary::RandomFloatInRange(1.0f, 2.0f);
+			UGameplayStatics::PlaySound2D(this, DeathSound, 1, RandomPitch);
 		}
-
 		
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
