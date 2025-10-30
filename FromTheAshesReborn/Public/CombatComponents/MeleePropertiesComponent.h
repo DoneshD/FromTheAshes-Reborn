@@ -74,26 +74,20 @@ public:
 	FAttackDirectionStruct AttackDirectionStruct;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TObjectPtr<UNiagaraSystem> SlashFX;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
-	FGameplayTag SlashFXCueTag;
-
+	TSubclassOf<USlashCueObject> SlashCueClass;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TObjectPtr<UNiagaraSystem> HitFX;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
 	FGameplayTag HitFXCueTag;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TSubclassOf<USlashCueObject> SlashCueClass;
 	
 	
 	FMeleeAttackDataStruct()
 	:
 	WeaponTraceSizeStruct(),
 	AttackDirectionStruct(),
-	SlashFX(nullptr),
 	HitFX(nullptr)
 	{}
 	

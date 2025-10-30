@@ -373,14 +373,19 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 	}
 
 	//Slash VFX
-	if(InMeleeData.SlashFX && InMeleeData.SlashFX->IsValidLowLevel())
-	{
-		AttackData.HitFX = InMeleeData.SlashFX;
-	}
+	// if(InMeleeData.SlashFX && InMeleeData.SlashFX->IsValidLowLevel())
+	// {
+	// 	AttackData.HitFX = InMeleeData.SlashFX;
+	// }
+	//
+	// if(InMeleeData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.SlashFXCueTag))
+	// {
+	// 	AttackData.SlashFXCueTag = InMeleeData.SlashFXCueTag;
+	// }
 
-	if(InMeleeData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.SlashFXCueTag))
+	if(InMeleeData.SlashCueClass && InMeleeData.SlashCueClass->IsValidLowLevel())
 	{
-		AttackData.SlashFXCueTag = InMeleeData.SlashFXCueTag;
+		AttackData.SlashCueClass = InMeleeData.SlashCueClass;
 	}
 
 }
@@ -433,15 +438,22 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	}
 
 	//Slash VFX
-	if(MeleeAsset->AttackData.SlashFX && MeleeAsset->AttackData.SlashFX->IsValidLowLevel())
+	// if(MeleeAsset->AttackData.SlashFX && MeleeAsset->AttackData.SlashFX->IsValidLowLevel())
+	// {
+	// 	AttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
+	// }
+	//
+	// if(MeleeAsset->AttackData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->AttackData.SlashFXCueTag))
+	// {
+	// 	AttackData.SlashFXCueTag = MeleeAsset->AttackData.SlashFXCueTag;
+	// }
+
+	if(MeleeAsset->AttackData.SlashCueClass && MeleeAsset->AttackData.SlashCueClass->IsValidLowLevel())
 	{
-		AttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
+		AttackData.SlashCueClass = MeleeAsset->AttackData.SlashCueClass;
 	}
 
-	if(MeleeAsset->AttackData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->AttackData.SlashFXCueTag))
-	{
-		AttackData.SlashFXCueTag = MeleeAsset->AttackData.SlashFXCueTag;
-	}
+	
 	
 }
 
@@ -686,49 +698,45 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 		ComboManagerComponent->PauseCurrentAttack = true;
 	}
 
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
+	
+	FGameplayCueParameters SlashCueParams;
+	if(AttackData.SlashCueClass)
 	{
-		FGameplayCueParameters SlashCueParams;
-		if(AttackData.SlashFX)
-		{
-			USlashCueObject* CueCDO = AttackData.SlashCueClass->GetDefaultObject<USlashCueObject>();
+		USlashCueObject* CueCDO = AttackData.SlashCueClass->GetDefaultObject<USlashCueObject>();
 
-			if(CueCDO)
+		if(CueCDO)
+		{
+			SlashCueParams.SourceObject = CueCDO;
+
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->SlashCueInfo.SlashCueTag))
 			{
-				SlashCueParams.SourceObject = CueCDO;
+				if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
+				{
+					K2_AddGameplayCueWithParams(CueCDO->SlashCueInfo.SlashCueTag, SlashCueParams);
+					StartMeleeWeaponTrace();
+				}
+				if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
+				{
+					K2_RemoveGameplayCue(CueCDO->SlashCueInfo.SlashCueTag);
+					EndMeleeWeaponTrace();
+				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("CueCDO null"));
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFXCueTag is invalid"));
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFX is invalid"));
-		}
-		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackData.SlashFXCueTag))
-		{
-			K2_AddGameplayCueWithParams(AttackData.SlashFXCueTag, SlashCueParams);
-			StartMeleeWeaponTrace();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFXCueTag is invalid"));
+			UE_LOG(LogTemp, Error, TEXT("CueCDO null"));
 		}
 	}
-
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
+	else
 	{
-		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackData.SlashFXCueTag))
-		{
-			K2_RemoveGameplayCue(AttackData.SlashFXCueTag);
-			EndMeleeWeaponTrace();
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFXCueTag is invalid"));
-		}
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - SlashFX is invalid"));
 	}
+	
+	
 }
 
 void UGA_MeleeWeaponAttack::SpawnAfterImage()
