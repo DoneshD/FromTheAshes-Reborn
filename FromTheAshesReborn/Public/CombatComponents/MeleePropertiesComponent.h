@@ -7,6 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "MeleePropertiesComponent.generated.h"
 
+class UHitCueObject;
 class USlashCueObject;
 class UNiagaraSystem;
 class UGameplayEffect;
@@ -75,20 +76,16 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<USlashCueObject> SlashCueClass;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TObjectPtr<UNiagaraSystem> HitFX;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
-	FGameplayTag HitFXCueTag;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TSubclassOf<UHitCueObject> HitCueClass;
+	
 	
 	
 	FMeleeAttackDataStruct()
 	:
 	WeaponTraceSizeStruct(),
-	AttackDirectionStruct(),
-	HitFX(nullptr)
+	AttackDirectionStruct()
 	{}
 	
 };

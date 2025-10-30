@@ -18,6 +18,7 @@
 #include "Camera/CameraSystemParams.h"
 #include "NiagaraSystem.h"
 #include "FTAAbilitySystem/GameplayCues/SlashCueObject.h"
+#include "FTAAbilitySystem/GameplayCues/HitCueObject.h"
 #include "SWarningOrErrorBox.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
@@ -361,32 +362,18 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 		}
 	}
 
-	//Hit VFX
-	if(InMeleeData.HitFX && InMeleeData.HitFX->IsValidLowLevel())
-	{
-		AttackData.HitFX = InMeleeData.HitFX;
-	}
-
-	if(InMeleeData.HitFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.HitFXCueTag))
-	{
-		AttackData.HitFXCueTag = InMeleeData.HitFXCueTag;
-	}
-
-	//Slash VFX
-	// if(InMeleeData.SlashFX && InMeleeData.SlashFX->IsValidLowLevel())
-	// {
-	// 	AttackData.HitFX = InMeleeData.SlashFX;
-	// }
-	//
-	// if(InMeleeData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InMeleeData.SlashFXCueTag))
-	// {
-	// 	AttackData.SlashFXCueTag = InMeleeData.SlashFXCueTag;
-	// }
-
+	//Slash Cue
 	if(InMeleeData.SlashCueClass && InMeleeData.SlashCueClass->IsValidLowLevel())
 	{
 		AttackData.SlashCueClass = InMeleeData.SlashCueClass;
 	}
+
+	//Hit Cue
+	if(InMeleeData.HitCueClass && InMeleeData.HitCueClass->IsValidLowLevel())
+	{
+		AttackData.HitCueClass = InMeleeData.HitCueClass;
+	}
+
 
 }
 
@@ -425,35 +412,18 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	{
 		AttackData.AttackDirectionStruct.AttackDirection = MeleeAsset->AttackData.AttackDirectionStruct.AttackDirection;
 	}
-
-	//Hit VFX
-	if(MeleeAsset->AttackData.HitFX && MeleeAsset->AttackData.HitFX->IsValidLowLevel())
-	{
-		AttackData.HitFX = MeleeAsset->AttackData.HitFX;
-	}
-
-	if(MeleeAsset->AttackData.HitFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->AttackData.HitFXCueTag))
-	{
-		AttackData.HitFXCueTag = MeleeAsset->AttackData.HitFXCueTag;
-	}
-
-	//Slash VFX
-	// if(MeleeAsset->AttackData.SlashFX && MeleeAsset->AttackData.SlashFX->IsValidLowLevel())
-	// {
-	// 	AttackData.SlashFX = MeleeAsset->AttackData.SlashFX;
-	// }
-	//
-	// if(MeleeAsset->AttackData.SlashFXCueTag.IsValid() && UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MeleeAsset->AttackData.SlashFXCueTag))
-	// {
-	// 	AttackData.SlashFXCueTag = MeleeAsset->AttackData.SlashFXCueTag;
-	// }
-
+	
+	//Slash Cue
 	if(MeleeAsset->AttackData.SlashCueClass && MeleeAsset->AttackData.SlashCueClass->IsValidLowLevel())
 	{
 		AttackData.SlashCueClass = MeleeAsset->AttackData.SlashCueClass;
 	}
 
-	
+	//Hit Cue
+	if(MeleeAsset->AttackData.HitCueClass && MeleeAsset->AttackData.HitCueClass->IsValidLowLevel())
+	{
+		AttackData.HitCueClass = MeleeAsset->AttackData.HitCueClass;
+	}
 	
 }
 
@@ -638,27 +608,27 @@ void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHand
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
+
 	FGameplayCueParameters HitCueParams;
-	if(AttackData.HitFX)
+	if(AttackData.SlashCueClass)
 	{
-		HitCueParams.SourceObject = static_cast<const UObject*>(AttackData.HitFX);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitFX is invalid"));
+		UHitCueObject* CueCDO = AttackData.HitCueClass->GetDefaultObject<UHitCueObject>();
 
-	}
-	HitCueParams.EffectCauser = TargetActor;
-	HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
-
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackData.HitFXCueTag))
-	{
-		K2_AddGameplayCueWithParams(AttackData.HitFXCueTag, HitCueParams);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitFXCueTag is invalid"));
-
+		if(CueCDO)
+		{
+			HitCueParams.SourceObject = CueCDO;
+			HitCueParams.EffectCauser = TargetActor;
+			HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
+			
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->HitCueInfo.HitCueTag))
+			{
+				K2_AddGameplayCueWithParams(CueCDO->HitCueInfo.HitCueTag, HitCueParams);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
+			}
+		}
 	}
 }
 
@@ -697,7 +667,6 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 	{
 		ComboManagerComponent->PauseCurrentAttack = true;
 	}
-
 	
 	FGameplayCueParameters SlashCueParams;
 	if(AttackData.SlashCueClass)
