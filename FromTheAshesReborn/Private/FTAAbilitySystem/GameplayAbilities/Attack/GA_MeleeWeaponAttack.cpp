@@ -17,6 +17,7 @@
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "NiagaraSystem.h"
+#include "FTAAbilitySystem/GameplayCues/SlashCueObject.h"
 #include "SWarningOrErrorBox.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
@@ -690,7 +691,16 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 		FGameplayCueParameters SlashCueParams;
 		if(AttackData.SlashFX)
 		{
-			SlashCueParams.SourceObject = static_cast<const UObject*>(AttackData.SlashFX);
+			USlashCueObject* CueCDO = AttackData.SlashCueClass->GetDefaultObject<USlashCueObject>();
+
+			if(CueCDO)
+			{
+				SlashCueParams.SourceObject = CueCDO;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("CueCDO null"));
+			}
 		}
 		else
 		{

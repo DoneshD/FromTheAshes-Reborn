@@ -2,10 +2,12 @@
 
 #include "CoreMinimal.h"
 #include "EnumHelpers.h"
+#include "GameplayCueNotifyTypes.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "MeleePropertiesComponent.generated.h"
 
+class USlashCueObject;
 class UNiagaraSystem;
 class UGameplayEffect;
 class UGA_ReceiveHit;
@@ -57,6 +59,8 @@ struct FMeleeAttackDataStruct
 {
 	GENERATED_BODY()
 
+public:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 	
@@ -80,6 +84,10 @@ struct FMeleeAttackDataStruct
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data", Meta = (Categories = "GameplayCue"))
 	FGameplayTag HitFXCueTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TSubclassOf<USlashCueObject> SlashCueClass;
+	
 	
 	FMeleeAttackDataStruct()
 	:
