@@ -43,7 +43,6 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 			
 			return EStateTreeRunStatus::Succeeded;
 		}
-		UE_LOG(LogTemp, Error, TEXT("Owner not found"));
 		return EStateTreeRunStatus::Failed;
 	}
 	return EStateTreeRunStatus::Failed;
