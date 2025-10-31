@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 #include "DataAsset/HitReactionDataAsset.h"
+#include "Enemy/AIControllerEnemyBase.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -75,6 +76,26 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
+
+	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
+	{
+		FGameplayTag TestTag = FGameplayTag::RequestGameplayTag("TestTag.Tag15");
+		FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Hit");
+		
+		const UStateTreeComponent* STComp = EnemyController->StateTreeComponent;
+
+		if (STComp)
+		{
+			FStateTreeEvent HitEvent;
+			HitEvent.Tag = HitTag;
+			EnemyController->StateTreeComponent->SendStateTreeEvent(HitEvent);
+		}
+	}
+
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
+	}
 	
 	if(!NonMontageAbility)
 	{
@@ -113,6 +134,12 @@ void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, cons
 void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.Hit.Finished")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.Hit.Finished"));
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.Hit.Finished"));
+	}
 
 }
 
