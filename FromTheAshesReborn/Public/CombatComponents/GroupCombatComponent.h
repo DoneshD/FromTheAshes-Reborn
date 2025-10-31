@@ -14,7 +14,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 AttackTokensCount = 1;
 
-	int TokensUsedInCurrentAttack;
+	UPROPERTY(BlueprintReadWrite)
+	int32 TokensUsedInCurrentAttack = 0;
 	
 protected:
 	

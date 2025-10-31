@@ -17,6 +17,11 @@ public:
 	UPROPERTY()
 	TArray<AEnemyBaseCharacter*> AllEnemiesArray;
 
+	UPROPERTY()
+	TMap<TObjectPtr<AEnemyBaseCharacter>, int32> EnemiesAttackTokensMap;
+
+	
+
 protected:
 	
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;

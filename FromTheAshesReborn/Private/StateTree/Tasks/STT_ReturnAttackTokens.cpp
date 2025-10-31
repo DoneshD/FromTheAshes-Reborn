@@ -1,6 +1,8 @@
 ﻿#include "StateTree/Tasks/STT_ReturnAttackTokens.h"
 #include "StateTreeExecutionContext.h"
 #include "CombatComponents/GroupCombatComponent.h"
+#include "Enemy/EnemyBaseCharacter.h"
+#include "Enemy/GroupCombatSubsystem.h"
 #include "FTACustomBase/FTACharacter.h"
 
 EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExecutionContext& Context,const FStateTreeTransitionResult& Transition) const
@@ -29,8 +31,22 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 		return EStateTreeRunStatus::Failed;
 	}
 
-	TargetGCC->AttackTokensCount += InstanceData.TokensUsedInCurrentAttack;
-	return EStateTreeRunStatus::Succeeded;
+	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(InstanceData.OwnerActor);
+
+	UGroupCombatSubsystem* GCS = Context.GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+	if(GCS)
+	{
+		if(GCS->EnemiesAttackTokensMap.Find(Enemy))
+		{
+			TargetGCC->AttackTokensCount += GCS->EnemiesAttackTokensMap[Enemy];
+			GCS->EnemiesAttackTokensMap.Remove(Enemy);
+			
+			return EStateTreeRunStatus::Succeeded;
+		}
+		UE_LOG(LogTemp, Error, TEXT("Owner not found"));
+		return EStateTreeRunStatus::Failed;
+	}
+	return EStateTreeRunStatus::Failed;
 }
 
 EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::Tick(FStateTreeExecutionContext& Context,

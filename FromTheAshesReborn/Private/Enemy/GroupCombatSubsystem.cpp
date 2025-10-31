@@ -15,8 +15,8 @@ void UGroupCombatSubsystem::Deinitialize()
 	
 }
 
-void UGroupCombatSubsystem::RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseCharacter> Actor)
+void UGroupCombatSubsystem::RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseCharacter> Enemy)
 {
-	AllEnemiesArray.Add(Actor);
+	AllEnemiesArray.Add(Enemy);
 }
 
