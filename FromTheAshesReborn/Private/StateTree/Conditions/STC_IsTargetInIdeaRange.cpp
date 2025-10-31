@@ -9,7 +9,6 @@ bool FStateTreeCondition_IsTargetInIdeaRange::TestCondition(FStateTreeExecutionC
 		return false;
 	}*/
 
-	UE_LOG(LogTemp, Warning, TEXT("Tets condition"));
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 
 	if(InstanceData.DistanceBetweenActors >= InstanceData.AcceptableRadius)

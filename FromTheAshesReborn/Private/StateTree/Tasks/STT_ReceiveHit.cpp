@@ -17,8 +17,6 @@ EStateTreeRunStatus FStateTreeTask_ReceiveHit::EnterState(FStateTreeExecutionCon
 	{
 		FinishedTag = InstanceData.StateTreeFinishedTag;
 		TagDelegateHandle = ASC->RegisterGameplayTagEvent(InstanceData.StateTreeFinishedTag, EGameplayTagEventType::NewOrRemoved).AddRaw(this, &FStateTreeTask_ReceiveHit::FinishTask);
-
-		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag15"));
 	}
 	
 	return EStateTreeRunStatus::Running;
@@ -42,7 +40,6 @@ void FStateTreeTask_ReceiveHit::ExitState(FStateTreeExecutionContext& Context,
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor))
 	{
 		ASC->UnregisterGameplayTagEvent(TagDelegateHandle, FinishedTag);
-		ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag15"));
 	}
 	FStateTreeTaskCommonBase::ExitState(Context, Transition);
 }

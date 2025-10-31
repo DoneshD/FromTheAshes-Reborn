@@ -79,7 +79,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
 	{
-		FGameplayTag TestTag = FGameplayTag::RequestGameplayTag("TestTag.Tag15");
 		FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Hit");
 		
 		const UStateTreeComponent* STComp = EnemyController->StateTreeComponent;
