@@ -38,4 +38,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FSlashCueInfoStruct SlashCueInfo;
+
+	UFUNCTION(BlueprintCallable)
+	int32 Testing();
+	
 };

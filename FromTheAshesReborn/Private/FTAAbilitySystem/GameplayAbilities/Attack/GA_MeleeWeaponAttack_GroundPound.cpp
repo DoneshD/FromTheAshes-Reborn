@@ -83,7 +83,7 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 		UE_LOG(LogTemp, Error, TEXT("Ground not found"));
 	}
 	
-	DrawDebugLine(GetWorld(), TraceStartLocation, TraceEndLocation, FColor::Red, false, 2.0f, 0, 2.0f);
+	// DrawDebugLine(GetWorld(), TraceStartLocation, TraceEndLocation, FColor::Red, false, 2.0f, 0, 2.0f);
 
 
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity = FVector(0.0f, 0.0f, 0.0f);
@@ -185,7 +185,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 		ObjectTypes,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration, 
+		EDrawDebugTrace::None, 
 		HitResults,
 		true,                    
 		FLinearColor::Red,
@@ -233,6 +233,8 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 							{
 								GrantHitAbility(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
 								SendMeleeHitGameplayEvents(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
+								AddMeleeHitCues(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
+								
 							}
 						}
 

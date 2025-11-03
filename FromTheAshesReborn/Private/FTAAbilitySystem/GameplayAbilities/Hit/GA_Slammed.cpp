@@ -1,10 +1,13 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Slammed.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "NiagaraFunctionLibrary.h"
 #include "EventObjects/SlamEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SlamCharacterAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UGA_Slammed::UGA_Slammed()
 {
@@ -38,6 +41,8 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	SlamInfoObject->SlamData.Location,
 	SlamInfoObject->SlamData.Speed,
 	SlamInfoObject->SlamData.Duration);
+
+	HitLocation = SlamInfoObject->SlamData.Location;
 	
 	if (SlamTask)
 	{
@@ -121,5 +126,31 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 
 void UGA_Slammed::OnSlamComplete()
 {
+
+	if (ImpactNiagara)
+	{
+		float RandomPitch = FMath::FRandRange(-30.f, 30.f);
+		FRotator RandomRotation(RandomPitch, 0.f, 0.f);
+
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			ImpactNiagara,
+			HitLocation,
+			RandomRotation,
+			FVector(1.f),
+			true,  
+			true,  
+			ENCPoolMethod::None,
+			true);
+
+	}
+
+	if (ImpactSound)
+	{
+		float RandomPitch = UKismetMathLibrary::RandomFloatInRange(0.90, 1.30f);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, HitLocation, .2, RandomPitch);
+	}
+
+	
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }

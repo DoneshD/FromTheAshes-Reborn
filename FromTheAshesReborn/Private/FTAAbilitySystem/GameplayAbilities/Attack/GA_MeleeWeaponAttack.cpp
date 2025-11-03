@@ -608,9 +608,8 @@ void UGA_MeleeWeaponAttack::AddMeleeHitCues(const FGameplayAbilityTargetDataHand
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
-
 	FGameplayCueParameters HitCueParams;
-	if(AttackData.SlashCueClass)
+	if(AttackData.HitCueClass)
 	{
 		UHitCueObject* CueCDO = AttackData.HitCueClass->GetDefaultObject<UHitCueObject>();
 

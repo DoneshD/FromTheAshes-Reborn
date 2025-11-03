@@ -4,6 +4,7 @@
 #include "GA_ReceiveHit.h"
 #include "GA_Slammed.generated.h"
 
+class UNiagaraSystem;
 class UAT_SlamCharacterAndWait;
 
 UCLASS()
@@ -12,6 +13,14 @@ class FROMTHEASHESREBORN_API UGA_Slammed : public UGA_ReceiveHit
 	GENERATED_BODY()
 
 protected:
+
+	FVector HitLocation;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UNiagaraSystem> ImpactNiagara;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<USoundBase> ImpactSound;
 
 	UPROPERTY()
 	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
