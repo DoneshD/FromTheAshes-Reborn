@@ -23,6 +23,9 @@ private:
 	FGameplayTag CurrentOrientationTag = FGameplayTag::EmptyTag;
 
 	UPROPERTY()
+	FGameplayTag CurrentMovementModeTag = FGameplayTag::EmptyTag;
+
+	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASC;
 
 	UPROPERTY()
@@ -35,6 +38,15 @@ public:
 	
 	UPROPERTY()
 	FGameplayTag AirborneOrientationTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne");
+
+	UPROPERTY()
+	FGameplayTag WalkingModeTag = FGameplayTag::RequestGameplayTag("Character.MovementMode.Walking");
+
+	UPROPERTY()
+	FGameplayTag FallingModeTag = FGameplayTag::RequestGameplayTag("Character.MovementMode.Falling");
+
+	UPROPERTY()
+	FGameplayTag FlyingModeTag = FGameplayTag::RequestGameplayTag("Character.MovementMode.Flying");
 	
 	UPROPERTY()
 	FGameplayTag NeutralStateTag = FGameplayTag::RequestGameplayTag("Character.State.Neutral");
@@ -47,7 +59,6 @@ protected:
 	UCentralStateComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 	
 	void HandleNeutralState();
 	void HandleDownedState();

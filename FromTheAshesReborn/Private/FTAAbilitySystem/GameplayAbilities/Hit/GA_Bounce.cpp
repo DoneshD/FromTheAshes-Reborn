@@ -3,6 +3,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 
@@ -39,7 +40,13 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		{
 			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
 			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+			
 		}
+	}
+	UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+	if(CSC)
+	{
+		CSC->SetCurrentOrientation(CSC->AirborneOrientationTag);
 	}
 
 }
