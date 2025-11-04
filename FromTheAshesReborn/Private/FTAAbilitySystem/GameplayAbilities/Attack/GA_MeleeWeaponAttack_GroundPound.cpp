@@ -107,6 +107,7 @@ void UGA_MeleeWeaponAttack_GroundPound::EndAbility(const FGameplayAbilitySpecHan
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	UniqueHitActors.Empty();
+	K2_RemoveGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Slash.Base"));
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

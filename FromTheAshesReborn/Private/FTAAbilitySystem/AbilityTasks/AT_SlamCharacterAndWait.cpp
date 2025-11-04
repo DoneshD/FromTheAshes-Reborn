@@ -1,5 +1,7 @@
 ﻿#include "FTAAbilitySystem/AbilityTasks/AT_SlamCharacterAndWait.h"
 
+#include "CombatComponents/CentralStateComponent.h"
+#include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -91,6 +93,18 @@ void UAT_SlamCharacterAndWait::UpdateMovement(float DeltaTime)
 
 void UAT_SlamCharacterAndWait::LocationReached()
 {
+
+	AFTACharacter* FTACharacter = Cast<AFTACharacter>(GetAvatarActor());
+	if(FTACharacter)
+	{
+		FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("FTACharacter is NULL"));
+	}
+
+	
 	IsSlamming = false;
 	OnSlamComplete.Broadcast();
 	EndTask();

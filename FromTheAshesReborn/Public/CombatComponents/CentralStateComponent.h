@@ -6,6 +6,7 @@
 #include "CentralStateComponent.generated.h"
 
 
+class UCharacterMovementComponent;
 class UAbilitySystemComponent;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -23,6 +24,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAbilitySystemComponent> ASC;
+
+	UPROPERTY()
+	TObjectPtr<UCharacterMovementComponent> CMC;
 
 public:
 	

@@ -2,6 +2,8 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UCentralStateComponent::UCentralStateComponent()
 {
@@ -25,7 +27,22 @@ void UCentralStateComponent::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error , TEXT("Invalid ASC found on [%s]"), *GetOwner()->GetActorNameOrLabel())
 		return;
-	}	
+	}
+
+	ACharacter* OwnerChar = Cast<ACharacter>(GetOwner());
+	if(!OwnerChar)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCentralStateComponent::BeginPlay() - OwnerChar is invalid"))
+		return;
+	}
+
+	CMC = OwnerChar->GetCharacterMovement();
+
+	if(!CMC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCentralStateComponent::BeginPlay() - CMC is invalid"))
+		return;
+	}
 }
 
 void UCentralStateComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -133,6 +150,7 @@ void UCentralStateComponent::HandleGroundedOrientation()
 		ASC->RemoveLooseGameplayTag(AirborneOrientationTag);
 	}
 	CurrentStateTag = GroundedOrientationTag;
+	CMC->SetMovementMode(MOVE_Walking);
 }
 
 void UCentralStateComponent::HandeAirborneOrientation()
@@ -151,5 +169,7 @@ void UCentralStateComponent::HandeAirborneOrientation()
 		
 	}
 	CurrentStateTag = AirborneOrientationTag;
+	CMC->SetMovementMode(MOVE_Falling);
+	
 }
 

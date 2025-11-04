@@ -148,7 +148,7 @@ void UGA_Slammed::OnSlamComplete()
 	if (ImpactSound)
 	{
 		float RandomPitch = UKismetMathLibrary::RandomFloatInRange(0.90, 1.30f);
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, HitLocation, .2, RandomPitch);
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, HitLocation, .2, RandomPitch, .1);
 	}
 
 	
