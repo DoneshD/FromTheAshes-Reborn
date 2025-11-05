@@ -97,6 +97,7 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	// CameraParams.ArmLengthParams.DeltaArmLength = 400.0f;
 
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
+	EnableCollision();
 
 	UCameraSystemComponent* CSC = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
@@ -113,6 +114,7 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 	IsComponentActive = true;
 
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	DisableCollision();
 	ResetAttackTimer();
 	
 }
@@ -204,4 +206,22 @@ void UAerialCombatComponent::ResetAttackTimer()
 float UAerialCombatComponent::GetAttackElapsedTime() const
 {
 	return GetWorld()->GetTimeSeconds() - AttackLastResetTime;
+}
+
+void UAerialCombatComponent::DisableCollision()
+{
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
+
+	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
+	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
+}
+
+void UAerialCombatComponent::EnableCollision()
+{
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+
+	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
+	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 }

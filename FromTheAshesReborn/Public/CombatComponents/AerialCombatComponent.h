@@ -87,6 +87,9 @@ protected:
 	float CalculateTimeSpentGravityMultiplier() const;
 	void ResetAttackTimer();
 	float GetAttackElapsedTime() const;
+	
+	void DisableCollision();
+	void EnableCollision();
 
 public:
 	
