@@ -213,8 +213,6 @@ void UAerialCombatComponent::DisableCollision()
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
 
-	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
-	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
 }
 
 void UAerialCombatComponent::EnableCollision()
@@ -222,6 +220,4 @@ void UAerialCombatComponent::EnableCollision()
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 
-	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
-	FTACharacter->GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
 }
