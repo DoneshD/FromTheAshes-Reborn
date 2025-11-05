@@ -38,15 +38,6 @@ public:
 	
 	UPROPERTY()
 	FGameplayTag AirborneOrientationTag = FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne");
-
-	UPROPERTY()
-	FGameplayTag WalkingModeTag = FGameplayTag::RequestGameplayTag("Character.MovementMode.Walking");
-
-	UPROPERTY()
-	FGameplayTag FallingModeTag = FGameplayTag::RequestGameplayTag("Character.MovementMode.Falling");
-
-	UPROPERTY()
-	FGameplayTag FlyingModeTag = FGameplayTag::RequestGameplayTag("Character.MovementMode.Flying");
 	
 	UPROPERTY()
 	FGameplayTag NeutralStateTag = FGameplayTag::RequestGameplayTag("Character.State.Neutral");
@@ -63,12 +54,12 @@ protected:
 	void HandleNeutralState();
 	void HandleDownedState();
 	void HandleGroundedOrientation();
-	void HandeAirborneOrientation();
+	void HandeAirborneOrientation(EMovementMode MovementMode);
 
 public:
 	
 	void SetCurrentState(FGameplayTag StateTag);
-	void SetCurrentOrientation(FGameplayTag OrientationTag);
+	void SetCurrentOrientation(FGameplayTag OrientationTag, EMovementMode MovementMode);
 
 	FGameplayTag GetCurrentState();
 	FGameplayTag GetCurrentOrientation();

@@ -2,6 +2,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -87,7 +88,7 @@ void UCentralStateComponent::SetCurrentState(FGameplayTag StateTag)
 	}
 }
 
-void UCentralStateComponent::SetCurrentOrientation(FGameplayTag OrientationTag)
+void UCentralStateComponent::SetCurrentOrientation(FGameplayTag OrientationTag, EMovementMode MovementMode)
 {
 	if(CurrentStateTag.MatchesTagExact(OrientationTag))
 	{
@@ -103,7 +104,7 @@ void UCentralStateComponent::SetCurrentOrientation(FGameplayTag OrientationTag)
 		}
 		else if(OrientationTag.MatchesTagExact(AirborneOrientationTag))
 		{
-			HandeAirborneOrientation();
+			HandeAirborneOrientation(MovementMode);
 		}
 		else
 		{
@@ -151,9 +152,16 @@ void UCentralStateComponent::HandleGroundedOrientation()
 	}
 	CurrentStateTag = GroundedOrientationTag;
 	CMC->SetMovementMode(MOVE_Walking);
+	
+	AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
+
+	if(FTAChar)
+	{
+		FTAChar->RemoveAerialEffects();
+	}
 }
 
-void UCentralStateComponent::HandeAirborneOrientation()
+void UCentralStateComponent::HandeAirborneOrientation(EMovementMode MovementMode)
 {
 	if(!ASC->HasMatchingGameplayTag(AirborneOrientationTag))
 	{
@@ -166,10 +174,22 @@ void UCentralStateComponent::HandeAirborneOrientation()
 	if(ASC->HasMatchingGameplayTag(DownedStateTag))
 	{
 		ASC->RemoveLooseGameplayTag(DownedStateTag);
-		
 	}
+	
 	CurrentStateTag = AirborneOrientationTag;
-	CMC->SetMovementMode(MOVE_Falling);
+
+	if(MovementMode == MOVE_Falling)
+	{
+		CMC->SetMovementMode(MOVE_Falling);
+	}
+	else if(MovementMode == MOVE_Flying)
+	{
+		CMC->SetMovementMode(MOVE_Flying);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UCentralStateComponent:: HandeAirborneOrientation - Invalid movement mode"))
+	}
 	
 }
 

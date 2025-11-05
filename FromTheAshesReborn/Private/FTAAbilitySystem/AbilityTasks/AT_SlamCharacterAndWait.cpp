@@ -93,17 +93,15 @@ void UAT_SlamCharacterAndWait::UpdateMovement(float DeltaTime)
 
 void UAT_SlamCharacterAndWait::LocationReached()
 {
-
 	AFTACharacter* FTACharacter = Cast<AFTACharacter>(GetAvatarActor());
 	if(FTACharacter)
 	{
-		FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag);
+		FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("FTACharacter is NULL"));
 	}
-
 	
 	IsSlamming = false;
 	OnSlamComplete.Broadcast();

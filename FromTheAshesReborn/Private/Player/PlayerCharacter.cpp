@@ -99,6 +99,8 @@ void APlayerCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	// UE_LOG(LogTemp, Warning, TEXT("[%s] Movement Mode: %s"), *GetActorNameOrLabel(), *UEnum::GetValueAsString(GetCharacterMovement()->MovementMode));
+
 }
 
 void APlayerCharacter::PossessedBy(AController* NewController)

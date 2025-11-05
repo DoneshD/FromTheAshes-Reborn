@@ -94,7 +94,7 @@ void AFTACharacter::BeginPlay()
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 	
 	CentralStateComponent->SetCurrentState(CentralStateComponent->NeutralStateTag);
-	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag);
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 
 }
 
@@ -279,7 +279,8 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	
-	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag);
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
+	UE_LOG(LogTemp, Warning, TEXT("Grounded now"));
 
 	RemoveAerialEffects();
 }
@@ -287,8 +288,9 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 void AFTACharacter::Falling()
 {
 	Super::Falling();
-	
-	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag);
+
+	UE_LOG(LogTemp, Warning, TEXT("Falling now"));
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag, MOVE_Falling);
 }
 
 bool AFTACharacter::HasFlailTag() const

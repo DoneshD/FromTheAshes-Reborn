@@ -2,6 +2,7 @@
 
 #include "MaterialHLSLTree.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/CentralStateComponent.h"
 #include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
@@ -47,32 +48,48 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
 	
-	// if(!SuspendEventObj)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("SuspendEventObj is Null"));
-	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-	// 	return;
-	// 	
-	// }
+	/*if(!SuspendEventObj)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SuspendEventObj is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+		
+	}
+	
+	SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
+	SuspendEventObj->SuspendData.DescentSpeed,
+	5.0f);;
+	
+	if (SuspendTask)
+	{
+		SuspendTask->OnSuspendComplete.AddDynamic(this, &UGA_AerialSuspension::OnSuspendComplete);
+		SuspendTask->ReadyForActivation();
+	}
+
+	*/
+	
+
+	//-----------
 
 	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
-
-	ACC->ChangeMovementMode(MOVE_Falling);
-
-	// SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
-	// SuspendEventObj->SuspendData.DescentSpeed,
-	// 5.0f);;
-	//
-	// if (SuspendTask)
-	// {
-	// 	SuspendTask->OnSuspendComplete.AddDynamic(this, &UGA_AerialSuspension::OnSuspendComplete);
-	// 	SuspendTask->ReadyForActivation();
-	// }
-
-	if(AddAerialCombatGravity)
+	
+	if(ACC && ACC->IsValidLowLevel())
 	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AddAerialCombatGravity, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+		if(ACC->AddAerialCombatGravity)
+		{
+			UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+			if(CSC)
+			{
+				CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Falling);
+				UE_LOG(LogTemp, Warning, TEXT("Test suspend"))
+			}
+			if(AddAerialCombatGravity)
+			{
+				FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AddAerialCombatGravity, 1.0f);
+				GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+			}
+			
+		}
 	}
 }
 

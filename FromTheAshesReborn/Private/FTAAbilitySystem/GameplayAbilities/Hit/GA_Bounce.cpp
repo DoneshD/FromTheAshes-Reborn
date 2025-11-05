@@ -6,6 +6,7 @@
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 UGA_Bounce::UGA_Bounce()
 {
@@ -31,23 +32,24 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
-
+	
 	if(ACC && ACC->IsValidLowLevel())
 	{
-		ACC->ChangeMovementMode(MOVE_Flying);
 		
 		if(ACC->EnableAerialCombatEffect)
 		{
+			UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+			if(CSC)
+			{
+				CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
+				UE_LOG(LogTemp, Warning, TEXT("Test bounce"))
+			}
 			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
 			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 			
 		}
 	}
-	UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
-	if(CSC)
-	{
-		CSC->SetCurrentOrientation(CSC->AirborneOrientationTag);
-	}
+	
 
 }
 
@@ -61,7 +63,20 @@ void UGA_Bounce::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	
+
+	UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+	if(CSC)
+	{
+		CSC->SetCurrentOrientation(CSC->GroundedOrientationTag, MOVE_Walking);
+	}
+
+	UDownedCombatComponent* DCC = GetFTACharacterFromActorInfo()->FindComponentByClass<UDownedCombatComponent>();
+
+	if(DCC->EnableDownedCombatEffect)
+	{
+		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(DCC->EnableDownedCombatEffect, 1.0f);
+		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+	}
 }
 
 void UGA_Bounce::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -77,14 +92,8 @@ void UGA_Bounce::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData Ev
 void UGA_Bounce::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageBlendingOut(EventTag, EventData);
+	
 
-	UDownedCombatComponent* DCC = GetFTACharacterFromActorInfo()->FindComponentByClass<UDownedCombatComponent>();
-
-	if(DCC->EnableDownedCombatEffect)
-	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(DCC->EnableDownedCombatEffect, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-	}
 }
 
 void UGA_Bounce::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
