@@ -2,6 +2,7 @@
 
 #include "CombatComponents/CentralStateComponent.h"
 #include "DataAsset/RecoverAbilityDataAsset.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -28,6 +29,8 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Neutral"));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("DownedCombatTag.EnableComponent")));
+	
 	
 	if(RecoverAbilityAsset)
 	{

@@ -25,7 +25,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TArray<TSubclassOf<UGA_Recover>> PossibleRecoveries;
 	
-	float TotalDownedTime;
+	float TotalDownedTime = 0.0f;
 
 protected:
 

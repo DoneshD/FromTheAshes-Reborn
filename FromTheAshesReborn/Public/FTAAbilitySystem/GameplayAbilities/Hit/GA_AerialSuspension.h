@@ -16,9 +16,6 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> AddAerialCombatGravity;
 
 public:
 

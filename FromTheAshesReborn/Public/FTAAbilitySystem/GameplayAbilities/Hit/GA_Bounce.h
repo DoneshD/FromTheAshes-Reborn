@@ -10,10 +10,15 @@ class FROMTHEASHESREBORN_API UGA_Bounce : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
 
+protected:
+
+	bool TraceForFloor = false;
+
 public:
 	
 	UGA_Bounce();
 
+	void CheckGroundBelow();
 	virtual void OnAbilityTick(float DeltaTime) override;
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
@@ -27,5 +32,5 @@ public:
 	virtual void OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
-	
+
 };

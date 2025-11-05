@@ -91,9 +91,9 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 				CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Falling);
 				UE_LOG(LogTemp, Warning, TEXT("Test suspend"))
 			}
-			if(AddAerialCombatGravity)
+			if(ACC->AddAerialCombatGravity)
 			{
-				FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AddAerialCombatGravity, 1.0f);
+				FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->AddAerialCombatGravity, 1.0f);
 				GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 			}
 			

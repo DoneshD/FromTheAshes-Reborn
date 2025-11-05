@@ -79,7 +79,9 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 void UDownedCombatComponent::DisableComponent()
 {
 	IsComponentActive = false;
+	TotalDownedTime = 0.0f;
 	FGameplayEventData OnRecoverEventData;
+	
 
 	//TODO: Native approach, fix later
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));

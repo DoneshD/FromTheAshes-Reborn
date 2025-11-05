@@ -674,6 +674,7 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 
 		if(CueCDO)
 		{
+			
 			SlashCueParams.SourceObject = CueCDO;
 
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->SlashCueInfo.SlashCueTag))
