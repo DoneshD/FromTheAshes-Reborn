@@ -74,8 +74,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
 	}
-
-	
 	
 	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
 	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();

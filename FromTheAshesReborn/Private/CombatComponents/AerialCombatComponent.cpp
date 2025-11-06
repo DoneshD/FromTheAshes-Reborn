@@ -4,6 +4,7 @@
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "Components/CapsuleComponent.h"
+#include "Enemy/AIControllerEnemyBase.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -124,11 +125,27 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	if (NewCount > 0)
 	{
 		InitializeStateAndVariables();
+
+		if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(FTACharacter->GetController()))
+		{
+			FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.AirStunned");
+		
+			const UStateTreeComponent* STComp = EnemyController->StateTreeComponent;
+
+			if (STComp)
+			{
+				FStateTreeEvent HitEvent;
+				HitEvent.Tag = HitTag;
+				EnemyController->StateTreeComponent->SendStateTreeEvent(HitEvent);
+			}
+		}
 		
 	}
 	else
 	{
 		ClearStateAndVariables();
+		
+		
 	}
 }
 
