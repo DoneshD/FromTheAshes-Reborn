@@ -19,8 +19,6 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnActorBeginOverlap.AddDynamic(this, &AEnemySpawner::OnOverlapBegin);
-
 	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	if(!FTAGameMode)
@@ -93,10 +91,5 @@ void AEnemySpawner::BeginPlay()
 void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-}
-
-void AEnemySpawner::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
-{
-	
 }
 
