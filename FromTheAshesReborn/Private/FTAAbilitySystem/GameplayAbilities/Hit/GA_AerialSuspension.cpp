@@ -93,7 +93,6 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			if(CSC)
 			{
 				CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Falling);
-				UE_LOG(LogTemp, Warning, TEXT("Test suspend"))
 			}
 			if(ACC->AddAerialCombatGravity)
 			{

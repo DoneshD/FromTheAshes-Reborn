@@ -92,8 +92,8 @@ void UCentralStateComponent::SetCurrentOrientation(FGameplayTag OrientationTag, 
 {
 	if(CurrentStateTag.MatchesTagExact(OrientationTag))
 	{
-		UE_LOG(LogTemp, Error, TEXT("UCentralStateComponent::SetCurrentOrientation - Already set [%s] to [%s]"),
-			*GetOwner()->GetActorNameOrLabel(), *OrientationTag.GetTagName().ToString())
+		// UE_LOG(LogTemp, Error, TEXT("UCentralStateComponent::SetCurrentOrientation - Already set [%s] to [%s]"),
+		// 	*GetOwner()->GetActorNameOrLabel(), *OrientationTag.GetTagName().ToString())
 		return;
 	}
 	if(!CurrentStateTag.MatchesTagExact(OrientationTag))

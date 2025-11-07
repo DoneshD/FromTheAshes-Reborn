@@ -49,7 +49,6 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 			if(CSC)
 			{
 				CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
-				UE_LOG(LogTemp, Warning, TEXT("Test bounce"))
 			}
 			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
 			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());

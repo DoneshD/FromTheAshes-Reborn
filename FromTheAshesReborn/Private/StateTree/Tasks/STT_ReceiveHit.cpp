@@ -40,8 +40,6 @@ void FStateTreeTask_ReceiveHit::ExitState(FStateTreeExecutionContext& Context,
 	{
 		ASC->UnregisterGameplayTagEvent(TagDelegateHandle, FinishedTag);
 	}
-
-	UE_LOG(LogTemp, Error, TEXT("Exit hit"));
 	
 	FStateTreeTaskCommonBase::ExitState(Context, Transition);
 }

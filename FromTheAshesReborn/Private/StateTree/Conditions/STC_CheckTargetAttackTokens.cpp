@@ -40,7 +40,7 @@ bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecut
 
 	if(TargetGCC->AttackTokensCount < InstanceData.AmountToCheck)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Not enough tokens"));
+		// UE_LOG(LogTemp, Error, TEXT("Not enough tokens"));
 		
 		return false;
 	}
