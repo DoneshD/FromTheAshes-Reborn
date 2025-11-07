@@ -70,9 +70,7 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	{
 		IsComponentActive = true;
 		FTACharacter->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
-	}
-	else
-	{
+
 		if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(FTACharacter->GetController()))
 		{
 			FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Downed");
@@ -87,6 +85,15 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 			}
 		}
 	}
+	else
+	{
+		if(!FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.Downed.Finished")))
+		{
+			FTAAbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.Downed.Finished"));
+			FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.Downed.Finished"));
+		}
+	}
+	
 }
 
 void UDownedCombatComponent::DisableComponent()

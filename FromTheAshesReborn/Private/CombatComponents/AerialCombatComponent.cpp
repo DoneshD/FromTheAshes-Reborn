@@ -144,7 +144,12 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	else
 	{
 		ClearStateAndVariables();
-		
+
+		if(!FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished")))
+		{
+			FTAAbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished"));
+			FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished"));
+		}
 		
 	}
 }

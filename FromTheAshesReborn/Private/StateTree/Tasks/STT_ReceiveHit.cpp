@@ -1,5 +1,4 @@
 ﻿#include "StateTree/Tasks/STT_ReceiveHit.h"
-
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "StateTreeExecutionContext.h"
@@ -41,6 +40,9 @@ void FStateTreeTask_ReceiveHit::ExitState(FStateTreeExecutionContext& Context,
 	{
 		ASC->UnregisterGameplayTagEvent(TagDelegateHandle, FinishedTag);
 	}
+
+	UE_LOG(LogTemp, Error, TEXT("Exit hit"));
+	
 	FStateTreeTaskCommonBase::ExitState(Context, Transition);
 }
 
