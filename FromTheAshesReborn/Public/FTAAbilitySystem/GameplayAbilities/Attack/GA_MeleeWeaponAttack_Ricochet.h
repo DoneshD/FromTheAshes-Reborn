@@ -19,6 +19,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundPound Ability")
 	float SlamDuration = 0.20f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TArray<TSubclassOf<UGA_ReceiveHit>> FollowupReactions;
+
 	FVector TraceStartLocation;
 	FVector TraceEndLocation;
 

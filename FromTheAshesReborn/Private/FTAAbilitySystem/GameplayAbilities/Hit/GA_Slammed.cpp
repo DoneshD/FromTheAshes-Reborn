@@ -42,6 +42,8 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	SlamInfoObject->SlamData.Speed,
 	SlamInfoObject->SlamData.Duration);
 
+	PossibleFollowupReactions = SlamInfoObject->HitData.PossibleFollowupReactions;
+
 	HitLocation = SlamInfoObject->SlamData.Location;
 	
 	if (SlamTask)

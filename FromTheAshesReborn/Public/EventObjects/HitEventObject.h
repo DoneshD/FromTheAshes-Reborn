@@ -6,6 +6,8 @@
 #include "HitEventObject.generated.h"
 
 enum class EHitReactionDirection : uint8;
+class UGA_Recover;
+class UGA_ReceiveHit;
 
 USTRUCT(BlueprintType)
 struct FHitInfo
@@ -26,6 +28,9 @@ struct FHitInfo
 
 	UPROPERTY()
 	ESpatialDirection HitDirection;
+
+	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
+	TArray<TSubclassOf<UGA_Recover>> PossibleRecoveryOptions;
 };
 
 

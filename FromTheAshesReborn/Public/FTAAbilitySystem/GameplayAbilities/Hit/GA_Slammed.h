@@ -6,6 +6,7 @@
 
 class UNiagaraSystem;
 class UAT_SlamCharacterAndWait;
+class UGA_ReceiveHit;
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_Slammed : public UGA_ReceiveHit
@@ -24,6 +25,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
+
+	UPROPERTY()
+	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
 
 public:
 
