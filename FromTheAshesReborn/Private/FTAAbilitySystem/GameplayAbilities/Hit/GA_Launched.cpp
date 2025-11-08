@@ -32,20 +32,11 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	
 	if(!LaunchInfoObject)
 	{
-		float ZDelta = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation().Z - GetFTACharacterFromActorInfo()->GetActorLocation().Z) - 200.0f;
-		UE_LOG(LogTemp, Warning, TEXT("ZDelta: %f"), ZDelta);
-		
-		
-		UE_LOG(LogTemp, Error, TEXT("UGA_Launched::ActivateAbility - LaunchInfoObject is Null"));
-
-		// if(ZDelta > 500.0f)
-		// {
-		// 	ZDelta = 500.0f;
-		// }
+		float ZDelta = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation().Z - GetFTACharacterFromActorInfo()->GetActorLocation().Z) - 300.0f;
 		
 		LaunchInfoObject = NewObject<ULaunchEventObject>(this);
 		LaunchInfoObject->LaunchData.VerticalDistance = ZDelta;
-		LaunchInfoObject->LaunchData.LaunchDuration = 0.15;
+		LaunchInfoObject->LaunchData.LaunchDuration = 0.10f;
 		LaunchInfoObject->LaunchData.StallDuration = 0.2;
 		LaunchInfoObject->LaunchData.Offset = LaunchOffset;
 	

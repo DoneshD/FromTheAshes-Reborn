@@ -77,8 +77,6 @@ void AEnemySpawner::BeginPlay()
 		}
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("Done"));
-	
 	UGroupCombatSubsystem* GCC = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
 
 	if(!GCC)
