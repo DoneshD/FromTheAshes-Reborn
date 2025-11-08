@@ -44,12 +44,15 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = 0;
 	
-	// SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
-	// 	DescentSpeed,
-	// 	5.0f);
+	if(CompletelySuspend)
+	{
+		SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
+		DescentSpeed,
+		5.0f);
 
-	// SuspendTask->ReadyForActivation();
-
+		SuspendTask->ReadyForActivation();
+	}
+	
 	AerialCombatComponent = FTAChar->FindComponentByClass<UAerialCombatComponent>();
 
 	if(!AerialCombatComponent)
@@ -121,4 +124,5 @@ void UGA_MeleeWeaponAttack_Aerial::OnMontageBlendingOut(FGameplayTag EventTag, F
 	{
 		SuspendTask->EndTask();
 	}
+	
 }

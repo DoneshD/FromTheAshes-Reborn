@@ -20,10 +20,13 @@ void UAT_SuspendInAirAndWait::TickTask(float DeltaTime)
 {
 	Super::TickTask(DeltaTime);
 
-	if(bDescend)
-	{
-		UpdateDescentMovement(DeltaTime);
-	}
+	CMC->Velocity.Z = 0.0f;
+	CMC->GravityScale = 0.0f;
+
+	// if(bDescend)
+	// {
+	// 	UpdateDescentMovement(DeltaTime);
+	// }
 }
 
 void UAT_SuspendInAirAndWait::Activate()
