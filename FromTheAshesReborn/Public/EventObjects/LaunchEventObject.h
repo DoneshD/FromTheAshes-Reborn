@@ -10,10 +10,11 @@ struct FLaunchInfo
 {
 	GENERATED_BODY()
 
-	float VerticalDistance;
-	float LaunchDuration;
-	float StallDuration;
-	float Offset;
+public:
+	mutable float VerticalDistance;
+	mutable float LaunchDuration;
+	mutable float StallDuration;
+	mutable float Offset;
 	
 };
 

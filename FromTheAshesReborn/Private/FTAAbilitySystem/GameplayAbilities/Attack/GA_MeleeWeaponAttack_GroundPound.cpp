@@ -155,6 +155,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 	SlamInfoObj->SlamData.Location = EnemyGroundPoundEndLocation;
 	SlamInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
 	SlamInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
+	SlamInfoObj->HitData.PossibleFollowupReactions = FollowupReactions;
 	
 	OnHitEventData.OptionalObject = SlamInfoObj;
 	

@@ -64,20 +64,20 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 	
 	GetFTACharacterFromActorInfo()->RemoveAerialEffects();
 	
-	FGameplayEventData RecoverEventData;
+	FGameplayEventData FollowupEventData;
 	
-	RecoverEventData.Instigator = GetAvatarActorFromActorInfo();
-	RecoverEventData.Target = GetAvatarActorFromActorInfo();
+	FollowupEventData.Instigator = GetAvatarActorFromActorInfo();
+	FollowupEventData.Target = GetAvatarActorFromActorInfo();
 	
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	
-	RecoverEventData.OptionalObject = HitInfoObj;
+	FollowupEventData.OptionalObject = HitInfoObj;
 	
-	if(PossibleHitReactions[0] && PossibleHitReactions[0]->IsValidLowLevel() && PossibleHitReactions.Num() > 0 && !PossibleHitReactions.IsEmpty())
+	if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
 	{
-		const UGA_ReceiveHit* const CDO = PossibleHitReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
+		const UGA_ReceiveHit* const CDO = PossibleFollowupReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
@@ -112,14 +112,14 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 			
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
 			{
-				RecoverEventData.EventTag = CDO->ReceiveHitTag;
+				FollowupEventData.EventTag = CDO->ReceiveHitTag;
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - RecoveryTag is NULL"));
+				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - FollowupEventData is NULL"));
 			}
 			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), RecoverEventData.EventTag, RecoverEventData);
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
 		}
 		
 	}
