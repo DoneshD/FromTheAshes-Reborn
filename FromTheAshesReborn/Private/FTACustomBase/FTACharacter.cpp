@@ -78,9 +78,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	this->AddOwnedComponent(GetMesh());
 	InitializedActorComponents.AddUnique(CharacterAfterImageComponent);
 
-	ContextualAnimSceneActorComponent = CreateDefaultSubobject<UContextualAnimSceneActorComponent>(TEXT("ContextualAnimSceneActorComponent"));
-	this->AddOwnedComponent(GetMesh());
-	InitializedActorComponents.AddUnique(ContextualAnimSceneActorComponent);
+	// ContextualAnimSceneActorComponent = CreateDefaultSubobject<UContextualAnimSceneActorComponent>(TEXT("ContextualAnimSceneActorComponent"));
+	// this->AddOwnedComponent(GetMesh());
+	// InitializedActorComponents.AddUnique(ContextualAnimSceneActorComponent);
 	
 }
 

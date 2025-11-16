@@ -8,6 +8,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UAbilityTask_MoveToLocation;
 class UFTAAT_PlayMontageAndWaitForEvent;
 class UAT_WaitInputTagAndQueueWindowEvent;
 class UFTAAT_OnTick;
@@ -25,6 +26,34 @@ enum class EFTAAbilityActivationPolicy : uint8
 	OnSpawn
 };
 
+USTRUCT(BlueprintType)
+struct FLocationInfo
+{
+	GENERATED_BODY()
+
+public:
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Forward")
+	float ForwardDistance = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Forward")
+	float ForwardDuration = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Right")
+	float RightDistance = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Right")
+	float RightDuration = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Up")
+	float UpDistance = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Up")
+	float UpDuration = 0.0f;
+	
+	
+};
+
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 {
@@ -33,6 +62,18 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 
 protected:
 
+	UPROPERTY()
+	TObjectPtr<UAbilityTask_MoveToLocation> MoveToLocationTask;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
+	bool MovingAbility = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="MovingAbility"))
+	FVector MoveToLocation = FVector::ZeroVector;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="MovingAbility"))
+	FLocationInfo LocationInfo;
+	
 	UPROPERTY()
 	TObjectPtr<UFTAAT_OnTick> TickTask;
 

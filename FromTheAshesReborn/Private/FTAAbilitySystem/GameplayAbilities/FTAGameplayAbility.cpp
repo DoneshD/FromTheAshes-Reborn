@@ -5,6 +5,7 @@
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
 #include "MotionWarpingComponent.h"
+#include "Abilities/Tasks/AbilityTask_MoveToLocation.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
@@ -201,6 +202,21 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	{
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
+
+	// if (MovingAbility)
+	// {
+	// 	MoveToLocationTask = UAbilityTask_MoveToLocation::MoveToLocation(this, FName(TEXT("MoveToLocation")),
+	// 		MoveToLocation,
+	// 		1.0f,
+	// 		nullptr,
+	// 		nullptr);
+	// 	
+	// 	if (MoveToLocationTask)
+	// 	{
+	// 		MoveToLocationTask->ReadyForActivation();
+	// 	}
+	// }
+
 	
 
 	/*
