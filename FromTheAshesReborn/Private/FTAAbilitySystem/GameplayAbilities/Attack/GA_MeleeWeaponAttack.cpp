@@ -589,12 +589,6 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	if(!OnHitEventData.OptionalObject)
 	{
 		OnHitEventData.OptionalObject = HitInfoObj;
-		
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("OptionalObject Name: %s"),
-		*OnHitEventData.OptionalObject->GetName());
 	}
 	
 	if (InHitAbilityClass)
