@@ -81,17 +81,17 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if (SpringArmComponent)
 	{
 		
-			float CurrentLength = SpringArmComponent->TargetArmLength;
-			float FinalTargetLength = NewSpringArmLength + ArmLengthOffset;
-		
-			if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
-			{
-				float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, ArmLengthLerpSpeed);
-				SpringArmComponent->TargetArmLength = InterpolatedLength;
-		
-				// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
-				// 	CurrentLength, BaseArmLengthFromTargetingSystem, ArmLengthOffset, InterpolatedLength);
-			}
+		float CurrentLength = SpringArmComponent->TargetArmLength;
+		float FinalTargetLength = NewSpringArmLength + ArmLengthOffset;
+	
+		if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
+		{
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, ArmLengthLerpSpeed);
+			SpringArmComponent->TargetArmLength = InterpolatedLength;
+	
+			// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
+			// 	CurrentLength, BaseArmLengthFromTargetingSystem, ArmLengthOffset, InterpolatedLength);
+		}
 		
 	}
 	

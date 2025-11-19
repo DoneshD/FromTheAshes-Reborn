@@ -279,6 +279,11 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
 	
+	if(!CentralStateComponent || !CentralStateComponent->IsValidLowLevel())
+	{
+		return;
+	}
+	
 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 
 	RemoveAerialEffects();
@@ -287,6 +292,11 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 void AFTACharacter::Falling()
 {
 	Super::Falling();
+
+	if(!CentralStateComponent || !CentralStateComponent->IsValidLowLevel())
+	{
+		return;
+	}
 
 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag, MOVE_Falling);
 }

@@ -63,8 +63,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FMeleeAttackDataStruct DefaultAttackData;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	bool PauseEnabled = false;
+
 	FMeleeAttackDataStruct AttackData;
-	
+
+	UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
 	FGameplayEventData OnHitEventData;
 	
 	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "After Image")
@@ -97,6 +101,12 @@ public:
 
 	UFUNCTION()
 	void SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeRuntimeData);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
+	void TempLift();
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
+	void TempLaunchObject();
 
 protected:
 	

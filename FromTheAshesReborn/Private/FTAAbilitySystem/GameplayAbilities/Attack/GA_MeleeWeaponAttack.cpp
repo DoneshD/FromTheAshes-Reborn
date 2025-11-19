@@ -191,6 +191,12 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Finished"));
 	}
 
+
+	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.PauseCurrentAttack")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.PauseCurrentAttack"));
+	}
+
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
 	{
@@ -454,6 +460,7 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 				{
 					ApplyMeleeHitEffects(TargetDataHandle, HitAbilityClass);
 					SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
+					TempLaunchObject();
 					AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
 					break;
 				}
@@ -665,7 +672,17 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("QueueTag.PauseCurrentAttack")))
 	{
 		ComboManagerComponent->PauseCurrentAttack = true;
+		if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.PauseCurrentAttack")))
+		{
+			GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.PauseCurrentAttack"));
+		}
 	}
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("TestTag.Tag4")))
+	{
+		TempLift();
+	}
+
 	
 	FGameplayCueParameters SlashCueParams;
 	if(AttackData.SlashCueClass)
