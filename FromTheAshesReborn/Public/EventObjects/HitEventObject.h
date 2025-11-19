@@ -34,7 +34,7 @@ struct FHitInfo
 };
 
 
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class FROMTHEASHESREBORN_API UHitEventObject : public UObject
 {
 	GENERATED_BODY()

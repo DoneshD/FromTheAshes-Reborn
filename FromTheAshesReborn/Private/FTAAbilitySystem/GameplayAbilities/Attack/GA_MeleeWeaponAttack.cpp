@@ -460,7 +460,6 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 				{
 					ApplyMeleeHitEffects(TargetDataHandle, HitAbilityClass);
 					SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
-					TempLaunchObject();
 					AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
 					break;
 				}
@@ -571,6 +570,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
+	
 	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
 	OnHitEventData.Target = TargetActor;
 	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
@@ -589,6 +589,12 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	if(!OnHitEventData.OptionalObject)
 	{
 		OnHitEventData.OptionalObject = HitInfoObj;
+		
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OptionalObject Name: %s"),
+		*OnHitEventData.OptionalObject->GetName());
 	}
 	
 	if (InHitAbilityClass)

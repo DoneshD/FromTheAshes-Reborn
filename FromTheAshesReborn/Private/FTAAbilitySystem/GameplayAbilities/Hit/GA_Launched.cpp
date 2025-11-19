@@ -39,6 +39,8 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		LaunchInfoObject->LaunchData.LaunchDuration = 0.10f;
 		LaunchInfoObject->LaunchData.StallDuration = 0.2;
 		LaunchInfoObject->LaunchData.Offset = LaunchOffset;
+
+		UE_LOG(LogTemp, Warning, TEXT("Hello!!!!!!!!!!!!"))
 	
 	}
 	

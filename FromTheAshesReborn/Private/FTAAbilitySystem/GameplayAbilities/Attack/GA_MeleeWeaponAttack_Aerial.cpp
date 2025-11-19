@@ -72,6 +72,8 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AerialCombatComponent->AddAerialCombatGravity, 1.0f);
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
+
+	TempLaunchObject();
 	
 }
 
@@ -89,12 +91,16 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 
 void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
-	USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
-	SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
-	SuspendInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
-	SuspendInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
+	if(!OnHitEventData.OptionalObject)
+	{
+		USuspendEventObject* SuspendInfoObj = NewObject<USuspendEventObject>(this);
+		SuspendInfoObj->SuspendData.DescentSpeed = DescentSpeed;
+		SuspendInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
+		SuspendInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 
-	OnHitEventData.OptionalObject = SuspendInfoObj;
+		OnHitEventData.OptionalObject = SuspendInfoObj;
+	}
+	
 
 	Super::SendMeleeHitGameplayEvents(TargetDataHandle, InHitAbilityClass);
 }

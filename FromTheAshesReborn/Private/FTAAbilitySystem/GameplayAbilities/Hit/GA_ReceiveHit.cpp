@@ -63,9 +63,10 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return;
 	}
 	
-	if(!HitInfoObject->HitData.Instigator)
+	
+	/*if(!HitInfoObject->HitData.Instigator)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - HitInfoObject is Null"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - Instigator is Null"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
@@ -99,7 +100,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
-	}
+	}*/
 	
 	if(!NonMontageAbility)
 	{

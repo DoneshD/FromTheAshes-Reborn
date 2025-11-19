@@ -11,9 +11,17 @@ struct FLaunchInfo
 	GENERATED_BODY()
 
 public:
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	mutable float VerticalDistance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	mutable float LaunchDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	mutable float StallDuration;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	mutable float Offset;
 	
 };
