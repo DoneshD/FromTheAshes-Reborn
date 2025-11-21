@@ -73,7 +73,7 @@ public:
 	AActor* FilterClosestActorToOwner(TArray<FHitResult> HitArray);
 	
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
-	void WarpToTarget(FMeleeWarpData WarpData);
+	void WarpToTarget(FMeleeWarpData WarpData, bool InvertLocation = false);
 
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
 	void RemoveWarpTarget();

@@ -105,7 +105,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
 	void TempLift();
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Temp")
 	void TempLaunchObject();
 
 protected:

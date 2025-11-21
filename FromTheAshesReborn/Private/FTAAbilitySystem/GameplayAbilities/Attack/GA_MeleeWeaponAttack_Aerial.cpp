@@ -67,13 +67,12 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
 
-	if(AerialCombatComponent->AddAerialCombatGravity)
-	{
-		FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AerialCombatComponent->AddAerialCombatGravity, 1.0f);
-		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-	}
+	// if(AerialCombatComponent->AddAerialCombatGravity)
+	// {
+	// 	FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AerialCombatComponent->AddAerialCombatGravity, 1.0f);
+	// 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+	// }
 
-	TempLaunchObject();
 	
 }
 

@@ -682,7 +682,6 @@ void UGA_MeleeWeaponAttack::EventMontageReceived(FGameplayTag EventTag, FGamepla
 	{
 		TempLift();
 	}
-
 	
 	FGameplayCueParameters SlashCueParams;
 	if(AttackData.SlashCueClass)

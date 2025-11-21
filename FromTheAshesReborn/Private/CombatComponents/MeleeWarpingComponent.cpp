@@ -140,7 +140,7 @@ void UMeleeWarpingComponent::RemoveWarpTarget()
 	MotionWarpingComponent->RemoveWarpTarget(CurrentWarpTargetName);
 }
 
-void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData)
+void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLocation)
 {
 	CurrentWarpTargetName = WarpData.WarpTargetName;
 	
@@ -216,8 +216,14 @@ void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData)
 		AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(BestActor);
 		if (bHit && EnemyActor && !EnemyActor->IsDead)
 		{
-			FVector OffsetDirection = (GetOwner()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
 			FVector EnemyLocation = EnemyActor->GetActorLocation();
+			FVector OffsetDirection = (GetOwner()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
+			
+			if(InvertLocation)
+			{
+				OffsetDirection = OffsetDirection * (-1.0f);
+			}
+			
 			OffsetDirection.Z = 0.0f;
 			
 			

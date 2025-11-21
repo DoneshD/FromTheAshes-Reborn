@@ -209,7 +209,7 @@ public:
 	UFUNCTION()
 	virtual void OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
