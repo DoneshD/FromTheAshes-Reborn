@@ -108,6 +108,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Temp")
 	void TempLaunchObject();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
+	void TempTick(float DeltaTime);
+
 protected:
 	
 	UFUNCTION()

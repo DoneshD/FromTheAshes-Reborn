@@ -43,6 +43,8 @@ void UGA_MeleeWeaponAttack::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
 	
+	TempTick(DeltaTime);
+	
 }
 
 
