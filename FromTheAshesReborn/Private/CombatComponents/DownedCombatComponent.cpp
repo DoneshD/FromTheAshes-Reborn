@@ -56,7 +56,7 @@ void UDownedCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(IsComponentActive)
 	{
 		TotalDownedTime += DeltaTime;
-		if(TotalDownedTime >= 2.0f)
+		if(TotalDownedTime >= 200.0f)
 		{
 			DisableComponent();
 		}

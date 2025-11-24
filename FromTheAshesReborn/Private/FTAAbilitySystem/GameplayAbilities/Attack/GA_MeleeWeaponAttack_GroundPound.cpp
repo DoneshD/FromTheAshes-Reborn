@@ -65,7 +65,17 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 	
 	FHitResult HitResult;
 	TraceStartLocation = ActorInfo->AvatarActor.Get()->GetActorLocation();
-	TraceEndLocation = TraceStartLocation + FVector(0.0f, 0.0f, -TraceVerticalDownwardDistance);
+
+	if(DirectionSlam)
+	{
+		FVector Direction = GetFTACharacterFromActorInfo()->GetActorForwardVector();
+		
+		TraceEndLocation = TraceStartLocation + FVector((Direction.X * TraceVerticalDownwardDistance), (Direction.Y * TraceVerticalDownwardDistance), -TraceVerticalDownwardDistance);
+	}
+	else
+	{
+		TraceEndLocation = TraceStartLocation + FVector(0.0f, 0.0f, -TraceVerticalDownwardDistance);
+	}
 
 	FCollisionObjectQueryParams GroundCollisionQueryParams;
 	GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
