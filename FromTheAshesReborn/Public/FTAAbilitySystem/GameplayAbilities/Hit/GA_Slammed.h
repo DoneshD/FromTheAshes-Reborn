@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<USoundBase> ImpactSound;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<UGA_ReceiveHit> BackFollowup;
+
 	UPROPERTY()
 	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
 
@@ -42,4 +45,6 @@ public:
 
 	UFUNCTION()
 	void OnSlamComplete();
+
+	FVector TempDiagonalLocation();
 };

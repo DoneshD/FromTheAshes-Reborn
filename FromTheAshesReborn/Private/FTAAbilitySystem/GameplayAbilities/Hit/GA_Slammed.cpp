@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Slammed.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "EventObjects/SlamEventObject.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_SlamCharacterAndWait.h"
@@ -30,11 +31,23 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 
 	const USlamEventObject* SlamInfoObject = Cast<USlamEventObject>(CurrentEventData.OptionalObject);
 	
+	// if(!SlamInfoObject)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::ActivateAbility - SlamInfoObject is Null"));
+	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	// 	return;
+	// }
+
 	if(!SlamInfoObject)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::ActivateAbility - SlamInfoObject is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
+		FVector DiagonalLocation = TempDiagonalLocation();
+		
+		SlamInfoObject = NewObject<USlamEventObject>(this);
+		SlamInfoObject->SlamData.Location = DiagonalLocation,
+		SlamInfoObject->SlamData.Speed = 3000.0f,
+		SlamInfoObject->SlamData.Duration = 0.20f;
+
+	
 	}
 
 	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(this,
@@ -72,8 +85,12 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
-	
 	FollowupEventData.OptionalObject = HitInfoObj;
+
+	if(PossibleFollowupReactions.IsEmpty())
+	{
+		PossibleFollowupReactions.Add(BackFollowup);
+	}
 	
 	if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
 	{
@@ -155,4 +172,30 @@ void UGA_Slammed::OnSlamComplete()
 
 	
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+}
+
+FVector UGA_Slammed::TempDiagonalLocation()
+{
+	FHitResult HitResult;
+	FVector TraceStartLocation = GetFTACharacterFromActorInfo()->GetActorLocation();
+	
+	FVector Direction = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorForwardVector();
+	FVector TraceEndLocation = TraceStartLocation + FVector((Direction.X * 2000.0f), (Direction.Y * 2000.0f), -3000.0f);
+	
+
+	FCollisionObjectQueryParams GroundCollisionQueryParams;
+	GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+	if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(HitResult, TraceStartLocation, TraceEndLocation, GroundCollisionQueryParams))
+	{
+		FVector GroundPoundEndLocation = HitResult.ImpactPoint;
+		DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
+		return GroundPoundEndLocation;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Ground not found"));
+		return FVector(0, 0, 0);
+	}
 }

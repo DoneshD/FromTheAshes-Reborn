@@ -4,6 +4,7 @@
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 UGA_ReceiveHit::UGA_ReceiveHit()
@@ -63,12 +64,15 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return;
 	}
 	
+	FVector TargetLocation;
 	
-	/*if(!HitInfoObject->HitData.Instigator)
+	if(!HitInfoObject->HitData.Instigator)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - Instigator is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
+		TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+	}
+	else
+	{
+		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
 	}
 
 	if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit")))
@@ -77,8 +81,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	}
 	
 	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
-	FVector TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
-	
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
@@ -100,7 +102,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
-	}*/
+	}
 	
 	if(!NonMontageAbility)
 	{

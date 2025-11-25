@@ -11,9 +11,9 @@ struct FSlamInfo
 	GENERATED_BODY()
 
 	float DownwardDistance;
-	float Speed;
-	float Duration;
-	FVector Location;
+	mutable float Speed;
+	mutable float Duration;
+	mutable FVector Location;
 	
 };
 
