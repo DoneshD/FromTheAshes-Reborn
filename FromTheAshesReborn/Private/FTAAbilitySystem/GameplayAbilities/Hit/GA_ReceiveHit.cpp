@@ -103,6 +103,12 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
 	}
+
+	// if(HitInfoObject->HitData.HitDirection == ESpatialDirection::TempBlocker)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("TempBlocker"));
+	// 	return;
+	// }
 	
 	if(!NonMontageAbility)
 	{

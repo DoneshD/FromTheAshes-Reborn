@@ -582,6 +582,11 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	
 	HitInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 	
+	if(AttackData.AttackDirectionStruct.AttackDirection == ESpatialDirection::TempBlocker)
+	{
+		return;
+	}
+	
 	if(!MeleeWeaponActor)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
