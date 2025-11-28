@@ -203,19 +203,19 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
 
-	// if (MovingAbility)
-	// {
-	// 	MoveToLocationTask = UAbilityTask_MoveToLocation::MoveToLocation(this, FName(TEXT("MoveToLocation")),
-	// 		MoveToLocation,
-	// 		1.0f,
-	// 		nullptr,
-	// 		nullptr);
-	// 	
-	// 	if (MoveToLocationTask)
-	// 	{
-	// 		MoveToLocationTask->ReadyForActivation();
-	// 	}
-	// }
+	/*if (MovingAbility)
+	{
+		MoveToLocationTask = UAbilityTask_MoveToLocation::MoveToLocation(this, FName(TEXT("MoveToLocation")),
+			MoveToLocation,
+			1.0f,
+			nullptr,
+			nullptr);
+		
+		if (MoveToLocationTask)
+		{
+			MoveToLocationTask->ReadyForActivation();
+		}
+	}*/
 
 	
 

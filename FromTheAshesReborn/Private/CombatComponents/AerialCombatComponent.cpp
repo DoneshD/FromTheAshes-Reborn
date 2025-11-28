@@ -3,6 +3,7 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
+#include "CombatComponents/DownedCombatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -44,6 +45,8 @@ void UAerialCombatComponent::BeginPlay()
 		return;
 	}
 
+	DownedComp = FTACharacter->FindComponentByClass<UDownedCombatComponent>();
+
 	FDelegateHandle Handle = FTAAbilitySystemComponent->RegisterGameplayTagEvent(EnableTag, EGameplayTagEventType::NewOrRemoved)
 		.AddUObject(this, &UAerialCombatComponent::EnableComponent);
 
@@ -58,6 +61,10 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(IsComponentActive)
 	{
+		if(DownedComp)
+		{
+			DownedComp->TotalDownedTime = 0.0f;
+		}
 		if(ActivateFromLauncher)
 		{
 			if(CMC->Velocity.Z <= 0.0f)
@@ -115,6 +122,9 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 	IsComponentActive = true;
 
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	CMC->AirControl = 0.10f;
+	CMC->AirControlBoostMultiplier = 0.10f;
+	
 	DisableCollision();
 	ResetAttackTimer();
 	

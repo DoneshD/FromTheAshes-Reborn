@@ -66,6 +66,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	bool PauseEnabled = false;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	bool NudgeForward = false;
+
 	FMeleeAttackDataStruct AttackData;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Attack Data")

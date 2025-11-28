@@ -7,6 +7,7 @@
 #include "AerialCombatComponent.generated.h"
 
 
+class UDownedCombatComponent;
 class UGameplayEffect;
 class UCharacterMovementComponent;
 class UFTAAbilitySystemComponent;
@@ -73,6 +74,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
+
+	UPROPERTY()
+	TObjectPtr<UDownedCombatComponent> DownedComp;
 
 
 protected:

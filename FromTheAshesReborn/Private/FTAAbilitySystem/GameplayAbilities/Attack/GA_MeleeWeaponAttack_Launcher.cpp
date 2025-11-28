@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack_Launcher.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemGlobals.h"
 #include "Camera/CameraSystemComponent.h"
 #include "MotionWarpingComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
@@ -94,6 +95,17 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 
 void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
 {
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+
+	// if(!TempIsLift)
+	// {
+		if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail")))
+		{
+			return;
+		}
+	// }
+	
 	ULaunchEventObject* LaunchInfoObj = NewObject<ULaunchEventObject>(this);
 	LaunchInfoObj->LaunchData.VerticalDistance = LauncherVerticalDistance;
 	LaunchInfoObj->LaunchData.LaunchDuration = LauncherDuration;

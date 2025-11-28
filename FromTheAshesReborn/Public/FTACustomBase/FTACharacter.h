@@ -165,6 +165,9 @@ public:
 	bool HasSlammingTag() const;
 
 	UFUNCTION(BlueprintPure)
+	bool HasSlammingHeavyTag() const;
+
+	UFUNCTION(BlueprintPure)
 	bool HasDownedTag() const;
 
 	UFUNCTION(BlueprintImplementableEvent)

@@ -153,6 +153,7 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 	
+	
 	PerformMeleeAttack(MeleeAttackAssets);
 
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
@@ -440,8 +441,6 @@ void UGA_MeleeWeaponAttack::ExecuteMeleeHitLogic(const FGameplayAbilityTargetDat
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	UAbilitySystemComponent* TargetASC =
 		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
-
-	
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
 	

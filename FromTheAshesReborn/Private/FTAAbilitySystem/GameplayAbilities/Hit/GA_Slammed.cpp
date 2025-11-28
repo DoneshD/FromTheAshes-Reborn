@@ -58,6 +58,11 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	PossibleFollowupReactions = SlamInfoObject->HitData.PossibleFollowupReactions;
 
 	HitLocation = SlamInfoObject->SlamData.Location;
+
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation(),
+		GetFTACharacterFromActorInfo()->GetActorLocation());
+	
+	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
 	
 	if (SlamTask)
 	{
@@ -190,7 +195,7 @@ FVector UGA_Slammed::TempDiagonalLocation()
 	if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(HitResult, TraceStartLocation, TraceEndLocation, GroundCollisionQueryParams))
 	{
 		FVector GroundPoundEndLocation = HitResult.ImpactPoint;
-		DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
+		// DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
 		return GroundPoundEndLocation;
 	}
 	else

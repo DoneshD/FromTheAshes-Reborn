@@ -9,6 +9,8 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 UGA_Bounce::UGA_Bounce()
 {
@@ -39,6 +41,11 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+
+	// FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation(),
+	// 	GetFTACharacterFromActorInfo()->GetActorLocation());
+	//
+	// GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(-LookAtRotation.Pitch, -LookAtRotation.Yaw, 0.0f));
 	
 	if(ACC && ACC->IsValidLowLevel())
 	{

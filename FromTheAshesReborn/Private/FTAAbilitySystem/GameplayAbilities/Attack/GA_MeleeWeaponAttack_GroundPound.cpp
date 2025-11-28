@@ -86,7 +86,7 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 	if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(HitResult, ActorInfo->AvatarActor.Get()->GetActorLocation(), TraceEndLocation, GroundCollisionQueryParams))
 	{
 		GroundPoundEndLocation = HitResult.ImpactPoint;
-		DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
+		// DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
 	}
 	else
 	{
@@ -99,7 +99,9 @@ void UGA_MeleeWeaponAttack_GroundPound::ActivateAbility(const FGameplayAbilitySp
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity = FVector(0.0f, 0.0f, 0.0f);
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 0.0;
 	
-	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
+	// GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
+	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(CombatMovementSlamTag);
+	
 	
 	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(
 		this,
@@ -118,6 +120,7 @@ void UGA_MeleeWeaponAttack_GroundPound::EndAbility(const FGameplayAbilitySpecHan
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	UniqueHitActors.Empty();
 	K2_RemoveGameplayCue(FGameplayTag::RequestGameplayTag("GameplayCue.Melee.Slash.Base"));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(CombatMovementSlamTag);
 }
 
 void UGA_MeleeWeaponAttack_GroundPound::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -261,7 +264,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 void UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete()
 {
 	IsGroundPounding = false;
-	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam"));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(CombatMovementSlamTag);
 	PlayAbilityAnimMontage(SlamMontage);
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);

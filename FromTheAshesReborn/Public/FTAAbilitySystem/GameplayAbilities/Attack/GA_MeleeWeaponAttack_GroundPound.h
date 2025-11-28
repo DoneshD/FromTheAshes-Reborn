@@ -23,6 +23,9 @@ protected:
 	float SlamDuration = 0.20f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundPound Ability")
+	FGameplayTag CombatMovementSlamTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GroundPound Ability")
 	bool DirectionSlam = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)

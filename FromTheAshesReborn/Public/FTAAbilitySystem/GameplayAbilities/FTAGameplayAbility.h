@@ -69,9 +69,6 @@ protected:
 	bool MovingAbility = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="MovingAbility"))
-	FVector MoveToLocation = FVector::ZeroVector;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="MovingAbility"))
 	FLocationInfo LocationInfo;
 	
 	UPROPERTY()
