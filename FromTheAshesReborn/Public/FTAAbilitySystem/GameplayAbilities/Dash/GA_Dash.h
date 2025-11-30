@@ -52,5 +52,10 @@ protected:
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	
+public:
+	
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
+	void TempDashTick(float DeltaTime);
 
 };

@@ -46,8 +46,10 @@ void AFTAPlayerController::OnPossess(APawn* InPawn)
 void AFTAPlayerController::OnUnPossess()
 {
 	Super::OnUnPossess();
-	
-	EnhancedInputComponent->ClearActionBindings();
+	if(EnhancedInputComponent)
+	{
+		EnhancedInputComponent->ClearActionBindings();
+	}
 }
 
 void AFTAPlayerController::SendLocalInputToASC(bool IsPressed, EAbilityInputID AbilityInputID)

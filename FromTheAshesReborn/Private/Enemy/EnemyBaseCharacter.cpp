@@ -90,8 +90,11 @@ void AEnemyBaseCharacter::Tick(float DeltaTime)
 
 	if(ShouldRotate)
 	{
-		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
-		SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
+		if(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+		{
+			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+			SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
+		}
 	}
 
 	if(ShouldDissolveTimelineTick)

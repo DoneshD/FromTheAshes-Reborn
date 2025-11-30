@@ -6,6 +6,8 @@ AFTAPlayerState::AFTAPlayerState(const FObjectInitializer& ObjectInitializer)
 	FTAAbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("FTAAbilitySystemComponent"));
 	FTAAbilitySystemComponent->SetIsReplicated(true);
 	FTAAbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+
+	UE_LOG(LogTemp, Display, TEXT("AFTAPlayerState::AFTAPlayerState()"));
 }
 
 UAbilitySystemComponent* AFTAPlayerState::GetAbilitySystemComponent() const

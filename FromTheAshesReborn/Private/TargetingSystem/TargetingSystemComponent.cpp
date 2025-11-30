@@ -833,6 +833,9 @@ void UTargetingSystemComponent::TargetLockOff()
 			OnTargetLockedOff.Broadcast(LockedOnTargetActor);
 		}
 	}
-	FTAPlayerCameraManger->ViewPitchMax = 30.0f;
+	if(FTAPlayerCameraManger)
+	{
+		FTAPlayerCameraManger->ViewPitchMax = 30.0f;
+	}
 	LockedOnTargetActor = nullptr;
 }

@@ -21,6 +21,9 @@ void UGA_Dash::OnAbilityTick(float DeltaTime)
 	{
 		UpdateDashMovement(DeltaTime);
 	}
+
+	TempDashTick(DeltaTime);
+	
 }
 
 bool UGA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const

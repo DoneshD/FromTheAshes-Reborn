@@ -298,7 +298,11 @@ void AFTACharacter::Falling()
 		return;
 	}
 
-	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag, MOVE_Falling);
+	// if(CentralStateComponent && CentralStateComponent->IsValidLowLevel())
+	// {
+	// 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag, MOVE_Falling);
+	// }
+
 }
 
 bool AFTACharacter::HasFlailTag() const
