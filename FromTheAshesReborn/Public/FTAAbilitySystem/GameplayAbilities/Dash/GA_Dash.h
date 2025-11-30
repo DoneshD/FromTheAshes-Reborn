@@ -32,6 +32,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash Ability")
 	float DashDuration = 0.20f;
 
+	FGameplayTag DashTag = FGameplayTag::EmptyTag;
+
 protected:
 
 	UGA_Dash();

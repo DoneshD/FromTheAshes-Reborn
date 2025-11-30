@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Dash/GA_Dash.h"
 
 #include "CombatComponents/ComboManagerComponent.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -67,6 +68,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		return;
 	}
 	
+	
 	DashElapsedTime = 0.0f;
 	DashStartTime = GetWorld()->GetTimeSeconds();
 
@@ -76,6 +78,13 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	DashEndLocation = ActorInfo->AvatarActor->GetActorLocation() + (InputDir * DashDistance);
 
 	IsDashing = true;
+
+	DashTag = MatchingDataAsset->UniqueIdentifierTag;
+
+	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashTag))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(DashTag);
+	}
 
 	PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
 
@@ -92,6 +101,11 @@ void UGA_Dash::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashTag))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(DashTag);
+	}
 	
 }
 
