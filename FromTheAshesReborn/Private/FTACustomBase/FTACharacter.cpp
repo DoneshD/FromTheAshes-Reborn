@@ -6,6 +6,7 @@
 #include "MotionWarpingComponent.h"
 #include "NiagaraComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
+#include "CombatComponents/AfterImageComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
@@ -77,6 +78,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	CharacterAfterImageComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("CharacterAfterImageComponent"));
 	this->AddOwnedComponent(GetMesh());
 	InitializedActorComponents.AddUnique(CharacterAfterImageComponent);
+
+	AfterImageComponent = CreateDefaultSubobject<UAfterImageComponent>(TEXT("AfterImageComponent"));
+	this->AddOwnedComponent(GetMesh());
+	InitializedActorComponents.AddUnique(AfterImageComponent);
 
 	// ContextualAnimSceneActorComponent = CreateDefaultSubobject<UContextualAnimSceneActorComponent>(TEXT("ContextualAnimSceneActorComponent"));
 	// this->AddOwnedComponent(GetMesh());

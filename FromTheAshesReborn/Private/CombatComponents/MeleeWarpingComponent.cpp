@@ -1,6 +1,7 @@
 ﻿#include "CombatComponents/MeleeWarpingComponent.h"
 
 #include "MotionWarpingComponent.h"
+#include "CombatComponents/AfterImageComponent.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
@@ -247,6 +248,16 @@ void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLo
 
 			// DrawDebugSphere(GetWorld(), ClosestActorToOwner->GetActorLocation(), 25.0f, 12, FColor::Blue, false, 5.0f);
 			// DrawDebugSphere(GetWorld(), ClosestActorToAxis->GetActorLocation(), 25.0f, 12, FColor::Red, false, 5.0f);
+
+
+			UAfterImageComponent* AIC = FTACharacter->FindComponentByClass<UAfterImageComponent>();
+
+			UE_LOG(LogTemp, Warning, TEXT("GetOwner()->GetDistanceTo(EnemyActor): %f"), GetOwner()->GetDistanceTo(EnemyActor));
+			
+			if(GetOwner()->GetDistanceTo(EnemyActor) >= 350.0f)
+			{
+				AIC->CreateAfterImage();
+			}
 		
 			UpdateWarpTarget(WarpTargetLocation, WarpTargetRotation);
 		}

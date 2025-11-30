@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UAfterImageComponent;
 class UContextualAnimSceneAsset;
 class UContextualAnimSceneActorComponent;
 class UWeaponDefinition;
@@ -103,6 +104,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UNiagaraComponent> CharacterAfterImageComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
+	TObjectPtr<UAfterImageComponent> AfterImageComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FTACharacter | Niagara")
 	UNiagaraSystem* FX_AfterImage;
