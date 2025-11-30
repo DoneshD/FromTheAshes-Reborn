@@ -9,6 +9,7 @@
 #include "Components/WidgetComponent.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
@@ -282,7 +283,12 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
-		const float TargetArmLength = DesiredRadius + 300.0f;
+		float TargetArmLength = DesiredRadius + 300.0f;
+		if(PlayerOwner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+		{
+			TargetArmLength = DesiredRadius + 500.0f;
+		}
+		
 		// PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
 		if (CSC)
 		{

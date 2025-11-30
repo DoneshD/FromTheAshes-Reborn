@@ -1,5 +1,6 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
 
+#include "AbilitySystemComponent.h"
 #include "NiagaraComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -169,7 +170,15 @@ void AEnemyBaseCharacter::Death()
 	if(DeathMontage && DeathMontage->IsValidLowLevel())
 	{
 		ShouldRotate = false;
-		PlayAnimMontage(DeathMontage);
+
+		if(GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+		{
+			PlayAnimMontage(AirDeathMontage);
+		}
+		else
+		{
+			PlayAnimMontage(DeathMontage);
+		}
 		
 		if (DeathSound)
 		{

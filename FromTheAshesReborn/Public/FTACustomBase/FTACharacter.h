@@ -47,6 +47,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UAnimMontage> DeathMontage;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UAnimMontage> AirDeathMontage;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
 	TSubclassOf<UWeaponDefinition> WeaponClass;
 
