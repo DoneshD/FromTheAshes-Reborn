@@ -1,5 +1,6 @@
 ﻿#include "TargetingSystem/TargetingSystemComponent.h"
 
+#include "AbilitySystemGlobals.h"
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraSystemParams.h"
 #include "EngineUtils.h"
@@ -288,7 +289,16 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		{
 			TargetArmLength = DesiredRadius + 500.0f;
 		}
-		
+
+		UAbilitySystemComponent* EnemyASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+		if(EnemyASC)
+		{
+			if(EnemyASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+			{
+				TargetArmLength = DesiredRadius + 500.0f;
+			}
+			
+		}
 		// PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
 		if (CSC)
 		{

@@ -245,6 +245,8 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
 		
 		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
+
+		// GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag()
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
 		ComboManagerComponent->PauseCurrentAttack = false;
 
