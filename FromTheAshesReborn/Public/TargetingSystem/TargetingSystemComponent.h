@@ -140,7 +140,7 @@ protected:
 	void SetupLocalPlayerController();
 	static bool TargetIsTargetable(const AActor* Actor);
 
-	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
+	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime);
 
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor) const;

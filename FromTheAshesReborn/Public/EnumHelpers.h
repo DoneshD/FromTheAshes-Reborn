@@ -12,6 +12,7 @@ enum class ESpatialDirection : uint8 {
 	Any			UMETA(DisplayName = "Any"),
 	Special			UMETA(DisplayName = "Special"),
 	TempBlocker			UMETA(DisplayName = "TempBlocker"),
+	Knockback			UMETA(DisplayName = "Knockback"),
 	None		UMETA(DisplayName = "None")
 };
 

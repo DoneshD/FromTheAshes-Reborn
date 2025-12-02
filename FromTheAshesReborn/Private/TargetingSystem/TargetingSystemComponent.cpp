@@ -74,7 +74,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	else
 	{
 		ControlCameraOffset(DeltaTime);
-		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor);
+		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime);
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
 	}
@@ -225,7 +225,7 @@ bool UTargetingSystemComponent::TargetIsTargetable(const AActor* Actor)
 	return true;
 }
 
-void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime)
 {
 	if (!PlayerOwner || !TargetActor || !OwnerPlayerController)
 	{
@@ -255,7 +255,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	// DrawCameraAnchor();
 
 	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
-	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, GetWorld()->GetDeltaSeconds(), OffScreenInterpSpeed);
+	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
 
 	// DrawDebugSphere(
 	// GetWorld(),
@@ -278,7 +278,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
 		// const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->CameraAnchorComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
 		// PlayerOwner->CameraAnchorComponent->SetWorldRotation(NewRotation);
-		CSC->HandleCameraAnchorAdjustment(MidpointAnchorLocation, LookAtRotation, true, true, true, OffScreenInterpSpeed);
+		CSC->HandleCameraAnchorAdjustment(SmoothedMidPoint, LookAtRotation, true, true, true, OffScreenInterpSpeed);
 		
 	}
 
@@ -287,7 +287,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		float TargetArmLength = DesiredRadius + 300.0f;
 		if(PlayerOwner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
 		{
-			TargetArmLength = DesiredRadius + 500.0f;
+			TargetArmLength = DesiredRadius + 700.0f;
 		}
 
 		UAbilitySystemComponent* EnemyASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
@@ -295,7 +295,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		{
 			if(EnemyASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
 			{
-				TargetArmLength = DesiredRadius + 500.0f;
+				TargetArmLength = DesiredRadius + 700.0f;
 			}
 			
 		}
@@ -310,7 +310,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	if (ShouldUpdateControllerRotation)
 	{
 		const FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor);
-		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, GetWorld()->GetDeltaSeconds(), ControlRotationInterpSpeed * 5);
+		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, ControlRotationInterpSpeed * 5);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
 

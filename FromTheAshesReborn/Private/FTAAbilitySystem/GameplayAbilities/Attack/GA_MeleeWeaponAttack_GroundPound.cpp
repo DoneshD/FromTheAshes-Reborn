@@ -227,7 +227,7 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 					if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(TempHitResult, EnemyBaseCharacter->GetActorLocation(), TraceEndLocation, GroundCollisionQueryParams))
 					{
 						EnemyGroundPoundEndLocation = TempHitResult.ImpactPoint;
-						DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
+						// DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
 					}
 					else
 					{

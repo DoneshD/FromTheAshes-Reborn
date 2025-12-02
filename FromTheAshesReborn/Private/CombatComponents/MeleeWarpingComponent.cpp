@@ -251,8 +251,6 @@ void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLo
 
 
 			UAfterImageComponent* AIC = FTACharacter->FindComponentByClass<UAfterImageComponent>();
-
-			UE_LOG(LogTemp, Warning, TEXT("GetOwner()->GetDistanceTo(EnemyActor): %f"), GetOwner()->GetDistanceTo(EnemyActor));
 			
 			if(GetOwner()->GetDistanceTo(EnemyActor) >= 350.0f)
 			{

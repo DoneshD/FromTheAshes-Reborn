@@ -127,6 +127,15 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		if(AssetsToTry.Num() > 0)
 		{
 			int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
+			if(HitInfoObject->HitData.HitDirection == ESpatialDirection::Knockback)
+			{
+				Selection = 0;
+				if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+				{
+					Selection = 1;
+				}
+			}
+			
 			PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
 		}
 		else

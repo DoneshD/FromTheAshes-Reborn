@@ -4,6 +4,7 @@
 #include "GameplayTagContainer.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "Enemy/AIControllerEnemyBase.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -71,6 +72,12 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 		IsComponentActive = true;
 		FTACharacter->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 
+		AEnemyBaseCharacter* EnemyChar = Cast<AEnemyBaseCharacter>(GetOwner());
+		if(EnemyChar)
+		{
+			EnemyChar->ShouldRotate = false;
+		}
+
 		if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(FTACharacter->GetController()))
 		{
 			FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Downed");
@@ -101,6 +108,12 @@ void UDownedCombatComponent::DisableComponent()
 	IsComponentActive = false;
 	TotalDownedTime = 0.0f;
 	FGameplayEventData OnRecoverEventData;
+	
+	AEnemyBaseCharacter* EnemyChar = Cast<AEnemyBaseCharacter>(GetOwner());
+	if(EnemyChar)
+	{
+		EnemyChar->ShouldRotate = true;
+	}
 	
 
 	//TODO: Native approach, fix later

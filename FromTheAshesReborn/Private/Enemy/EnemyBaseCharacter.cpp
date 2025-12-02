@@ -7,9 +7,11 @@
 #include "Components/WidgetComponent.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Enemy/GroupCombatSubsystem.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/PlayerCharacter.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -148,7 +150,16 @@ void AEnemyBaseCharacter::HealthChanged(UHealthComponent* InHealthComponent, flo
 
 void AEnemyBaseCharacter::CheckDeath(float NewValue)
 {
-	if(!IsDead && NewValue <= 0.0f)
+	bool TempSpecialBool = false;
+	APlayerCharacter* PlayerChar = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if(PlayerChar)
+	{
+		if(PlayerChar->GetFTAAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag2")))
+		{
+			TempSpecialBool = true;
+		}
+	}
+	if(!IsDead && NewValue <= 0.0f && !TempSpecialBool)
 	{
 		IsDead = true;
 		Death();
