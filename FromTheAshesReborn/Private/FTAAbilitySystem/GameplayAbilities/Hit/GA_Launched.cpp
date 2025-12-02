@@ -27,8 +27,9 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("DownedCombatTag.EnableComponent")));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 	const ULaunchEventObject* LaunchInfoObject = Cast<ULaunchEventObject>(CurrentEventData.OptionalObject);
-
 	
 	if(!LaunchInfoObject)
 	{
@@ -39,8 +40,6 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		LaunchInfoObject->LaunchData.LaunchDuration = 0.10f;
 		LaunchInfoObject->LaunchData.StallDuration = 0.2;
 		LaunchInfoObject->LaunchData.Offset = LaunchOffset;
-
-	
 	}
 	
 	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(
@@ -68,6 +67,8 @@ void UGA_Launched::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	
 	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
+
+	
 
 	UAerialCombatComponent* AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
 

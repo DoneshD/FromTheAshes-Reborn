@@ -2,6 +2,7 @@
 
 #include "CombatComponents/CentralStateComponent.h"
 #include "DataAsset/RecoverAbilityDataAsset.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -27,6 +28,12 @@ bool UGA_Recover::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	AEnemyBaseCharacter* EnemyChar = Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo());
+	if(EnemyChar)
+	{
+		EnemyChar->ShouldRotate = true;
+	}
 
 	// GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Neutral"));
 	GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentOrientation(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);

@@ -42,8 +42,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CMC;
-
-	
 	
 protected:
 	
