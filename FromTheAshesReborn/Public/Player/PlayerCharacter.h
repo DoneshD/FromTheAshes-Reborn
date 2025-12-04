@@ -38,6 +38,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Camera")
 	TObjectPtr<UCameraComponent> CameraComponent;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	int TempEnemyCountDeath = 0;
+
 protected:
 	
 	// UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Components")

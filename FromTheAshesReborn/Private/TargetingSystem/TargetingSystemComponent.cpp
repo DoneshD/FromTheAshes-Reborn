@@ -287,7 +287,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		float TargetArmLength = DesiredRadius + 300.0f;
 		if(PlayerOwner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
 		{
-			TargetArmLength = DesiredRadius + 350.0f;
+			TargetArmLength = DesiredRadius + 500.0f;
 		}
 
 		UAbilitySystemComponent* EnemyASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
@@ -295,7 +295,7 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		{
 			if(EnemyASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
 			{
-				TargetArmLength = DesiredRadius + 350.0f;
+				TargetArmLength = DesiredRadius + 500.0f;
 			}
 			
 		}

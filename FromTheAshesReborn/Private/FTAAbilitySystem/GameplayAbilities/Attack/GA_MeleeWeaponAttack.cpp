@@ -572,7 +572,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
-	
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
 	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
 	OnHitEventData.Target = TargetActor;
 	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
@@ -585,6 +585,15 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	if(AttackData.AttackDirectionStruct.AttackDirection == ESpatialDirection::TempBlocker)
 	{
 		return;
+	}
+
+	if(TargetASC)
+	{
+		if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag8")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Dont apply"))
+			return;
+		}
 	}
 	
 	if(!MeleeWeaponActor)

@@ -126,6 +126,10 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		
 		if(AssetsToTry.Num() > 0)
 		{
+			ESpatialDirection Dir = HitInfoObject->HitData.HitDirection;
+
+			UE_LOG(LogTemp, Warning, TEXT("HitDirection: %s"),
+				*StaticEnum<ESpatialDirection>()->GetNameStringByValue((int64)Dir));
 			int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
 			if(HitInfoObject->HitData.HitDirection == ESpatialDirection::Knockback)
 			{

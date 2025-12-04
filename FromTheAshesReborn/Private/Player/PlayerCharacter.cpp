@@ -69,6 +69,8 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	TempEnemyCountDeath = 0;
+
 	if (!ParkourSystemComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - ParkourSystemComponent is null"), *GetActorNameOrLabel());

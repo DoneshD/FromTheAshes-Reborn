@@ -176,6 +176,12 @@ void AEnemyBaseCharacter::Death()
 		return;
 	}
 
+	APlayerCharacter* Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if(Player)
+	{
+		Player->TempEnemyCountDeath += 1;
+	}
+
 	EnemyController->BrainComponent->StopLogic("");
 	
 	if(DeathMontage && DeathMontage->IsValidLowLevel())

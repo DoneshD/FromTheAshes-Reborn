@@ -126,16 +126,16 @@ void UGA_Bounce::CheckGroundBelow()
 		
 	}
 	
-	DrawDebugCapsule(
-		GetWorld(),
-		Center,
-		HalfHeight,
-		Radius,
-		FQuat::Identity,
-		bHit ? FColor::Green : FColor::Red,
-		false,
-		0.1f
-	);
+	// DrawDebugCapsule(
+	// 	GetWorld(),
+	// 	Center,
+	// 	HalfHeight,
+	// 	Radius,
+	// 	FQuat::Identity,
+	// 	bHit ? FColor::Green : FColor::Red,
+	// 	false,
+	// 	0.1f
+	// );
 }
 
 
