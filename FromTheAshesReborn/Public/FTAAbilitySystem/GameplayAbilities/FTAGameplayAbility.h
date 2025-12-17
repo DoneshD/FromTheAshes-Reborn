@@ -124,7 +124,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Type"))
+	/*UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Type"))
 	FGameplayTag AbilityTypeTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Weapon"))
@@ -137,7 +137,7 @@ public:
 	FGameplayTag OrientationTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Form"))
-	FGameplayTag FormTag;
+	FGameplayTag FormTag;*/
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
 	FName WarpTargetName;
