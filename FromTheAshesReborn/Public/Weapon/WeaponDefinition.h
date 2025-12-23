@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Object.h"
 #include "WeaponDefinition.generated.h"
 
@@ -44,6 +45,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category=Equipment)
 	TArray<FEquipmentActorToSpawn> ActorsToSpawn;
+
+	UPROPERTY(EditDefaultsOnly, Category=Equipment)
+	FGameplayTag WeaponType = FGameplayTag::EmptyTag;
 
 	
 };

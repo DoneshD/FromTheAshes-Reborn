@@ -91,7 +91,7 @@ void APlayerCharacter::BeginPlay()
 
 	// ParkourSystemComponent->SetIntializeReference(this, SpringArmComponent, CameraComponent, MotionWarpingComponent);
 
-	EquipmentManagerComponent->SetEquippedWeapon(WeaponClass);
+	// EquipmentManagerComponent->SetEquippedWeapon(WeaponClass);
 	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 	TargetSystemComponent->OnTargetLockedOn.AddDynamic(this, &APlayerCharacter::OnTargetLockedOn);
 	TargetSystemComponent->OnTargetLockedOff.AddDynamic(this, &APlayerCharacter::OnTargetLockedOff);

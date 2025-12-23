@@ -38,7 +38,11 @@ protected:
 
 	//-----------------------------For debugging--------------------------//
 	TObjectPtr<UInputAction> Input_SlowTime;
+	
 	bool IsTimeSlowed = false;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector2D LookAxisVector;
 
 
 protected:

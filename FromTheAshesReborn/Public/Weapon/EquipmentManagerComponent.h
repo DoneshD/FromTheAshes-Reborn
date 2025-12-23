@@ -68,4 +68,8 @@ public:
 	AWeaponActorBase* GetEquippedWeaponActor();
 
 	UFTAAbilitySystemComponent* GetAbilitySystemComponent() const;
+
+	UFUNCTION(BlueprintCallable)
+	bool AddWeaponDefinitionToEquipment(TSubclassOf<UWeaponDefinition> EquipmentDefinition);
+	
 };

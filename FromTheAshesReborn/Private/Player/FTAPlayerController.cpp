@@ -110,7 +110,7 @@ void AFTAPlayerController::HandleMoveActionReleased(const FInputActionValue& Inp
 
 void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputActionValue)
 {
-	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
+	LookAxisVector = InputActionValue.Get<FVector2D>();
 
 	AddYawInput(LookAxisVector.X);
 	AddPitchInput(LookAxisVector.Y);

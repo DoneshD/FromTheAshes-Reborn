@@ -126,3 +126,11 @@ UFTAAbilitySystemComponent* UEquipmentManagerComponent::GetAbilitySystemComponen
 	AFTACharacter* FTACharacter = Cast<AFTACharacter>(GetOwner());
 	return FTACharacter->GetFTAAbilitySystemComponent();
 }
+
+bool UEquipmentManagerComponent::AddWeaponDefinitionToEquipment(TSubclassOf<UWeaponDefinition> EquipmentDefinition)
+{
+
+	
+	
+	return true;
+}
