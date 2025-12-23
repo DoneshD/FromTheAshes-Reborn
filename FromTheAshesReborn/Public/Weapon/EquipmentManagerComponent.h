@@ -40,8 +40,24 @@ class FROMTHEASHESREBORN_API UEquipmentManagerComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere);
+	TArray<TSubclassOf<UWeaponDefinition>> WeaponsToAddForEquipment;
+	
 	UPROPERTY()
 	TArray<FFTAAppliedEquipmentItem> Entries;
+
+	UPROPERTY()
+	TArray<TSubclassOf<UWeaponDefinition>> AllWeaponDefinitions;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere);
+	TArray<TSubclassOf<UWeaponDefinition>> AscendantWeaponDefinitions;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere);
+	TArray<TSubclassOf<UWeaponDefinition>> AbyssalWeaponDefinitions;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere);
+	TArray<TSubclassOf<UWeaponDefinition>> ZenithWeaponDefinitions;
 
 	UPROPERTY()
 	UWeaponInstance* CurrentEquippedWeaponInstance;

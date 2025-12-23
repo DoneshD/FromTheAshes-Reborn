@@ -129,8 +129,28 @@ UFTAAbilitySystemComponent* UEquipmentManagerComponent::GetAbilitySystemComponen
 
 bool UEquipmentManagerComponent::AddWeaponDefinitionToEquipment(TSubclassOf<UWeaponDefinition> EquipmentDefinition)
 {
+	AllWeaponDefinitions.Add(EquipmentDefinition);
 
-	
+	const UWeaponDefinition* WeaponCDO = GetDefault<UWeaponDefinition>(EquipmentDefinition);
+
+	if(WeaponCDO->WeaponType.MatchesTagExact(FGameplayTag::RequestGameplayTag("Ascendant")))
+	{
+		AscendantWeaponDefinitions.Add(EquipmentDefinition);
+		UE_LOG(LogTemp, Log, TEXT("Adding Equipment definition 1 "));
+	}
+	else if(WeaponCDO->WeaponType.MatchesTagExact(FGameplayTag::RequestGameplayTag("Abyssal")))
+	{
+		AbyssalWeaponDefinitions.Add(EquipmentDefinition);
+		UE_LOG(LogTemp, Log, TEXT("Adding Equipment definition 2 "));
+	}
+	else if(WeaponCDO->WeaponType.MatchesTagExact(FGameplayTag::RequestGameplayTag("Zenith")))
+	{
+		ZenithWeaponDefinitions.Add(EquipmentDefinition);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UEquipmentManagerComponent::AddWeaponDefinitionToEquipment - Matches None"));
+	}
 	
 	return true;
 }
