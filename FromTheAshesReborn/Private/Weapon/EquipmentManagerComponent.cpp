@@ -62,6 +62,8 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 	{
 		InstanceType = UWeaponInstance::StaticClass();
 	}
+
+	CurrentType = WeaponCDO->WeaponType;
 	
 	FFTAAppliedEquipmentItem& NewEntry = Entries.AddDefaulted_GetRef();
 	NewEntry.EquipmentDefinition = WeaponDefinition;
@@ -136,12 +138,10 @@ bool UEquipmentManagerComponent::AddWeaponDefinitionToEquipment(TSubclassOf<UWea
 	if(WeaponCDO->WeaponType.MatchesTagExact(FGameplayTag::RequestGameplayTag("Ascendant")))
 	{
 		AscendantWeaponDefinitions.Add(EquipmentDefinition);
-		UE_LOG(LogTemp, Log, TEXT("Adding Equipment definition 1 "));
 	}
 	else if(WeaponCDO->WeaponType.MatchesTagExact(FGameplayTag::RequestGameplayTag("Abyssal")))
 	{
 		AbyssalWeaponDefinitions.Add(EquipmentDefinition);
-		UE_LOG(LogTemp, Log, TEXT("Adding Equipment definition 2 "));
 	}
 	else if(WeaponCDO->WeaponType.MatchesTagExact(FGameplayTag::RequestGameplayTag("Zenith")))
 	{

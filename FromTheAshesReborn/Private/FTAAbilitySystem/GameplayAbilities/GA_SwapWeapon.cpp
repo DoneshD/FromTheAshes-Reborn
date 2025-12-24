@@ -12,6 +12,8 @@ bool UGA_SwapWeapon::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
 void UGA_SwapWeapon::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	UE_LOG(LogTemp, Display, TEXT("UGA_SwapWeapon Active Ability"));
 }
 
 void UGA_SwapWeapon::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

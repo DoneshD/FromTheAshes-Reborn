@@ -59,6 +59,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere);
 	TArray<TSubclassOf<UWeaponDefinition>> ZenithWeaponDefinitions;
 
+	UPROPERTY(BlueprintReadWrite);
+	FGameplayTag CurrentType = FGameplayTag::EmptyTag;
+
 	UPROPERTY()
 	UWeaponInstance* CurrentEquippedWeaponInstance;
 
