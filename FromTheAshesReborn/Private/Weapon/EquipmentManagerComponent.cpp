@@ -85,8 +85,6 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 		UE_LOG(LogTemp, Error, TEXT("FFTAEquipmentList::AddEntry - ASC IS NULL"));
 	}
 
-	
-
 	Result->SpawnEquipmentActors(WeaponCDO->ActorsToSpawn);
 	Result->OnEquipped();
 	CurrentEquippedWeaponInstance = Result;

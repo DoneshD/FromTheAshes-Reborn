@@ -21,5 +21,13 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UUW_EquipmentItemSlot>> ZenithSlots;
+public:
+	
+
+	UFUNCTION(BlueprintCallable)
+	UUW_EquipmentItemSlot* GetEquippedItemSlot(TArray<UUW_EquipmentItemSlot*> SlotArray) const;
+
+	UFUNCTION(BlueprintCallable)
+	void SetEquippedItemSlot(UUW_EquipmentItemSlot* ItemSlot) const;
 	
 };
