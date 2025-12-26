@@ -25,3 +25,8 @@ void UGA_SwapWeapon::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
+
+void UGA_SwapWeapon::ChangeEquippedItemSlot(int32 SlotIndex)
+{
+	
+}

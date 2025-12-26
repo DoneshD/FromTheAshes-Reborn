@@ -298,15 +298,15 @@ void AFTACharacter::Falling()
 {
 	Super::Falling();
 
-	if(!CentralStateComponent || !CentralStateComponent->IsValidLowLevel())
-	{
-		return;
-	}
-
-	if(CentralStateComponent && CentralStateComponent->IsValidLowLevel())
-	{
-		CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag, MOVE_Falling);
-	}
+	// if(!CentralStateComponent || !CentralStateComponent->IsValidLowLevel())
+	// {
+	// 	return;
+	// }
+	//
+	// if(CentralStateComponent && CentralStateComponent->IsValidLowLevel())
+	// {
+	// 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag, MOVE_Falling);
+	// }
 
 }
 
