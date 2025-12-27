@@ -22,7 +22,7 @@ void BaseLoadingScreen::Construct(const FArguments& InArgs)
 				.VAlign(VAlign_Center)
 				[
 					SNew(STextBlock)
-					.Text(FText::FromString(TEXT("Loading...")))
+					.Text(FText::FromString(TEXT("New Loading...")))
 					.Font(Font)
 					.ColorAndOpacity(FLinearColor::White)
 					.Justification(ETextJustify::Center)
