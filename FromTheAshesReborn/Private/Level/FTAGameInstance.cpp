@@ -1,5 +1,4 @@
 ﻿#include "Level/FTAGameInstance.h"
-
 #include "MoviePlayer.h"
 #include "Level/BaseLoadingScreen.h"
 
@@ -25,10 +24,12 @@ void UFTAGameInstance::BeginLoadingScreen(const FString& MapName)
 
 		GetMoviePlayer()->SetupLoadingScreen(LoadingScreen);
 		GetMoviePlayer()->PlayMovie();
+
+		
 	}
 }
 
 void UFTAGameInstance::EndLoadingScreen(UWorld* InLoadedWorld)
 {
-	UE_LOG(LogTemp, Warning, TEXT("EndLoadingScreen"))
+	
 }
