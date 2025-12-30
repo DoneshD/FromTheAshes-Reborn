@@ -203,8 +203,6 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("UFA_FTAGAme Act"));
-
 	/*if (MovingAbility)
 	{
 		MoveToLocationTask = UAbilityTask_MoveToLocation::MoveToLocation(this, FName(TEXT("MoveToLocation")),

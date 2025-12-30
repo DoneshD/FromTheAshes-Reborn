@@ -94,6 +94,10 @@ public:
 	bool ShouldUpdateControllerRotation = false;
 	bool bIsLockingOn = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
+	float DeltaLength = 400.0f;
+	
+
 private:
 	UPROPERTY()
 	AActor* OwnerActor;

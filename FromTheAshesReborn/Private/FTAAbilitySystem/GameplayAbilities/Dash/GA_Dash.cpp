@@ -111,6 +111,7 @@ void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGamepl
 
 void UGA_Dash::UpdateDashMovement(float DeltaTime)
 {
+	UE_LOG(LogTemp, Warning, TEXT("TESTtttt"))
 	DashElapsedTime += DeltaTime;
 
 	const float Alpha = FMath::Clamp(DashElapsedTime / DashDuration, 0.0f, 1.0f);

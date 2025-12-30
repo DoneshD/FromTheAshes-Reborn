@@ -19,7 +19,7 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 {
 	CameraAnchorComponent = CreateDefaultSubobject<USceneComponent>(TEXT("CameraAnchorComponent"));
 	CameraAnchorComponent->SetupAttachment(RootComponent);
-	CameraAnchorComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 50.0f));
+	CameraAnchorComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	
 	DefaultCameraAnchorRelativeLocation = CameraAnchorComponent->GetRelativeLocation();
 	DefaultCameraAnchorRelativeRotation = CameraAnchorComponent->GetRelativeRotation();
