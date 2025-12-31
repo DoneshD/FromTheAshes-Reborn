@@ -275,7 +275,8 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		
 		// PlayerOwner->CameraAnchorComponent->SetWorldLocation(MidpointAnchorLocation);
 
-		const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
+		
 		// const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->CameraAnchorComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
 		// PlayerOwner->CameraAnchorComponent->SetWorldRotation(NewRotation);
 		CSC->HandleCameraAnchorAdjustment(SmoothedMidPoint, LookAtRotation, true, true, true, OffScreenInterpSpeed);
@@ -309,7 +310,8 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
 	if (ShouldUpdateControllerRotation)
 	{
-		const FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor);
+		FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor);
+		
 		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, ControlRotationInterpSpeed * 5);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
