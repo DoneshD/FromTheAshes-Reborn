@@ -2,6 +2,7 @@
 
 UGA_EnterElegyRequiemState::UGA_EnterElegyRequiemState()
 {
+
 }
 
 void UGA_EnterElegyRequiemState::OnAbilityTick(float DeltaTime)
