@@ -269,7 +269,7 @@ void UFTAAbilitySystemComponent::AddToActivationGroup(FGameplayTag Group, UFTAGa
 	FGameplayAbilitySpec* Spec = FindAbilitySpecFromClass(FTAAbility->GetClass());
 	if (!Spec)
 	{
-		UE_LOG(LogTemp, Error, TEXT("RemoveFromActivationGroup failed: Spec not found for ability [%s]."), *FTAAbility->GetName());
+		// UE_LOG(LogTemp, Error, TEXT("RemoveFromActivationGroup failed: Spec not found for ability [%s]."), *FTAAbility->GetName());
 		return;
 	}
 
@@ -309,7 +309,7 @@ void UFTAAbilitySystemComponent::RemoveFromActivationGroup(FGameplayTag Group, U
 	FGameplayAbilitySpec* Spec = FindAbilitySpecFromClass(FTAAbility->GetClass());
 	if (!Spec)
 	{
-		UE_LOG(LogTemp, Error, TEXT("RemoveFromActivationGroup failed: Spec not found for ability [%s]."), *FTAAbility->GetName());
+		// UE_LOG(LogTemp, Error, TEXT("RemoveFromActivationGroup failed: Spec not found for ability [%s]."), *FTAAbility->GetName());
 		return;
 	}
 
