@@ -132,15 +132,19 @@ void AEnemyBaseCharacter::TimelineFinished()
 	ShouldDissolveTimelineTick = false;
 	GetMesh()->DestroyComponent();
 	GetCapsuleComponent()->DestroyComponent();
-
-	if(EquipmentManagerComponent->GetEquippedWeaponActor()->SkeletalMesh)
-	{
-		EquipmentManagerComponent->GetEquippedWeaponActor()->SkeletalMesh->DestroyComponent();
-		EquipmentManagerComponent->GetEquippedWeaponActor()->Destroy();
-		HealthWidget->DestroyComponent();
-		
-	}
 	
+	for (AWeaponActorBase* SpawnedActor : EquipmentManagerComponent->GetEquippedWeaponActors())
+	{
+		if(SpawnedActor)
+		{
+			if(SpawnedActor->SkeletalMesh)
+			{
+				SpawnedActor->SkeletalMesh->DestroyComponent();
+				SpawnedActor->Destroy();
+				HealthWidget->DestroyComponent();
+			}
+		}
+	}
 }
 
 void AEnemyBaseCharacter::HealthChanged(UHealthComponent* InHealthComponent, float OldValue, float NewValue, AActor* InInstigator)

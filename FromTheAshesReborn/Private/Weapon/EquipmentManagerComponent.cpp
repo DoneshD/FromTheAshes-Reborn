@@ -93,7 +93,8 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 	{
 		if(AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor))
 		{
-			CurrentEquippedWeaponActor = WeaponActor;
+			UE_LOG(LogTemp, Warning, TEXT("WeaponActor name: %s"), *WeaponActor->GetName());
+			CurrentEquippedWeaponActors.Add(WeaponActor);
 		}
 	}
 	
@@ -110,14 +111,15 @@ UWeaponInstance* UEquipmentManagerComponent::GetEquippedWeaponInstance()
 	return nullptr;
 }
 
-AWeaponActorBase* UEquipmentManagerComponent::GetEquippedWeaponActor()
+TArray<AWeaponActorBase*> UEquipmentManagerComponent::GetEquippedWeaponActors()
 {
-	if(CurrentEquippedWeaponActor)
+	if(!CurrentEquippedWeaponActors.IsEmpty())
 	{
-		return CurrentEquippedWeaponActor;
+		return CurrentEquippedWeaponActors;
 	}
 	UE_LOG(LogTemp, Error, TEXT("No currently equipped actor"));
-	return nullptr;
+	CurrentEquippedWeaponActors.Empty();
+	return CurrentEquippedWeaponActors;
 }
 
 

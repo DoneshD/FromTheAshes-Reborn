@@ -53,7 +53,7 @@ protected:
 	TObjectPtr<UCentralStateComponent> CentralStateComponent;
 	
 	UPROPERTY()
-	TObjectPtr<AWeaponActorBase> MeleeWeaponActor;
+	TArray<TObjectPtr<AWeaponActorBase>> MeleeWeaponActors;
 
 protected:
 

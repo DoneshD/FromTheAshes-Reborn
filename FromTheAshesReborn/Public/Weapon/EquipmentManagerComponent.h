@@ -66,7 +66,7 @@ public:
 	UWeaponInstance* CurrentEquippedWeaponInstance;
 
 	UPROPERTY()
-	TObjectPtr<AWeaponActorBase> CurrentEquippedWeaponActor;
+	TArray<TObjectPtr<AWeaponActorBase>> CurrentEquippedWeaponActors;
 
 public:
 	
@@ -84,7 +84,7 @@ public:
 	UWeaponInstance* GetEquippedWeaponInstance();
 
 	UFUNCTION(BlueprintCallable)
-	AWeaponActorBase* GetEquippedWeaponActor();
+	TArray<AWeaponActorBase*> GetEquippedWeaponActors();
 
 	UFTAAbilitySystemComponent* GetAbilitySystemComponent() const;
 

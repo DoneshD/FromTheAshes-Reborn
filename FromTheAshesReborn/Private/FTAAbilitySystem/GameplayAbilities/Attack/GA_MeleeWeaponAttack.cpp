@@ -115,11 +115,22 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 		return;
 	}
 	
-	MeleeWeaponActor = FTAChar->EquipmentManagerComponent->GetEquippedWeaponActor();
-	
-	if(!MeleeWeaponActor)
+	MeleeWeaponActors = FTAChar->EquipmentManagerComponent->GetEquippedWeaponActors();
+
+	for (AWeaponActorBase* SpawnedActor : FTAChar->EquipmentManagerComponent->GetEquippedWeaponActors())
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
+		if(SpawnedActor)
+		{
+			if(SpawnedActor->SkeletalMesh)
+			{
+				MeleeWeaponActors.Add(SpawnedActor);
+			}
+		}
+	}
+	
+	if(MeleeWeaponActors.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is empty"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
@@ -134,14 +145,23 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 	}
 
 	MeleePropertiesComponent->OnSetMeleeData.AddUniqueDynamic(this, &UGA_MeleeWeaponAttack::SetRuntimeMeleeData);
-	
-	MeleeWeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+
+	for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
+	{
+		//Example of melee only
+		if(WeaponActor->TracingComponent)
+		{
+			WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+			
+			WeaponActor->TracingComponent->BoxHalfSize = FVector(
+				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
+				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
+				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+			
+		}
+	}
 
 	
-		MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(
-			DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
-			DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
-			DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
 	
 	
 	if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
@@ -172,15 +192,18 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-
-	if(!MeleeWeaponActor)
+	for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
 	{
-		//TODO: Printing incorrectly, fix later
-		//UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
-		return;
+		if(!WeaponActor)
+		{
+			//TODO: Printing incorrectly, fix later
+			//UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
+			return;
+		}
+		
+		WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 	}
 	
-	MeleeWeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 
 	AttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 
@@ -264,18 +287,25 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 
 void UGA_MeleeWeaponAttack::StartMeleeWeaponTrace()
 {
-	MeleeWeaponActor->TracingComponent->BoxHalfSize = FVector(
+	for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
+	{
+		WeaponActor->TracingComponent->BoxHalfSize = FVector(
 		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
 		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
 		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+		
+		WeaponActor->TracingComponent->ToggleTraceCheck(true);
+	}
 	
-	MeleeWeaponActor->TracingComponent->ToggleTraceCheck(true);
 }
 
 void UGA_MeleeWeaponAttack::EndMeleeWeaponTrace()
 {
-	MeleeWeaponActor->TracingComponent->ToggleTraceCheck(false);
-	MeleeWeaponActor->TracingComponent->ClearHitArray();
+	for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
+	{
+		WeaponActor->TracingComponent->ToggleTraceCheck(false);
+		WeaponActor->TracingComponent->ClearHitArray();
+	}
 }
 
 void UGA_MeleeWeaponAttack::OnHitAdded(FHitResult LastItem)
@@ -594,7 +624,7 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 		}
 	}
 	
-	if(!MeleeWeaponActor)
+	if(MeleeWeaponActors.IsEmpty())
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
 		return;
