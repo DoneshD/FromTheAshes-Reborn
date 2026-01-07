@@ -3,6 +3,7 @@
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
+#include "CombatComponents/RangedCombatComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Player/FTAPlayerState.h"
@@ -60,8 +61,20 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 	
 	TargetSystemComponent = CreateDefaultSubobject<UTargetingSystemComponent>(TEXT("TargetingSystemComponent"));
+	this->AddOwnedComponent(TargetSystemComponent);
+	InitializedActorComponents.AddUnique(TargetSystemComponent);
+	
 	ParkourSystemComponent = CreateDefaultSubobject<UParkourSystemComponent>(TEXT("ParkourSystemComponent"));
+	this->AddOwnedComponent(ParkourSystemComponent);
+	InitializedActorComponents.AddUnique(ParkourSystemComponent);
+	
 	CameraManagerComponent = CreateDefaultSubobject<UCameraSystemComponent>(TEXT("CameraSystemComponent"));
+	this->AddOwnedComponent(CameraManagerComponent);
+	InitializedActorComponents.AddUnique(CameraManagerComponent);
+	
+	RangedCombatComponent = CreateDefaultSubobject<URangedCombatComponent>(TEXT("RangedCombatComponent"));
+	this->AddOwnedComponent(RangedCombatComponent);
+	InitializedActorComponents.AddUnique(RangedCombatComponent);
 	
 }
 
@@ -70,28 +83,9 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	TempEnemyCountDeath = 0;
-
-	if (!ParkourSystemComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - ParkourSystemComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
-
-	if (!TargetSystemComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - TargetingSystemComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
-
-	if (!CameraManagerComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] APlayerCharacter::BeginPlay - CameraManagerComponent is null"), *GetActorNameOrLabel());
-		return;
-	}
-
+	
 	// ParkourSystemComponent->SetIntializeReference(this, SpringArmComponent, CameraComponent, MotionWarpingComponent);
-
-	// EquipmentManagerComponent->SetEquippedWeapon(WeaponClass);
+	
 	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 	TargetSystemComponent->OnTargetLockedOn.AddDynamic(this, &APlayerCharacter::OnTargetLockedOn);
 	TargetSystemComponent->OnTargetLockedOff.AddDynamic(this, &APlayerCharacter::OnTargetLockedOff);

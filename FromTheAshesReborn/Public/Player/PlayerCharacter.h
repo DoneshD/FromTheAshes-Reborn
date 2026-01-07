@@ -4,6 +4,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "PlayerCharacter.generated.h"
 
+class URangedCombatComponent;
 class UCameraComponent;
 class USpringArmComponent;
 class UCameraSystemComponent;
@@ -50,7 +51,11 @@ protected:
 	TObjectPtr<UTargetingSystemComponent> TargetSystemComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<URangedCombatComponent> RangedCombatComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
+
 
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	// TObjectPtr<UCameraSystemComponent> CameraSystemComponent;
