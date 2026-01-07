@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GA_MeleeWeaponAttack.h"
+#include "FTAAbilitySystem/GameplayAbilities/AerialAbilityInterface.h"
 #include "GA_MeleeWeaponAttack_Aerial.generated.h"
 
 
@@ -9,7 +10,7 @@ class UAerialCombatComponent;
 class UAT_SuspendInAirAndWait;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Aerial : public UGA_MeleeWeaponAttack
+class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Aerial : public UGA_MeleeWeaponAttack, public IAerialAbilityInterface
 {
 	GENERATED_BODY()
 
@@ -46,5 +47,9 @@ public:
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	virtual bool IsCharacterAirborne() const override;
+
+	virtual int TestInheritedFunc() const override;
 
 };

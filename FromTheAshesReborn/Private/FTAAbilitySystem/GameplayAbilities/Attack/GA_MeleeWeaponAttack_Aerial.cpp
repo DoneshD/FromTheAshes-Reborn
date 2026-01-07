@@ -150,3 +150,13 @@ void UGA_MeleeWeaponAttack_Aerial::OnMontageBlendingOut(FGameplayTag EventTag, F
 	}
 	
 }
+
+bool UGA_MeleeWeaponAttack_Aerial::IsCharacterAirborne() const
+{
+	return true;
+}
+
+int UGA_MeleeWeaponAttack_Aerial::TestInheritedFunc() const
+{
+	return 1;
+}

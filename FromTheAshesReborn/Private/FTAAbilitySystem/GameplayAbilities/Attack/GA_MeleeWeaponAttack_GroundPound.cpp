@@ -269,3 +269,8 @@ void UGA_MeleeWeaponAttack_GroundPound::OnSlamComplete()
 	GetFTACharacterFromActorInfo()->GetCharacterMovement()->GravityScale = 4.0;
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }
+
+int UGA_MeleeWeaponAttack_GroundPound::TestInheritedFunc() const
+{
+	return Super::TestInheritedFunc();
+}

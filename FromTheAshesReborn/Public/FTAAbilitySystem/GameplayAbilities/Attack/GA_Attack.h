@@ -1,85 +1,63 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "../GA_FromEquipment.h"
-#include "CombatComponents/MeleePropertiesComponent.h"
-#include "GA_MeleeWeaponAttack.generated.h"
+#include "FTAAbilitySystem/GameplayAbilities/GA_FromEquipment.h"
+#include "GA_Attack.generated.h"
 
-class UCentralStateComponent;
-class UGA_ReceiveHit;
-struct FMeleeAttackDataStruct;
-class UMeleePropertiesComponent;
-class UNiagaraSystem;
-class UComboManagerComponent;
-class UMeleeAbilityDataAsset;
-class UFTAAbilityDataAsset;
-class UMeleeAttackDataAsset;
+
 class AWeaponActorBase;
-class UMeleeWeaponInstance;
+class UCentralStateComponent;
+class UComboManagerComponent;
 
-USTRUCT(BlueprintType)
+//Atack Forms
+
+/*USTRUCT(BlueprintType)
 struct FMeleeAttackForms
 {
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> NormalAttacks;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> PauseAttacks;
+	TArray<TObjectPtr<UMeleeAbilityDataAsset>> NormalAttacks;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> VariantAttacks;
-	
-};
+};*/
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack : public UGA_FromEquipment
+class FROMTHEASHESREBORN_API UGA_Attack : public UGA_FromEquipment
 {
 	GENERATED_BODY()
 
 protected:
 
-	UPROPERTY()
-	TObjectPtr<AFTACharacter> FTAChar;
-
+	//Components and Actors
+	
 	UPROPERTY()
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
 	UPROPERTY()
-	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
-	
-	UPROPERTY()
 	TObjectPtr<UCentralStateComponent> CentralStateComponent;
-	
+
 	UPROPERTY()
-	TArray<TObjectPtr<AWeaponActorBase>> MeleeWeaponActors;
+	TArray<TObjectPtr<AWeaponActorBase>> WeaponActors;
 
-protected:
+	//Attack Assets and Data
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
+	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
 	FMeleeAttackForms MeleeAttackAssets;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FMeleeAttackDataStruct DefaultAttackData;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	bool PauseEnabled = false;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	bool NudgeForward = false;
-
-	FMeleeAttackDataStruct AttackData;
-
-	UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
-	FGameplayEventData OnHitEventData;
 	
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "After Image")
-	// float AfterImageDistance = 200.0f;
+	FMeleeAttackDataStruct CurrentAttackData;*/
+
+	//Hit Event
+
+	/*UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
+	FGameplayEventData OnHitEventData;*/
 
 protected:
 
-	UGA_MeleeWeaponAttack(const FObjectInitializer& = FObjectInitializer::Get());
+	UGA_Attack(const FObjectInitializer& = FObjectInitializer::Get());
 
 	virtual void OnAbilityTick(float DeltaTime) override;
 	
@@ -87,37 +65,8 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-	
-public:
-	
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void ResetMeleeAttack();
 
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
-
-	//only melee
-	void StartMeleeWeaponTrace();
-	void EndMeleeWeaponTrace();
-
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	UMeleeWeaponInstance* GetMeleeWeaponInstance() const;
-
-	UFUNCTION()
-	void SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeRuntimeData);
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
-	void TempLift();
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Temp")
-	void TempLaunchObject();
-
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "FTAAbility")
-	void TempTick(float DeltaTime);
-
-protected:
-	
-	UFUNCTION()
+	/*UFUNCTION()
 	void OnHitAdded(FHitResult LastItem);
 
 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
@@ -138,6 +87,18 @@ protected:
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 
-	void SpawnAfterImage();
+	void SpawnAfterImage();*/
 
+	
+	
+public:
+	
+	/*UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	void ResetMeleeAttack();
+
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
+
+	UFUNCTION()
+	void SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeRuntimeData);*/
 };

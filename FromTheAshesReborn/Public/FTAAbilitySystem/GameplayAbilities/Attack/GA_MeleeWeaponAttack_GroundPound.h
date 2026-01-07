@@ -72,5 +72,7 @@ public:
 	
 	UFUNCTION()
 	void OnSlamComplete();
+
+	virtual int TestInheritedFunc() const override;
 	
 };
