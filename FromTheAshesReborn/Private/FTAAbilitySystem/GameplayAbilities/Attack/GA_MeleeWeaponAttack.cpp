@@ -148,22 +148,21 @@ void UGA_MeleeWeaponAttack::ActivateAbility(const FGameplayAbilitySpecHandle Han
 
 	for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
 	{
-		//Example of melee only
-		if(WeaponActor->TracingComponent)
+		if(WeaponActor)
 		{
-			WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
-			
-			WeaponActor->TracingComponent->BoxHalfSize = FVector(
-				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
-				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
-				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
-			
+			if(WeaponActor->TracingComponent)
+			{
+				WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
+				
+				WeaponActor->TracingComponent->BoxHalfSize = FVector(
+					DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
+					DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
+					DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+				
+			}
 		}
 	}
 
-	
-	
-	
 	if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
@@ -289,22 +288,34 @@ void UGA_MeleeWeaponAttack::StartMeleeWeaponTrace()
 {
 	for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
 	{
-		WeaponActor->TracingComponent->BoxHalfSize = FVector(
-		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
-		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
-		AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
-		
-		WeaponActor->TracingComponent->ToggleTraceCheck(true);
+		//Another instance of crashing here
+		if(WeaponActor)
+		{
+			if(WeaponActor->TracingComponent)
+			{
+				WeaponActor->TracingComponent->BoxHalfSize = FVector(
+				AttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
+				AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
+				AttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+				
+				WeaponActor->TracingComponent->ToggleTraceCheck(true);
+			}
+		}
 	}
-	
 }
 
 void UGA_MeleeWeaponAttack::EndMeleeWeaponTrace()
 {
 	for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
 	{
-		WeaponActor->TracingComponent->ToggleTraceCheck(false);
-		WeaponActor->TracingComponent->ClearHitArray();
+		if(WeaponActor)
+		{
+			if(WeaponActor->TracingComponent)
+			{
+				WeaponActor->TracingComponent->ToggleTraceCheck(false);
+				WeaponActor->TracingComponent->ClearHitArray();
+			}
+		}
 	}
 }
 
