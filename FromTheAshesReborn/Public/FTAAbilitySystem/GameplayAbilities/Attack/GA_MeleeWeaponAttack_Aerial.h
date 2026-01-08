@@ -50,6 +50,4 @@ public:
 
 	virtual bool IsCharacterAirborne() const override;
 
-	virtual int TestInheritedFunc() const override;
-
 };

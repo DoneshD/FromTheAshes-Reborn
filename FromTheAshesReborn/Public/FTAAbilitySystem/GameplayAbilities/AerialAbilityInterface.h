@@ -18,6 +18,4 @@ class FROMTHEASHESREBORN_API IAerialAbilityInterface
 public:
 
 	virtual bool IsCharacterAirborne() const = 0;
-
-	virtual int TestInheritedFunc() const = 0;
 };
