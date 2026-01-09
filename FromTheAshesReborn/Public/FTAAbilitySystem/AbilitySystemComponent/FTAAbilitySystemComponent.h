@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
 #include "FTAAbilityDataObject.h"
+#include "DataAsset/FTAAbilityDataAsset.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTAAbilitySystemComponent.generated.h"
 
@@ -12,7 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbil
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitQueueInputDelegate, FGameplayTag, InputTag);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityRuntimeDataSetSignature, FBaseAbilityDataStruct, InAbilityData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityRuntimeDataSetSignature, UFTAAbilityDataAsset*, InAbilityData);
 
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;

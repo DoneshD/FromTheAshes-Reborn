@@ -8,6 +8,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UFTAAbilityDataAsset;
 struct FBaseAbilityDataStruct;
 struct FAbilityDataStruct;
 class UAbilityTask_MoveToLocation;
@@ -198,7 +199,7 @@ public:
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 
 	UFUNCTION()
-	void SetRuntimeAbilityData(FBaseAbilityDataStruct InAbilityRuntimeData);
+	void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData);
 	
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage);
 
