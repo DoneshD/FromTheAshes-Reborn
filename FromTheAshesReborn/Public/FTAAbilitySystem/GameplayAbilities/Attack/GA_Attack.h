@@ -12,13 +12,18 @@ class UComboManagerComponent;
 //Atack Forms
 
 /*USTRUCT(BlueprintType)
-struct FMeleeAttackForms
+struct FAttackComboType
 {
 	GENERATED_BODY()
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TObjectPtr<UAttackAbilityDataAsset>> NormalAttacks;
 
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> NormalAttacks;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TObjectPtr<UAttackAbilityDataAsset>> PauseAttacks;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<TObjectPtr<UAttackAbilityDataAsset>> VariantAttacks;
 	
 };*/
 
@@ -86,10 +91,6 @@ protected:
 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
-
-	void SpawnAfterImage();*/
-
-	
 	
 public:
 	

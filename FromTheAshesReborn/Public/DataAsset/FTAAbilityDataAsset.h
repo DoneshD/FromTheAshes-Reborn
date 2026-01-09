@@ -21,4 +21,13 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
 	TObjectPtr<UAnimMontage> MontageToPlay;
+
+	/*UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
+	int RequiredIndex;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
+	bool RequiredPause = false;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
+	FMeleeWarpData MeleeWarpData;*/
 };

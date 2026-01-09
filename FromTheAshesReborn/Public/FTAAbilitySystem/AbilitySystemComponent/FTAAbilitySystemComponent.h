@@ -2,13 +2,17 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
+#include "FTAAbilityDataObject.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTAAbilitySystemComponent.generated.h"
 
+class UFTAAbilityDataObject;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbilitySystemComponent*, SourceASC, float,
                                                UnmitigatedDamage, float, MitigatedDamage);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitQueueInputDelegate, FGameplayTag, InputTag);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityRuntimeDataSetSignature, FAbilityDataStruct, InAbilityData);
 
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;
@@ -26,6 +30,13 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 public:
 	FWaitQueueInputDelegate OnInputQueueReceived;
 	FReceivedDamageDelegate ReceivedDamage;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UFTAAbilityDataObject> AbilityDataObject;
+
+
+	UPROPERTY(BlueprintCallable, Category = "Events")
+	FOnAbilityRuntimeDataSetSignature OnAbilityRuntimeData;
 
 protected:
 	UPROPERTY()
@@ -56,6 +67,7 @@ public:
 	
 	UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void BeginPlay() override;
 
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);

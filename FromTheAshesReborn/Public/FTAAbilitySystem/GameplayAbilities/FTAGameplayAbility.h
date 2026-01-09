@@ -8,6 +8,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+struct FAbilityDataStruct;
 class UAbilityTask_MoveToLocation;
 class UFTAAT_PlayMontageAndWaitForEvent;
 class UAT_WaitInputTagAndQueueWindowEvent;
@@ -194,6 +195,9 @@ public:
 	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
+
+	UFUNCTION()
+	void SetRuntimeAbilityData(FAbilityDataStruct InAbilityRuntimeData);
 	
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage);
 

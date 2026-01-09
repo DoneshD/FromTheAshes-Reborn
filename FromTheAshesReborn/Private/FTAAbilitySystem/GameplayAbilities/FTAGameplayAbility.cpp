@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "FTAAbilityDataObject.h"
 #include "Camera/CameraSystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
@@ -186,6 +187,8 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UFTAGameplayAbility::SetRuntimeAbilityData);
 	
 	if (bEnableTick)
 	{
@@ -440,6 +443,13 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 
 	OutAbilitySource = Cast<IFTAAbilitySourceInterface>(SourceObject);
 }
+
+void UFTAGameplayAbility::SetRuntimeAbilityData(FAbilityDataStruct InAbilityRuntimeData)
+{
+	
+}
+
+
 void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
 	if(!AnimMontage)

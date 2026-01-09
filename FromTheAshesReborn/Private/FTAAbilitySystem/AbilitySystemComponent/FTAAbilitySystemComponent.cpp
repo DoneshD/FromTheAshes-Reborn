@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "FTAAbilityDataObject.h"
 #include "Animation/AnimInstance.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "GameplayCueManager.h"
@@ -16,6 +17,13 @@ void UFTAAbilitySystemComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
+}
+
+void UFTAAbilitySystemComponent::BeginPlay()
+{
+	Super::BeginPlay();
+	
+	AbilityDataObject = NewObject<UFTAAbilityDataObject>(this);
 }
 
 void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor)
