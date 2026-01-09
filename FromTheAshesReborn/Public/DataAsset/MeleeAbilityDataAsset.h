@@ -17,11 +17,11 @@ class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UFTAAbilityDataAsse
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
+	/*UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
 	int RequiredIndex;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
-	bool RequiredPause = false;
+	bool RequiredPause = false;*/
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attack")
 	FMeleeAttackDataStruct AttackData;

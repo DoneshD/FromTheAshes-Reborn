@@ -1,7 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "FTAAbilityDataObject.h"
 #include "Camera/CameraSystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"

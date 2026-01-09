@@ -6,12 +6,13 @@
 
 
 class AWeaponActorBase;
+class UAttackAbilityDataAsset;
 class UCentralStateComponent;
 class UComboManagerComponent;
 
 //Atack Forms
 
-/*USTRUCT(BlueprintType)
+USTRUCT(BlueprintType)
 struct FAttackComboType
 {
 	GENERATED_BODY()
@@ -25,7 +26,7 @@ struct FAttackComboType
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TObjectPtr<UAttackAbilityDataAsset>> VariantAttacks;
 	
-};*/
+};
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_Attack : public UGA_FromEquipment

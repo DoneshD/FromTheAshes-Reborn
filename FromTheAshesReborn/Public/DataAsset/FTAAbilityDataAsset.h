@@ -13,21 +13,22 @@ class FROMTHEASHESREBORN_API UFTAAbilityDataAsset : public UPrimaryDataAsset
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params | Tags")
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params | Unique Tag")
 	FGameplayTag UniqueIdentifierTag;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Tags")
-	FGameplayTagContainer RequiredTags;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
-	/*UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
+	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
 	int RequiredIndex;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Combo Requirements")
+	FGameplayTagContainer RequiredComboTags;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
 	bool RequiredPause = false;
 	
-	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
-	FMeleeWarpData MeleeWarpData;*/
+	// UPROPERTY(EditDefaultsOnly, Category = "WarpData")
+	// FMeleeWarpData MeleeWarpData;
 };

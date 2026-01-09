@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "AbilitySystemComponent.h"
-#include "FTAAbilityDataObject.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTAAbilitySystemComponent.generated.h"
@@ -31,9 +30,6 @@ class FROMTHEASHESREBORN_API UFTAAbilitySystemComponent : public UAbilitySystemC
 public:
 	FWaitQueueInputDelegate OnInputQueueReceived;
 	FReceivedDamageDelegate ReceivedDamage;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<UFTAAbilityDataObject> AbilityDataObject;
 
 
 	UPROPERTY(BlueprintCallable, Category = "Events")

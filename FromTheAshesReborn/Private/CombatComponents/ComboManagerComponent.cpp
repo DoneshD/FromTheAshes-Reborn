@@ -67,7 +67,7 @@ bool UComboManagerComponent::FindMatchingMeleeAssetToTagContainer(const FMeleeAt
 	{
 		if (!Asset) continue;
 
-		if (GetCurrentComboContainer().HasAll(Asset->RequiredTags))
+		/*if (GetCurrentComboContainer().HasAll(Asset->RequiredTags))
 		{
 			if (Asset->RequiredIndex == GetCurrentComboIndex())
 			{
@@ -89,7 +89,7 @@ bool UComboManagerComponent::FindMatchingMeleeAssetToTagContainer(const FMeleeAt
 					}
 				}
 			}
-		}
+		}*/
 	}
 	
 	GetCurrentComboContainer().Reset();
