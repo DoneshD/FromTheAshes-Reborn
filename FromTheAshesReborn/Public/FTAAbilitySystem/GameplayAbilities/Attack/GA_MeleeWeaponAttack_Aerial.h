@@ -48,6 +48,7 @@ public:
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData) override;
 
+	UFUNCTION(BlueprintCallable)
 	virtual bool IsCharacterAirborne() const override;
 
 };

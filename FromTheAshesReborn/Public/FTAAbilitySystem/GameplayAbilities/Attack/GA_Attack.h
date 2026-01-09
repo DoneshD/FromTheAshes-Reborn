@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "DataAsset/AttackAbilityDataAsset.h"
 #include "FTAAbilitySystem/GameplayAbilities/GA_FromEquipment.h"
 #include "GA_Attack.generated.h"
 
@@ -48,18 +49,19 @@ protected:
 
 	//Attack Assets and Data
 
-	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
-	FMeleeAttackForms MeleeAttackAssets;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
+	FAttackComboType MeleeAttackAssets;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	FMeleeAttackDataStruct DefaultAttackData;
-	
-	FMeleeAttackDataStruct CurrentAttackData;*/
+	FAttackDataStruct DefaultAttackData;
+
+	UPROPERTY()
+	FAttackDataStruct CurrentAttackData;
 
 	//Hit Event
 
-	/*UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
-	FGameplayEventData OnHitEventData;*/
+	UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
+	FGameplayEventData OnHitEventData;
 
 protected:
 
@@ -72,35 +74,35 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	/*UFUNCTION()
-	void OnHitAdded(FHitResult LastItem);
+// 	UFUNCTION()
+// 	void OnHitAdded(FHitResult LastItem);
+//
+// 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
+// 	
+// 	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);
+// 	virtual void ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
+// 	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+//
+// 	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
+// 	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+// 	
+// 	virtual void GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+// 	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+//
+// 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
+//
+// 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
+// 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
+// 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+// 	
+// public:
+// 	
+// 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+// 	void ResetMeleeAttack();
+//
+// 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+// 	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
+//
 
-	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
-	
-	virtual void ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbilityDataAsset> MeleeAsset);
-	virtual void ExecuteMeleeHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
-	virtual void ApplyMeleeHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
-
-	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
-	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
-	
-	virtual void GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
-	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
-
-	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
-
-	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
-	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
-	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
-	
-public:
-	
-	/*UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void ResetMeleeAttack();
-
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
-
-	UFUNCTION()
-	void SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeRuntimeData);*/
+	// void SetAbilityRuntimeData(TObjectPtr<UFTAAbilityDataAsset> InAbilityRuntimeData);
 };
