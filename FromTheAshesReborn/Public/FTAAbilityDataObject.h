@@ -4,39 +4,54 @@
 #include "UObject/Object.h"
 #include "FTAAbilityDataObject.generated.h"
 
-// USTRUCT(BlueprintType)
-// struct FHitInfo
-// {
-// 	GENERATED_BODY()
-// 	
-// 	UPROPERTY()
-// 	FVector Location;
-//
-// 	
-// };
-
 USTRUCT(BlueprintType)
-struct FAbilityDataStruct
+struct FBaseAbilityDataStruct
 {
 	GENERATED_BODY()
 
 public:
 
-	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float BaseFloatTest;
 	
 };
 
-// DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityRuntimeDataSetSignature, FAbilityDataStruct, InAbilityData);
+USTRUCT(BlueprintType)
+struct FAttackAbilityDataStruct
+{
+	GENERATED_BODY()
 
-UCLASS(Blueprintable, BlueprintType)
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FBaseAbilityDataStruct BaseData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ChildFloatTest;
+	
+};
+
+USTRUCT(BlueprintType)
+struct FMeleeAbilityDataStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FAttackAbilityDataStruct AttackData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float GrandChildFloatTest;
+};
+
+
+UCLASS(Blueprintable, Const, Abstract, BlueprintType)
 class FROMTHEASHESREBORN_API UFTAAbilityDataObject : public UObject
 {
 	GENERATED_BODY()
 
 public:
 
-	// UPROPERTY(BlueprintAssignable, Category="Melee")
-	// // FOnAbilityRuntimeDataSetSignature OnAbilityRuntimeDataSet;
-	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FBaseAbilityDataStruct AbilityDataTest;
 	
 };

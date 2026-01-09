@@ -12,7 +12,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FReceivedDamageDelegate, UFTAAbil
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWaitQueueInputDelegate, FGameplayTag, InputTag);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityRuntimeDataSetSignature, FAbilityDataStruct, InAbilityData);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAbilityRuntimeDataSetSignature, FBaseAbilityDataStruct, InAbilityData);
 
 class USkeletalMeshComponent;
 class UFTAAT_PlayMontageAndWaitForEvent;

@@ -444,7 +444,7 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 	OutAbilitySource = Cast<IFTAAbilitySourceInterface>(SourceObject);
 }
 
-void UFTAGameplayAbility::SetRuntimeAbilityData(FAbilityDataStruct InAbilityRuntimeData)
+void UFTAGameplayAbility::SetRuntimeAbilityData(FBaseAbilityDataStruct InAbilityRuntimeData)
 {
 	
 }
