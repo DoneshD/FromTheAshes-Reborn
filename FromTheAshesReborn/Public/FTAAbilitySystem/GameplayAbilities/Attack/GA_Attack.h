@@ -6,6 +6,7 @@
 #include "GA_Attack.generated.h"
 
 
+struct FMeleeAttackForms;
 class AWeaponActorBase;
 class UAttackAbilityDataAsset;
 class UCentralStateComponent;
@@ -50,7 +51,7 @@ protected:
 	//Attack Assets and Data
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
-	FAttackComboType MeleeAttackAssets;
+	FAttackComboType AttackAssets;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FAttackDataStruct DefaultAttackData;
@@ -74,8 +75,12 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-// 	UFUNCTION()
-// 	void OnHitAdded(FHitResult LastItem);
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	void PerformAttack(FAttackComboType& AttackDataAssets);
+	
+	UFUNCTION()
+	void OnHitAdded(FHitResult LastItem);
+	
 //
 // 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
 // 	
@@ -99,9 +104,6 @@ protected:
 // 	
 // 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 // 	void ResetMeleeAttack();
-//
-// 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-// 	void PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDataAssets);
 //
 
 	// void SetAbilityRuntimeData(TObjectPtr<UFTAAbilityDataAsset> InAbilityRuntimeData);

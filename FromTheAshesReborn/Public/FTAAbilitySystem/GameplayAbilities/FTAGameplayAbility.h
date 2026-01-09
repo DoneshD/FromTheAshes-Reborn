@@ -199,7 +199,7 @@ public:
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
 
 	UFUNCTION()
-	void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData);
+	virtual void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData);
 	
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage);
 

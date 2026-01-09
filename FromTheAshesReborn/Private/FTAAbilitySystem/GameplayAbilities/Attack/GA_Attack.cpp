@@ -3,6 +3,7 @@
 #include "Camera/CameraSystemComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "TracingComponent/TracingComponent.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -72,37 +73,38 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 	// GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UGA_Attack::SetAbilityRuntimeData);
 
-	// for (AWeaponActorBase* WeaponActor : MeleeWeaponActors)
-	// {
-	// 	if(WeaponActor)
-	// 	{
-	// 		if(WeaponActor->TracingComponent)
-	// 		{
-	// 			WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeWeaponAttack::OnHitAdded);
-	// 			
-	// 			WeaponActor->TracingComponent->BoxHalfSize = FVector(
-	// 				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
-	// 				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
-	// 				DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
-	// 			
-	// 		}
-	// 	}
-	// }
-	//
-	// if(!MeleeAttackAssets.NormalAttacks.IsValidIndex(0) || MeleeAttackAssets.NormalAttacks.Num() < 1)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
-	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-	// 	return;
-	// }
-	//
-	// PerformMeleeAttack(MeleeAttackAssets);
-	//
-	// UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
-	// if(!CSC)
-	// {
-	// 	return;
-	// }
+	for (AWeaponActorBase* WeaponActor : WeaponActors)
+	{
+		if(WeaponActor)
+		{
+			if(WeaponActor->TracingComponent)
+			{
+				WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
+
+				//Refactor for ranged
+				// WeaponActor->TracingComponent->BoxHalfSize = FVector(
+				// 	DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
+				// 	DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
+				// 	DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+				
+			}
+		}
+	}
+	
+	if(!AttackAssets.NormalAttacks.IsValidIndex(0) || AttackAssets.NormalAttacks.Num() < 1)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	PerformAttack(AttackAssets);
+	
+	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	if(!CSC)
+	{
+		return;
+	}
 	
 }
 
@@ -116,10 +118,15 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
-// void UGA_Attack::SetAbilityRuntimeData(TObjectPtr<UFTAAbilityDataAsset> InAbilityRuntimeData)
-// {
-// 	
-// }
+void UGA_Attack::OnHitAdded(FHitResult LastItem)
+{
+	
+}
+
+void UGA_Attack::PerformAttack(FAttackComboType& AttackDataAssets)
+{
+	
+}
 
 
 	
