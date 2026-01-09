@@ -51,7 +51,7 @@ protected:
 	//Attack Assets and Data
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
-	FAttackComboType AttackAssets;
+	FAttackComboType AttackComboTypes;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FAttackDataStruct DefaultAttackData;
@@ -75,11 +75,17 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void PerformAttack(FAttackComboType& AttackDataAssets);
-	
 	UFUNCTION()
 	void OnHitAdded(FHitResult LastItem);
+	
+public:
+	
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	void PerformAttack(FAttackComboType& AttackTypes);
+	
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	void ResetAttack();
+	
 	
 //
 // 	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
@@ -102,9 +108,7 @@ protected:
 // 	
 // public:
 // 	
-// 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-// 	void ResetMeleeAttack();
-//
+
 
 	// void SetAbilityRuntimeData(TObjectPtr<UFTAAbilityDataAsset> InAbilityRuntimeData);
 };

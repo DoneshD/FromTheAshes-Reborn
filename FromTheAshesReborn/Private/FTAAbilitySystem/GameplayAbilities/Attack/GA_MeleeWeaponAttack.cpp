@@ -242,15 +242,15 @@ void UGA_MeleeWeaponAttack::PerformMeleeAttack(FMeleeAttackForms& MeleeAttackDat
 	}
 	
 	TObjectPtr<UMeleeAbilityDataAsset> MatchingDataAsset;
-	bool DataAssetFound = ComboManagerComponent->FindMatchingMeleeAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
+	// bool DataAssetFound = ComboManagerComponent->FindMatchingMeleeAssetToTagContainer(MeleeAttackDataAssets, MatchingDataAsset);
 	
-	if(!DataAssetFound)
-	{
-		UE_LOG(LogTemp, Error, TEXT("DA NOT found"));
-		ResetMeleeAttack();
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
+	// if(!DataAssetFound)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("DA NOT found"));
+	// 	ResetMeleeAttack();
+	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	// 	return;
+	// }
 	
 	if(!MatchingDataAsset)
 	{

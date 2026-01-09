@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 
 #include "Camera/CameraSystemComponent.h"
+#include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "TracingComponent/TracingComponent.h"
@@ -91,14 +92,14 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		}
 	}
 	
-	if(!AttackAssets.NormalAttacks.IsValidIndex(0) || AttackAssets.NormalAttacks.Num() < 1)
+	if(!AttackComboTypes.NormalAttacks.IsValidIndex(0) || AttackComboTypes.NormalAttacks.Num() < 1)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 	
-	PerformAttack(AttackAssets);
+	PerformAttack(AttackComboTypes);
 	
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
@@ -123,7 +124,57 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 	
 }
 
-void UGA_Attack::PerformAttack(FAttackComboType& AttackDataAssets)
+void UGA_Attack::PerformAttack(FAttackComboType& AttackTypes)
+{
+	if(NonMontageAbility)
+	{
+		return;
+	}
+	
+	TObjectPtr<UAttackAbilityDataAsset> MatchingDataAsset;
+	bool DataAssetFound = ComboManagerComponent->FindMatchingMeleeAssetToTagContainer(AttackTypes, MatchingDataAsset);
+	
+	if(!DataAssetFound)
+	{
+		UE_LOG(LogTemp, Error, TEXT("DA NOT found"));
+		ResetAttack();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	if(!MatchingDataAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MatchingDataAsset is NULL"));
+		ResetAttack();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	if (MatchingDataAsset->MontageToPlay)
+	{
+		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
+		
+		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
+
+		// GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag()
+		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
+		ComboManagerComponent->PauseCurrentAttack = false;
+
+		CurrentAttackData = DefaultAttackData;
+		
+		// ExtractMeleeAssetProperties(MatchingDataAsset);
+		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttackMontageToPlay is NULL"));
+		ResetAttack();
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}           
+}
+
+void UGA_Attack::ResetAttack()
 {
 	
 }

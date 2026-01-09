@@ -4,6 +4,7 @@
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
+#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 #include "ComboManagerComponent.generated.h"
 
 struct FMeleeAttackForms;
@@ -41,6 +42,8 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	static void PrintGameplayTagsInContainer(const FGameplayTagContainer& Container);
+	bool FindMatchingAssetToTagContainer(const FAttackComboType& AttackAssets,
+	                                     TObjectPtr<UAttackAbilityDataAsset>& OutMatchingAttackAsset);
 
 public:
 	
@@ -48,6 +51,6 @@ public:
 	int GetCurrentComboIndex() const;
 	void SetCurrentComboIndex(int Index);
 
-	bool FindMatchingMeleeAssetToTagContainer(const FMeleeAttackForms& MeleeAssets, TObjectPtr<UMeleeAbilityDataAsset>& OutMatchingMeleeAsset);
+	bool FindMatchingMeleeAssetToTagContainer(const FAttackComboType& AttackComboTypes, TObjectPtr<UAttackAbilityDataAsset>& OutMatchingAttackAsset);
 	
 };
