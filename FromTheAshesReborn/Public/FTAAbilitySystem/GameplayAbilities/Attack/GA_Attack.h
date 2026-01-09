@@ -80,6 +80,8 @@ protected:
 	
 public:
 	
+	void ExtractAttackAssetProperties(const TObjectPtr<UAttackAbilityDataAsset>& AttackAsset);
+	
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	void PerformAttack(FAttackComboType& AttackTypes);
 	

@@ -3,6 +3,8 @@
 #include "Camera/CameraSystemComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
+#include "FTAAbilitySystem/GameplayCues/HitCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "TracingComponent/TracingComponent.h"
 #include "Weapon/EquipmentManagerComponent.h"
@@ -124,6 +126,37 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 	
 }
 
+void UGA_Attack::ExtractAttackAssetProperties(const TObjectPtr<UAttackAbilityDataAsset>& AttackAsset)
+{
+	//Damage
+	if(AttackAsset->AttackData.ApplyDamageEffect && AttackAsset->AttackData.ApplyDamageEffect->IsValidLowLevel())
+	{
+		CurrentAttackData.ApplyDamageEffect = AttackAsset->AttackData.ApplyDamageEffect;
+	}
+
+	//Hit Reactions
+	if(AttackAsset->AttackData.PossibleHitReactions.Num() > 0 && !AttackAsset->AttackData.PossibleHitReactions.IsEmpty())
+	{
+		for (TSubclassOf HitReaction : AttackAsset->AttackData.PossibleHitReactions)
+		{
+			if(HitReaction && HitReaction->IsValidLowLevel())
+			{
+				if (!CurrentAttackData.PossibleHitReactions.Contains(HitReaction))
+				{
+					CurrentAttackData.PossibleHitReactions.Insert(HitReaction, 0);
+				}
+			}
+			
+		}
+	}
+	
+	//Hit Cue
+	if(AttackAsset->AttackData.HitCueClass && AttackAsset->AttackData.HitCueClass->IsValidLowLevel())
+	{
+		CurrentAttackData.HitCueClass = AttackAsset->AttackData.HitCueClass;
+	}
+}
+
 void UGA_Attack::PerformAttack(FAttackComboType& AttackTypes)
 {
 	if(NonMontageAbility)
@@ -131,8 +164,8 @@ void UGA_Attack::PerformAttack(FAttackComboType& AttackTypes)
 		return;
 	}
 	
-	TObjectPtr<UAttackAbilityDataAsset> MatchingDataAsset;
-	bool DataAssetFound = ComboManagerComponent->FindMatchingMeleeAssetToTagContainer(AttackTypes, MatchingDataAsset);
+	TObjectPtr<UAttackAbilityDataAsset> MatchingAttackDataAsset;
+	bool DataAssetFound = ComboManagerComponent->FindMatchingMeleeAssetToTagContainer(AttackTypes, MatchingAttackDataAsset);
 	
 	if(!DataAssetFound)
 	{
@@ -142,7 +175,7 @@ void UGA_Attack::PerformAttack(FAttackComboType& AttackTypes)
 		return;
 	}
 	
-	if(!MatchingDataAsset)
+	if(!MatchingAttackDataAsset)
 	{
 		UE_LOG(LogTemp, Error, TEXT("MatchingDataAsset is NULL"));
 		ResetAttack();
@@ -150,20 +183,16 @@ void UGA_Attack::PerformAttack(FAttackComboType& AttackTypes)
 		return;
 	}
 	
-	if (MatchingDataAsset->MontageToPlay)
+	if (MatchingAttackDataAsset->MontageToPlay)
 	{
 		int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
-		
-		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingDataAsset->UniqueIdentifierTag);
-
-		// GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag()
+		ComboManagerComponent->GetCurrentComboContainer().AddTag(MatchingAttackDataAsset->UniqueIdentifierTag);
 		ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
-		ComboManagerComponent->PauseCurrentAttack = false;
 
 		CurrentAttackData = DefaultAttackData;
 		
-		// ExtractMeleeAssetProperties(MatchingDataAsset);
-		PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
+		ExtractAttackAssetProperties(MatchingAttackDataAsset);
+		PlayAbilityAnimMontage(MatchingAttackDataAsset->MontageToPlay);
 	}
 	else
 	{

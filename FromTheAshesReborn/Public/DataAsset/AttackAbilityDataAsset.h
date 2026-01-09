@@ -33,4 +33,7 @@ class FROMTHEASHESREBORN_API UAttackAbilityDataAsset : public UFTAAbilityDataAss
 
 public:
 
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	FAttackDataStruct AttackData;
+
 };
