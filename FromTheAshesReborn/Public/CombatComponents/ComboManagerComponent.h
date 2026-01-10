@@ -53,6 +53,7 @@ public:
 
 	bool FindMatchingMeleeAssetToTagContainer(const FAttackComboType& AttackComboTypes, TObjectPtr<UAttackAbilityDataAsset>& OutMatchingAttackAsset);
 
+	TObjectPtr<UFTAAbilityDataAsset> GetAbilityAssetByRequirements(TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets);
 	
 	
 };

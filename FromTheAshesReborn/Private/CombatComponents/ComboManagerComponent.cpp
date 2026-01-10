@@ -116,4 +116,37 @@ bool UComboManagerComponent::FindMatchingMeleeAssetToTagContainer(const FAttackC
 	return true;
 }
 
+TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetAbilityAssetByRequirements(
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets)
+{
+	for (UFTAAbilityDataAsset* Asset : AbilityAssets)
+	{
+		if (!Asset) continue;
 
+		if (GetCurrentComboContainer().HasAll(Asset->RequiredComboTags))
+		{
+			if (Asset->RequiredIndex == GetCurrentComboIndex())
+			{
+				// if (PauseCurrentAttack)
+				if (false)
+				{
+					if (Asset->RequiredPause)
+					{
+						return Asset;
+					}
+				}
+				else
+				{
+					if (!Asset->RequiredPause)
+					{
+						return Asset;
+					}
+				}
+			}
+		}
+	}
+	
+	GetCurrentComboContainer().Reset();
+	SetCurrentComboIndex(0);
+	return AbilityAssets[0];
+}
