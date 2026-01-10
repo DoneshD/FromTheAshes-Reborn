@@ -27,26 +27,7 @@ bool UGA_Attack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
-
-	CentralStateComponent = GetFTACharacterFromActorInfo()->CentralStateComponent;
-
-	if(!CentralStateComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - CentralStateComponent is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
 	
-	if(!ComboManagerComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - ComboManagerComponent is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-
-
 	if(!GetFTACharacterFromActorInfo()->EquipmentManagerComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - EquipmentManagerComponent is Null"));

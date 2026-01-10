@@ -6,6 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "MotionWarpingComponent.h"
 #include "Abilities/Tasks/AbilityTask_MoveToLocation.h"
+#include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
@@ -28,24 +29,37 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 	
 }
 
-void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* AbilityAsset)
+void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	
 }
 
-UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> AbilityAsset)
+UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
 	if(NonMontageAbility)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Non montage ability"));
 		return nullptr;
 	}
+
+	if(AbilityAssets[0] && AbilityAssets[0]->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AbilityAssets[0] Name : %s"), *AbilityAssets[0]->GetName());
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Null ability asset"));
+		return nullptr;
+	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("Returning first asset"));
-	return AbilityAsset[0];
+
+	// TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetAbilityAssetByRequirements(AbilityAssets);
+	//
+	// UE_LOG(LogTemp, Warning, TEXT("Returning first asset"));
+	return nullptr;
 }
 
-void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* AbilityAsset)
+void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 {
 }
 
@@ -255,6 +269,24 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
 	
 	CSC->HandleCameraSystemAdjustment(CameraParams);*/
+
+	ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
+	CentralStateComponent = GetFTACharacterFromActorInfo()->CentralStateComponent;
+
+	if(!CentralStateComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CentralStateComponent is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	if(!ComboManagerComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - ComboManagerComponent is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
 	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
 	ExtractAssetProperties(CurrentAbilityAsset);
 	PerformAbility(CurrentAbilityAsset);

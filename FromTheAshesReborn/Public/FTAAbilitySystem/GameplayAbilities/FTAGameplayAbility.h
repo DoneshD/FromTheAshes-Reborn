@@ -8,6 +8,8 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UCentralStateComponent;
+class UComboManagerComponent;
 class UFTAAbilityDataAsset;
 struct FBaseAbilityDataStruct;
 struct FAbilityDataStruct;
@@ -153,15 +155,21 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
+
+	UPROPERTY()
+	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
+
+	UPROPERTY()
+	TObjectPtr<UCentralStateComponent> CentralStateComponent;
 	
 public:
 	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
 
-	virtual void PerformAbility(UFTAAbilityDataAsset* AbilityAsset);
-	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> AbilityAsset);
-	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* AbilityAsset);
+	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset);
+	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets);
+	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset);
 
 	UPROPERTY()
 	TArray<UFTAAbilityDataAsset*> DefaultAbilityAssets;

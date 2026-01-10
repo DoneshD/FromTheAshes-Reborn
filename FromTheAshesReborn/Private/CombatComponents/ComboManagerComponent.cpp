@@ -117,7 +117,7 @@ bool UComboManagerComponent::FindMatchingMeleeAssetToTagContainer(const FAttackC
 }
 
 TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetAbilityAssetByRequirements(
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets)
+	TArray<UFTAAbilityDataAsset*> AbilityAssets)
 {
 	for (UFTAAbilityDataAsset* Asset : AbilityAssets)
 	{

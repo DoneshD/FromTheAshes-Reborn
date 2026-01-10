@@ -38,12 +38,6 @@ class FROMTHEASHESREBORN_API UGA_Attack : public UGA_FromEquipment
 protected:
 
 	//Components and Actors
-	
-	UPROPERTY()
-	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
-
-	UPROPERTY()
-	TObjectPtr<UCentralStateComponent> CentralStateComponent;
 
 	UPROPERTY()
 	TArray<TObjectPtr<AWeaponActorBase>> WeaponActors;

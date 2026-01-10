@@ -43,14 +43,14 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AFTACharacter> FTAChar;
 
-	UPROPERTY()
-	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
+	// UPROPERTY()
+	// TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
 	UPROPERTY()
 	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
 	
-	UPROPERTY()
-	TObjectPtr<UCentralStateComponent> CentralStateComponent;
+	// UPROPERTY()
+	// TObjectPtr<UCentralStateComponent> CentralStateComponent;
 	
 	UPROPERTY()
 	TArray<TObjectPtr<AWeaponActorBase>> MeleeWeaponActors;
