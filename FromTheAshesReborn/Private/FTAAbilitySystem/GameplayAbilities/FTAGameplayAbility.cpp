@@ -28,6 +28,20 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 	
 }
 
+void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* AbilityAsset)
+{
+	
+}
+
+UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> AbilityAsset)
+{
+	return nullptr;
+}
+
+void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* AbilityAsset)
+{
+}
+
 void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
 {
 	
@@ -234,6 +248,8 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
 	
 	CSC->HandleCameraSystemAdjustment(CameraParams);*/
+	// SelectAbilityAsset();
+	
 }
 
 void UFTAGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

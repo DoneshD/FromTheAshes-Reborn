@@ -83,7 +83,10 @@ public:
 	void ExtractAttackAssetProperties(const TObjectPtr<UAttackAbilityDataAsset>& AttackAsset);
 	
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void PerformAttack(FAttackComboType& AttackTypes);
+	void SelectAttackAsset(FAttackComboType& AttackTypes);
+
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	virtual void PerformAbility(UFTAAbilityDataAsset* AttackTypes) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	void ResetAttack();

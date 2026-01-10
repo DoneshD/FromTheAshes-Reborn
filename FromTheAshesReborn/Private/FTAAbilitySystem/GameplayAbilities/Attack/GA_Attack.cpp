@@ -101,7 +101,7 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		return;
 	}
 	
-	PerformAttack(AttackComboTypes);
+	SelectAttackAsset(AttackComboTypes);
 	
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	if(!CSC)
@@ -157,7 +157,7 @@ void UGA_Attack::ExtractAttackAssetProperties(const TObjectPtr<UAttackAbilityDat
 	}
 }
 
-void UGA_Attack::PerformAttack(FAttackComboType& AttackTypes)
+void UGA_Attack::SelectAttackAsset(FAttackComboType& AttackTypes)
 {
 	if(NonMontageAbility)
 	{
@@ -201,6 +201,12 @@ void UGA_Attack::PerformAttack(FAttackComboType& AttackTypes)
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}           
+}
+
+void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* AttackTypes)
+{
+	Super::PerformAbility(AttackTypes);
+	
 }
 
 void UGA_Attack::ResetAttack()

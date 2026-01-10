@@ -152,6 +152,13 @@ public:
 	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
+	virtual void PerformAbility(UFTAAbilityDataAsset* AbilityAsset);
+	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> AbilityAsset);
+	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* AbilityAsset);
+
+	UPROPERTY()
+	TArray<UFTAAbilityDataAsset*> DefaultAbilityAssets;
+
 	UFUNCTION()
 	virtual void OnAbilityTick(float DeltaTime);
 	
