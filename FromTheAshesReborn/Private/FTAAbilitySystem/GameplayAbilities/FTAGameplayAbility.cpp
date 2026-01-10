@@ -31,7 +31,8 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 
 void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("Here"));
+	PlayAbilityAnimMontage(InAbilityAsset->MontageToPlay);
 }
 
 UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
@@ -47,16 +48,17 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is empty"))
 		return nullptr;
 	}
-
+	
 	if(!InAbilityAssets[0])
 	{
-		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::SelectAbilityAsset - CurrentAbilityAsset is Null"))
 		return nullptr;
 	}
 
 	if(InAbilityAssets[0])
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AbilityAssets[0] Name : %s"), *InAbilityAssets[0]->GetName());
+		return InAbilityAssets[0];
 	}
 	else
 	{
@@ -235,6 +237,8 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UFTAGameplayAbility::SetRuntimeAbilityData);
+
+	UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - Called"));
 	
 	if (bEnableTick)
 	{
@@ -307,8 +311,8 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		return;
 	}
 	
-	ExtractAssetProperties(CurrentAbilityAsset);
 	PerformAbility(CurrentAbilityAsset);
+	// ExtractAssetProperties(CurrentAbilityAsset);
 	
 }
 
@@ -338,6 +342,8 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 		.Remove(AdjustFOVDelegateHandle);
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.InputQueue.Open"));
+
+	UE_LOG(LogTemp, Warning, TEXT("End ability"));
 	
 }
 

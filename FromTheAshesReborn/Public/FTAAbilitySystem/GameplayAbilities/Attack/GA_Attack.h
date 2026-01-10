@@ -75,9 +75,6 @@ protected:
 public:
 	
 	void ExtractAttackAssetProperties(const TObjectPtr<UAttackAbilityDataAsset>& AttackAsset);
-	
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void SelectAttackAsset(FAttackComboType& AttackTypes);
 
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	virtual void PerformAbility(UFTAAbilityDataAsset* AttackTypes) override;
@@ -99,11 +96,11 @@ public:
 // 	virtual void GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
 // 	virtual void AddMeleeHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
 //
-// 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
-//
-// 	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
-// 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
-// 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
+
+	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 // 	
 // public:
 // 	

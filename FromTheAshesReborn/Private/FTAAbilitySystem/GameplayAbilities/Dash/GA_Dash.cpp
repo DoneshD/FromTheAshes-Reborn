@@ -77,7 +77,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	DashStartLocation = ActorInfo->AvatarActor->GetActorLocation();
 	DashEndLocation = ActorInfo->AvatarActor->GetActorLocation() + (InputDir * DashDistance);
 
-	IsDashing = true;
+	// IsDashing = true;
 
 	DashTag = MatchingDataAsset->UniqueIdentifierTag;
 

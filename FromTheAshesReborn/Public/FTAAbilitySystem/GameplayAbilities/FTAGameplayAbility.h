@@ -111,6 +111,9 @@ protected:
 
 public:
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
 	EAbilityInputID AbilityInputID = EAbilityInputID::None;
 
@@ -151,9 +154,6 @@ public:
 	FCameraSystemParams CameraParams;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
 
 	UPROPERTY()
@@ -165,8 +165,6 @@ public:
 public:
 	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-
-
 	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset);
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets);
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset);
