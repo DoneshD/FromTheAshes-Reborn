@@ -35,7 +35,14 @@ void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* AbilityAsset)
 
 UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> AbilityAsset)
 {
-	return nullptr;
+	if(NonMontageAbility)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Non montage ability"));
+		return nullptr;
+	}
+	
+	UE_LOG(LogTemp, Warning, TEXT("Returning first asset"));
+	return AbilityAsset[0];
 }
 
 void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* AbilityAsset)
@@ -248,7 +255,9 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
 	
 	CSC->HandleCameraSystemAdjustment(CameraParams);*/
-	// SelectAbilityAsset();
+	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
+	ExtractAssetProperties(CurrentAbilityAsset);
+	PerformAbility(CurrentAbilityAsset);
 	
 }
 

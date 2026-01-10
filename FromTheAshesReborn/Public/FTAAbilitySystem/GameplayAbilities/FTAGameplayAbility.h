@@ -148,9 +148,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	FCameraSystemParams CameraParams;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
+	
 public:
 	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
+
 
 	virtual void PerformAbility(UFTAAbilityDataAsset* AbilityAsset);
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> AbilityAsset);

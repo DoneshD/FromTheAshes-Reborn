@@ -52,5 +52,7 @@ public:
 	void SetCurrentComboIndex(int Index);
 
 	bool FindMatchingMeleeAssetToTagContainer(const FAttackComboType& AttackComboTypes, TObjectPtr<UAttackAbilityDataAsset>& OutMatchingAttackAsset);
+
+	
 	
 };
