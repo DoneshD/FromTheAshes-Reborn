@@ -53,7 +53,6 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
 		return nullptr;
 	}
-	
 
 	if(InAbilityAssets[0])
 	{
