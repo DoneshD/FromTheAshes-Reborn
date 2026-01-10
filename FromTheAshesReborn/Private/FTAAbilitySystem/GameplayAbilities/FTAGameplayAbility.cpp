@@ -42,9 +42,22 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		return nullptr;
 	}
 
-	if(AbilityAssets[0] && AbilityAssets[0]->IsValidLowLevel())
+	if(InAbilityAssets.IsEmpty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AbilityAssets[0] Name : %s"), *AbilityAssets[0]->GetName());
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is empty"))
+		return nullptr;
+	}
+
+	if(!InAbilityAssets[0])
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
+		return nullptr;
+	}
+	
+
+	if(InAbilityAssets[0])
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AbilityAssets[0] Name : %s"), *InAbilityAssets[0]->GetName());
 	}
 	else
 	{
@@ -288,6 +301,13 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	}
 	
 	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
+	
+	if(!CurrentAbilityAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
+		return;
+	}
+	
 	ExtractAssetProperties(CurrentAbilityAsset);
 	PerformAbility(CurrentAbilityAsset);
 	

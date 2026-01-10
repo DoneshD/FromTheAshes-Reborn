@@ -28,4 +28,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
 	FMeleeWarpData MeleeWarpData;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	float MeleeAssetFloat = 0;
 };
