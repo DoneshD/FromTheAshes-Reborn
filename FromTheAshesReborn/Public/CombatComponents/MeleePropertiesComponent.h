@@ -15,25 +15,25 @@ class UGA_ReceiveHit;
 class AFTACharacter;
 class UEquipmentManagerComponent;
 
-USTRUCT(BlueprintType)
-struct FAttackDirectionStruct
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool bEnabled;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	ESpatialDirection AttackDirection;
-
-	FAttackDirectionStruct()
-	:
-	bEnabled(false),
-	AttackDirection(ESpatialDirection::None)
-	{}
-	
-	
-};
+// USTRUCT(BlueprintType)
+// struct FAttackDirectionStruct
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+// 	bool bEnabled;
+// 	
+// 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+// 	ESpatialDirection AttackDirection;
+//
+// 	FAttackDirectionStruct()
+// 	:
+// 	bEnabled(false),
+// 	AttackDirection(ESpatialDirection::None)
+// 	{}
+// 	
+// 	
+// };
 
 USTRUCT(BlueprintType)
 struct FWeaponTraceSizeStruct
@@ -71,8 +71,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FWeaponTraceSizeStruct WeaponTraceSizeStruct;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	FAttackDirectionStruct AttackDirectionStruct;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	// FAttackDirectionStruct AttackDirectionStruct;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<USlashCueObject> SlashCueClass;
@@ -82,11 +82,11 @@ public:
 	
 	
 	
-	FMeleeAttackDataStruct()
-	:
-	WeaponTraceSizeStruct(),
-	AttackDirectionStruct()
-	{}
+	// FMeleeAttackDataStruct()
+	// :
+	// WeaponTraceSizeStruct(),
+	// AttackDirectionStruct()
+	// {}
 	
 };
 

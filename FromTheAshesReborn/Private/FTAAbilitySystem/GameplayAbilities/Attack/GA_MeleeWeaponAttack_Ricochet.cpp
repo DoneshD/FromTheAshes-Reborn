@@ -25,7 +25,7 @@ void UGA_MeleeWeaponAttack_Ricochet::SendMeleeHitGameplayEvents(
 	SlamInfoObj->SlamData.Duration = SlamDuration;
 	SlamInfoObj->SlamData.Location = GroundLocation;
 	SlamInfoObj->HitData.Instigator = GetFTACharacterFromActorInfo();
-	SlamInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
+	// SlamInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 	SlamInfoObj->HitData.PossibleFollowupReactions = FollowupReactions;
 	
 	OnHitEventData.OptionalObject = SlamInfoObj;

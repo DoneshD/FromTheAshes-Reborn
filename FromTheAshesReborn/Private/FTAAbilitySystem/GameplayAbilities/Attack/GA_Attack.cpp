@@ -1,9 +1,11 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
 #include "Camera/CameraSystemComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 #include "FTAAbilitySystem/GameplayCues/HitCueObject.h"
@@ -84,6 +86,8 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	// 		}
 	// 	}
 	// }
+
+	CurrentAttackData = DefaultAttackData;
 }
 
 void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -167,15 +171,13 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 			{
 				
 				GrantHitAbility(TargetDataHandle, HitAbilityClass);
-					UE_LOG(LogTemp, Warning, TEXT("Here 75"))
 				
 				const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitAbilityClass);
 				if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
 				{
-					// ApplyMeleeHitEffects(TargetDataHandle, HitAbilityClass);
-					// SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
+					ApplyHitEffects(TargetDataHandle, HitAbilityClass);
+					SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
 					// AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
-					UE_LOG(LogTemp, Warning, TEXT("Here 23"))
 					break;
 				}
 				else
@@ -240,6 +242,105 @@ void UGA_Attack::GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetD
 	}
 }
 
+void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle,
+	TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+{
+	if (InHitAbilityClass->IsValidLowLevel())
+	{
+		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(CurrentAttackData.ApplyDamageEffect)
+			{
+				TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
+				CurrentSpecHandle,
+				CurrentActorInfo,
+				CurrentActivationInfo,
+				TargetDataHandle,
+				CurrentAttackData.ApplyDamageEffect, 
+				1,
+				1
+				);
+			}
+			
+			/*if(CDO->HitEffect)
+			{
+				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
+
+				TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+						CurrentSpecHandle,
+						CurrentActorInfo,
+						CurrentActivationInfo,
+						HitEffectHandle,
+						TargetDataHandle
+					);
+			}*/
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+}
+
+void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle,
+	TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+{
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	
+	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
+	OnHitEventData.Target = TargetActor;
+	OnHitEventData.ContextHandle.AddHitResult(*TargetDataHandle.Get(0)->GetHitResult());
+	
+	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
+	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
+	
+	HitInfoObj->HitData.HitDirection = CurrentAttackData.AttackDirectionStruct.AttackDirection;
+	
+
+	if(TargetASC)
+	{
+		if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag8")))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Dont apply"))
+			return;
+		}
+	}
+	
+	if(WeaponActors.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
+		return;
+	}
+	
+	if(!OnHitEventData.OptionalObject)
+	{
+		OnHitEventData.OptionalObject = HitInfoObj;
+	}
+	
+	if (InHitAbilityClass)
+	{
+		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			{
+				OnHitEventData.EventTag = CDO->ReceiveHitTag;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents - HitReactionTag is invalid"));
+			}
+		}
+	}
+	
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
+	OnHitEventData.OptionalObject = nullptr;
+}
+
 UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
 	return Super::SelectAbilityAsset(InAbilityAssets);
@@ -282,6 +383,15 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 	if(AttackAsset->AttackData.HitCueClass && AttackAsset->AttackData.HitCueClass->IsValidLowLevel())
 	{
 		CurrentAttackData.HitCueClass = AttackAsset->AttackData.HitCueClass;
+	}
+
+	//Direction
+	if(AttackAsset->AttackData.AttackDirectionStruct.bEnabled)
+	{
+		if(AttackAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
+		{
+			AttackAsset->AttackData.AttackDirectionStruct.AttackDirection = AttackAsset->AttackData.AttackDirectionStruct.AttackDirection;
+		}
 	}
 }
 

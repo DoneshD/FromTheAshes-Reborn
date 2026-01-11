@@ -204,7 +204,7 @@ void UGA_MeleeWeaponAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
 	}
 	
 
-	AttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
+	// AttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 
 
 	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Finished")))
@@ -403,13 +403,13 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 	}
 
 	//Direction
-	if(InMeleeData.AttackDirectionStruct.bEnabled)
-	{
-		if(InMeleeData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
-		{
-			AttackData.AttackDirectionStruct.AttackDirection = InMeleeData.AttackDirectionStruct.AttackDirection;
-		}
-	}
+	// if(InMeleeData.AttackDirectionStruct.bEnabled)
+	// {
+	// 	if(InMeleeData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
+	// 	{
+	// 		AttackData.AttackDirectionStruct.AttackDirection = InMeleeData.AttackDirectionStruct.AttackDirection;
+	// 	}
+	// }
 
 	//Slash Cue
 	if(InMeleeData.SlashCueClass && InMeleeData.SlashCueClass->IsValidLowLevel())
@@ -619,12 +619,12 @@ void UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(const FGameplayAbilityTar
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
-	HitInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
+	// HitInfoObj->HitData.HitDirection = AttackData.AttackDirectionStruct.AttackDirection;
 	
-	if(AttackData.AttackDirectionStruct.AttackDirection == ESpatialDirection::TempBlocker)
-	{
-		return;
-	}
+	// if(AttackData.AttackDirectionStruct.AttackDirection == ESpatialDirection::TempBlocker)
+	// {
+	// 	return;
+	// }
 
 	if(TargetASC)
 	{

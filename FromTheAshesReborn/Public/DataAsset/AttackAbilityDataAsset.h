@@ -9,6 +9,26 @@ class UGA_ReceiveHit;
 class UGameplayEffect;
 
 USTRUCT(BlueprintType)
+struct FAttackDirectionStruct
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	bool bEnabled;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	ESpatialDirection AttackDirection;
+
+	FAttackDirectionStruct()
+	:
+	bEnabled(false),
+	AttackDirection(ESpatialDirection::None)
+	{}
+	
+	
+};
+
+USTRUCT(BlueprintType)
 struct FAttackDataStruct
 {
 	GENERATED_BODY()
@@ -23,6 +43,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<UHitCueObject> HitCueClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	FAttackDirectionStruct AttackDirectionStruct;
 	
 };
 

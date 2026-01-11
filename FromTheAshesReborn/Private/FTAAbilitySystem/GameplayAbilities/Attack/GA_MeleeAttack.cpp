@@ -30,6 +30,8 @@ void UGA_MeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	CurrentAttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 }
 
 void UGA_MeleeAttack::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

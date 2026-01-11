@@ -56,6 +56,11 @@ protected:
 	virtual void ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	virtual void GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
 	
+	virtual void ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+
+	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
+	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+	
 public:
 	
 
