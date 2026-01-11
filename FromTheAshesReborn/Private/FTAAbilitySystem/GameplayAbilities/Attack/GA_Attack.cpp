@@ -423,6 +423,64 @@ void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* AttackTypes)
 void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
 {
 	Super::SetRuntimeAbilityData(InAbilityRuntimeData);
+
+	UAttackAbilityDataAsset* AttackAsset = Cast<UAttackAbilityDataAsset>(InAbilityRuntimeData);
+
+	if(!AttackAsset)
+	{
+		return;
+	}
+
+	//Damage
+	if(AttackAsset->AttackData.ApplyDamageEffect && AttackAsset->AttackData.ApplyDamageEffect->IsValidLowLevel())
+	{
+		AttackAsset->AttackData.ApplyDamageEffect = AttackAsset->AttackData.ApplyDamageEffect;
+	}
+	
+	//Hit Reactions
+	if (AttackAsset->AttackData.PossibleHitReactions.Num() > 0 && !AttackAsset->AttackData.PossibleHitReactions.IsEmpty())
+	{
+		for (TSubclassOf HitReaction : AttackAsset->AttackData.PossibleHitReactions)
+		{
+			if(HitReaction && HitReaction->IsValidLowLevel())
+			{
+				if (!CurrentAttackData.PossibleHitReactions.Contains(HitReaction))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("HitReaction name: %s"), *HitReaction->GetName());
+					CurrentAttackData.PossibleHitReactions.Insert(HitReaction, 0);
+				}
+			}
+		}
+	}
+	
+
+	//Weapon trace
+
+	// if(AttackAsset->AttackData.WeaponTraceSizeStruct.bEnabled)
+	// {
+	// 	AttackAsset->AttackData.WeaponTraceSizeStruct.WeaponTraceSize = InMeleeData.WeaponTraceSizeStruct.WeaponTraceSize;
+	// }
+
+	//Direction
+	// if(InMeleeData.AttackDirectionStruct.bEnabled)
+	// {
+	// 	if(InMeleeData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
+	// 	{
+	// 		AttackData.AttackDirectionStruct.AttackDirection = InMeleeData.AttackDirectionStruct.AttackDirection;
+	// 	}
+	// }
+
+	// //Slash Cue
+	// if(InMeleeData.SlashCueClass && InMeleeData.SlashCueClass->IsValidLowLevel())
+	// {
+	// 	AttackData.SlashCueClass = InMeleeData.SlashCueClass;
+	// }
+	//
+	// //Hit Cue
+	// if(InMeleeData.HitCueClass && InMeleeData.HitCueClass->IsValidLowLevel())
+	// {
+	// 	AttackData.HitCueClass = InMeleeData.HitCueClass;
+	// }
 	
 }
 
