@@ -28,35 +28,41 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
-	// if(!GetFTACharacterFromActorInfo()->EquipmentManagerComponent)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - EquipmentManagerComponent is Null"));
-	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-	// 	return;
-	// }
-	//
-	// WeaponActors = GetFTACharacterFromActorInfo()->EquipmentManagerComponent->GetEquippedWeaponActors();
-	//
-	// for (AWeaponActorBase* SpawnedActor : GetFTACharacterFromActorInfo()->EquipmentManagerComponent->GetEquippedWeaponActors())
-	// {
-	// 	if(SpawnedActor)
-	// 	{
-	// 		if(SpawnedActor->SkeletalMesh)
-	// 		{
-	// 			WeaponActors.Add(SpawnedActor);
-	// 		}
-	// 	}
-	// }
-	//
-	// if(WeaponActors.IsEmpty())
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is empty"));
-	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-	// 	return;
-	// }
-	//
-	// // GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UGA_Attack::SetAbilityRuntimeData);
-	//
+	if(!GetFTACharacterFromActorInfo()->EquipmentManagerComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - EquipmentManagerComponent is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	WeaponActors = GetFTACharacterFromActorInfo()->EquipmentManagerComponent->GetEquippedWeaponActors();
+	
+	for (AWeaponActorBase* SpawnedActor : GetFTACharacterFromActorInfo()->EquipmentManagerComponent->GetEquippedWeaponActors())
+	{
+		if(SpawnedActor)
+		{
+			if(SpawnedActor->SkeletalMesh)
+			{
+				WeaponActors.Add(SpawnedActor);
+			}
+		}
+	}
+	
+	if(WeaponActors.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is empty"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	// GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UGA_Attack::SetAbilityRuntimeData);
+
+	WeaponActors[0]->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
+	WeaponActors[0]->TracingComponent->BoxHalfSize = FVector(
+					100,
+					100,
+					100);
+	
 	// for (AWeaponActorBase* WeaponActor : WeaponActors)
 	// {
 	// 	if(WeaponActor)
@@ -64,30 +70,17 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	// 		if(WeaponActor->TracingComponent)
 	// 		{
 	// 			WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
+	// 			UE_LOG(LogTemp, Warning, TEXT("Hit binded"))
 	//
 	// 			//Refactor for ranged
-	// 			// WeaponActor->TracingComponent->BoxHalfSize = FVector(
-	// 			// 	DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.X,
-	// 			// 	DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Y,
-	// 			// 	DefaultAttackData.WeaponTraceSizeStruct.WeaponTraceSize.Z);
+	// 			WeaponActor->TracingComponent->BoxHalfSize = FVector(
+	// 				100,
+	// 				100,
+	// 				100);
 	// 			
 	// 		}
 	// 	}
 	// }
-	//
-	// if(!AttackComboTypes.NormalAttacks.IsValidIndex(0) || AttackComboTypes.NormalAttacks.Num() < 1)
-	// {
-	// 	// UE_LOG(LogTemp, Warning, TEXT("Melee Attack Assets is invalid"))
-	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-	// 	return;
-	// }
-	//
-	// UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
-	// if(!CSC)
-	// {
-	// 	return;
-	// }
-	
 }
 
 void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -102,17 +95,31 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
 {
-	
+	UE_LOG(LogTemp, Warning, TEXT("Attack landed"));
 }
 
-void UGA_Attack::ExtractAttackAssetProperties(const TObjectPtr<UAttackAbilityDataAsset>& AttackAsset)
+UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
+	return Super::SelectAbilityAsset(InAbilityAssets);
+}
+
+void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
+{
+	Super::ExtractAssetProperties(InAbilityAsset);
+	UAttackAbilityDataAsset* AttackAsset = Cast<UAttackAbilityDataAsset>(InAbilityAsset);
+
+	if(!AttackAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttackAsset is null"));
+		return;
+	}
+	
 	//Damage
 	if(AttackAsset->AttackData.ApplyDamageEffect && AttackAsset->AttackData.ApplyDamageEffect->IsValidLowLevel())
 	{
 		CurrentAttackData.ApplyDamageEffect = AttackAsset->AttackData.ApplyDamageEffect;
 	}
-
+	
 	//Hit Reactions
 	if(AttackAsset->AttackData.PossibleHitReactions.Num() > 0 && !AttackAsset->AttackData.PossibleHitReactions.IsEmpty())
 	{

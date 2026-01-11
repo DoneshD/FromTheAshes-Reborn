@@ -47,6 +47,11 @@ protected:
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
 	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
 
+	virtual void OnHitAdded(FHitResult LastItem) override;
+
+	void StartMeleeWeaponTrace();
+	void EndMeleeWeaponTrace();
+
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 
 	

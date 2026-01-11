@@ -12,23 +12,6 @@ class UAttackAbilityDataAsset;
 class UCentralStateComponent;
 class UComboManagerComponent;
 
-//Atack Forms
-
-USTRUCT(BlueprintType)
-struct FAttackComboType
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UAttackAbilityDataAsset>> NormalAttacks;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UAttackAbilityDataAsset>> PauseAttacks;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UAttackAbilityDataAsset>> VariantAttacks;
-	
-};
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_Attack : public UGA_FromEquipment
@@ -43,9 +26,6 @@ protected:
 	TArray<TObjectPtr<AWeaponActorBase>> WeaponActors;
 
 	//Attack Assets and Data
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
-	FAttackComboType AttackComboTypes;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FAttackDataStruct DefaultAttackData;
@@ -70,13 +50,14 @@ protected:
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
 	UFUNCTION()
-	void OnHitAdded(FHitResult LastItem);
+	virtual void OnHitAdded(FHitResult LastItem);
 	
 public:
 	
-	void ExtractAttackAssetProperties(const TObjectPtr<UAttackAbilityDataAsset>& AttackAsset);
 
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
+	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
 	virtual void PerformAbility(UFTAAbilityDataAsset* AttackTypes) override;
 	
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")

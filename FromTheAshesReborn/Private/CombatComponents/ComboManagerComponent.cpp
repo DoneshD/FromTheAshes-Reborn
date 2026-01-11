@@ -73,48 +73,6 @@ void UComboManagerComponent::SetCurrentComboIndex(int Index)
 	CurrentComboIndex = Index;
 }
 
-bool UComboManagerComponent::FindMatchingMeleeAssetToTagContainer(const FAttackComboType& AttackComboTypes,
-	TObjectPtr<UAttackAbilityDataAsset>& OutMatchingAttackAsset)
-{
-	TArray<TObjectPtr<UAttackAbilityDataAsset>> CombinedAssets;
-	CombinedAssets.Append(AttackComboTypes.NormalAttacks);
-	CombinedAssets.Append(AttackComboTypes.PauseAttacks);
-	CombinedAssets.Append(AttackComboTypes.VariantAttacks);
-
-	for (UAttackAbilityDataAsset* Asset : CombinedAssets)
-	{
-		if (!Asset) continue;
-
-		if (GetCurrentComboContainer().HasAll(Asset->RequiredComboTags))
-		{
-			if (Asset->RequiredIndex == GetCurrentComboIndex())
-			{
-				// if (PauseCurrentAttack)
-				if (false)
-				{
-					if (Asset->RequiredPause)
-					{
-						OutMatchingAttackAsset = Asset;
-						return true;
-					}
-				}
-				else
-				{
-					if (!Asset->RequiredPause)
-					{
-						OutMatchingAttackAsset = Asset;
-						return true;
-					}
-				}
-			}
-		}
-	}
-	
-	GetCurrentComboContainer().Reset();
-	SetCurrentComboIndex(0);
-	OutMatchingAttackAsset = AttackComboTypes.NormalAttacks[0];
-	return true;
-}
 
 TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetAbilityAssetByRequirements(
 	TArray<UFTAAbilityDataAsset*> AbilityAssets)

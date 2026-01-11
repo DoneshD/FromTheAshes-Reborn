@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "FTAAbilityDataAsset.h"
+#include "AttackAbilityDataAsset.h"
 #include "CombatComponents/MeleePropertiesComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
@@ -11,7 +11,7 @@ class UGameplayEffect;
 class UNiagaraSystem;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UFTAAbilityDataAsset
+class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UAttackAbilityDataAsset
 {
 	GENERATED_BODY()
 
@@ -23,8 +23,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
 	bool RequiredPause = false;*/
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attack")
-	FMeleeAttackDataStruct AttackData;
+	// UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	// FMeleeAttackDataStruct AttackData;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
 	FMeleeWarpData MeleeWarpData;

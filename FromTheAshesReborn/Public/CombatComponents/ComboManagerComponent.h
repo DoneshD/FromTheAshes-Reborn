@@ -42,17 +42,13 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	static void PrintGameplayTagsInContainer(const FGameplayTagContainer& Container);
-	bool FindMatchingAssetToTagContainer(const FAttackComboType& AttackAssets,
-	                                     TObjectPtr<UAttackAbilityDataAsset>& OutMatchingAttackAsset);
 
 public:
 	
 	FGameplayTagContainer& GetCurrentComboContainer();
 	int GetCurrentComboIndex() const;
 	void SetCurrentComboIndex(int Index);
-
-	bool FindMatchingMeleeAssetToTagContainer(const FAttackComboType& AttackComboTypes, TObjectPtr<UAttackAbilityDataAsset>& OutMatchingAttackAsset);
-
+	
 	TObjectPtr<UFTAAbilityDataAsset> GetAbilityAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets);
 	
 	

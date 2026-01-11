@@ -93,7 +93,6 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 	{
 		if(AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("WeaponActor name: %s"), *WeaponActor->GetName());
 			CurrentEquippedWeaponActors.Add(WeaponActor);
 		}
 	}

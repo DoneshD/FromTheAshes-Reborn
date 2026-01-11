@@ -1,6 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack.h"
 
 #include "DataAsset/MeleeAbilityDataAsset.h"
+#include "TracingComponent/TracingComponent.h"
+#include "Weapon/WeaponActorBase.h"
 
 UGA_MeleeAttack::UGA_MeleeAttack(const FObjectInitializer&)
 {
@@ -43,6 +45,15 @@ void UGA_MeleeAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventDa
 void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
+	{
+		StartMeleeWeaponTrace();
+	}
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
+	{
+		EndMeleeWeaponTrace();
+	}
 }
 
 
@@ -63,8 +74,14 @@ UFTAAbilityDataAsset* UGA_MeleeAttack::SelectAbilityAsset(TArray<UFTAAbilityData
 
 void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 {
+	Super::ExtractAssetProperties(InAbilityAsset);
 	UMeleeAbilityDataAsset* MeleeAbilityDataAsset = Cast<UMeleeAbilityDataAsset>(InAbilityAsset);
-	Super::ExtractAssetProperties(MeleeAbilityDataAsset);
+	
+	if(!MeleeAbilityDataAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("MeleeAbilityDataAsset is null"));
+		return;
+	}
 }
 
 void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
@@ -72,6 +89,46 @@ void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 	UMeleeAbilityDataAsset* MeleeAbilityDataAsset = Cast<UMeleeAbilityDataAsset>(InAbilityAsset);
 	Super::PerformAbility(MeleeAbilityDataAsset);
 	
+}
+
+void UGA_MeleeAttack::OnHitAdded(FHitResult LastItem)
+{
+	Super::OnHitAdded(LastItem);
+}
+
+void UGA_MeleeAttack::StartMeleeWeaponTrace()
+{
+	for (AWeaponActorBase* WeaponActor : WeaponActors)
+	{
+		//Another instance of crashing here
+		if(WeaponActor)
+		{
+			if(WeaponActor->TracingComponent)
+			{
+				WeaponActor->TracingComponent->BoxHalfSize = FVector(
+				100.0f,
+				100.0f,
+				100.0f);
+				
+				WeaponActor->TracingComponent->ToggleTraceCheck(true);
+			}
+		}
+	}
+}
+
+void UGA_MeleeAttack::EndMeleeWeaponTrace()
+{
+	for (AWeaponActorBase* WeaponActor : WeaponActors)
+	{
+		if(WeaponActor)
+		{
+			if(WeaponActor->TracingComponent)
+			{
+				WeaponActor->TracingComponent->ToggleTraceCheck(false);
+				WeaponActor->TracingComponent->ClearHitArray();
+			}
+		}
+	}
 }
 
 void UGA_MeleeAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)

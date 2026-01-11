@@ -451,28 +451,28 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 	}
 	
 	//Weapon trace
-	if(MeleeAsset->AttackData.WeaponTraceSizeStruct.bEnabled)
-	{
-		AttackData.WeaponTraceSizeStruct.WeaponTraceSize = MeleeAsset->AttackData.WeaponTraceSizeStruct.WeaponTraceSize;
-	}
-
-	//Direction
-	if(MeleeAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
-	{
-		AttackData.AttackDirectionStruct.AttackDirection = MeleeAsset->AttackData.AttackDirectionStruct.AttackDirection;
-	}
-	
-	//Slash Cue
-	if(MeleeAsset->AttackData.SlashCueClass && MeleeAsset->AttackData.SlashCueClass->IsValidLowLevel())
-	{
-		AttackData.SlashCueClass = MeleeAsset->AttackData.SlashCueClass;
-	}
-
-	//Hit Cue
-	if(MeleeAsset->AttackData.HitCueClass && MeleeAsset->AttackData.HitCueClass->IsValidLowLevel())
-	{
-		AttackData.HitCueClass = MeleeAsset->AttackData.HitCueClass;
-	}
+	// if(MeleeAsset->AttackData.WeaponTraceSizeStruct.bEnabled)
+	// {
+	// 	AttackData.WeaponTraceSizeStruct.WeaponTraceSize = MeleeAsset->AttackData.WeaponTraceSizeStruct.WeaponTraceSize;
+	// }
+	//
+	// //Direction
+	// if(MeleeAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
+	// {
+	// 	AttackData.AttackDirectionStruct.AttackDirection = MeleeAsset->AttackData.AttackDirectionStruct.AttackDirection;
+	// }
+	//
+	// //Slash Cue
+	// if(MeleeAsset->AttackData.SlashCueClass && MeleeAsset->AttackData.SlashCueClass->IsValidLowLevel())
+	// {
+	// 	AttackData.SlashCueClass = MeleeAsset->AttackData.SlashCueClass;
+	// }
+	//
+	// //Hit Cue
+	// if(MeleeAsset->AttackData.HitCueClass && MeleeAsset->AttackData.HitCueClass->IsValidLowLevel())
+	// {
+	// 	AttackData.HitCueClass = MeleeAsset->AttackData.HitCueClass;
+	// }
 	
 }
 
