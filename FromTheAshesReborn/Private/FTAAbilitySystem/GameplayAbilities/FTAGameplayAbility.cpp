@@ -32,6 +32,12 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	PlayAbilityAnimMontage(InAbilityAsset->MontageToPlay);
+	
+	int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
+	
+	ComboManagerComponent->GetCurrentComboContainer().AddTag(InAbilityAsset->UniqueIdentifierTag);
+	ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
+	ComboManagerComponent->PauseCurrentAttack = false;
 }
 
 UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
@@ -54,20 +60,12 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		return nullptr;
 	}
 
-	if(InAbilityAssets[0])
-	{
-		return InAbilityAssets[0];
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Null ability asset"));
-		return nullptr;
-	}
-	
 
-	// TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetAbilityAssetByRequirements(AbilityAssets);
-	//
-	// UE_LOG(LogTemp, Warning, TEXT("Returning first asset"));
+	if(TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetAbilityAssetByRequirements(AbilityAssets))
+	{
+		return AbilityDataAsset;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Returning first asset"));
 	return nullptr;
 }
 
@@ -556,6 +554,8 @@ void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEve
 void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
+	ResetAbility();
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }
 
 void UFTAGameplayAbility::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -587,4 +587,11 @@ void UFTAGameplayAbility::AdjustFOV(const FGameplayTag InEnableTag, int32 NewCou
 		CSC->HandleCameraSystemAdjustment(CameraParams);
 		
 	}
+}
+
+void UFTAGameplayAbility::ResetAbility()
+{
+	ComboManagerComponent->GetCurrentComboContainer().Reset();
+	ComboManagerComponent->SetCurrentComboIndex(0);
+	ComboManagerComponent->PauseCurrentAttack = false;
 }

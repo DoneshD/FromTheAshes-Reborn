@@ -67,12 +67,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
-	virtual void PerformAbility(UFTAAbilityDataAsset* AttackTypes) override;
+	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
 
 	virtual void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData) override;
-	
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
-	void ResetAttack();
 	
 	
 //

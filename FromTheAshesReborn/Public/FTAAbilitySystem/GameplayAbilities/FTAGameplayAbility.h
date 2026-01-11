@@ -237,5 +237,8 @@ public:
 
 	UFUNCTION()
 	void AdjustFOV(const FGameplayTag InEnableTag, int32 NewCount);
+
+	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	virtual void ResetAbility();
 	
 };

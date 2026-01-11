@@ -88,7 +88,7 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	// 		}
 	// 	}
 	// }
-	UE_LOG(LogTemp, Warning, TEXT("Size during activate: %d"), CurrentAttackData.PossibleHitReactions.Num());
+	
 	
 }
 
@@ -104,7 +104,6 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
 {
-
 	AActor* TargetActor = LastItem.GetActor();
 
 	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
@@ -388,10 +387,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 			{
 				if (!CurrentAttackData.PossibleHitReactions.Contains(HitReaction))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("adding name: %s"), *HitReaction->GetName());
-					
 					CurrentAttackData.PossibleHitReactions.Insert(HitReaction, 0);
-					UE_LOG(LogTemp, Warning, TEXT("new size from extraction: %d"), CurrentAttackData.PossibleHitReactions.Num());
 				}
 			}
 			
@@ -414,9 +410,9 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 	}
 }
 
-void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* AttackTypes)
+void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
-	Super::PerformAbility(AttackTypes);
+	Super::PerformAbility(InAbilityAsset);
 	
 }
 
@@ -446,7 +442,6 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 			{
 				if (!CurrentAttackData.PossibleHitReactions.Contains(HitReaction))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("HitReaction name: %s"), *HitReaction->GetName());
 					CurrentAttackData.PossibleHitReactions.Insert(HitReaction, 0);
 				}
 			}
@@ -481,11 +476,6 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 	// {
 	// 	AttackData.HitCueClass = InMeleeData.HitCueClass;
 	// }
-	
-}
-
-void UGA_Attack::ResetAttack()
-{
 	
 }
 
