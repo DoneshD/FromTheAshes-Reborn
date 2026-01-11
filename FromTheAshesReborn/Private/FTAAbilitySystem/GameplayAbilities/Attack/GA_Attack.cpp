@@ -31,6 +31,8 @@ bool UGA_Attack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 }
 void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	CurrentAttackData = DefaultAttackData;
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	if(!GetFTACharacterFromActorInfo()->EquipmentManagerComponent)
@@ -86,8 +88,8 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	// 		}
 	// 	}
 	// }
-
-	CurrentAttackData = DefaultAttackData;
+	UE_LOG(LogTemp, Warning, TEXT("Size during activate: %d"), CurrentAttackData.PossibleHitReactions.Num());
+	
 }
 
 void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -160,7 +162,21 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
-	// UE_LOG(LogTemp, Warning, TEXT("Size: %d"), CurrentAttackData.PossibleHitReactions.Num());
+	
+	UE_LOG(LogTemp, Warning, TEXT("Size during hit: %d"), CurrentAttackData.PossibleHitReactions.Num());
+		
+	for(TSubclassOf HitAbilityClass : CurrentAttackData.PossibleHitReactions)
+	{
+		if(HitAbilityClass && HitAbilityClass->IsValidLowLevel())
+		{
+			const UGA_ReceiveHit* const CDO = HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+			if (CDO)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("From array name: %s"), *CDO->GetName());
+			}
+		}
+	}
+	
 	
 	for(TSubclassOf HitAbilityClass : CurrentAttackData.PossibleHitReactions)
 	{
@@ -169,7 +185,6 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 			const UGA_ReceiveHit* const CDO = HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 			if (CDO)
 			{
-				
 				GrantHitAbility(TargetDataHandle, HitAbilityClass);
 				
 				const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitAbilityClass);
@@ -356,14 +371,15 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		UE_LOG(LogTemp, Error, TEXT("AttackAsset is null"));
 		return;
 	}
-	
 	//Damage
 	if(AttackAsset->AttackData.ApplyDamageEffect && AttackAsset->AttackData.ApplyDamageEffect->IsValidLowLevel())
 	{
 		CurrentAttackData.ApplyDamageEffect = AttackAsset->AttackData.ApplyDamageEffect;
+		
 	}
 	
 	//Hit Reactions
+	
 	if(AttackAsset->AttackData.PossibleHitReactions.Num() > 0 && !AttackAsset->AttackData.PossibleHitReactions.IsEmpty())
 	{
 		for (TSubclassOf HitReaction : AttackAsset->AttackData.PossibleHitReactions)
@@ -372,7 +388,10 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 			{
 				if (!CurrentAttackData.PossibleHitReactions.Contains(HitReaction))
 				{
+					UE_LOG(LogTemp, Warning, TEXT("adding name: %s"), *HitReaction->GetName());
+					
 					CurrentAttackData.PossibleHitReactions.Insert(HitReaction, 0);
+					UE_LOG(LogTemp, Warning, TEXT("new size from extraction: %d"), CurrentAttackData.PossibleHitReactions.Num());
 				}
 			}
 			
@@ -398,6 +417,12 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* AttackTypes)
 {
 	Super::PerformAbility(AttackTypes);
+	
+}
+
+void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
+{
+	Super::SetRuntimeAbilityData(InAbilityRuntimeData);
 	
 }
 

@@ -379,7 +379,6 @@ void UGA_MeleeWeaponAttack::SetRuntimeMeleeData(FMeleeAttackDataStruct InMeleeDa
 		AttackData.ApplyDamageEffect = InMeleeData.ApplyDamageEffect;
 	}
 	
-
 	//Hit Reactions
 	if (InMeleeData.PossibleHitReactions.Num() > 0 && !InMeleeData.PossibleHitReactions.IsEmpty())
 	{
@@ -446,7 +445,6 @@ void UGA_MeleeWeaponAttack::ExtractMeleeAssetProperties(TObjectPtr<UMeleeAbility
 					AttackData.PossibleHitReactions.Insert(HitReaction, 0);
 				}
 			}
-			
 		}
 	}
 	
