@@ -51,6 +51,10 @@ protected:
 
 	UFUNCTION()
 	virtual void OnHitAdded(FHitResult LastItem);
+
+	FGameplayAbilityTargetDataHandle AddHitResultToTargetData(const FHitResult& LastItem);
+	virtual void ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
+	virtual void GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
 	
 public:
 	

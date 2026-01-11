@@ -1,11 +1,14 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 
+#include "AbilitySystemGlobals.h"
 #include "Camera/CameraSystemComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 #include "FTAAbilitySystem/GameplayCues/HitCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "TracingComponent/TracingComponent.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "Weapon/WeaponActorBase.h"
@@ -95,7 +98,146 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Attack landed"));
+
+	AActor* TargetActor = LastItem.GetActor();
+
+	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
+	{
+		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(TargetActor);
+		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		//TODO: Temporary, change later
+		AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo()));
+
+		if(Enemy)
+		{
+			AEnemyBaseCharacter* TargetEnemy = Cast<AEnemyBaseCharacter>(TargetActor);
+			if(TargetEnemy)
+			{
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+				return;
+			}
+		}
+
+		if (TargetASC)
+		{
+			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
+			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
+			{
+				
+				ExecuteHitLogic(TargetHitDataHandle);
+			}
+		}
+	}
+}
+
+FGameplayAbilityTargetDataHandle UGA_Attack::AddHitResultToTargetData(const FHitResult& LastItem)
+{
+	FGameplayAbilityTargetData_SingleTargetHit* TargetData = new FGameplayAbilityTargetData_SingleTargetHit(LastItem);
+
+	if(!TargetData)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No Target Data"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return nullptr;
+	}
+	
+	TargetData->HitResult = LastItem;
+	
+	FGameplayAbilityTargetDataHandle TargetDataHandle;
+	TargetDataHandle.Add(TargetData);
+	return TargetDataHandle;
+}
+
+void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	UAbilitySystemComponent* TargetASC =
+		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+
+	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
+	// UE_LOG(LogTemp, Warning, TEXT("Size: %d"), CurrentAttackData.PossibleHitReactions.Num());
+	
+	for(TSubclassOf HitAbilityClass : CurrentAttackData.PossibleHitReactions)
+	{
+		if(HitAbilityClass && HitAbilityClass->IsValidLowLevel())
+		{
+			const UGA_ReceiveHit* const CDO = HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+			if (CDO)
+			{
+				
+				GrantHitAbility(TargetDataHandle, HitAbilityClass);
+					UE_LOG(LogTemp, Warning, TEXT("Here 75"))
+				
+				const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitAbilityClass);
+				if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
+				{
+					// ApplyMeleeHitEffects(TargetDataHandle, HitAbilityClass);
+					// SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
+					// AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
+					UE_LOG(LogTemp, Warning, TEXT("Here 23"))
+					break;
+				}
+				else
+				{
+					
+				}
+			}
+		}
+	}
+}
+
+void UGA_Attack::GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle,
+	TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+{
+	if (InHitAbilityClass->IsValidLowLevel())
+	{
+		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			{
+				const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
+
+				if(GrantAbilityEffect)
+				{
+					FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
+
+					TArray<FActiveGameplayEffectHandle> AppliedHitEffects = ApplyGameplayEffectSpecToTarget(
+							CurrentSpecHandle,
+							CurrentActorInfo,
+							CurrentActivationInfo,
+							GrantAbilityEffectHandle,
+							TargetDataHandle
+						);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
+					EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+					return;
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+				return;
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid CDO"))
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+			return;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - InHitAbilityClass is invalid"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
 }
 
 UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
