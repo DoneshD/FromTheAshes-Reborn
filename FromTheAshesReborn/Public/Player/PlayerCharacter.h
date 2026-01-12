@@ -105,5 +105,5 @@ public:
 
 	UFUNCTION()
 	void OnTargetLockedOff(AActor* Target);
-
+	void SetMaxWalkSpeed(float X);
 };

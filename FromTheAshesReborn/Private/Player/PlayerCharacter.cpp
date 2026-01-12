@@ -55,7 +55,6 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	GetCharacterMovement()->FallingLateralFriction = 50.0f;
 	
 	GetCharacterMovement()->SetCrouchedHalfHeight(48.f);
-	// GetCharacterMovement()->MaxWalkSpeed = 100.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->bUseControllerDesiredRotation = true;
@@ -171,4 +170,9 @@ void APlayerCharacter::OnTargetLockedOff(AActor* Target)
 	{
 		Enemy->HealthWidget->SetVisibility(false);
 	}
+}
+
+void APlayerCharacter::SetMaxWalkSpeed(float X)
+{
+	GetCharacterMovement()->MaxWalkSpeed = X;
 }

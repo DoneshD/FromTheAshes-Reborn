@@ -83,6 +83,7 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	InputDirection.X = FMath::Clamp(InputDirection.X, -1.0f, 1.0f);
 	InputDirection.Y = FMath::Clamp(InputDirection.Y, -1.0f, 1.0f);
 
+	
 	if(!PlayerCharacter) { return; }
 
 	PlayerCharacter->AddMovementInput(ControlRot.Vector(), InputDirection.Y);
@@ -91,6 +92,22 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	const FVector RightVector = RotationMatrix.GetScaledAxis(EAxis::Y);
 	
 	PlayerCharacter->AddMovementInput(RightVector, InputDirection.X);
+
+	float WalkSpeed = InputActionValue.GetMagnitude() * 20.0f;
+	float ClampedWalkSpeed = FMath::Clamp(WalkSpeed, 200, 1000);
+
+	if(ClampedWalkSpeed < 400.0f)
+	{
+		PlayerCharacter->SetMaxWalkSpeed(200.0f);
+	}
+	else if(ClampedWalkSpeed > 400.0f && ClampedWalkSpeed < 800.0f)
+	{
+		PlayerCharacter->SetMaxWalkSpeed(600.0f);
+	}
+	else
+	{
+		PlayerCharacter->SetMaxWalkSpeed(1000.0f);
+	}
 
 	//Move to controller
 	PlayerCharacter->HasMovementInput = true;
