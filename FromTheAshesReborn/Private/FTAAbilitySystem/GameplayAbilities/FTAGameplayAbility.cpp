@@ -60,7 +60,6 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		return nullptr;
 	}
 	
-	UE_LOG(LogTemp, Warning, TEXT("Returning first asset"));
 	return nullptr;
 }
 

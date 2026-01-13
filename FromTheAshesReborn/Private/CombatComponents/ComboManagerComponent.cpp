@@ -123,7 +123,6 @@ TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequireme
 				AssetsToTry.Add(Asset);
 			}
 		}
-		
 	}
 	if(AssetsToTry.Num() > 0)
 	{

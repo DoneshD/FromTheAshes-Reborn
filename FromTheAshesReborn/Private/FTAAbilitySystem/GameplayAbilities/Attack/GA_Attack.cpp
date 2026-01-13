@@ -400,7 +400,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 	{
 		if(AttackAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
 		{
-			AttackAsset->AttackData.AttackDirectionStruct.AttackDirection = AttackAsset->AttackData.AttackDirectionStruct.AttackDirection;
+			CurrentAttackData.AttackDirectionStruct.AttackDirection = AttackAsset->AttackData.AttackDirectionStruct.AttackDirection;
 		}
 	}
 }
@@ -451,14 +451,14 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 	// 	AttackAsset->AttackData.WeaponTraceSizeStruct.WeaponTraceSize = InMeleeData.WeaponTraceSizeStruct.WeaponTraceSize;
 	// }
 
-	//Direction
-	// if(InMeleeData.AttackDirectionStruct.bEnabled)
-	// {
-	// 	if(InMeleeData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
-	// 	{
-	// 		AttackData.AttackDirectionStruct.AttackDirection = InMeleeData.AttackDirectionStruct.AttackDirection;
-	// 	}
-	// }
+	// Direction
+	 if(AttackAsset->AttackData.AttackDirectionStruct.bEnabled)
+	 {
+	 	if(AttackAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
+	 	{
+	 		CurrentAttackData.AttackDirectionStruct.AttackDirection = AttackAsset->AttackData.AttackDirectionStruct.AttackDirection;
+	 	}
+	 }
 
 	// //Slash Cue
 	// if(InMeleeData.SlashCueClass && InMeleeData.SlashCueClass->IsValidLowLevel())
