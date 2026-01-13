@@ -103,6 +103,18 @@ void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FG
 void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	for (AWeaponActorBase* WeaponActor : WeaponActors)
+	{
+		if(!WeaponActor)
+		{
+			//TODO: Printing incorrectly, fix later
+			//UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
+			return;
+		}
+		
+		WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
+	}
 }
 
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
@@ -132,7 +144,6 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
 			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 			{
-				
 				ExecuteHitLogic(TargetHitDataHandle);
 			}
 		}
@@ -179,7 +190,7 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 				{
 					ApplyHitEffects(TargetDataHandle, HitAbilityClass);
 					SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
-					// AddMeleeHitCues(TargetDataHandle, HitAbilityClass);
+					AddHitCues(TargetDataHandle, HitAbilityClass);
 					break;
 				}
 				else
@@ -287,8 +298,34 @@ void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetD
 	}
 }
 
-void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle,
-	TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle,TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+{
+	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	
+	FGameplayCueParameters HitCueParams;
+	if(CurrentAttackData.HitCueClass)
+	{
+		UHitCueObject* CueCDO = CurrentAttackData.HitCueClass->GetDefaultObject<UHitCueObject>();
+
+		if(CueCDO)
+		{
+			HitCueParams.SourceObject = CueCDO;
+			HitCueParams.EffectCauser = TargetActor;
+			HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
+			
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->HitCueInfo.HitCueTag))
+			{
+				K2_AddGameplayCueWithParams(CueCDO->HitCueInfo.HitCueTag, HitCueParams);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
+			}
+		}
+	}
+}
+
+void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
