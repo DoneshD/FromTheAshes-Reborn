@@ -90,11 +90,14 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	// }
 	
 	
+	
 }
 
 void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
 {
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
+
+
 }
 
 void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -161,21 +164,6 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
-	
-	UE_LOG(LogTemp, Warning, TEXT("Size during hit: %d"), CurrentAttackData.PossibleHitReactions.Num());
-		
-	for(TSubclassOf HitAbilityClass : CurrentAttackData.PossibleHitReactions)
-	{
-		if(HitAbilityClass && HitAbilityClass->IsValidLowLevel())
-		{
-			const UGA_ReceiveHit* const CDO = HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
-			if (CDO)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("From array name: %s"), *CDO->GetName());
-			}
-		}
-	}
-	
 	
 	for(TSubclassOf HitAbilityClass : CurrentAttackData.PossibleHitReactions)
 	{
@@ -357,7 +345,14 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 
 UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
-	return Super::SelectAbilityAsset(InAbilityAssets);
+	Super::SelectAbilityAsset(InAbilityAssets);
+
+	if(TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetAbilityAssetByRequirements(InAbilityAssets))
+	{
+		return AbilityDataAsset;
+	}
+	
+	return nullptr;
 }
 
 void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)

@@ -48,7 +48,7 @@ protected:
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
-
+	
 	UFUNCTION()
 	virtual void OnHitAdded(FHitResult LastItem);
 
@@ -66,6 +66,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
+	
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
 	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
 

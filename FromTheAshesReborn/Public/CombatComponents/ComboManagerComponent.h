@@ -3,10 +3,12 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Components/ActorComponent.h"
+#include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 #include "ComboManagerComponent.generated.h"
 
+class UHitReactionDataAsset;
 struct FMeleeAttackForms;
 class UMeleeAbilityDataAsset;
 class UFTAAbilityDataAsset;
@@ -50,6 +52,8 @@ public:
 	void SetCurrentComboIndex(int Index);
 	
 	TObjectPtr<UFTAAbilityDataAsset> GetAbilityAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets);
+	
+	TObjectPtr<UHitReactionDataAsset> GetHitAssetByRequirements(TArray<UHitReactionDataAsset*> InHitAssets, const UHitEventObject* InHitObject);
 	
 	
 };

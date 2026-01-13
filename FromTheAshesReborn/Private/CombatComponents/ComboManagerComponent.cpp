@@ -2,7 +2,9 @@
 
 #include "DataAsset/AttackAbilityDataAsset.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
+#include "DataAsset/HitReactionDataAsset.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
+#include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -107,4 +109,26 @@ TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetAbilityAssetByRequir
 	GetCurrentComboContainer().Reset();
 	SetCurrentComboIndex(0);
 	return AbilityAssets[0];
+}
+
+TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequirements(TArray<UHitReactionDataAsset*> InHitAssets, const UHitEventObject* InHitObject)
+{
+	TArray<UHitReactionDataAsset*> AssetsToTry;
+	for (UHitReactionDataAsset* Asset : InHitAssets)
+	{
+		if(Asset->Direction == InHitObject->HitData.HitDirection || Asset->Direction == ESpatialDirection::Any)
+		{
+			if(Asset->MontageToPlay)
+			{
+				AssetsToTry.Add(Asset);
+			}
+		}
+		
+	}
+	if(AssetsToTry.Num() > 0)
+	{
+		int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
+		return AssetsToTry[Selection];
+	}
+	return nullptr;
 }

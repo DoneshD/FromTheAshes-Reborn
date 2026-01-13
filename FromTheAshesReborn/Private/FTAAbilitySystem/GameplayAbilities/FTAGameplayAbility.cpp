@@ -59,12 +59,7 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::SelectAbilityAsset - CurrentAbilityAsset is Null"))
 		return nullptr;
 	}
-
-
-	if(TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetAbilityAssetByRequirements(AbilityAssets))
-	{
-		return AbilityDataAsset;
-	}
+	
 	UE_LOG(LogTemp, Warning, TEXT("Returning first asset"));
 	return nullptr;
 }

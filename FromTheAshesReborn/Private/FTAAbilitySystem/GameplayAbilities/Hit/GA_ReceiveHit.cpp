@@ -1,4 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
+
+#include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "EventObjects/HitEventObject.h"
@@ -54,37 +56,12 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	
-	const UHitEventObject* HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
-	
-	if(!HitInfoObject)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - HitInfoObject is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
-	
-	FVector TargetLocation;
-	
-	if(!HitInfoObject->HitData.Instigator)
-	{
-		TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
-	}
-	else
-	{
-		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
-	}
 
 	if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit")))
 	{
 		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
 	}
 	
-	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
-
-	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
-
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
 	{
 		FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Hit");
@@ -103,14 +80,8 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
 	}
-
-	// if(HitInfoObject->HitData.HitDirection == ESpatialDirection::TempBlocker)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("TempBlocker"));
-	// 	return;
-	// }
 	
-	if(!NonMontageAbility)
+	/*if(!NonMontageAbility)
 	{
 		TArray<UHitReactionDataAsset*> AssetsToTry;
 		for (UHitReactionDataAsset* Asset : HitAbilityAssets)
@@ -140,8 +111,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 					Selection = 1;
 				}
 			}
-			
-			PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
+			// PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
 		}
 		else
 		{
@@ -149,7 +119,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 			return;
 		}
-	}
+	}*/
 }
 
 void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
@@ -172,6 +142,7 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 	{
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
 	}
+	HitInfoObject = nullptr;
 
 }
 
@@ -192,4 +163,52 @@ void UGA_ReceiveHit::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventDat
 void UGA_ReceiveHit::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+}
+
+UFTAAbilityDataAsset* UGA_ReceiveHit::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
+{
+	Super::SelectAbilityAsset(InAbilityAssets);
+
+	HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
+	
+	if(!HitInfoObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - HitInfoObject is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return nullptr;
+	}
+	
+	FVector TargetLocation;
+	
+	if(!HitInfoObject->HitData.Instigator)
+	{
+		TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+	}
+	else
+	{
+		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
+	}
+	
+	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
+
+	TArray<UHitReactionDataAsset*> HitDataAssets;
+
+	for (UFTAAbilityDataAsset* Asset : InAbilityAssets)
+	{
+		if (UHitReactionDataAsset* HitAsset = Cast<UHitReactionDataAsset>(Asset))
+		{
+			HitDataAssets.Add(HitAsset);
+		}
+	}
+
+	if(TObjectPtr<UHitReactionDataAsset> AbilityDataAsset = ComboManagerComponent->GetHitAssetByRequirements(HitDataAssets, HitInfoObject))
+	{
+		return AbilityDataAsset;
+	}
+	return nullptr;
+
+	
+	
 }
