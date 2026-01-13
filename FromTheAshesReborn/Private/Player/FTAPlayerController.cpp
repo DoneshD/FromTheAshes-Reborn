@@ -96,13 +96,9 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	float WalkSpeed = InputActionValue.GetMagnitude() * 20.0f;
 	float ClampedWalkSpeed = FMath::Clamp(WalkSpeed, 200, 1000);
 
-	if(ClampedWalkSpeed < 400.0f)
+	if(ClampedWalkSpeed < 600.0f)
 	{
 		PlayerCharacter->SetMaxWalkSpeed(200.0f);
-	}
-	else if(ClampedWalkSpeed > 400.0f && ClampedWalkSpeed < 800.0f)
-	{
-		PlayerCharacter->SetMaxWalkSpeed(600.0f);
 	}
 	else
 	{
