@@ -2,6 +2,8 @@
 
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/RangedAbilityDataAsset.h"
+#include "FTACustomBase/FTACharacter.h"
+#include "TargetingSystem/TargetingSystemComponent.h"
 
 UGA_RangedAttack::UGA_RangedAttack(const FObjectInitializer&)
 {
@@ -19,6 +21,34 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	TargetingSystemComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UTargetingSystemComponent>();
+
+	if(!TargetingSystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetingComponent is null"));
+		return;
+	}
+
+	TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
+	
+	const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
+
+	if(Actors.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Actors are null"));
+		return;
+	}
+	
+	TargetActor = FindNearestTargetToActor(Actors);
+
+	// if(TargetActor)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("Target Actor: %s"), *TargetActor->GetName());
+	// }
+
+	
+
 }
 
 void UGA_RangedAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -84,6 +114,16 @@ void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAss
 void UGA_RangedAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::PerformAbility(InAbilityAsset);
+}
+
+TArray<AActor*> UGA_RangedAttack::GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const
+{
+	return TargetingSystemComponent->GetAllActorsOfClass(ActorClass);
+}
+
+AActor* UGA_RangedAttack::FindNearestTargetToActor(TArray<AActor*> Actors) const
+{
+	return TargetingSystemComponent->FindNearestTargetToActor(Actors);
 }
 
 void UGA_RangedAttack::OnHitAdded(FHitResult LastItem)

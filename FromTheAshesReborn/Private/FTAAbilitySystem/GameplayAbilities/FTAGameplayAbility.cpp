@@ -44,7 +44,7 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 {
 	if(NonMontageAbility)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Non montage ability"));
+		// UE_LOG(LogTemp, Error, TEXT("Non montage ability"));
 		return nullptr;
 	}
 
@@ -56,7 +56,7 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 	
 	if(!InAbilityAssets[0])
 	{
-		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::SelectAbilityAsset - CurrentAbilityAsset is Null"))
+		// UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::SelectAbilityAsset - CurrentAbilityAsset is Null"))
 		return nullptr;
 	}
 	
@@ -296,7 +296,7 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	
 	if(!CurrentAbilityAsset)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
+		// UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
 		return;
 	}
 	

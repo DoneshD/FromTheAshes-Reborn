@@ -606,9 +606,8 @@ AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Acto
 			ActorsWithInRange.Add(HitActor);
 		}
 	}
-	
 	Target = FindNearestTargetToCenterViewport(ActorsWithInRange);
-
+	
 	return Target;
 }
 
@@ -642,7 +641,7 @@ AActor* UTargetingSystemComponent::FindNearestTargetToCenterViewport(TArray<AAct
 			Target = Actor;
 		}
 	}
-
+	
 	return Target;
 }
 

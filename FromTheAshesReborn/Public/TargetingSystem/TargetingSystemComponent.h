@@ -125,7 +125,6 @@ private:
 
 	bool IsBreakingLineOfSight = false;
 	bool IsTargetLocked = false;
-	float ClosestTargetDistance = 0.0f;
 	
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 	FRotator CurrentCameraOffset;
@@ -161,10 +160,8 @@ protected:
 
 	void DisableMidPointControlRotation();
 	
-	TArray<AActor*> GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const;
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
-
-	AActor* FindNearestTargetToActor(TArray<AActor*> Actors) const;
+	
 	AActor* FindNearestTargetToCenterViewport(TArray<AActor*> Actors) const;
 
 	bool LineTrace(FHitResult& OutHitResult, const AActor* OtherActor, const TArray<AActor*>& ActorsToIgnore) const;
@@ -196,4 +193,10 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Target System")
 	void TargetLockOff();
+
+	TArray<AActor*> GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const;
+	AActor* FindNearestTargetToActor(TArray<AActor*> Actors) const;
+
+	float ClosestTargetDistance = 0.0f;
+	
 };

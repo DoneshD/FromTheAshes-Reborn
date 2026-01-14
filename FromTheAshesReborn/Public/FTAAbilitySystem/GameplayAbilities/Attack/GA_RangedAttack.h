@@ -4,10 +4,23 @@
 #include "GA_Attack.h"
 #include "GA_RangedAttack.generated.h"
 
+class UTargetingSystemComponent;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UGA_RangedAttack : public UGA_Attack
 {
 	GENERATED_BODY()
+
+protected:
+
+	UPROPERTY()
+	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	TSubclassOf<AActor> TargetableActors;
+
+	UPROPERTY()
+	AActor* TargetActor;
 
 protected:
 
@@ -27,6 +40,9 @@ protected:
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
 	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
+
+	TArray<AActor*> GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const;
+	AActor* FindNearestTargetToActor(TArray<AActor*> Actors) const;
 
 	virtual void OnHitAdded(FHitResult LastItem) override;
 };
