@@ -2,37 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "GA_Attack.h"
-#include "GA_MeleeAttack.generated.h"
-
-class UMeleeAbilityDataAsset;
-
-USTRUCT(BlueprintType)
-struct FMeleeComboType
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> NormalAttacks;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> PauseAttacks;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TObjectPtr<UMeleeAbilityDataAsset>> VariantAttacks;
-	
-};
+#include "GA_RangedAttack.generated.h"
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeAttack : public UGA_Attack
+class FROMTHEASHESREBORN_API UGA_RangedAttack : public UGA_Attack
 {
 	GENERATED_BODY()
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
-	FMeleeComboType MeleeComboTypes;
-
-	UGA_MeleeAttack(const FObjectInitializer& = FObjectInitializer::Get());
+	UGA_RangedAttack(const FObjectInitializer& = FObjectInitializer::Get());
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
@@ -50,7 +29,4 @@ protected:
 	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
 
 	virtual void OnHitAdded(FHitResult LastItem) override;
-
-	void StartMeleeWeaponTrace();
-	void EndMeleeWeaponTrace();
 };
