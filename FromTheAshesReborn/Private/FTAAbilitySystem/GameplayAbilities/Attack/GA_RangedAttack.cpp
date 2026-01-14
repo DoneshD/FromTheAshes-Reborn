@@ -2,7 +2,9 @@
 
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/RangedAbilityDataAsset.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
 
 UGA_RangedAttack::UGA_RangedAttack(const FObjectInitializer&)
@@ -42,13 +44,12 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	
 	TargetActor = FindNearestTargetToActor(Actors);
 
-	// if(TargetActor)
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Target Actor: %s"), *TargetActor->GetName());
-	// }
+	if(TargetActor)
+	{
+		RangedTargetFound(TargetActor);
+	}
 
 	
-
 }
 
 void UGA_RangedAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -62,6 +63,42 @@ void UGA_RangedAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)
+{
+	FHitResult LastItem;
+	
+	if (Target && Target->Implements<UAbilitySystemInterface>())
+	{
+		IAbilitySystemInterface* AbilitySystemInterface = Cast<IAbilitySystemInterface>(Target);
+		UAbilitySystemComponent* TargetASC = AbilitySystemInterface->GetAbilitySystemComponent();
+
+		//TODO: Temporary, change later
+		AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo()));
+
+		if(Enemy)
+		{
+			AEnemyBaseCharacter* TargetEnemy = Cast<AEnemyBaseCharacter>(Target);
+			if(TargetEnemy)
+			{
+				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+				return;
+			}
+		}
+
+		if (TargetASC)
+		{
+			//Voodoo magic here
+			LastItem.HitObjectHandle = Target;
+			
+			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
+			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
+			{
+				ExecuteHitLogic(TargetHitDataHandle);
+			}
+		}
+	}
 }
 
 void UGA_RangedAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
@@ -82,6 +119,16 @@ void UGA_RangedAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventD
 void UGA_RangedAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+}
+
+FGameplayAbilityTargetDataHandle UGA_RangedAttack::AddHitResultToTargetData(const FHitResult& LastItem)
+{
+	return Super::AddHitResultToTargetData(LastItem);
+}
+
+void UGA_RangedAttack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
+{
+	Super::ExecuteHitLogic(TargetDataHandle);
 }
 
 UFTAAbilityDataAsset* UGA_RangedAttack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)

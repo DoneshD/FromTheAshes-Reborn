@@ -117,6 +117,8 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	}
 }
 
+
+
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
 {
 	AActor* TargetActor = LastItem.GetActor();
@@ -171,8 +173,20 @@ FGameplayAbilityTargetDataHandle UGA_Attack::AddHitResultToTargetData(const FHit
 void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+
+	if(!TargetActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetActor null"));
+		return;
+	}
 	UAbilitySystemComponent* TargetASC =
 		UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+
+	if(!TargetASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TargetASC null"));
+		return;
+	}
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
 	
@@ -375,7 +389,7 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 			}
 		}
 	}
-	
+
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 	OnHitEventData.OptionalObject = nullptr;
 }
