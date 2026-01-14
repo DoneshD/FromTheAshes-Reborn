@@ -76,7 +76,7 @@ void UComboManagerComponent::SetCurrentComboIndex(int Index)
 }
 
 
-TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetAbilityAssetByRequirements(
+TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetMeleeAssetByRequirements(
 	TArray<UFTAAbilityDataAsset*> AbilityAssets)
 {
 	for (UFTAAbilityDataAsset* Asset : AbilityAssets)
@@ -130,4 +130,11 @@ TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequireme
 		return AssetsToTry[Selection];
 	}
 	return nullptr;
+}
+
+TObjectPtr<URangedAbilityDataAsset> UComboManagerComponent::GetRangedAssetByRequirements(
+	TArray<URangedAbilityDataAsset*> AbilityAssets)
+{
+	int RandomInt = FMath::RandRange(0, AbilityAssets.Num() - 1);
+	return AbilityAssets[RandomInt];
 }

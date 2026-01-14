@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack.h"
 
+#include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
 #include "TracingComponent/TracingComponent.h"
 #include "Weapon/WeaponActorBase.h"
@@ -61,6 +62,8 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 
 UFTAAbilityDataAsset* UGA_MeleeAttack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
+	Super::SelectAbilityAsset(InAbilityAssets);
+	
 	TArray<UFTAAbilityDataAsset*> MeleeAbilityDataAssets;
 
 	for (UFTAAbilityDataAsset* Asset : InAbilityAssets)
@@ -70,8 +73,14 @@ UFTAAbilityDataAsset* UGA_MeleeAttack::SelectAbilityAsset(TArray<UFTAAbilityData
 			MeleeAbilityDataAssets.Add(MeleeAsset);
 		}
 	}
+
+	if(TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetMeleeAssetByRequirements(MeleeAbilityDataAssets))
+	{
+		return AbilityDataAsset;
+	}
 	
-	return Super::SelectAbilityAsset(MeleeAbilityDataAssets);
+	return nullptr;
+	
 }
 
 void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)

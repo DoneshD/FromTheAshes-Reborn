@@ -382,14 +382,7 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 
 UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
-	Super::SelectAbilityAsset(InAbilityAssets);
-
-	if(TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetAbilityAssetByRequirements(InAbilityAssets))
-	{
-		return AbilityDataAsset;
-	}
-	
-	return nullptr;
+	return Super::SelectAbilityAsset(InAbilityAssets);
 }
 
 void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)

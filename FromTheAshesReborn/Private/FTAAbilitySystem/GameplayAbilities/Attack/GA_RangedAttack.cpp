@@ -1,5 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_RangedAttack.h"
 
+#include "CombatComponents/ComboManagerComponent.h"
+#include "DataAsset/RangedAbilityDataAsset.h"
+
 UGA_RangedAttack::UGA_RangedAttack(const FObjectInitializer&)
 {
 }
@@ -53,7 +56,24 @@ void UGA_RangedAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEven
 
 UFTAAbilityDataAsset* UGA_RangedAttack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
-	return Super::SelectAbilityAsset(InAbilityAssets);
+	Super::SelectAbilityAsset(InAbilityAssets);
+
+	TArray<URangedAbilityDataAsset*> RangedAbilityDataAssets;
+
+	for (UFTAAbilityDataAsset* Asset : InAbilityAssets)
+	{
+		if (URangedAbilityDataAsset* RangedAsset = Cast<URangedAbilityDataAsset>(Asset))
+		{
+			RangedAbilityDataAssets.Add(RangedAsset);
+		}
+	}
+
+	if(TObjectPtr<UFTAAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetRangedAssetByRequirements(RangedAbilityDataAssets))
+	{
+		return AbilityDataAsset;
+	}
+	
+	return nullptr;
 }
 
 void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
