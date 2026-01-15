@@ -29,6 +29,7 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	if(!TargetingSystemComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("TargetingComponent is null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
 

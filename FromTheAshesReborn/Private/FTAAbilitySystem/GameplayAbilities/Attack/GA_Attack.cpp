@@ -64,11 +64,14 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	
 	// GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UGA_Attack::SetAbilityRuntimeData);
 
-	WeaponActors[0]->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
-	WeaponActors[0]->TracingComponent->BoxHalfSize = FVector(
-					100,
-					100,
-					100);
+	if(WeaponActors[0]->TracingComponent)
+	{
+		WeaponActors[0]->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
+		WeaponActors[0]->TracingComponent->BoxHalfSize = FVector(
+						100,
+						100,
+						100);
+	}
 	
 	// for (AWeaponActorBase* WeaponActor : WeaponActors)
 	// {
