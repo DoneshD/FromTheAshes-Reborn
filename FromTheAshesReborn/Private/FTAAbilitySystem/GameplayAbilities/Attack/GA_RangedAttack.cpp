@@ -33,23 +33,6 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
-	TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
-	
-	const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
-
-	if(Actors.IsEmpty())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Actors are null"));
-		return;
-	}
-	
-	TargetActor = FindNearestTargetToActor(Actors);
-
-	if(TargetActor)
-	{
-		RangedTargetFound(TargetActor);
-	}
-
 	
 }
 
@@ -102,6 +85,26 @@ void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)
 	}
 }
 
+void UGA_RangedAttack::FireShot()
+{
+	TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
+	
+	const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
+
+	if(Actors.IsEmpty())
+	{
+		UE_LOG(LogTemp, Error, TEXT("Actors are null"));
+		return;
+	}
+	
+	TargetActor = FindNearestTargetToActor(Actors);
+
+	if(TargetActor)
+	{
+		RangedTargetFound(TargetActor);
+	}
+}
+
 void UGA_RangedAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
 	Super::PlayAbilityAnimMontage(AnimMontage);
@@ -120,6 +123,11 @@ void UGA_RangedAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventD
 void UGA_RangedAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("EventTag.FireShot")))
+	{
+		FireShot();
+	}
 }
 
 FGameplayAbilityTargetDataHandle UGA_RangedAttack::AddHitResultToTargetData(const FHitResult& LastItem)
