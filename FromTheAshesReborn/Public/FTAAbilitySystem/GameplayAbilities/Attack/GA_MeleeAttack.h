@@ -4,6 +4,7 @@
 #include "GA_Attack.h"
 #include "GA_MeleeAttack.generated.h"
 
+class USlashCueObject;
 class UMeleeAbilityDataAsset;
 
 USTRUCT(BlueprintType)
@@ -32,6 +33,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
 	FMeleeComboType MeleeComboTypes;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee")
+	TObjectPtr<UMeleeAbilityDataAsset> DefaultMeleeAttackData;
+	
+	UPROPERTY()
+	TObjectPtr<UMeleeAbilityDataAsset> CurrentMeleeAttackData;
+	
+protected:
+	
 	UGA_MeleeAttack(const FObjectInitializer& = FObjectInitializer::Get());
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
@@ -53,4 +62,7 @@ protected:
 
 	void StartMeleeWeaponTrace();
 	void EndMeleeWeaponTrace();
+	
+	TObjectPtr<USlashCueObject> AddTrailCue();
+	
 };

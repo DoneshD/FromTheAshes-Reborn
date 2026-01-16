@@ -2,6 +2,8 @@
 
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
+#include "FTAAbilitySystem/GameplayCues/SlashCueObject.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "TracingComponent/TracingComponent.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -18,6 +20,14 @@ bool UGA_MeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	if(!DefaultMeleeAttackData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Default Melee Attack Data must be set"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	CurrentMeleeAttackData = DefaultMeleeAttackData;
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 }
@@ -48,14 +58,21 @@ void UGA_MeleeAttack::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventDa
 void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
-
+	
+	USlashCueObject* CueCDO = nullptr;
+	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		StartMeleeWeaponTrace();
+		CueCDO = AddTrailCue();
 	}
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
 		EndMeleeWeaponTrace();
+		if(CueCDO)
+		{
+			K2_RemoveGameplayCue(CueCDO->SlashCueInfo.SlashCueTag);
+		}
 	}
 }
 
@@ -141,6 +158,37 @@ void UGA_MeleeAttack::EndMeleeWeaponTrace()
 		}
 	}
 }
+
+TObjectPtr<USlashCueObject> UGA_MeleeAttack::AddTrailCue()
+{
+	FGameplayCueParameters SlashCueParams;
+	if(CurrentMeleeAttackData->SlashCueClass)
+	{
+		USlashCueObject* CueCDO = CurrentMeleeAttackData->SlashCueClass->GetDefaultObject<USlashCueObject>();
+		if(CueCDO)
+		{
+			SlashCueParams.SourceObject = CueCDO;
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->SlashCueInfo.SlashCueTag))
+			{
+				K2_AddGameplayCueWithParams(CueCDO->SlashCueInfo.SlashCueTag, SlashCueParams);
+				return CueCDO;
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("CueCDO null"));
+			return nullptr;
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - Slash Cue class is invalid"));
+		return nullptr;
+	}
+	return nullptr;
+}
+
+
 
 void UGA_MeleeAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {

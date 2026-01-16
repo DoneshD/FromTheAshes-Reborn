@@ -132,8 +132,7 @@ TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequireme
 	return nullptr;
 }
 
-TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetRangedAssetByRequirements(
-	TArray<UFTAAbilityDataAsset*> AbilityAssets)
+TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetRangedAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets)
 {
 
 	//Temporary for now
