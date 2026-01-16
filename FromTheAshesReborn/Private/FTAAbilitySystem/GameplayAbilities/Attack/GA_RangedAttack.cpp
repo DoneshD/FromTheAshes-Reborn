@@ -87,6 +87,8 @@ void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)
 
 void UGA_RangedAttack::FireShot()
 {
+	AddRangedOriginCues();
+	
 	TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
 	
 	const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
@@ -190,4 +192,28 @@ void UGA_RangedAttack::OnHitAdded(FHitResult LastItem)
 void UGA_RangedAttack::AddRangedOriginCues()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Ranged Cues"))
+
+	/*AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+	
+	FGameplayCueParameters HitCueParams;
+	if(CurrentAttackData.HitCueClass)
+	{
+		UHitCueObject* CueCDO = CurrentAttackData.HitCueClass->GetDefaultObject<UHitCueObject>();
+
+		if(CueCDO)
+		{
+			HitCueParams.SourceObject = CueCDO;
+			HitCueParams.EffectCauser = TargetActor;
+			HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
+			
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->HitCueInfo.HitCueTag))
+			{
+				K2_AddGameplayCueWithParams(CueCDO->HitCueInfo.HitCueTag, HitCueParams);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
+			}
+		}
+	}*/
 }
