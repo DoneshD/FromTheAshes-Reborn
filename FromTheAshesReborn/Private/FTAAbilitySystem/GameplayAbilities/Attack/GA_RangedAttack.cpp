@@ -3,7 +3,9 @@
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/RangedAbilityDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "FTAAbilitySystem/GameplayCues/RangedOriginCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
 
@@ -22,6 +24,8 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	CurrentRangedAttackData = DefaultRangedAttackData;
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	TargetingSystemComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UTargetingSystemComponent>();
@@ -167,6 +171,25 @@ UFTAAbilityDataAsset* UGA_RangedAttack::SelectAbilityAsset(TArray<UFTAAbilityDat
 void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::ExtractAssetProperties(InAbilityAsset);
+
+	URangedAbilityDataAsset* RangedAttackAsset = Cast<URangedAbilityDataAsset>(InAbilityAsset);
+
+	if(!RangedAttackAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttackAsset is null"));
+		return;
+	}
+	
+	//Origin Cue
+	if(RangedAttackAsset->OriginCueClass && RangedAttackAsset->OriginCueClass->IsValidLowLevel())
+	{
+		CurrentRangedAttackData->OriginCueClass = RangedAttackAsset->OriginCueClass;
+	}
+	
+	//Left or right weapon
+	CurrentRangedAttackData->Hand = RangedAttackAsset->Hand;
+	
+	
 }
 
 void UGA_RangedAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
@@ -193,27 +216,41 @@ void UGA_RangedAttack::AddRangedOriginCues()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Ranged Cues"))
 
-	/*AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
-	
-	FGameplayCueParameters HitCueParams;
-	if(CurrentAttackData.HitCueClass)
+	AWeaponActorBase* SelectedActor = nullptr;
+
+	/*if(CurrentRangedAttackData->Hand == EHand::Left)
 	{
-		UHitCueObject* CueCDO = CurrentAttackData.HitCueClass->GetDefaultObject<UHitCueObject>();
+		SelectedActor = WeaponActors[0];
+	}
+	else if(CurrentRangedAttackData->Hand == EHand::Right)
+	{
+		SelectedActor = WeaponActors[1];
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("No hand selected"))
+	}*/
+	
+	
+	FGameplayCueParameters OriginCueParams;
+	if(CurrentRangedAttackData->OriginCueClass)
+	{
+		URangedOriginCueObject* CueCDO = CurrentRangedAttackData->OriginCueClass->GetDefaultObject<URangedOriginCueObject>();
+		CueCDO->RangedOriginCueInfo.Hand = CurrentRangedAttackData->Hand;
 
 		if(CueCDO)
 		{
-			HitCueParams.SourceObject = CueCDO;
-			HitCueParams.EffectCauser = TargetActor;
-			HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
+			OriginCueParams.SourceObject = CueCDO;
+			OriginCueParams.EffectCauser = TargetActor;
 			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->HitCueInfo.HitCueTag))
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->RangedOriginCueInfo.OriginCueTag))
 			{
-				K2_AddGameplayCueWithParams(CueCDO->HitCueInfo.HitCueTag, HitCueParams);
+				K2_AddGameplayCueWithParams(CueCDO->RangedOriginCueInfo.OriginCueTag, OriginCueParams);
 			}
 			else
 			{
 				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
 			}
 		}
-	}*/
+	}
 }

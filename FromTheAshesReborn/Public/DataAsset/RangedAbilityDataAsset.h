@@ -4,6 +4,8 @@
 #include "AttackAbilityDataAsset.h"
 #include "RangedAbilityDataAsset.generated.h"
 
+class URangedOriginCueObject;
+
 //maybe make this into 4 limb enum
 UENUM(BlueprintType)
 enum class EHand : uint8
@@ -21,10 +23,12 @@ class FROMTHEASHESREBORN_API URangedAbilityDataAsset : public UAttackAbilityData
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ranged")
-	float RangedFloatTest = 0;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Ranged")
 	EHand Hand;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ranged")
+	TSubclassOf<URangedOriginCueObject> OriginCueClass;
+
+	
 
 	
 };

@@ -4,6 +4,7 @@
 #include "GA_Attack.h"
 #include "GA_RangedAttack.generated.h"
 
+class URangedAbilityDataAsset;
 class UTargetingSystemComponent;
 
 UCLASS()
@@ -19,8 +20,16 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	TSubclassOf<AActor> TargetableActors;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
+	TObjectPtr<URangedAbilityDataAsset> DefaultRangedAttackData;
+	
 	UPROPERTY()
 	AActor* TargetActor;
+
+	UPROPERTY()
+	TObjectPtr<URangedAbilityDataAsset> CurrentRangedAttackData;
+
+	
 
 protected:
 

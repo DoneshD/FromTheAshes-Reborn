@@ -5,6 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "RangedOriginCueObject.generated.h"
 
+enum class EHand : uint8;
 class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
@@ -22,13 +23,16 @@ struct FRangedOriginCueInfoStruct
 	TArray<TObjectPtr<USoundBase>> OriginSoundsArray;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EHand Hand;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float MinPitch = 0.90f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float MaxPitch = 1.50f;
 };
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class FROMTHEASHESREBORN_API URangedOriginCueObject : public UObject
 {
 	GENERATED_BODY()
