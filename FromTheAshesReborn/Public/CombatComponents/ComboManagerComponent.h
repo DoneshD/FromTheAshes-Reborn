@@ -54,7 +54,7 @@ public:
 	
 	TObjectPtr<UFTAAbilityDataAsset> GetMeleeAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets);
 	TObjectPtr<UHitReactionDataAsset> GetHitAssetByRequirements(TArray<UHitReactionDataAsset*> InHitAssets, const UHitEventObject* InHitObject);
-	TObjectPtr<URangedAbilityDataAsset> GetRangedAssetByRequirements(TArray<URangedAbilityDataAsset*> AbilityAssets);
+	TObjectPtr<UFTAAbilityDataAsset> GetRangedAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets);
 	
 	
 };

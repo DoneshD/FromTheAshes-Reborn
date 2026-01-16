@@ -132,9 +132,39 @@ TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequireme
 	return nullptr;
 }
 
-TObjectPtr<URangedAbilityDataAsset> UComboManagerComponent::GetRangedAssetByRequirements(
-	TArray<URangedAbilityDataAsset*> AbilityAssets)
+TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetRangedAssetByRequirements(
+	TArray<UFTAAbilityDataAsset*> AbilityAssets)
 {
-	int RandomInt = FMath::RandRange(0, AbilityAssets.Num() - 1);
-	return AbilityAssets[RandomInt];
+
+	//Temporary for now
+	for (UFTAAbilityDataAsset* Asset : AbilityAssets)
+	{
+		if (!Asset) continue;
+
+		if (GetCurrentComboContainer().HasAll(Asset->RequiredComboTags))
+		{
+			if (Asset->RequiredIndex == GetCurrentComboIndex())
+			{
+				// if (PauseCurrentAttack)
+				if (false)
+				{
+					if (Asset->RequiredPause)
+					{
+						return Asset;
+					}
+				}
+				else
+				{
+					if (!Asset->RequiredPause)
+					{
+						return Asset;
+					}
+				}
+			}
+		}
+	}
+	
+	GetCurrentComboContainer().Reset();
+	SetCurrentComboIndex(0);
+	return AbilityAssets[0];
 }

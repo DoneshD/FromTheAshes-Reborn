@@ -150,7 +150,7 @@ UFTAAbilityDataAsset* UGA_RangedAttack::SelectAbilityAsset(TArray<UFTAAbilityDat
 {
 	Super::SelectAbilityAsset(InAbilityAssets);
 
-	TArray<URangedAbilityDataAsset*> RangedAbilityDataAssets;
+	TArray<UFTAAbilityDataAsset*> RangedAbilityDataAssets;
 
 	for (UFTAAbilityDataAsset* Asset : InAbilityAssets)
 	{
