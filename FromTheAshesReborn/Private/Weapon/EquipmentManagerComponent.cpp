@@ -40,6 +40,14 @@ void UEquipmentManagerComponent::RemoveEquipmentItem(UWeaponInstance* Instance)
 				Entry.GrantedHandles.TakeFromAbilitySystem(ASC);
 			}
 
+			for (AActor* SpawnedActor : CurrentEquippedWeaponInstance->GetSpawnedActors())
+			{
+				if(AWeaponActorBase* WeaponActor = Cast<AWeaponActorBase>(SpawnedActor))
+				{
+					CurrentEquippedWeaponActors.Remove(WeaponActor);
+				}
+			}
+			
 			Instance->DestroyEquipmentActors();
 			EntryIt.RemoveCurrent();
 		}

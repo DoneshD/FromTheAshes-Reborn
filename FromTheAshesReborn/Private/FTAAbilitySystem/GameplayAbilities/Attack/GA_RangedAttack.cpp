@@ -186,3 +186,8 @@ void UGA_RangedAttack::OnHitAdded(FHitResult LastItem)
 {
 	Super::OnHitAdded(LastItem);
 }
+
+void UGA_RangedAttack::AddRangedOriginCues()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Ranged Cues"))
+}

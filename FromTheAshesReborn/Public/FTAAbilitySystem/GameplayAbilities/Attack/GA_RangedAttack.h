@@ -52,4 +52,6 @@ protected:
 	AActor* FindNearestTargetToActor(TArray<AActor*> Actors) const;
 
 	virtual void OnHitAdded(FHitResult LastItem) override;
+
+	void AddRangedOriginCues();
 };
