@@ -61,6 +61,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<USoundBase> DeathSound;
+
+	UPROPERTY()
+	bool bUseLeftHandIK = false;
 	
 
 protected:
@@ -182,5 +185,11 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndHitStop();
+
+	UFUNCTION(BlueprintCallable)
+	bool GetUseLeftHandIK();
+
+	UFUNCTION(BlueprintCallable)
+	void SetUseLeftHandIK(bool InBool);
 	
 };

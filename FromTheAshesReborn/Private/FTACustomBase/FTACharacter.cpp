@@ -344,6 +344,16 @@ bool AFTACharacter::HasDownedTag() const
 	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 }
 
+bool AFTACharacter::GetUseLeftHandIK()
+{
+	return bUseLeftHandIK;
+}
+
+void AFTACharacter::SetUseLeftHandIK(bool InBool)
+{
+	bUseLeftHandIK = InBool;
+}
+
 void AFTACharacter::RemoveAerialEffects()
 {
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
