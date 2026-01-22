@@ -62,7 +62,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<USoundBase> DeathSound;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	bool bUseLeftHandIK = false;
 	
 
@@ -84,7 +84,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Lyra|Character", Meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FTACharacter", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
@@ -187,9 +187,9 @@ public:
 	void EndHitStop();
 
 	UFUNCTION(BlueprintCallable)
-	bool GetUseLeftHandIK();
+	void SetUseLeftHandIK(bool InBool);
 
 	UFUNCTION(BlueprintCallable)
-	void SetUseLeftHandIK(bool InBool);
+	FTransform GetLHIKTransform();
 	
 };

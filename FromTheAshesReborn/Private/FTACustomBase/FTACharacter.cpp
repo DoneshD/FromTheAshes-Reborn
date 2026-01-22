@@ -19,7 +19,9 @@
 #include "DataAsset/FTACharacterData.h"
 #include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Weapon/EquipmentManagerComponent.h"
+#include "Weapon/WeaponActorBase.h"
 
 AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer.SetDefaultSubobjectClass<UFTACharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -344,14 +346,24 @@ bool AFTACharacter::HasDownedTag() const
 	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 }
 
-bool AFTACharacter::GetUseLeftHandIK()
-{
-	return bUseLeftHandIK;
-}
-
 void AFTACharacter::SetUseLeftHandIK(bool InBool)
 {
 	bUseLeftHandIK = InBool;
+}
+
+FTransform AFTACharacter::GetLHIKTransform()
+{
+	//Implemented with only single weapons right now
+	if(EquipmentManagerComponent->GetEquippedWeaponActors()[0])
+	{
+		FTransform SocketTransform = EquipmentManagerComponent->GetEquippedWeaponActors()[0]->SkeletalMesh->GetSocketTransform("LHIK");
+		FVector OutLocation;
+		FRotator OutRotation;
+
+		GetMesh()->TransformToBoneSpace("hand_r", SocketTransform.GetLocation(), SocketTransform.Rotator(), OutLocation, OutRotation);
+		return UKismetMathLibrary::MakeTransform(OutLocation, OutRotation);
+	}
+	return FTransform();
 }
 
 void AFTACharacter::RemoveAerialEffects()
