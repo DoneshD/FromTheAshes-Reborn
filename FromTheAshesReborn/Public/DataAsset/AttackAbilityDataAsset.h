@@ -4,6 +4,7 @@
 #include "FTAAbilityDataAsset.h"
 #include "AttackAbilityDataAsset.generated.h"
 
+class UFTAVisualCueObject;
 class UFTASoundCueObject;
 class UHitCueObject;
 class UGA_ReceiveHit;
@@ -44,6 +45,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<UHitCueObject> HitCueClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TArray<TSubclassOf<UFTAVisualCueObject>> HitVisualCueClassArray;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitSoundCueClassArray;
