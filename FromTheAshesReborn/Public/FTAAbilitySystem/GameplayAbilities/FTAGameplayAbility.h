@@ -153,7 +153,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	FCameraSystemParams CameraParams;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY()
 	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
 
 	UPROPERTY()

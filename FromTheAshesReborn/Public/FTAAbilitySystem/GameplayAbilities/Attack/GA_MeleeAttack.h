@@ -29,10 +29,7 @@ class FROMTHEASHESREBORN_API UGA_MeleeAttack : public UGA_Attack
 	GENERATED_BODY()
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attacks")
-	FMeleeComboType MeleeComboTypes;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee")
 	TObjectPtr<UMeleeAbilityDataAsset> DefaultMeleeAttackData;
 	
