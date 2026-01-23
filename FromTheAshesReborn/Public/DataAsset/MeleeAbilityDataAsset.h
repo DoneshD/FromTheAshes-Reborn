@@ -7,6 +7,7 @@
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "MeleeAbilityDataAsset.generated.h"
 
+class UFTASoundCueObject;
 class UGameplayEffect;
 class UNiagaraSystem;
 
@@ -29,7 +30,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
 	FMeleeWarpData MeleeWarpData;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee")
-	TSubclassOf<USlashCueObject> SlashCueClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Slash")
+	TSubclassOf<USlashCueObject> SlashTrailCue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Slash")
+	TSubclassOf<UFTASoundCueObject> SlashSoundCue;
 
 };

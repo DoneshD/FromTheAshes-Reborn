@@ -162,9 +162,9 @@ void UGA_MeleeAttack::EndMeleeWeaponTrace()
 TObjectPtr<USlashCueObject> UGA_MeleeAttack::AddTrailCue()
 {
 	FGameplayCueParameters SlashCueParams;
-	if(CurrentMeleeAttackData->SlashCueClass)
+	if(CurrentMeleeAttackData->SlashTrailCue)
 	{
-		USlashCueObject* CueCDO = CurrentMeleeAttackData->SlashCueClass->GetDefaultObject<USlashCueObject>();
+		USlashCueObject* CueCDO = CurrentMeleeAttackData->SlashTrailCue->GetDefaultObject<USlashCueObject>();
 		if(CueCDO)
 		{
 			SlashCueParams.SourceObject = CueCDO;

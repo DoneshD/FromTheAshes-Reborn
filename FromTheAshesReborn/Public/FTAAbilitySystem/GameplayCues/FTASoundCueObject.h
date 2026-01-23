@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "GameplayTagContainer.h"
 #include "FTASoundCueObject.generated.h"
 
 USTRUCT(BlueprintType)
@@ -28,12 +29,16 @@ public:
 	
 };
 
-UCLASS()
+UCLASS(BlueprintType, Blueprintable)
 class FROMTHEASHESREBORN_API UFTASoundCueObject : public UObject
 {
 	GENERATED_BODY()
 
 public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Meta = (Categories = "GameplayCue"))
+	FGameplayTag SoundCueTag;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FSoundCueStruct> SoundCueArray;
 
