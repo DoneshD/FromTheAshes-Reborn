@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "FTASoundCue.generated.h"
+#include "FTASoundCueObject.generated.h"
 
 USTRUCT(BlueprintType)
 struct FSoundCueStruct
@@ -29,12 +29,11 @@ public:
 };
 
 UCLASS()
-class FROMTHEASHESREBORN_API UFTASoundCue : public UObject
+class FROMTHEASHESREBORN_API UFTASoundCueObject : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FSoundCueStruct> SoundCueArray;
 
