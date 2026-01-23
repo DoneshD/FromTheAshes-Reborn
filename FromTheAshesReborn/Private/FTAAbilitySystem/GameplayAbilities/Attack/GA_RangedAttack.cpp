@@ -214,24 +214,6 @@ void UGA_RangedAttack::OnHitAdded(FHitResult LastItem)
 
 void UGA_RangedAttack::AddRangedOriginCues()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Ranged Cues"))
-
-	AWeaponActorBase* SelectedActor = nullptr;
-
-	/*if(CurrentRangedAttackData->Hand == EHand::Left)
-	{
-		SelectedActor = WeaponActors[0];
-	}
-	else if(CurrentRangedAttackData->Hand == EHand::Right)
-	{
-		SelectedActor = WeaponActors[1];
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("No hand selected"))
-	}*/
-	
-	
 	FGameplayCueParameters OriginCueParams;
 	if(CurrentRangedAttackData->OriginCueClass)
 	{
