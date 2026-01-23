@@ -4,6 +4,7 @@
 #include "FTAAbilityDataAsset.h"
 #include "AttackAbilityDataAsset.generated.h"
 
+class UFTASoundCueObject;
 class UHitCueObject;
 class UGA_ReceiveHit;
 class UGameplayEffect;
@@ -43,6 +44,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<UHitCueObject> HitCueClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	TArray<TSubclassOf<UFTASoundCueObject>> HitSoundCueClassArray;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FAttackDirectionStruct AttackDirectionStruct;

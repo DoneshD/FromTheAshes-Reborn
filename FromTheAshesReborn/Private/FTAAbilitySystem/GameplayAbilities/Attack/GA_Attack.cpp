@@ -8,6 +8,7 @@
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
+#include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/HitCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
@@ -337,6 +338,30 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 			else
 			{
 				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
+			}
+		}
+	}
+
+	FGameplayCueParameters SoundCueParams;
+	if(!CurrentAttackData.HitSoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf SoundCueClass: CurrentAttackData.HitSoundCueClassArray)
+		{
+			UFTASoundCueObject* SoundCueCDO = SoundCueClass->GetDefaultObject<UFTASoundCueObject>();
+			if(SoundCueCDO)
+			{
+				SoundCueParams.SourceObject = SoundCueCDO;
+				SoundCueParams.EffectCauser = TargetActor;
+			
+				if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(SoundCueCDO->SoundCueTag))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Test1"));
+					K2_AddGameplayCueWithParams(SoundCueCDO->SoundCueTag, SoundCueParams);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
+				}
 			}
 		}
 	}

@@ -13,7 +13,7 @@ struct FSoundCueStruct
 public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<USoundBase> SoundsArray;
+	TObjectPtr<USoundBase> Sound;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float VolumeMultiplier = 1.0;
@@ -42,15 +42,15 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FSoundCueStruct> SoundCueArray;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	float DefaultVolumeMultiplier = 1.0;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	float DefaultMinPitch = 1.0;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	float DefaultMaxPitch = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	float DefaultStartTime = 0.0;
 };
