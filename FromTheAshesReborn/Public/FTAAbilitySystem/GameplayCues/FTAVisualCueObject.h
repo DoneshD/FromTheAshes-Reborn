@@ -17,9 +17,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> NiagaraSystem;
 	
-	UPROPERTY()
-	TObjectPtr<USceneComponent> AttachToComponent;
-
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FVector Location;
 	
