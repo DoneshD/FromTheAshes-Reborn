@@ -320,31 +320,8 @@ void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetD
 void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle,TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
-	
-	FGameplayCueParameters HitCueParams;
-	if(CurrentAttackData.HitCueClass)
-	{
-		UHitCueObject* CueCDO = CurrentAttackData.HitCueClass->GetDefaultObject<UHitCueObject>();
-
-		if(CueCDO)
-		{
-			HitCueParams.SourceObject = CueCDO;
-			HitCueParams.EffectCauser = TargetActor;
-			HitCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
-			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->HitCueInfo.HitCueTag))
-			{
-				K2_AddGameplayCueWithParams(CueCDO->HitCueInfo.HitCueTag, HitCueParams);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
-			}
-		}
-	}
 
 	FGameplayCueParameters VisualCueParams;
-	//Add visual cue
 
 	if(!CurrentAttackData.HitVisualCueClassArray.IsEmpty())
 	{
@@ -357,10 +334,10 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 				{
 					VisualCueParams.SourceObject = VisualCueCDO;
 					VisualCueParams.EffectCauser = TargetActor;
+					VisualCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
 				
 					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(VisualCueCDO->VisualCueTag))
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Test3333"))
 						K2_AddGameplayCueWithParams(VisualCueCDO->VisualCueTag, VisualCueParams);
 					}
 					else
@@ -371,9 +348,7 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 			}
 		}
 	}
-
 	
-
 	FGameplayCueParameters SoundCueParams;
 	if(!CurrentAttackData.HitSoundCueClassArray.IsEmpty())
 	{

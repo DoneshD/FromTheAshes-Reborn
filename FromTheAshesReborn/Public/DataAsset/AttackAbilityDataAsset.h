@@ -30,6 +30,15 @@ struct FAttackDirectionStruct
 	
 };
 
+UENUM(BlueprintType)
+enum class EHand : uint8
+{
+	None	UMETA(DisplayName = "None"),
+	Left UMETA(DisplayName = "Left"),
+	Right UMETA(DisplayName = "Right"),
+};
+
+
 USTRUCT(BlueprintType)
 struct FAttackDataStruct
 {
@@ -51,6 +60,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitSoundCueClassArray;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ranged")
+	EHand Hand;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	FAttackDirectionStruct AttackDirectionStruct;
