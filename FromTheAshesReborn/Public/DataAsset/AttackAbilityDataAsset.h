@@ -48,13 +48,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<UHitCueObject> HitCueClass;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TArray<TSubclassOf<UWeaponCueObject>> WeaponVisualCueClassArray;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
+	TArray<TSubclassOf<UWeaponCueObject>> MeleeTrailCueClassArray;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
 	TArray<TSubclassOf<UFTAVisualCueObject>> HitVisualCueClassArray;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitSoundCueClassArray;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")

@@ -3,6 +3,7 @@
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
 #include "FTAAbilitySystem/GameplayCues/SlashCueObject.h"
+#include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "TracingComponent/TracingComponent.h"
 #include "Weapon/WeaponActorBase.h"
@@ -59,19 +60,23 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 {
 	Super::EventMontageReceived(EventTag, EventData);
 	
-	USlashCueObject* CueCDO = nullptr;
+	UWeaponCueObject* CueCDO = nullptr;
 	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		StartMeleeWeaponTrace();
-		CueCDO = AddTrailCue();
+		// CueCDO = AddTrailCue();
+		UE_LOG(LogTemp, Warning, TEXT("Melee trail cue EventMontageReceived"))
+		
+		CueCDO = AddMeleeTrailCue();
+
 	}
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
 		EndMeleeWeaponTrace();
 		if(CueCDO)
 		{
-			K2_RemoveGameplayCue(CueCDO->SlashCueInfo.SlashCueTag);
+			K2_RemoveGameplayCue(CueCDO->VisualCueTag);
 		}
 	}
 }
@@ -188,6 +193,43 @@ TObjectPtr<USlashCueObject> UGA_MeleeAttack::AddTrailCue()
 	return nullptr;
 }
 
+TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
+{
+	FGameplayCueParameters MeleeTrailCueParams;
+	UE_LOG(LogTemp, Warning, TEXT("AddMeleeTrailCue"))
+
+	if(!CurrentMeleeAttackData->AttackData.MeleeTrailCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->AttackData.MeleeTrailCueClassArray)
+		{
+			if(TrailCueClass)
+			{
+				UWeaponCueObject* TrailCueCDO = TrailCueClass->GetDefaultObject<UWeaponCueObject>();
+				if(TrailCueCDO)
+				{
+					MeleeTrailCueParams.SourceObject = TrailCueCDO;
+					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TrailCueCDO->VisualCueTag))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Melee trail cue added"))
+						K2_AddGameplayCueWithParams(TrailCueCDO->VisualCueTag, MeleeTrailCueParams);
+						return TrailCueCDO;
+					}
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("TrailCueCDO null"));
+					return nullptr;
+				}
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Empyu null"));
+		
+	}
+	return nullptr;
+}
 
 
 void UGA_MeleeAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
