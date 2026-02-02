@@ -323,9 +323,9 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 
 	FGameplayCueParameters VisualCueParams;
 
-	if(!CurrentAttackData.HitVisualCueClassArray.IsEmpty())
+	if(!CurrentAttackData.HitEnemyVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf VisualCueClass: CurrentAttackData.HitVisualCueClassArray)
+		for(TSubclassOf VisualCueClass: CurrentAttackData.HitEnemyVisualCueClassArray)
 		{
 			if(VisualCueClass)
 			{
@@ -350,9 +350,9 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 	}
 	
 	FGameplayCueParameters SoundCueParams;
-	if(!CurrentAttackData.HitSoundCueClassArray.IsEmpty())
+	if(!CurrentAttackData.HitEnemySoundCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf SoundCueClass: CurrentAttackData.HitSoundCueClassArray)
+		for(TSubclassOf SoundCueClass: CurrentAttackData.HitEnemySoundCueClassArray)
 		{
 			if(SoundCueClass)
 			{
@@ -469,13 +469,6 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 			
 		}
 	}
-	
-	//Hit Cue
-	if(AttackAsset->AttackData.HitCueClass && AttackAsset->AttackData.HitCueClass->IsValidLowLevel())
-	{
-		CurrentAttackData.HitCueClass = AttackAsset->AttackData.HitCueClass;
-	}
-
 	//Direction
 	if(AttackAsset->AttackData.AttackDirectionStruct.bEnabled)
 	{

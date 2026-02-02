@@ -15,4 +15,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TSubclassOf<AWeaponActorBase> WeaponActorClass;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FName SocketName;
 };

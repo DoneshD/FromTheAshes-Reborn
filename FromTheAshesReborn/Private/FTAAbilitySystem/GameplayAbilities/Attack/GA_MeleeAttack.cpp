@@ -65,9 +65,6 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		StartMeleeWeaponTrace();
-		// CueCDO = AddTrailCue();
-		UE_LOG(LogTemp, Warning, TEXT("Melee trail cue EventMontageReceived"))
-		
 		CueCDO = AddMeleeTrailCue();
 
 	}
@@ -77,6 +74,39 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 		if(CueCDO)
 		{
 			K2_RemoveGameplayCue(CueCDO->VisualCueTag);
+		}
+	}
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
+	{
+		FGameplayCueParameters HitEnvironemtCueParams;
+
+		if(!CurrentMeleeAttackData->AttackData.HitEnvironmentVisualCueClassArray.IsEmpty())
+		{
+			for(TSubclassOf HitEnvironmentCueClass : CurrentMeleeAttackData->AttackData.HitEnvironmentVisualCueClassArray)
+			{
+				if(HitEnvironmentCueClass)
+				{
+					UWeaponCueObject* EnvCueCDO = HitEnvironmentCueClass->GetDefaultObject<UWeaponCueObject>();
+					if(EnvCueCDO)
+					{
+						HitEnvironemtCueParams.SourceObject = EnvCueCDO;
+						if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(EnvCueCDO->VisualCueTag))
+						{
+							K2_AddGameplayCueWithParams(EnvCueCDO->VisualCueTag, HitEnvironemtCueParams);
+						}
+					}
+					else
+					{
+						UE_LOG(LogTemp, Error, TEXT("EnvCueCDO null"));
+						return;
+					}
+				}
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Empyu null"));
+		
 		}
 	}
 }
@@ -196,7 +226,6 @@ TObjectPtr<USlashCueObject> UGA_MeleeAttack::AddTrailCue()
 TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
 {
 	FGameplayCueParameters MeleeTrailCueParams;
-	UE_LOG(LogTemp, Warning, TEXT("AddMeleeTrailCue"))
 
 	if(!CurrentMeleeAttackData->AttackData.MeleeTrailCueClassArray.IsEmpty())
 	{
@@ -210,7 +239,6 @@ TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
 					MeleeTrailCueParams.SourceObject = TrailCueCDO;
 					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TrailCueCDO->VisualCueTag))
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Melee trail cue added"))
 						K2_AddGameplayCueWithParams(TrailCueCDO->VisualCueTag, MeleeTrailCueParams);
 						return TrailCueCDO;
 					}

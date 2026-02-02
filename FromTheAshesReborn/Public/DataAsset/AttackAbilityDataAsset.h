@@ -45,17 +45,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TSubclassOf<UHitCueObject> HitCueClass;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
 	TArray<TSubclassOf<UWeaponCueObject>> MeleeTrailCueClassArray;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
-	TArray<TSubclassOf<UFTAVisualCueObject>> HitVisualCueClassArray;
+	TArray<TSubclassOf<UFTAVisualCueObject>> HitEnemyVisualCueClassArray;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
-	TArray<TSubclassOf<UFTASoundCueObject>> HitSoundCueClassArray;
+	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
+	TArray<TSubclassOf<UWeaponCueObject>> HitEnvironmentVisualCueClassArray;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<AWeaponActorBase> WeaponActorClass; 
