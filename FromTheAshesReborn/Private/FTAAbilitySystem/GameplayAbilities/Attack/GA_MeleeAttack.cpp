@@ -76,7 +76,7 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 			K2_RemoveGameplayCue(CueCDO->VisualCueTag);
 		}
 	}
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Env")))
 	{
 		FGameplayCueParameters HitEnvironemtCueParams;
 
@@ -253,7 +253,7 @@ TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Empyu null"));
+		UE_LOG(LogTemp, Error, TEXT("Empty null"));
 		
 	}
 	return nullptr;
