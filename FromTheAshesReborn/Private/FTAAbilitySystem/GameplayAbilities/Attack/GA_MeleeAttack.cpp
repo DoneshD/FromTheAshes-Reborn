@@ -27,6 +27,7 @@ void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
+	CurrentAttackData = DefaultMeleeAttackData->AttackData;
 	CurrentMeleeAttackData = DefaultMeleeAttackData;
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -145,6 +146,22 @@ void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsse
 		UE_LOG(LogTemp, Error, TEXT("MeleeAbilityDataAsset is null"));
 		return;
 	}
+
+	CurrentMeleeAttackData = MeleeAbilityDataAsset;
+}
+
+void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
+{
+	Super::SetRuntimeAbilityData(InAbilityRuntimeData);
+
+	UMeleeAbilityDataAsset* MeleeAsset = Cast<UMeleeAbilityDataAsset>(InAbilityRuntimeData);
+
+	if(!MeleeAsset)
+	{
+		return;
+	}
+
+	CurrentMeleeAttackData = MeleeAsset;
 }
 
 void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)

@@ -27,8 +27,8 @@ protected:
 
 	//Attack Assets and Data
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	FAttackDataStruct DefaultAttackData;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	// FAttackDataStruct DefaultAttackData;
 
 	UPROPERTY()
 	FAttackDataStruct CurrentAttackData;

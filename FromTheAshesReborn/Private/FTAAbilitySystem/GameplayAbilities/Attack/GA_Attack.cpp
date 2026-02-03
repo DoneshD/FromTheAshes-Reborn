@@ -33,7 +33,6 @@ bool UGA_Attack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 }
 void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	CurrentAttackData = DefaultAttackData;
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
@@ -446,37 +445,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		UE_LOG(LogTemp, Error, TEXT("AttackAsset is null"));
 		return;
 	}
-	//Damage
-	if(AttackAsset->AttackData.ApplyDamageEffect && AttackAsset->AttackData.ApplyDamageEffect->IsValidLowLevel())
-	{
-		CurrentAttackData.ApplyDamageEffect = AttackAsset->AttackData.ApplyDamageEffect;
-		
-	}
-	
-	//Hit Reactions
-	
-	if(AttackAsset->AttackData.PossibleHitReactions.Num() > 0 && !AttackAsset->AttackData.PossibleHitReactions.IsEmpty())
-	{
-		for (TSubclassOf HitReaction : AttackAsset->AttackData.PossibleHitReactions)
-		{
-			if(HitReaction && HitReaction->IsValidLowLevel())
-			{
-				if (!CurrentAttackData.PossibleHitReactions.Contains(HitReaction))
-				{
-					CurrentAttackData.PossibleHitReactions.Insert(HitReaction, 0);
-				}
-			}
-			
-		}
-	}
-	//Direction
-	if(AttackAsset->AttackData.AttackDirectionStruct.bEnabled)
-	{
-		if(AttackAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
-		{
-			CurrentAttackData.AttackDirectionStruct.AttackDirection = AttackAsset->AttackData.AttackDirectionStruct.AttackDirection;
-		}
-	}
+	CurrentAttackData = AttackAsset->AttackData;
 }
 
 void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
@@ -496,55 +465,7 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 		return;
 	}
 
-	//Damage
-	if(AttackAsset->AttackData.ApplyDamageEffect && AttackAsset->AttackData.ApplyDamageEffect->IsValidLowLevel())
-	{
-		AttackAsset->AttackData.ApplyDamageEffect = AttackAsset->AttackData.ApplyDamageEffect;
-	}
-	
-	//Hit Reactions
-	if (AttackAsset->AttackData.PossibleHitReactions.Num() > 0 && !AttackAsset->AttackData.PossibleHitReactions.IsEmpty())
-	{
-		for (TSubclassOf HitReaction : AttackAsset->AttackData.PossibleHitReactions)
-		{
-			if(HitReaction && HitReaction->IsValidLowLevel())
-			{
-				if (!CurrentAttackData.PossibleHitReactions.Contains(HitReaction))
-				{
-					CurrentAttackData.PossibleHitReactions.Insert(HitReaction, 0);
-				}
-			}
-		}
-	}
-	
-
-	//Weapon trace
-
-	// if(AttackAsset->AttackData.WeaponTraceSizeStruct.bEnabled)
-	// {
-	// 	AttackAsset->AttackData.WeaponTraceSizeStruct.WeaponTraceSize = InMeleeData.WeaponTraceSizeStruct.WeaponTraceSize;
-	// }
-
-	// Direction
-	 if(AttackAsset->AttackData.AttackDirectionStruct.bEnabled)
-	 {
-	 	if(AttackAsset->AttackData.AttackDirectionStruct.AttackDirection != ESpatialDirection::None)
-	 	{
-	 		CurrentAttackData.AttackDirectionStruct.AttackDirection = AttackAsset->AttackData.AttackDirectionStruct.AttackDirection;
-	 	}
-	 }
-
-	// //Slash Cue
-	// if(InMeleeData.SlashCueClass && InMeleeData.SlashCueClass->IsValidLowLevel())
-	// {
-	// 	AttackData.SlashCueClass = InMeleeData.SlashCueClass;
-	// }
-	//
-	// //Hit Cue
-	// if(InMeleeData.HitCueClass && InMeleeData.HitCueClass->IsValidLowLevel())
-	// {
-	// 	AttackData.HitCueClass = InMeleeData.HitCueClass;
-	// }
+	CurrentAttackData = AttackAsset->AttackData;
 	
 }
 

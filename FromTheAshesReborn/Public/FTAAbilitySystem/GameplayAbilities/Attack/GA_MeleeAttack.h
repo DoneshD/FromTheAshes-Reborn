@@ -53,6 +53,8 @@ protected:
 
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
+	virtual void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData) override;
+	
 	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
 
 	virtual void OnHitAdded(FHitResult LastItem) override;
