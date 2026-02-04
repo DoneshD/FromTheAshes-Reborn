@@ -172,7 +172,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 	
 	OnHitEventData.OptionalObject = SlamInfoObj;
 	
-	UGA_MeleeWeaponAttack::SendMeleeHitGameplayEvents(TargetDataHandle, InHitAbilityClass);
+	UGA_MeleeAttack::SendMeleeHitGameplayEvents(TargetDataHandle, InHitAbilityClass);
 	
 }
 
@@ -246,9 +246,9 @@ void UGA_MeleeWeaponAttack_GroundPound::TraceForActors()
 							FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(GPHitResult);
 							if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 							{
-								GrantHitAbility(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
-								SendMeleeHitGameplayEvents(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
-								AddMeleeHitCues(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
+								// GrantHitAbility(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
+								// SendMeleeHitGameplayEvents(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
+								// AddMeleeHitCues(TargetHitDataHandle, AttackData.PossibleHitReactions[0]);
 								
 							}
 						}

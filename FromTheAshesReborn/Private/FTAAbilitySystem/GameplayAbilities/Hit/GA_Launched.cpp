@@ -4,7 +4,6 @@
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
-#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Kismet/GameplayStatics.h"
 

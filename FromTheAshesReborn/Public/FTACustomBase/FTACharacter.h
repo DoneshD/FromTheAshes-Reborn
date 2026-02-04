@@ -91,9 +91,6 @@ public:
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
-	TObjectPtr<UMeleePropertiesComponent> MeleePropertiesComponent;
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UMeleeWarpingComponent> MeleeWarpingComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")

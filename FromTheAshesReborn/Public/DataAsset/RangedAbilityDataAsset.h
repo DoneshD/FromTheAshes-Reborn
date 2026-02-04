@@ -6,7 +6,6 @@
 
 class URangedOriginCueObject;
 
-//maybe make this into 4 limb enum
 UENUM(BlueprintType)
 enum class EHand : uint8
 {
@@ -24,11 +23,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ranged")
 	EHand Hand;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ranged")
-	TSubclassOf<URangedOriginCueObject> OriginCueClass;
-
-	
-
 	
 };

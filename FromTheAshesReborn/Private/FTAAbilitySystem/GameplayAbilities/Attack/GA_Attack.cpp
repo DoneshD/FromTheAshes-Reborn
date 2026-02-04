@@ -10,7 +10,6 @@
 #include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 #include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/FTAVisualCueObject.h"
-#include "FTAAbilitySystem/GameplayCues/HitCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "TracingComponent/TracingComponent.h"

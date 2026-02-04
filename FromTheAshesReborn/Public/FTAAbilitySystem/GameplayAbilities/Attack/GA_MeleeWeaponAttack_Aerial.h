@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GA_MeleeWeaponAttack.h"
+#include "GA_MeleeAttack.h"
 #include "FTAAbilitySystem/GameplayAbilities/AerialAbilityInterface.h"
 #include "GA_MeleeWeaponAttack_Aerial.generated.h"
 
@@ -10,7 +10,7 @@ class UAerialCombatComponent;
 class UAT_SuspendInAirAndWait;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Aerial : public UGA_MeleeWeaponAttack, public IAerialAbilityInterface
+class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Aerial : public UGA_MeleeAttack, public IAerialAbilityInterface
 {
 	GENERATED_BODY()
 

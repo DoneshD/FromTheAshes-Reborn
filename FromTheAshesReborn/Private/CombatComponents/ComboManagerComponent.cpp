@@ -6,7 +6,6 @@
 #include "DataAsset/MeleeAbilityDataAsset.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
-#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeWeaponAttack.h"
 #include "FTACustomBase/FTACharacter.h"
 
 

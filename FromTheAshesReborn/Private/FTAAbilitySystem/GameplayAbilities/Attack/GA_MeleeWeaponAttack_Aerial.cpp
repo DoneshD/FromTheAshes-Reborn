@@ -54,25 +54,8 @@ void UGA_MeleeWeaponAttack_Aerial::ActivateAbility(const FGameplayAbilitySpecHan
 		SuspendTask->ReadyForActivation();
 	}
 
-	if(NudgeForward)
-	{
-		if (MovingAbility)
-		{
-			FVector MoveToLocation = (GetFTACharacterFromActorInfo()->GetActorLocation()) + (GetFTACharacterFromActorInfo()->GetActorForwardVector() * LocationInfo.ForwardDistance);
-			MoveToLocationTask = UAbilityTask_MoveToLocation::MoveToLocation(this, FName(TEXT("MoveToLocation")),
-				MoveToLocation,
-				LocationInfo.ForwardDuration,
-				nullptr,
-				nullptr);
-			
-			if (MoveToLocationTask)
-			{
-				MoveToLocationTask->ReadyForActivation();
-			}
-		}
-	}
 	
-	AerialCombatComponent = FTAChar->FindComponentByClass<UAerialCombatComponent>();
+	AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
 
 	if(!AerialCombatComponent)
 	{

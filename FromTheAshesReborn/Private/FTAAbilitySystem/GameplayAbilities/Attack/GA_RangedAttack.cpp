@@ -3,7 +3,6 @@
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/RangedAbilityDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
-#include "FTAAbilitySystem/GameplayCues/RangedOriginCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -180,11 +179,10 @@ void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAss
 		return;
 	}
 	
-	//Origin Cue
-	if(RangedAttackAsset->OriginCueClass && RangedAttackAsset->OriginCueClass->IsValidLowLevel())
-	{
-		CurrentRangedAttackData->OriginCueClass = RangedAttackAsset->OriginCueClass;
-	}
+	// if(RangedAttackAsset->OriginCueClass && RangedAttackAsset->OriginCueClass->IsValidLowLevel())
+	// {
+	// 	CurrentRangedAttackData->OriginCueClass = RangedAttackAsset->OriginCueClass;
+	// }
 	
 	//Left or right weapon
 	CurrentRangedAttackData->Hand = RangedAttackAsset->Hand;
@@ -214,7 +212,7 @@ void UGA_RangedAttack::OnHitAdded(FHitResult LastItem)
 
 void UGA_RangedAttack::AddRangedOriginCues()
 {
-	FGameplayCueParameters OriginCueParams;
+	/*FGameplayCueParameters OriginCueParams;
 	if(CurrentRangedAttackData->OriginCueClass)
 	{
 		URangedOriginCueObject* CueCDO = CurrentRangedAttackData->OriginCueClass->GetDefaultObject<URangedOriginCueObject>();
@@ -234,5 +232,5 @@ void UGA_RangedAttack::AddRangedOriginCues()
 				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
 			}
 		}
-	}
+	}*/
 }

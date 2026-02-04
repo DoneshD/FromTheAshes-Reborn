@@ -62,8 +62,6 @@ protected:
 	void StartMeleeWeaponTrace();
 	void EndMeleeWeaponTrace();
 	
-	TObjectPtr<USlashCueObject> AddTrailCue();
-
 	TObjectPtr<UWeaponCueObject> AddMeleeTrailCue();
 	
 };

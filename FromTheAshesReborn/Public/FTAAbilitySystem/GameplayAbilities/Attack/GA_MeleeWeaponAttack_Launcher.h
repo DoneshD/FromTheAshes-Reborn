@@ -1,14 +1,14 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "GA_MeleeWeaponAttack.h"
+#include "GA_MeleeAttack.h"
 #include "EventObjects/LaunchEventObject.h"
 #include "GA_MeleeWeaponAttack_Launcher.generated.h"
 
 class UAT_LaunchCharacterAndWait;
 
 UCLASS()
-class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Launcher : public UGA_MeleeWeaponAttack
+class FROMTHEASHESREBORN_API UGA_MeleeWeaponAttack_Launcher : public UGA_MeleeAttack
 {
 	GENERATED_BODY()
 

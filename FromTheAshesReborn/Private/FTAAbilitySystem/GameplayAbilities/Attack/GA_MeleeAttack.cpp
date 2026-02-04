@@ -2,7 +2,6 @@
 
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
-#include "FTAAbilitySystem/GameplayCues/SlashCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "TracingComponent/TracingComponent.h"
@@ -209,35 +208,6 @@ void UGA_MeleeAttack::EndMeleeWeaponTrace()
 			}
 		}
 	}
-}
-
-TObjectPtr<USlashCueObject> UGA_MeleeAttack::AddTrailCue()
-{
-	FGameplayCueParameters SlashCueParams;
-	if(CurrentMeleeAttackData->SlashTrailCue)
-	{
-		USlashCueObject* CueCDO = CurrentMeleeAttackData->SlashTrailCue->GetDefaultObject<USlashCueObject>();
-		if(CueCDO)
-		{
-			SlashCueParams.SourceObject = CueCDO;
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->SlashCueInfo.SlashCueTag))
-			{
-				K2_AddGameplayCueWithParams(CueCDO->SlashCueInfo.SlashCueTag, SlashCueParams);
-				return CueCDO;
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("CueCDO null"));
-			return nullptr;
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EventMontageReceived - Slash Cue class is invalid"));
-		return nullptr;
-	}
-	return nullptr;
 }
 
 TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
