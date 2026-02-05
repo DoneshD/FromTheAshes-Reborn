@@ -31,34 +31,6 @@ enum class EFTAAbilityActivationPolicy : uint8
 	OnSpawn
 };
 
-USTRUCT(BlueprintType)
-struct FLocationInfo
-{
-	GENERATED_BODY()
-
-public:
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Forward")
-	float ForwardDistance = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Forward")
-	float ForwardDuration = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Right")
-	float RightDistance = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Right")
-	float RightDuration = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Up")
-	float UpDistance = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement | Up")
-	float UpDuration = 0.0f;
-	
-	
-};
-
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 {
@@ -66,15 +38,6 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 	friend class UFTAAbilitySystemComponent;
 
 protected:
-
-	UPROPERTY()
-	TObjectPtr<UAbilityTask_MoveToLocation> MoveToLocationTask;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
-	bool MovingAbility = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="MovingAbility"))
-	FLocationInfo LocationInfo;
 	
 	UPROPERTY()
 	TObjectPtr<UFTAAT_OnTick> TickTask;
@@ -131,21 +94,6 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
-
-	/*UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Type"))
-	FGameplayTag AbilityTypeTag;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Weapon"))
-	FGameplayTag WeaponTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Strength"))
-	FGameplayTag StrengthTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Orientation"))
-	FGameplayTag OrientationTag;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability MetaData Tags", Meta = (Categories = "AbilityMetaDataTag.Form"))
-	FGameplayTag FormTag;*/
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
 	FName WarpTargetName;
