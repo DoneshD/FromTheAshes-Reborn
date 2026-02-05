@@ -37,8 +37,9 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 	GENERATED_BODY()
 	friend class UFTAAbilitySystemComponent;
 
-protected:
-	
+private:
+
+	//Activation tags
 	UPROPERTY()
 	FGameplayTag ActivationIndependentTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Independent");
 
@@ -47,7 +48,8 @@ protected:
 
 	UPROPERTY()
 	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
-	
+
+	//Tasks
 	UPROPERTY()
 	TObjectPtr<UFTAAT_OnTick> TickTask;
 
@@ -57,70 +59,61 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "General", Meta = (Categories = "GameplayAbilityTag"))
-	FGameplayTag UniqueIdentifierTag;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
-	bool NonMontageAbility = false;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "General")
-	bool bEnableTick;
-
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	EFTAAbilityActivationPolicy ActivationPolicy;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
-	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
-	
-
-	FDelegateHandle AdjustFOVDelegateHandle;
-
-
-public:
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability Assets")
-	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
-
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
-	EAbilityInputID AbilityInputID = EAbilityInputID::None;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "InputTag"))
-	FGameplayTag InputTag;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
-	bool bActivateAbilityOnGranted;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
-	bool bActivateOnInput;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "QueueTag"))
-	FGameplayTag QueueWindowTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
-	FName WarpTargetName;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-	FCameraSystemParams CameraParams;
-
 	UPROPERTY()
 	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
 
+protected:
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General", Meta = (Categories = "GameplayAbilityTag"))
+	FGameplayTag UniqueIdentifierTag;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
+	bool NonMontageAbility = false;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
+	bool bEnableTick;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
+	EFTAAbilityActivationPolicy ActivationPolicy;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
+	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input")
+	bool bActivateAbilityOnGranted;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input")
+	bool bActivateOnInput;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Assets")
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
+	FName WarpTargetName;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Camera")
+	FCameraSystemParams CameraParams;
+
+	//Components
 	UPROPERTY()
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;
 
 	UPROPERTY()
 	TObjectPtr<UCentralStateComponent> CentralStateComponent;
 	
+	FDelegateHandle AdjustFOVDelegateHandle;
+
+public:
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (Categories = "InputTag"))
+	FGameplayTag InputTag;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (Categories = "QueueTag"))
+	FGameplayTag QueueWindowTag;
+	
 public:
 	
 	UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
-	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset);
-	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets);
-	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset);
-
-	UPROPERTY()
-	TArray<UFTAAbilityDataAsset*> DefaultAbilityAssets;
 
 	UFUNCTION()
 	virtual void OnAbilityTick(float DeltaTime);
@@ -167,7 +160,11 @@ public:
 	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
-
+	
+	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset);
+	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets);
+	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset);
+	
 	UFUNCTION()
 	virtual void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData);
 	
@@ -182,13 +179,13 @@ public:
 	UFUNCTION()
 	virtual void OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData);
 
-	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
+	UFUNCTION(BlueprintCallable)
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION()
 	void AdjustFOV(const FGameplayTag InEnableTag, int32 NewCount);
 
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
+	UFUNCTION(BlueprintCallable)
 	virtual void ResetAbility();
 	
 };

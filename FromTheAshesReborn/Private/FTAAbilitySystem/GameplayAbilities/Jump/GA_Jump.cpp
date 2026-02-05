@@ -6,7 +6,6 @@
 
 UGA_Jump::UGA_Jump()
 {
-    AbilityInputID = EAbilityInputID::Jump;
     InstancingPolicy = EGameplayAbilityInstancingPolicy::InstancedPerActor;
 }
 
