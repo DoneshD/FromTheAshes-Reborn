@@ -40,15 +40,6 @@ class FROMTHEASHESREBORN_API UFTAGameplayAbility : public UGameplayAbility
 protected:
 	
 	UPROPERTY()
-	TObjectPtr<UFTAAT_OnTick> TickTask;
-
-	UPROPERTY()
-	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
-
-	UPROPERTY()
-	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
-
-	UPROPERTY()
 	FGameplayTag ActivationIndependentTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Independent");
 
 	UPROPERTY()
@@ -56,9 +47,25 @@ protected:
 
 	UPROPERTY()
 	FGameplayTag ActivationBlockingTag = FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Blocking");
+	
+	UPROPERTY()
+	TObjectPtr<UFTAAT_OnTick> TickTask;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ability Activation")
+	UPROPERTY()
+	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "General", Meta = (Categories = "GameplayAbilityTag"))
+	FGameplayTag UniqueIdentifierTag;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "General")
 	bool NonMontageAbility = false;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "General")
+	bool bEnableTick;
+
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	EFTAAbilityActivationPolicy ActivationPolicy;
@@ -66,15 +73,13 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Ability Activation")
 	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Tick")
-	bool bEnableTick;
 
 	FDelegateHandle AdjustFOVDelegateHandle;
 
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ability Assets")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Input")
@@ -88,14 +93,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input")
 	bool bActivateOnInput;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Gameplay Ability Tag", Meta = (Categories = "GameplayAbilityTag"))
-	FGameplayTag UniqueIdentifierTag;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MotionWarp")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	FName WarpTargetName;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")

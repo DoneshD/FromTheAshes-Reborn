@@ -20,20 +20,11 @@ class FROMTHEASHESREBORN_API UGA_Attack : public UGA_FromEquipment
 
 protected:
 
-	//Components and Actors
-
 	UPROPERTY()
 	TArray<TObjectPtr<AWeaponActorBase>> WeaponActors;
 
-	//Attack Assets and Data
-	
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	// FAttackDataStruct DefaultAttackData;
-
 	UPROPERTY()
 	FAttackDataStruct CurrentAttackData;
-
-	//Hit Event
 
 	UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
 	FGameplayEventData OnHitEventData;
