@@ -5,6 +5,7 @@
 #include "UObject/Object.h"
 #include "WeaponInstance.generated.h"
 
+class UFTAAbilityDataAsset;
 class AWeaponActorBase;
 class AActor;
 class APawn;
@@ -46,6 +47,7 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent, Category=Equipment, meta=(DisplayName="OnUnEquipped"))
 	void K2_OnUnEquipped();
 
+
 public:
 
 	UPROPERTY()
@@ -65,6 +67,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category=Animation)
 	TObjectPtr<UAnimMontage> UnEquipWeaponMontage;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Assets")
+	TArray<TObjectPtr<UFTAAbilityDataAsset>> EquipAbilityAssets;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure=false, Category=Animation)
 	TSubclassOf<UAnimInstance> PickBestAnimLayer(bool bEquipped, const FGameplayTagContainer& CosmeticTags) const;

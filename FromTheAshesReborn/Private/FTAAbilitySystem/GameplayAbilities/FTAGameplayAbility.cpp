@@ -50,7 +50,7 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 
 	if(InAbilityAssets.IsEmpty())
 	{
-		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is empty"))
+		// UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::SelectAbilityAsset - AbilityAssets is empty"))
 		return nullptr;
 	}
 	

@@ -18,6 +18,12 @@ protected:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
+	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
+
+	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	
 	UFUNCTION(BlueprintCallable)
 	void ChangeEquippedItemSlot(int32 SlotIndex);
 };
