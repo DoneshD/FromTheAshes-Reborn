@@ -32,12 +32,6 @@ UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitial
 void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	PlayAbilityAnimMontage(InAbilityAsset->MontageToPlay);
-	
-	int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
-	
-	ComboManagerComponent->GetCurrentComboContainer().AddTag(InAbilityAsset->UniqueIdentifierTag);
-	ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
-	ComboManagerComponent->PauseCurrentAttack = false;
 }
 
 UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)

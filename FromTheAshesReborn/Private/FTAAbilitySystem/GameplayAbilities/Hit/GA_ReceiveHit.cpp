@@ -165,6 +165,13 @@ void UGA_ReceiveHit::EventMontageReceived(FGameplayTag EventTag, FGameplayEventD
 	Super::EventMontageReceived(EventTag, EventData);
 }
 
+void UGA_ReceiveHit::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
+{
+	Super::PerformAbility(InAbilityAsset);
+	UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *InAbilityAsset->GetName());
+	
+}
+
 UFTAAbilityDataAsset* UGA_ReceiveHit::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
 	Super::SelectAbilityAsset(InAbilityAssets);

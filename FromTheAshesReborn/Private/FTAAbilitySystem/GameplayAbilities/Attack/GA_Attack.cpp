@@ -450,6 +450,12 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::PerformAbility(InAbilityAsset);
+
+	int32 CurrentComboIndex = ComboManagerComponent->GetCurrentComboIndex();
+	
+	ComboManagerComponent->GetCurrentComboContainer().AddTag(InAbilityAsset->UniqueIdentifierTag);
+	ComboManagerComponent->SetCurrentComboIndex(CurrentComboIndex + 1);
+	ComboManagerComponent->PauseCurrentAttack = false;
 	
 }
 

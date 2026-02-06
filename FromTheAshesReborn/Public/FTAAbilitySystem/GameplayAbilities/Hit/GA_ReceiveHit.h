@@ -51,6 +51,8 @@ public:
 	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
 
+	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
+
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
 	
 };

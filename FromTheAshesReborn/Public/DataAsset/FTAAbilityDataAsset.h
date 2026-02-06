@@ -22,6 +22,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
 	int RequiredIndex;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
+	bool CheckForRequirementTags = true;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Combo Requirements")
 	FGameplayTagContainer RequiredComboTags;

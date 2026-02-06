@@ -82,25 +82,32 @@ TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetMeleeAssetByRequirem
 	{
 		if (!Asset) continue;
 
-		if (GetCurrentComboContainer().HasAll(Asset->RequiredComboTags))
+		if (Asset->RequiredIndex == GetCurrentComboIndex())
 		{
-			if (Asset->RequiredIndex == GetCurrentComboIndex())
+			if(Asset->CheckForRequirementTags)
 			{
-				// if (PauseCurrentAttack)
-				if (false)
+				if (GetCurrentComboContainer().HasAll(Asset->RequiredComboTags))
 				{
-					if (Asset->RequiredPause)
+					// if (PauseCurrentAttack)
+					if (false)
 					{
-						return Asset;
+						if (Asset->RequiredPause)
+						{
+							return Asset;
+						}
+					}
+					else
+					{
+						if (!Asset->RequiredPause)
+						{
+							return Asset;
+						}
 					}
 				}
-				else
-				{
-					if (!Asset->RequiredPause)
-					{
-						return Asset;
-					}
-				}
+			}
+			else
+			{
+				return Asset;
 			}
 		}
 	}
@@ -113,6 +120,12 @@ TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetMeleeAssetByRequirem
 TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequirements(TArray<UHitReactionDataAsset*> InHitAssets, const UHitEventObject* InHitObject)
 {
 	TArray<UHitReactionDataAsset*> AssetsToTry;
+
+	
+	UE_LOG(LogTemp, Warning, TEXT("%s"),
+	*StaticEnum<ESpatialDirection>()->GetNameStringByValue((int64)InHitObject->HitData.HitDirection));
+
+
 	for (UHitReactionDataAsset* Asset : InHitAssets)
 	{
 		if(Asset->Direction == InHitObject->HitData.HitDirection || Asset->Direction == ESpatialDirection::Any)
