@@ -148,18 +148,17 @@ void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLo
 	if(TestHitWarp)
 	{
 		FVector TestLocation;
-		// FRotator TestRotation;
 
 		TestLocation = GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * -WarpData.StartTraceLocationOffset);
 
 		DrawDebugSphere(
 			GetWorld(),
 			TestLocation,
-			25.f,        // Radius
-			12,          // Segments
-			FColor::Red, // Color
-			false,       // Persistent
-			2.f          // LifeTime
+			25.f,       
+			12,          
+			FColor::Red, 
+			false,       
+			2.f          
 		);
 		
 		UpdateWarpTarget(TestLocation, GetOwner()->GetActorRotation());

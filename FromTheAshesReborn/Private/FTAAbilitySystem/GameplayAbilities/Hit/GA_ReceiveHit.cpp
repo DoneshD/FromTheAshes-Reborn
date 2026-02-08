@@ -168,9 +168,7 @@ void UGA_ReceiveHit::EventMontageReceived(FGameplayTag EventTag, FGameplayEventD
 void UGA_ReceiveHit::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::PerformAbility(InAbilityAsset);
-	UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *InAbilityAsset->GetName());
 
-	UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), HitInfoObject->HitData.Distance);
 	
 }
 

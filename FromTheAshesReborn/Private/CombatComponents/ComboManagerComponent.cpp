@@ -120,12 +120,10 @@ TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetMeleeAssetByRequirem
 TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequirements(TArray<UHitReactionDataAsset*> InHitAssets, const UHitEventObject* InHitObject)
 {
 	TArray<UHitReactionDataAsset*> AssetsToTry;
-
 	
-	UE_LOG(LogTemp, Warning, TEXT("%s"),
-	*StaticEnum<ESpatialDirection>()->GetNameStringByValue((int64)InHitObject->HitData.HitDirection));
-
-
+	// UE_LOG(LogTemp, Warning, TEXT("%s"),
+	// *StaticEnum<ESpatialDirection>()->GetNameStringByValue((int64)InHitObject->HitData.HitDirection));
+	
 	for (UHitReactionDataAsset* Asset : InHitAssets)
 	{
 		if(Asset->HitData.Direction == InHitObject->HitData.HitDirection || Asset->HitData.Direction == ESpatialDirection::Any)
