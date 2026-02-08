@@ -90,7 +90,7 @@ void UGA_MeleeWeaponAttack_Aerial::EndAbility(const FGameplayAbilitySpecHandle H
 	//TODO: This is being called from a grounded attack, check later 
 }
 
-void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
 {
 	if(!OnHitEventData.OptionalObject)
 	{
@@ -103,7 +103,7 @@ void UGA_MeleeWeaponAttack_Aerial::SendMeleeHitGameplayEvents(const FGameplayAbi
 	}
 	
 
-	Super::SendMeleeHitGameplayEvents(TargetDataHandle, InHitAbilityClass);
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
 }
 
 

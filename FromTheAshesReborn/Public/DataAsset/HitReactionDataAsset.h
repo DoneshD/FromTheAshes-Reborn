@@ -4,8 +4,25 @@
 #include "FTAAbilityDataAsset.h"
 #include "HitReactionDataAsset.generated.h"
 
+class UGA_ReceiveHit;
 class UGameplayEffect;
 
+USTRUCT(BlueprintType)
+struct FHitDataInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TSubclassOf<UGA_ReceiveHit> HitAbilityClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	ESpatialDirection Direction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float Distance;
+
+	
+};
 
 UCLASS()
 class FROMTHEASHESREBORN_API UHitReactionDataAsset : public UFTAAbilityDataAsset
@@ -14,10 +31,7 @@ class FROMTHEASHESREBORN_API UHitReactionDataAsset : public UFTAAbilityDataAsset
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Hit", meta = (Categories="Character"))
-	FGameplayTag Orientation;
-	
-	UPROPERTY(EditDefaultsOnly, Category = "Hit")
-	ESpatialDirection Direction;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FHitDataInfo HitData;
 	
 };

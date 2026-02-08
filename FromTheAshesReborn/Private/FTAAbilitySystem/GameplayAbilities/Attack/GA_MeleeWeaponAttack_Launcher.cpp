@@ -93,7 +93,7 @@ void UGA_MeleeWeaponAttack_Launcher::EndAbility(const FGameplayAbilitySpecHandle
 	
 }
 
-void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> CurrentHitReactionStruct)
+void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
@@ -116,7 +116,7 @@ void UGA_MeleeWeaponAttack_Launcher::SendMeleeHitGameplayEvents(const FGameplayA
 	
 	OnHitEventData.OptionalObject = LaunchInfoObj;
 	
-	Super::SendMeleeHitGameplayEvents(TargetDataHandle, CurrentHitReactionStruct);
+	Super::SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
 
 }
 

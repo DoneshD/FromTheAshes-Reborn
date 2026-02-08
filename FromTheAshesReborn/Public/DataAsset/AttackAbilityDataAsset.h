@@ -4,6 +4,7 @@
 #include "FTAAbilityDataAsset.h"
 #include "AttackAbilityDataAsset.generated.h"
 
+struct FHitDataInfo;
 class UWeaponCueObject;
 class AWeaponActorBase;
 class UFTAVisualCueObject;
@@ -43,7 +44,7 @@ public:
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
+	TArray<FHitDataInfo> PossibleHitReactions;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
 	TArray<TSubclassOf<UWeaponCueObject>> MeleeTrailCueClassArray;

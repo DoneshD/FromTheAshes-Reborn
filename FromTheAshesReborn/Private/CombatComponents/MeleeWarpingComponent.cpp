@@ -141,9 +141,30 @@ void UMeleeWarpingComponent::RemoveWarpTarget()
 	MotionWarpingComponent->RemoveWarpTarget(CurrentWarpTargetName);
 }
 
-void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLocation)
+void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLocation, bool TestHitWarp)
 {
 	CurrentWarpTargetName = WarpData.WarpTargetName;
+
+	if(TestHitWarp)
+	{
+		FVector TestLocation;
+		// FRotator TestRotation;
+
+		TestLocation = GetOwner()->GetActorLocation() + (GetOwner()->GetActorForwardVector() * -WarpData.StartTraceLocationOffset);
+
+		DrawDebugSphere(
+			GetWorld(),
+			TestLocation,
+			25.f,        // Radius
+			12,          // Segments
+			FColor::Red, // Color
+			false,       // Persistent
+			2.f          // LifeTime
+		);
+		
+		UpdateWarpTarget(TestLocation, GetOwner()->GetActorRotation());
+		return;
+	}
 	
 	TArray<FHitResult> OutHits;
 	FVector TraceStartLocation = GetOwner()->GetActorLocation() + GetTraceDirection() * WarpData.StartTraceLocationOffset;

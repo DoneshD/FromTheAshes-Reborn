@@ -31,6 +31,8 @@ struct FHitInfo
 
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
 	TArray<TSubclassOf<UGA_Recover>> PossibleRecoveryOptions;
+
+	float Distance;
 };
 
 

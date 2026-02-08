@@ -14,7 +14,7 @@ bool UGA_MeleeWeaponAttack_Ricochet::CanActivateAbility(const FGameplayAbilitySp
 }
 
 void UGA_MeleeWeaponAttack_Ricochet::SendMeleeHitGameplayEvents(
-	const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+	const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
 {
 
 	FVector GroundLocation = FindGroundLocation(TargetDataHandle);
@@ -30,7 +30,7 @@ void UGA_MeleeWeaponAttack_Ricochet::SendMeleeHitGameplayEvents(
 	
 	OnHitEventData.OptionalObject = SlamInfoObj;
 	
-	UGA_MeleeAttack::SendMeleeHitGameplayEvents(TargetDataHandle, InHitAbilityClass);
+	UGA_MeleeAttack::SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
 }
 
 FVector UGA_MeleeWeaponAttack_Ricochet::FindGroundLocation(const FGameplayAbilityTargetDataHandle& TargetDataHandle)

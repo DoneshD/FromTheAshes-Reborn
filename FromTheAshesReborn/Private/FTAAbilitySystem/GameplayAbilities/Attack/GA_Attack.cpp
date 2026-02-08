@@ -193,21 +193,20 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
 	
-	for(TSubclassOf HitAbilityClass : CurrentAttackData.PossibleHitReactions)
+	for(FHitDataInfo& HitData : CurrentAttackData.PossibleHitReactions)
 	{
-		if(HitAbilityClass && HitAbilityClass->IsValidLowLevel())
+		if(HitData.HitAbilityClass && HitData.HitAbilityClass->IsValidLowLevel())
 		{
-			const UGA_ReceiveHit* const CDO = HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+			const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 			if (CDO)
 			{
-				GrantHitAbility(TargetDataHandle, HitAbilityClass);
-				
-				const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitAbilityClass);
+				GrantHitAbility(TargetDataHandle, HitData.HitAbilityClass);
+				const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitData.HitAbilityClass);
 				if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
 				{
-					ApplyHitEffects(TargetDataHandle, HitAbilityClass);
-					SendMeleeHitGameplayEvents(TargetDataHandle, HitAbilityClass);
-					AddHitCues(TargetDataHandle, HitAbilityClass);
+					ApplyHitEffects(TargetDataHandle, HitData.HitAbilityClass);
+					SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
+					AddHitCues(TargetDataHandle, HitData.HitAbilityClass);
 					break;
 				}
 				else
@@ -374,7 +373,7 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 	}
 }
 
-void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
@@ -387,6 +386,7 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	HitInfoObj->HitData.HitDirection = CurrentAttackData.AttackDirectionStruct.AttackDirection;
+	HitInfoObj->HitData.Distance = HitData.Distance;
 	
 
 	if(TargetASC)
@@ -409,9 +409,9 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 		OnHitEventData.OptionalObject = HitInfoObj;
 	}
 	
-	if (InHitAbilityClass)
+	if (HitData.HitAbilityClass)
 	{
-		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+		const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))

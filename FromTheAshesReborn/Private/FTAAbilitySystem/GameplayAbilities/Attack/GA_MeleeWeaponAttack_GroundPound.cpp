@@ -159,7 +159,7 @@ void UGA_MeleeWeaponAttack_GroundPound::GrantHitAbility(const FGameplayAbilityTa
 	Super::GrantHitAbility(TargetDataHandle, InHitAbilityClass);
 }
 
-void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
 {
 	USlamEventObject* SlamInfoObj = NewObject<USlamEventObject>(this);
 	SlamInfoObj->SlamData.Speed = DescentSpeed;
@@ -172,7 +172,7 @@ void UGA_MeleeWeaponAttack_GroundPound::SendMeleeHitGameplayEvents(const FGamepl
 	
 	OnHitEventData.OptionalObject = SlamInfoObj;
 	
-	UGA_MeleeAttack::SendMeleeHitGameplayEvents(TargetDataHandle, InHitAbilityClass);
+	UGA_MeleeAttack::SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
 	
 }
 

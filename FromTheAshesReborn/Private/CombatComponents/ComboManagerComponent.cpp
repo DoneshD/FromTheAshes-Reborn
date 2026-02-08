@@ -128,7 +128,7 @@ TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequireme
 
 	for (UHitReactionDataAsset* Asset : InHitAssets)
 	{
-		if(Asset->Direction == InHitObject->HitData.HitDirection || Asset->Direction == ESpatialDirection::Any)
+		if(Asset->HitData.Direction == InHitObject->HitData.HitDirection || Asset->HitData.Direction == ESpatialDirection::Any)
 		{
 			if(Asset->MontageToPlay)
 			{
