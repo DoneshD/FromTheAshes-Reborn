@@ -16,19 +16,12 @@ class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UAttackAbilityDataA
 
 public:
 
-	/*UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
-	int RequiredIndex;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Trail")
+	TArray<TSubclassOf<UWeaponCueObject>> TrailVisualCueClassArray;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Meta Data")
-	bool RequiredPause = false;*/
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Trail")
+	TArray<TSubclassOf<UFTASoundCueObject>> TrailSoundCueClassArray;
 
-	// UPROPERTY(EditDefaultsOnly, Category = "Attack")
-	// FMeleeAttackDataStruct AttackData;
-	
 	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
 	FMeleeWarpData MeleeWarpData;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Slash")
-	TSubclassOf<UFTASoundCueObject> SlashSoundCue;
-
 };

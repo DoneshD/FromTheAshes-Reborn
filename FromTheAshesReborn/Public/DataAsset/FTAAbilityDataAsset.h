@@ -6,6 +6,8 @@
 #include "Engine/DataAsset.h"
 #include "FTAAbilityDataAsset.generated.h"
 
+class AWeaponActorBase;
+
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAAbilityDataAsset : public UPrimaryDataAsset
 {
@@ -16,6 +18,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params | Unique Tag")
 	FGameplayTag UniqueIdentifierTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Weapon")
+	TSubclassOf<AWeaponActorBase> WeaponActorClass;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
 	TObjectPtr<UAnimMontage> MontageToPlay;
@@ -32,6 +37,4 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
 	bool RequiredPause = false;
 	
-	// UPROPERTY(EditDefaultsOnly, Category = "WarpData")
-	// FMeleeWarpData MeleeWarpData;
 };

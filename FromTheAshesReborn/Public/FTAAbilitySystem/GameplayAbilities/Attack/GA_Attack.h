@@ -24,7 +24,7 @@ protected:
 	TArray<TObjectPtr<AWeaponActorBase>> WeaponActors;
 
 	UPROPERTY()
-	FAttackDataStruct CurrentAttackData;
+	TObjectPtr<UAttackAbilityDataAsset> CurrentAttackData;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
 	FGameplayEventData OnHitEventData;

@@ -13,25 +13,25 @@ class UHitCueObject;
 class UGA_ReceiveHit;
 class UGameplayEffect;
 
-USTRUCT(BlueprintType)
-struct FAttackDirectionStruct
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	bool bEnabled;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	ESpatialDirection AttackDirection;
-
-	FAttackDirectionStruct()
-	:
-	bEnabled(false),
-	AttackDirection(ESpatialDirection::None)
-	{}
-	
-	
-};
+// USTRUCT(BlueprintType)
+// struct FAttackDirectionStruct
+// {
+// 	GENERATED_BODY()
+//
+// 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+// 	bool bEnabled;
+// 	
+// 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+// 	ESpatialDirection AttackDirection;
+//
+// 	FAttackDirectionStruct()
+// 	:
+// 	bEnabled(false),
+// 	AttackDirection(ESpatialDirection::None)
+// 	{}
+// 	
+// 	
+// };
 
 USTRUCT(BlueprintType)
 struct FAttackDataStruct
@@ -55,14 +55,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
-	TArray<TSubclassOf<UWeaponCueObject>> HitEnvironmentVisualCueClassArray;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<AWeaponActorBase> WeaponActorClass; 
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	FAttackDirectionStruct AttackDirectionStruct;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	// FAttackDirectionStruct AttackDirectionStruct;
 	
 };
 
@@ -73,7 +70,22 @@ class FROMTHEASHESREBORN_API UAttackAbilityDataAsset : public UFTAAbilityDataAss
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Attack")
-	FAttackDataStruct AttackData;
+	// UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	// FAttackDataStruct AttackData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	TArray<FHitDataInfo> PossibleHitReactions;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	TArray<TSubclassOf<UFTAVisualCueObject>> HitEnemyVisualCueClassArray;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
+
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	// FAttackDirectionStruct AttackDirectionStruct;
 
 };

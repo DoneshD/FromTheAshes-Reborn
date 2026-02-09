@@ -20,7 +20,6 @@ struct FHitDataInfo
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Distance;
-
 	
 };
 

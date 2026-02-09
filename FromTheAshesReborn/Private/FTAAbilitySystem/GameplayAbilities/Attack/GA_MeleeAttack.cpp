@@ -29,7 +29,7 @@ void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	CurrentAttackData = DefaultMeleeAttackData->AttackData;
+	// CurrentAttackData = DefaultMeleeAttackData->AttackData;
 	CurrentMeleeAttackData = DefaultMeleeAttackData;
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -46,7 +46,7 @@ void UGA_MeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	CurrentAttackData.AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
+	// CurrentAttackData->AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 }
 
 void UGA_MeleeAttack::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -77,39 +77,6 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 		if(CueCDO)
 		{
 			K2_RemoveGameplayCue(CueCDO->VisualCueTag);
-		}
-	}
-	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.Env")))
-	{
-		FGameplayCueParameters HitEnvironemtCueParams;
-
-		if(!CurrentMeleeAttackData->AttackData.HitEnvironmentVisualCueClassArray.IsEmpty())
-		{
-			for(TSubclassOf HitEnvironmentCueClass : CurrentMeleeAttackData->AttackData.HitEnvironmentVisualCueClassArray)
-			{
-				if(HitEnvironmentCueClass)
-				{
-					UWeaponCueObject* EnvCueCDO = HitEnvironmentCueClass->GetDefaultObject<UWeaponCueObject>();
-					if(EnvCueCDO)
-					{
-						HitEnvironemtCueParams.SourceObject = EnvCueCDO;
-						if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(EnvCueCDO->VisualCueTag))
-						{
-							K2_AddGameplayCueWithParams(EnvCueCDO->VisualCueTag, HitEnvironemtCueParams);
-						}
-					}
-					else
-					{
-						UE_LOG(LogTemp, Error, TEXT("EnvCueCDO null"));
-						return;
-					}
-				}
-			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Empyu null"));
-		
 		}
 	}
 }
@@ -217,9 +184,9 @@ TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
 {
 	FGameplayCueParameters MeleeTrailCueParams;
 
-	if(!CurrentMeleeAttackData->AttackData.MeleeTrailCueClassArray.IsEmpty())
+	if(!CurrentMeleeAttackData->TrailVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->AttackData.MeleeTrailCueClassArray)
+		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->TrailVisualCueClassArray)
 		{
 			if(TrailCueClass)
 			{
@@ -244,7 +211,6 @@ TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
 	else
 	{
 		// UE_LOG(LogTemp, Error, TEXT("Empty null"));
-		
 	}
 	return nullptr;
 }

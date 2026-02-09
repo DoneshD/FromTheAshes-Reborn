@@ -193,7 +193,7 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
 	
-	for(FHitDataInfo& HitData : CurrentAttackData.PossibleHitReactions)
+	for(FHitDataInfo& HitData : CurrentAttackData->PossibleHitReactions)
 	{
 		if(HitData.HitAbilityClass && HitData.HitAbilityClass->IsValidLowLevel())
 		{
@@ -279,14 +279,14 @@ void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetD
 		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
 		{
-			if(CurrentAttackData.ApplyDamageEffect)
+			if(CurrentAttackData->ApplyDamageEffect)
 			{
 				TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
 				CurrentSpecHandle,
 				CurrentActorInfo,
 				CurrentActivationInfo,
 				TargetDataHandle,
-				CurrentAttackData.ApplyDamageEffect, 
+				CurrentAttackData->ApplyDamageEffect, 
 				1,
 				1
 				);
@@ -320,9 +320,9 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 
 	FGameplayCueParameters VisualCueParams;
 
-	if(!CurrentAttackData.HitEnemyVisualCueClassArray.IsEmpty())
+	if(!CurrentAttackData->HitEnemyVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf VisualCueClass: CurrentAttackData.HitEnemyVisualCueClassArray)
+		for(TSubclassOf VisualCueClass: CurrentAttackData->HitEnemyVisualCueClassArray)
 		{
 			if(VisualCueClass)
 			{
@@ -347,9 +347,9 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 	}
 	
 	FGameplayCueParameters SoundCueParams;
-	if(!CurrentAttackData.HitEnemySoundCueClassArray.IsEmpty())
+	if(!CurrentAttackData->HitEnemySoundCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf SoundCueClass: CurrentAttackData.HitEnemySoundCueClassArray)
+		for(TSubclassOf SoundCueClass: CurrentAttackData->HitEnemySoundCueClassArray)
 		{
 			if(SoundCueClass)
 			{
@@ -385,7 +385,7 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
-	HitInfoObj->HitData.HitDirection = CurrentAttackData.AttackDirectionStruct.AttackDirection;
+	HitInfoObj->HitData.HitDirection = HitData.Direction;
 	HitInfoObj->HitData.Distance = HitData.Distance;
 	
 
@@ -444,7 +444,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		UE_LOG(LogTemp, Error, TEXT("AttackAsset is null"));
 		return;
 	}
-	CurrentAttackData = AttackAsset->AttackData;
+	// CurrentAttackData = AttackAsset->AttackData;
 }
 
 void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
@@ -470,7 +470,7 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 		return;
 	}
 
-	CurrentAttackData = AttackAsset->AttackData;
+	// CurrentAttackData = AttackAsset->AttackData;
 	
 }
 
