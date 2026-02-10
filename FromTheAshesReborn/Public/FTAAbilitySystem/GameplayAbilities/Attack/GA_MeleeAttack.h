@@ -62,6 +62,7 @@ protected:
 	void StartMeleeWeaponTrace();
 	void EndMeleeWeaponTrace();
 	
-	TObjectPtr<UWeaponCueObject> AddMeleeTrailCue();
+	TObjectPtr<UWeaponCueObject> AddMeleeTrailVisualCue();
+	TObjectPtr<UFTASoundCueObject> AddMeleeTrailSoundCue();
 	
 };

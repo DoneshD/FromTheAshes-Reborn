@@ -61,8 +61,6 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		return;
 	}
 	
-	// GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UGA_Attack::SetAbilityRuntimeData);
-
 	if(WeaponActors[0]->TracingComponent)
 	{
 		WeaponActors[0]->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
@@ -98,8 +96,7 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
 {
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
-
-
+	
 }
 
 void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
@@ -119,8 +116,6 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	}
 	CurrentAttackData = nullptr;
 }
-
-
 
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
 {
@@ -202,6 +197,8 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 				const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 				if (CDO)
 				{
+					
+					UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *HitData.HitAbilityClass->GetName())
 					GrantHitAbility(TargetDataHandle, HitData.HitAbilityClass);
 					const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitData.HitAbilityClass);
 					if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
@@ -475,7 +472,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		{
 			if (HitData.HitAbilityClass)
 			{
-				CurrentAttackData->PossibleHitReactions.Add(HitData);
+				CurrentAttackData->PossibleHitReactions.Insert(HitData, 0);
 			}
 		}
 	}

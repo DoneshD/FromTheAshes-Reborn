@@ -30,13 +30,9 @@ void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-
-	// CurrentAttackData = DefaultMeleeAttackData;
-	// CurrentMeleeAttackData = DefaultMeleeAttackData;
-
-	CurrentAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
+	
 	CurrentMeleeAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
-
+	CurrentAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
@@ -51,9 +47,9 @@ void UGA_MeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle, con
 void UGA_MeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
-	CurrentMeleeAttackData = nullptr;
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
+	
+	CurrentMeleeAttackData = nullptr;
 	// CurrentAttackData->AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 }
 
@@ -71,20 +67,26 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 {
 	Super::EventMontageReceived(EventTag, EventData);
 	
-	UWeaponCueObject* CueCDO = nullptr;
+	UWeaponCueObject* VisualCueCDO = nullptr;
+	UFTASoundCueObject* SoundCueCDO = nullptr;
 	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		StartMeleeWeaponTrace();
-		CueCDO = AddMeleeTrailCue();
+		VisualCueCDO = AddMeleeTrailVisualCue();
+		SoundCueCDO = AddMeleeTrailSoundCue();
 
 	}
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
 		EndMeleeWeaponTrace();
-		if(CueCDO)
+		if(VisualCueCDO)
 		{
-			K2_RemoveGameplayCue(CueCDO->VisualCueTag);
+			K2_RemoveGameplayCue(VisualCueCDO->VisualCueTag);
+		}
+		if(SoundCueCDO)
+		{
+			K2_RemoveGameplayCue(SoundCueCDO->SoundCueTag);
 		}
 	}
 }
@@ -132,13 +134,13 @@ void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsse
 	}
 
 	//Trail visual
-	if(!MeleeAsset->BaseTrailVisualCueClassArray.IsEmpty())
+	if(!MeleeAsset->TrailVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf TrailVisualCueClass: MeleeAsset->BaseTrailVisualCueClassArray)
+		for(TSubclassOf TrailVisualCueClass: MeleeAsset->TrailVisualCueClassArray)
 		{
 			if(TrailVisualCueClass && TrailVisualCueClass->IsValidLowLevel())
 			{
-				CurrentMeleeAttackData->BaseTrailVisualCueClassArray = MeleeAsset->BaseTrailVisualCueClassArray;
+				CurrentMeleeAttackData->TrailVisualCueClassArray = MeleeAsset->TrailVisualCueClassArray;
 			}
 		}
 	}
@@ -214,29 +216,64 @@ void UGA_MeleeAttack::EndMeleeWeaponTrace()
 	}
 }
 
-TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
+TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailVisualCue()
 {
 	FGameplayCueParameters MeleeTrailCueParams;
 
-	if(!CurrentMeleeAttackData->BaseTrailVisualCueClassArray.IsEmpty())
+	if(!CurrentMeleeAttackData->TrailVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->BaseTrailVisualCueClassArray)
+		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->TrailVisualCueClassArray)
 		{
 			if(TrailCueClass)
 			{
-				UWeaponCueObject* TrailCueCDO = TrailCueClass->GetDefaultObject<UWeaponCueObject>();
-				if(TrailCueCDO)
+				UWeaponCueObject* TrailVisualCueCDO = TrailCueClass->GetDefaultObject<UWeaponCueObject>();
+				if(TrailVisualCueCDO)
 				{
-					MeleeTrailCueParams.SourceObject = TrailCueCDO;
-					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TrailCueCDO->VisualCueTag))
+					MeleeTrailCueParams.SourceObject = TrailVisualCueCDO;
+					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TrailVisualCueCDO->VisualCueTag))
 					{
-						K2_AddGameplayCueWithParams(TrailCueCDO->VisualCueTag, MeleeTrailCueParams);
-						return TrailCueCDO;
+						K2_AddGameplayCueWithParams(TrailVisualCueCDO->VisualCueTag, MeleeTrailCueParams);
+						return TrailVisualCueCDO;
 					}
 				}
 				else
 				{
 					UE_LOG(LogTemp, Error, TEXT("TrailCueCDO null"));
+					return nullptr;
+				}
+			}
+		}
+	}
+	else
+	{
+		// UE_LOG(LogTemp, Error, TEXT("Empty null"));
+	}
+	return nullptr;
+}
+
+TObjectPtr<UFTASoundCueObject> UGA_MeleeAttack::AddMeleeTrailSoundCue()
+{
+	FGameplayCueParameters TrailSoundCueParams;
+
+	if(!CurrentMeleeAttackData->TrailSoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->TrailSoundCueClassArray)
+		{
+			if(TrailCueClass)
+			{
+				UFTASoundCueObject* TrailSoundCueCDO = TrailCueClass->GetDefaultObject<UFTASoundCueObject>();
+				if(TrailSoundCueCDO)
+				{
+					TrailSoundCueParams.SourceObject = TrailSoundCueCDO;
+					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TrailSoundCueCDO->SoundCueTag))
+					{
+						K2_AddGameplayCueWithParams(TrailSoundCueCDO->SoundCueTag, TrailSoundCueParams);
+						return TrailSoundCueCDO;
+					}
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("TrailSoundCueCDO null"));
 					return nullptr;
 				}
 			}
