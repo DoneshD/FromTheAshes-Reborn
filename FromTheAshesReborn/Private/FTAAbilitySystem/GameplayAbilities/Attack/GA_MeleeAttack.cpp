@@ -2,6 +2,7 @@
 
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
+#include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -29,10 +30,10 @@ void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	// CurrentAttackData = DefaultMeleeAttackData->AttackData;
-	CurrentMeleeAttackData = DefaultMeleeAttackData;
+	
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	
 	
 }
 void UGA_MeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
@@ -44,6 +45,7 @@ void UGA_MeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle, con
 void UGA_MeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
+	CurrentMeleeAttackData = nullptr;
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
 	// CurrentAttackData->AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
@@ -108,15 +110,46 @@ UFTAAbilityDataAsset* UGA_MeleeAttack::SelectAbilityAsset(TArray<UFTAAbilityData
 void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::ExtractAssetProperties(InAbilityAsset);
-	UMeleeAbilityDataAsset* MeleeAbilityDataAsset = Cast<UMeleeAbilityDataAsset>(InAbilityAsset);
+
+	CurrentAttackData = DefaultMeleeAttackData;
+	CurrentMeleeAttackData = DefaultMeleeAttackData;
 	
-	if(!MeleeAbilityDataAsset)
+	if(!InAbilityAsset)
 	{
-		UE_LOG(LogTemp, Error, TEXT("MeleeAbilityDataAsset is null"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeAttack::ExtractAssetProperties - InAbilityAsset is null"));
+		return;
+	}
+	
+	UMeleeAbilityDataAsset* MeleeAsset = Cast<UMeleeAbilityDataAsset>(InAbilityAsset);
+	
+	if(!MeleeAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeAttack::ExtractAssetProperties - MeleeAbilityDataAsset is null"));
 		return;
 	}
 
-	CurrentMeleeAttackData = MeleeAbilityDataAsset;
+	//Trail visual
+	if(!MeleeAsset->TrailVisualCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf TrailVisualCueClass: MeleeAsset->TrailVisualCueClassArray)
+		{
+			if(TrailVisualCueClass && TrailVisualCueClass->IsValidLowLevel())
+			{
+				CurrentMeleeAttackData->TrailVisualCueClassArray.Add(TrailVisualCueClass);
+			}
+		}
+	}
+
+	if(!MeleeAsset->TrailSoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf TrailSoundCueClass: MeleeAsset->TrailSoundCueClassArray)
+		{
+			if(TrailSoundCueClass && TrailSoundCueClass->IsValidLowLevel())
+			{
+				CurrentMeleeAttackData->TrailSoundCueClassArray.Add(TrailSoundCueClass);
+			}
+		}
+	}
 }
 
 void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
@@ -129,8 +162,6 @@ void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRunti
 	{
 		return;
 	}
-
-	CurrentMeleeAttackData = MeleeAsset;
 }
 
 void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)

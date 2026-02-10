@@ -14,7 +14,9 @@
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Player/FTAPlayerController.h"
+#include "Weapon/WeaponActorBase.h"
 
 
 UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -33,6 +35,7 @@ void UFTAGameplayAbility::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	PlayAbilityAnimMontage(InAbilityAsset->MontageToPlay);
 }
+
 
 UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
 {
@@ -59,6 +62,25 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 
 void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 {
+	if(!InAbilityAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ExtractAssetProperties - Invalid Asset"))
+		return;
+	}
+
+	//Might not need
+	//Tag
+	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InAbilityAsset->UniqueIdentifierTag))
+	{
+		CurrentAbilityAsset->UniqueIdentifierTag = InAbilityAsset->UniqueIdentifierTag;
+	}
+
+	//Weapon Actor
+	if(InAbilityAsset->WeaponActorClass)
+	{
+		CurrentAbilityAsset->WeaponActorClass = InAbilityAsset->WeaponActorClass;
+	}
+
 	
 }
 
@@ -325,7 +347,7 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 		.Remove(AdjustFOVDelegateHandle);
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.InputQueue.Open"));
-	
+	CurrentAbilityAsset = nullptr;
 }
 
 bool UFTAGameplayAbility::CheckCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, FGameplayTagContainer* OptionalRelevantTags) const

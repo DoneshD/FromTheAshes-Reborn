@@ -32,7 +32,6 @@ bool UGA_Attack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, con
 }
 void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	if(!GetFTACharacterFromActorInfo()->EquipmentManagerComponent)
@@ -118,6 +117,7 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 		
 		WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 	}
+	CurrentAttackData = nullptr;
 }
 
 
@@ -192,26 +192,29 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 	}
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
-	
-	for(FHitDataInfo& HitData : CurrentAttackData->PossibleHitReactions)
+
+	if(!CurrentAttackData->PossibleHitReactions.IsEmpty())
 	{
-		if(HitData.HitAbilityClass && HitData.HitAbilityClass->IsValidLowLevel())
+		for(FHitDataInfo& HitData : CurrentAttackData->PossibleHitReactions)
 		{
-			const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
-			if (CDO)
+			if(HitData.HitAbilityClass && HitData.HitAbilityClass->IsValidLowLevel())
 			{
-				GrantHitAbility(TargetDataHandle, HitData.HitAbilityClass);
-				const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitData.HitAbilityClass);
-				if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
+				const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
+				if (CDO)
 				{
-					ApplyHitEffects(TargetDataHandle, HitData.HitAbilityClass);
-					SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
-					AddHitCues(TargetDataHandle, HitData.HitAbilityClass);
-					break;
-				}
-				else
-				{
-					
+					GrantHitAbility(TargetDataHandle, HitData.HitAbilityClass);
+					const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitData.HitAbilityClass);
+					if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
+					{
+						ApplyHitEffects(TargetDataHandle, HitData.HitAbilityClass);
+						SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
+						AddHitCues(TargetDataHandle, HitData.HitAbilityClass);
+						break;
+					}
+					else
+					{
+						
+					}
 				}
 			}
 		}
@@ -434,17 +437,72 @@ UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset
 	return Super::SelectAbilityAsset(InAbilityAssets);
 }
 
+
 void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::ExtractAssetProperties(InAbilityAsset);
+	
+	if(!InAbilityAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - InAbilityAsset is null"));
+		return;
+	}
+	
 	UAttackAbilityDataAsset* AttackAsset = Cast<UAttackAbilityDataAsset>(InAbilityAsset);
 
 	if(!AttackAsset)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AttackAsset is null"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - AttackAsset is null"));
 		return;
 	}
-	// CurrentAttackData = AttackAsset->AttackData;
+
+	//Damage
+	if(AttackAsset->ApplyDamageEffect)
+	{
+		CurrentAttackData->ApplyDamageEffect = AttackAsset->ApplyDamageEffect;
+	}
+
+	// Hit Reactions
+	if (!AttackAsset->PossibleHitReactions.IsEmpty())
+	{
+		if (!CurrentAttackData)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
+			return;
+		}
+
+		for (const FHitDataInfo& HitData : AttackAsset->PossibleHitReactions)
+		{
+			if (HitData.HitAbilityClass)
+			{
+				CurrentAttackData->PossibleHitReactions.Add(HitData);
+			}
+		}
+	}
+
+	//Hit visuals
+	if(!AttackAsset->HitEnemyVisualCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf VisualCueClass: AttackAsset->HitEnemyVisualCueClassArray)
+		{
+			if(VisualCueClass && VisualCueClass->IsValidLowLevel())
+			{
+				CurrentAttackData->HitEnemyVisualCueClassArray.Add(VisualCueClass);
+			}
+		}
+	}
+
+	//Hit sounds
+	if(!AttackAsset->HitEnemySoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf SoundCueClass: AttackAsset->HitEnemySoundCueClassArray)
+		{
+			if(SoundCueClass && SoundCueClass->IsValidLowLevel())
+			{
+				CurrentAttackData->HitEnemySoundCueClassArray.Add(SoundCueClass);
+			}
+		}
+	}
 }
 
 void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)

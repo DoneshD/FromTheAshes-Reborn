@@ -58,9 +58,6 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
-	
-	UPROPERTY()
-	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
 
 protected:
 	
@@ -87,6 +84,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Assets")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	FName WarpTargetName;
