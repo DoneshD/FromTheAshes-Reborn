@@ -70,10 +70,10 @@ void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbility
 
 	//Might not need
 	//Tag
-	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InAbilityAsset->UniqueIdentifierTag))
-	{
-		CurrentAbilityAsset->UniqueIdentifierTag = InAbilityAsset->UniqueIdentifierTag;
-	}
+	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InAbilityAsset->UniqueIdentifierTag))
+	// {
+	// 	CurrentAbilityAsset->UniqueIdentifierTag = InAbilityAsset->UniqueIdentifierTag;
+	// }
 
 	//Weapon Actor
 	if(InAbilityAsset->WeaponActorClass)

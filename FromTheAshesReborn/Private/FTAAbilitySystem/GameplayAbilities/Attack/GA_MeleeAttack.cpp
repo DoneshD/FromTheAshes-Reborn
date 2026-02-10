@@ -30,7 +30,13 @@ void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, c
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	
+
+	// CurrentAttackData = DefaultMeleeAttackData;
+	// CurrentMeleeAttackData = DefaultMeleeAttackData;
+
+	CurrentAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
+	CurrentMeleeAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
+
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
@@ -110,9 +116,6 @@ UFTAAbilityDataAsset* UGA_MeleeAttack::SelectAbilityAsset(TArray<UFTAAbilityData
 void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::ExtractAssetProperties(InAbilityAsset);
-
-	CurrentAttackData = DefaultMeleeAttackData;
-	CurrentMeleeAttackData = DefaultMeleeAttackData;
 	
 	if(!InAbilityAsset)
 	{
@@ -129,13 +132,13 @@ void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsse
 	}
 
 	//Trail visual
-	if(!MeleeAsset->TrailVisualCueClassArray.IsEmpty())
+	if(!MeleeAsset->BaseTrailVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf TrailVisualCueClass: MeleeAsset->TrailVisualCueClassArray)
+		for(TSubclassOf TrailVisualCueClass: MeleeAsset->BaseTrailVisualCueClassArray)
 		{
 			if(TrailVisualCueClass && TrailVisualCueClass->IsValidLowLevel())
 			{
-				CurrentMeleeAttackData->TrailVisualCueClassArray.Add(TrailVisualCueClass);
+				CurrentMeleeAttackData->BaseTrailVisualCueClassArray = MeleeAsset->BaseTrailVisualCueClassArray;
 			}
 		}
 	}
@@ -215,9 +218,9 @@ TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailCue()
 {
 	FGameplayCueParameters MeleeTrailCueParams;
 
-	if(!CurrentMeleeAttackData->TrailVisualCueClassArray.IsEmpty())
+	if(!CurrentMeleeAttackData->BaseTrailVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->TrailVisualCueClassArray)
+		for(TSubclassOf TrailCueClass : CurrentMeleeAttackData->BaseTrailVisualCueClassArray)
 		{
 			if(TrailCueClass)
 			{
