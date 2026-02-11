@@ -9,6 +9,7 @@
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/AfterImageComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
+#include "CombatComponents/CombatTracingComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
 #include "CombatComponents/MeleeWarpingComponent.h"
@@ -60,6 +61,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	MeleeWarpingComponent = CreateDefaultSubobject<UMeleeWarpingComponent>(TEXT("MeleeWarpingComponent"));
 	this->AddOwnedComponent(MeleeWarpingComponent);
 	InitializedActorComponents.AddUnique(MeleeWarpingComponent);
+
+	CombatTracingComponent = CreateDefaultSubobject<UCombatTracingComponent>(TEXT("CombatTracingComponent"));
+	this->AddOwnedComponent(CombatTracingComponent);
+	InitializedActorComponents.AddUnique(CombatTracingComponent);
 	
 	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
 	this->AddOwnedComponent(ComboManagerComponent);

@@ -1,13 +1,12 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "CombatComponents/MeleeWarpingComponent.h"
+#include "MeleeWarpingComponent.h"
 #include "Components/ActorComponent.h"
-#include "FTAMotionWarpingComponent.generated.h"
-
+#include "CombatTracingComponent.generated.h"
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class FROMTHEASHESREBORN_API UFTAMotionWarpingComponent : public UActorComponent
+class FROMTHEASHESREBORN_API UCombatTracingComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -27,19 +26,16 @@ public:
 	FName CurrentWarpTargetName;
 	FMeleeWarpData CurrentWarpData;
 
+
 protected:
-	
-	UFTAMotionWarpingComponent();
+	UCombatTracingComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void UpdateWarpTarget(FVector TargetLocation, FRotator TargetRotation);
-	
-	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
-	void WarpToTarget(FMeleeWarpData WarpData, bool InvertLocation = false, bool TestHitWarp = false);
+	float GetDistanceFromActorToAxis(AActor* ActorToCheck, FVector TraceStartLocation, FVector TraceAxis);
 
-	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
-	void RemoveWarpTarget();
-
+	AActor* FilterClosestActorToAxisTrace(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation);
+	AActor* FilterClosestActorToOwner(TArray<FHitResult> HitArray);
 	
+	FVector GetTraceDirection();
 };
