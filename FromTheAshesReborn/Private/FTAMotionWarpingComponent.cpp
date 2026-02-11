@@ -1,4 +1,4 @@
-﻿#include "CombatComponents/MeleeWarpingComponent.h"
+﻿#include "FTAMotionWarpingComponent.h"
 
 #include "MotionWarpingComponent.h"
 #include "CombatComponents/AfterImageComponent.h"
@@ -9,13 +9,13 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Player/FTAPlayerState.h"
 
-UMeleeWarpingComponent::UMeleeWarpingComponent()
+UFTAMotionWarpingComponent::UFTAMotionWarpingComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
 }
 
-void UMeleeWarpingComponent::BeginPlay()
+void UFTAMotionWarpingComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -44,18 +44,18 @@ void UMeleeWarpingComponent::BeginPlay()
 	
 }
 
-void UMeleeWarpingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UFTAMotionWarpingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 }
 
-void UMeleeWarpingComponent::UpdateWarpTarget(FVector TargetLocation, FRotator TargetRotation)
+void UFTAMotionWarpingComponent::UpdateWarpTarget(FVector TargetLocation, FRotator TargetRotation)
 {
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(CurrentWarpTargetName, TargetLocation,  FRotator(0, TargetRotation.Yaw, 0));
 }
 
-float UMeleeWarpingComponent::GetDistanceFromActorToAxis(AActor* ActorToCheck, FVector TraceStartLocation, FVector TraceEndLocation)
+float UFTAMotionWarpingComponent::GetDistanceFromActorToAxis(AActor* ActorToCheck, FVector TraceStartLocation, FVector TraceEndLocation)
 {
 	FVector TraceAxis = (TraceEndLocation - TraceStartLocation).GetSafeNormal();
 	
@@ -68,7 +68,7 @@ float UMeleeWarpingComponent::GetDistanceFromActorToAxis(AActor* ActorToCheck, F
 	return Distance;
 }
 
-AActor* UMeleeWarpingComponent::FilterClosestActorToAxisTrace(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation)
+AActor* UFTAMotionWarpingComponent::FilterClosestActorToAxisTrace(TArray<FHitResult> HitArray, FVector TraceStartLocation, FVector TraceEndLocation)
 {
 	TSet<AActor*> UniqueHitActors;
 	float DistanceToClosestActor = FLT_MAX;
@@ -108,7 +108,7 @@ AActor* UMeleeWarpingComponent::FilterClosestActorToAxisTrace(TArray<FHitResult>
 	}
 }
 
-AActor* UMeleeWarpingComponent::FilterClosestActorToOwner(TArray<FHitResult> HitArray)
+AActor* UFTAMotionWarpingComponent::FilterClosestActorToOwner(TArray<FHitResult> HitArray)
 {
 	TSet<AActor*> UniqueHitActors;
 	float DistanceToClosestActor = FLT_MAX;
@@ -136,12 +136,12 @@ AActor* UMeleeWarpingComponent::FilterClosestActorToOwner(TArray<FHitResult> Hit
 	return ClosestActor;
 }
 
-void UMeleeWarpingComponent::RemoveWarpTarget()
+void UFTAMotionWarpingComponent::RemoveWarpTarget()
 {
 	MotionWarpingComponent->RemoveWarpTarget(CurrentWarpTargetName);
 }
 
-void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLocation, bool TestHitWarp)
+void UFTAMotionWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLocation, bool TestHitWarp)
 {
 	CurrentWarpTargetName = WarpData.WarpTargetName;
 
@@ -283,7 +283,7 @@ void UMeleeWarpingComponent::WarpToTarget(FMeleeWarpData WarpData, bool InvertLo
 	
 }
 
-FVector UMeleeWarpingComponent::GetTraceDirection()
+FVector UFTAMotionWarpingComponent::GetTraceDirection()
 {
 	FVector TraceDirection;
 

@@ -1,6 +1,7 @@
 #include "FTACustomBase/FTACharacter.h"
 
 #include "ContextualAnimSceneActorComponent.h"
+#include "FTAMotionWarpingComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "MotionWarpingComponent.h"
@@ -52,7 +53,9 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	this->AddOwnedComponent(MotionWarpingComponent);
 	InitializedActorComponents.AddUnique(MotionWarpingComponent);
 
-
+	FTAMotionWarpingComponent = CreateDefaultSubobject<UFTAMotionWarpingComponent>(TEXT("FTAMotionWarpingComponent"));
+	this->AddOwnedComponent(FTAMotionWarpingComponent);
+	InitializedActorComponents.AddUnique(FTAMotionWarpingComponent);
 	
 	MeleeWarpingComponent = CreateDefaultSubobject<UMeleeWarpingComponent>(TEXT("MeleeWarpingComponent"));
 	this->AddOwnedComponent(MeleeWarpingComponent);
