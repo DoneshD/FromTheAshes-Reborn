@@ -197,8 +197,6 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 				const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 				if (CDO)
 				{
-					
-					UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *HitData.HitAbilityClass->GetName())
 					GrantHitAbility(TargetDataHandle, HitData.HitAbilityClass);
 					const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitData.HitAbilityClass);
 					if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
