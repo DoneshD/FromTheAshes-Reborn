@@ -34,13 +34,6 @@ void UFTAMotionWarpingComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("[%s] UMeleeWarpingComponent::BeginPlay - MotionWarpingComp is null"), *GetOwner()->GetActorNameOrLabel());
 		return;
 	}
-
-	PlayerState = Cast<AFTAPlayerState>(FTACharacter->GetPlayerState());
-	if(!PlayerState)
-	{
-		// UE_LOG(LogTemp, Error, TEXT("[%s] UMeleeWarpingComponent::BeginPlay - PlayerState is null"), *GetOwner()->GetActorNameOrLabel());
-		return;
-	}
 	
 }
 

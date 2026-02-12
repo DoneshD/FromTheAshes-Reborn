@@ -12,7 +12,6 @@
 #include "CombatComponents/CombatTracingComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
-#include "CombatComponents/MeleeWarpingComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
@@ -57,10 +56,6 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	FTAMotionWarpingComponent = CreateDefaultSubobject<UFTAMotionWarpingComponent>(TEXT("FTAMotionWarpingComponent"));
 	this->AddOwnedComponent(FTAMotionWarpingComponent);
 	InitializedActorComponents.AddUnique(FTAMotionWarpingComponent);
-	
-	MeleeWarpingComponent = CreateDefaultSubobject<UMeleeWarpingComponent>(TEXT("MeleeWarpingComponent"));
-	this->AddOwnedComponent(MeleeWarpingComponent);
-	InitializedActorComponents.AddUnique(MeleeWarpingComponent);
 
 	CombatTracingComponent = CreateDefaultSubobject<UCombatTracingComponent>(TEXT("CombatTracingComponent"));
 	this->AddOwnedComponent(CombatTracingComponent);

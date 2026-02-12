@@ -27,18 +27,11 @@ void UCombatTracingComponent::BeginPlay()
 		return;
 	}
 
-	MotionWarpingComponent= FTACharacter->FindComponentByClass<UMotionWarpingComponent>();
-
-	if (!MotionWarpingComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("[%s] UMeleeWarpingComponent::BeginPlay - MotionWarpingComp is null"), *GetOwner()->GetActorNameOrLabel());
-		return;
-	}
-
 	PlayerState = Cast<AFTAPlayerState>(FTACharacter->GetPlayerState());
-	if(!PlayerState)
+
+	if (!PlayerState)
 	{
-		// UE_LOG(LogTemp, Error, TEXT("[%s] UMeleeWarpingComponent::BeginPlay - PlayerState is null"), *GetOwner()->GetActorNameOrLabel());
+		UE_LOG(LogTemp, Error, TEXT("[%s] UMeleeWarpingComponent::BeginPlay - PlayerState is null"), *GetOwner()->GetActorNameOrLabel());
 		return;
 	}
 	

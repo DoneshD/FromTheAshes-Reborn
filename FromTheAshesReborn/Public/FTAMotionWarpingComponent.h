@@ -1,9 +1,11 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "CombatComponents/MeleeWarpingComponent.h"
 #include "Components/ActorComponent.h"
 #include "FTAMotionWarpingComponent.generated.h"
+
+class UMotionWarpingComponent;
+class AFTACharacter;
 
 USTRUCT(BlueprintType)
 struct FWarpData
@@ -39,15 +41,11 @@ private:
 	TObjectPtr<AFTACharacter> FTACharacter = nullptr;
 
 	UPROPERTY()
-	TObjectPtr<AFTAPlayerState> PlayerState = nullptr;
-
-	UPROPERTY()
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent = nullptr;
 
 public:
 
 	FName CurrentWarpTargetName;
-	FMeleeWarpData CurrentWarpData;
 
 protected:
 	

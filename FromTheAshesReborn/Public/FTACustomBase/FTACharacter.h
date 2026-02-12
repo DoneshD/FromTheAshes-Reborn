@@ -17,7 +17,6 @@ class UGroupCombatComponent;
 class UCentralStateComponent;
 class UCombatStateComponent;
 class UMeleePropertiesComponent;
-class UMeleeWarpingComponent;
 class UHitReactionComponent;
 class UWarpingManagerComponent;
 class UAerialCombatComponent;
@@ -94,9 +93,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UFTAMotionWarpingComponent> FTAMotionWarpingComponent;
-
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
-	TObjectPtr<UMeleeWarpingComponent> MeleeWarpingComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UCombatTracingComponent> CombatTracingComponent;

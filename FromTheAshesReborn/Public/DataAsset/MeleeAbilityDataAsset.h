@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "AttackAbilityDataAsset.h"
-#include "CombatComponents/MeleeWarpingComponent.h"
 #include "MeleeAbilityDataAsset.generated.h"
 
 class UFTASoundCueObject;
@@ -21,7 +20,4 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Trail")
 	TArray<TSubclassOf<UFTASoundCueObject>> TrailSoundCueClassArray;
-
-	UPROPERTY(EditDefaultsOnly, Category = "WarpData")
-	FMeleeWarpData MeleeWarpData;
 };
