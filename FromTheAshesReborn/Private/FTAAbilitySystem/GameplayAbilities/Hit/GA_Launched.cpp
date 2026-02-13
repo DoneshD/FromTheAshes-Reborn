@@ -33,13 +33,18 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	if(!LaunchInfoObject)
 	{
 		float ZDelta = (UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation().Z - GetFTACharacterFromActorInfo()->GetActorLocation().Z) - 300.0f;
-		
+		//Temp
+
+		ZDelta = 200;
+			
 		LaunchInfoObject = NewObject<ULaunchEventObject>(this);
 		LaunchInfoObject->LaunchData.VerticalDistance = ZDelta;
 		LaunchInfoObject->LaunchData.LaunchDuration = 0.10f;
 		LaunchInfoObject->LaunchData.StallDuration = 0.2;
 		LaunchInfoObject->LaunchData.Offset = LaunchOffset;
 	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Task called"))
 	
 	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(
 		this,

@@ -252,21 +252,21 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		bIsLockingOn = false; 
 	}
 
-	// DrawCameraAnchor();
+	DrawCameraAnchor();
 
 	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
 
-	// DrawDebugSphere(
-	// GetWorld(),
-	// MidpointAnchorLocation,
-	// 15.0f,           
-	// 12,                 
-	// FColor::Yellow,        
-	// false,              
-	// -1.0f,              
-	// 0                   
-	// );
+	DrawDebugSphere(
+	GetWorld(),
+	MidpointAnchorLocation,
+	15.0f,           
+	12,                 
+	FColor::Yellow,        
+	false,              
+	-1.0f,              
+	0                   
+	);
 
 	if (IsValid(PlayerOwner->CameraAnchorComponent))
 	{
@@ -279,6 +279,17 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 		
 		// const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->CameraAnchorComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
 		// PlayerOwner->CameraAnchorComponent->SetWorldRotation(NewRotation);
+
+		DrawDebugSphere(
+			GetWorld(),
+			SmoothedMidPoint,
+			15.0f,           
+			12,                 
+			FColor::Blue,        
+			false,              
+			-1.0f,              
+			0                   
+			);
 		CSC->HandleCameraAnchorAdjustment(SmoothedMidPoint, LookAtRotation, true, true, true, OffScreenInterpSpeed);
 		
 	}
@@ -311,11 +322,9 @@ void UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCh
 	if (ShouldUpdateControllerRotation)
 	{
 		FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor);
-		
-		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, ControlRotationInterpSpeed * 5);
+		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, ControlRotationInterpSpeed);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
-
 }
 
 float UTargetingSystemComponent::CalculateControlRotationOffset(float Distance, float MaxOffset) const
@@ -379,7 +388,7 @@ FRotator UTargetingSystemComponent::AddDistanceBasedAndInputOffset(const AActor*
 float UTargetingSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed)
 {
 	float InterpSpeed = InInterpSpeed;
-	const float ScreenEdgeCatchupThreshold = 0.35f;
+	const float ScreenEdgeCatchupThreshold = .35f;
 
 	FVector2D PlayerScreenPosition;
 	if (OwnerPlayerController->ProjectWorldLocationToScreen(PlayerLocation, PlayerScreenPosition))
