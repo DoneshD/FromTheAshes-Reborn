@@ -23,7 +23,7 @@ private:
 
 	FVector DefaultSpringArmRelativeLocation;
 	FRotator DefaultSpringArmRelativeRotation;
-	float DefaultSpringArmLength;
+	float DefaultSpringArmLength = 250.0f;
 
 	FVector DefaultCameraComponentRelativeLocation;
 	FRotator DefaultCameraComponentRelativeRotation;

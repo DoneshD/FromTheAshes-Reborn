@@ -34,7 +34,7 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 
 	DefaultSpringArmRelativeLocation = SpringArmComponent->GetRelativeLocation();
 	DefaultSpringArmRelativeRotation = SpringArmComponent->GetRelativeRotation();
-	DefaultSpringArmLength = SpringArmComponent->TargetArmLength;
+	DefaultSpringArmLength = 250.0f;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);

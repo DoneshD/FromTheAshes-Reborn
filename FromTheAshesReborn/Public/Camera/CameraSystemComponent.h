@@ -30,7 +30,9 @@ protected:
 	UPROPERTY()
 	TObjectPtr<USceneComponent> CameraAnchorComponent;
 
-	float DefaultSpringArmLength = 400.0f;
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
+	float DefaultSpringArmLength = 250.0f;
+	
 	float BaseArmLengthFromTargetingSystem = 400.0f;
 	float ArmLengthOffset = 0.0f;
 	float ArmLengthLerpSpeed = 0.0f;
@@ -64,6 +66,8 @@ public:
 	UCameraSystemComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void NeutralCameraState();
 
 	UFUNCTION()
 	void HandleCameraSystemAdjustment(FCameraSystemParams Params);
