@@ -5,6 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
+class UCameraSystemComponent;
 class AFTAPlayerCameraManger;
 class APlayerCharacter;
 class UUserWidget;
@@ -115,6 +116,9 @@ private:
 	TObjectPtr<AFTAPlayerCameraManger> FTAPlayerCameraManger;
 
 	UPROPERTY()
+	TObjectPtr<UCameraSystemComponent> CameraSystemComponent;
+
+	UPROPERTY()
 	UWidgetComponent* TargetLockedOnWidgetComponent;
 
 	UPROPERTY()
@@ -157,8 +161,6 @@ protected:
 	void SetOwnerActorRotation();
 	void EnableControlRotation(bool ShouldControlRotation) const;
 	// void SetControlRotationOnTarget(AActor* TargetActor) const;
-
-	void DisableMidPointControlRotation();
 	
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
 	

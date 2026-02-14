@@ -65,11 +65,10 @@ void UTargetingSystemComponent::BeginPlay()
 void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	
 	if (!IsTargetLocked || !LockedOnTargetActor)
 	{
-		DisableMidPointControlRotation();
+		CameraSystemComponent->NeutralCameraState();
 	}
 	else
 	{
@@ -206,6 +205,23 @@ void UTargetingSystemComponent::SetupLocalPlayerController()
 	}
 
 	FTAPlayerCameraManger = Cast<AFTAPlayerCameraManger>(OwnerPlayerController->PlayerCameraManager);
+
+
+	if (!IsValid(FTAPlayerCameraManger))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::SetupLocalPlayerController() - FTAPlayerCameraManger is invalid"));
+	}
+
+	if (!PlayerCharacter || !PlayerCharacter->CameraAnchorComponent) return;
+	
+
+	CameraSystemComponent = PlayerCharacter->FindComponentByClass<UCameraSystemComponent>();
+	
+	if (!CameraSystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::SetupLocalPlayerController() - CameraSystemComponent is NULL"))
+		return;
+	}
 
 	if (!IsValid(FTAPlayerCameraManger))
 	{
@@ -515,40 +531,6 @@ void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) 
 	}
 }
 */
-
-void UTargetingSystemComponent::DisableMidPointControlRotation()
-{
-	if (!PlayerCharacter || !PlayerCharacter->CameraAnchorComponent) return;
-
-	UCameraSystemComponent* CSC = PlayerCharacter->FindComponentByClass<UCameraSystemComponent>();
-	if (!CSC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::DisableMidPointControlRotation - CSC is NULL"))
-		return;
-	}
-	
-	// const FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
-	// const FVector TargetAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
-	// const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
-	//
-	// PlayerCharacter->CameraAnchorComponent->SetRelativeLocation(NewLocation);
-	//
-	// const FRotator CurrentAnchorRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
-	// const FRotator TargetAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
-	// // const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
-	//
-	// // PlayerCharacter->CameraAnchorComponent->SetRelativeRotation(NewRotation);
-	//
-	//
-	// const float CurrentTargetArmLength = PlayerCharacter->SpringArmComponent->TargetArmLength;
-	// PlayerCharacter->SpringArmComponent->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, 400, GetWorld()->GetDeltaSeconds(), 2.0f);
-	//
-	// CSC->HandleCameraAnchorAdjustment(TargetAnchorLocation, TargetAnchorRotation, false, true, true, 2.0f);
-	// CSC->HandleSpringArmAdjustment(DeltaLength, 3.0, true, true);
-
-	CSC->NeutralCameraState();
-	
-}
 
 TArray<AActor*> UTargetingSystemComponent::GetAllActorsOfClass(const TSubclassOf<AActor> ActorClass) const
 {

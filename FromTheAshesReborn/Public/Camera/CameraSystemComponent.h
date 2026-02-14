@@ -67,7 +67,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	void NeutralCameraState();
 
 	UFUNCTION()
 	void HandleCameraSystemAdjustment(FCameraSystemParams Params);
@@ -81,5 +80,10 @@ public:
 	UFUNCTION()
 	void HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InTransformType, bool InShouldOverride, bool InShouldResetOffset, float
 	                                  InInterpSpeed);
+
+
+	//Moving from targeting system
+	void NeutralCameraState();
+	void ControlCameraOffset(float DeltaTime);
 	
 };
