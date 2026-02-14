@@ -5,6 +5,8 @@
 #include "Components/ActorComponent.h"
 #include "CameraSystemComponent.generated.h"
 
+class UTargetingSystemComponent;
+class AFTAPlayerCameraManger;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCameraSystemAdjusted, FCameraSystemParams, CameraParams);
 
 class USpringArmComponent;
@@ -15,6 +17,20 @@ UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UCameraSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
+
+private:
+	UPROPERTY()
+	AActor* OwnerActor;
+
+	UPROPERTY()
+	APawn* OwnerPawn;
+
+	UPROPERTY()
+	TObjectPtr<AFTAPlayerCameraManger> FTAPlayerCameraManger;
+
+	UPROPERTY()
+	APlayerController* OwnerPlayerController;
+
 
 protected:
 
@@ -29,6 +45,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<USceneComponent> CameraAnchorComponent;
+
+	UPROPERTY()
+	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
 	float DefaultSpringArmLength = 250.0f;
@@ -55,6 +74,25 @@ protected:
 	FRotator AnchorTransformRotation;
 
 	bool UseWorldTransform = false;
+
+	//Move from targeting
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	bool EnableInputBasedOffset = true;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputOffsetScale = 1.5f;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputBasedMaxYawOffset = 25.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputBasedMaxPitchOffset = 10.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	float InputOffsetDecayRate = 0.75f;
+
+	// FRotator CurrentCameraOffset;
 
 public:
 	
@@ -85,5 +123,7 @@ public:
 	//Moving from targeting system
 	void NeutralCameraState();
 	void ControlCameraOffset(float DeltaTime);
+	void SetupLocalPlayerController();
+	
 	
 };

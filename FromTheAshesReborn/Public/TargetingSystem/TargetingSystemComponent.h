@@ -22,11 +22,19 @@ class FROMTHEASHESREBORN_API UTargetingSystemComponent : public UActorComponent
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-	FCameraSystemParams CameraParams;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	float MinimumDistanceToEnable = 4000.0f;
+
+	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
+	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
+
+	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
+	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	FCameraSystemParams CameraParams;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	TSubclassOf<AActor> TargetableActors;
@@ -81,12 +89,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	FVector LockedOnWidgetRelativeLocation = FVector(0.0f, 0.0f, 0.0f);
-
-	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
-	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
-
-	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
-	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
 	
 	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
 	FTraceComponentSetRotation OnTargetSetRotation;
@@ -128,10 +130,8 @@ private:
 	FTimerHandle SwitchingTargetTimerHandle;
 
 	bool IsBreakingLineOfSight = false;
-	bool IsTargetLocked = false;
 	
 	FVector SmoothedMidPoint = FVector::ZeroVector;
-	FRotator CurrentCameraOffset;
 
 protected:
 
@@ -200,5 +200,8 @@ public:
 	AActor* FindNearestTargetToActor(TArray<AActor*> Actors) const;
 
 	float ClosestTargetDistance = 0.0f;
+
+	bool IsTargetLocked = false;
+	FRotator CurrentCameraOffset;
 	
 };

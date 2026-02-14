@@ -3,6 +3,8 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HelperFunctionLibraries/ViewportUtilityFunctionLibrary.h"
+#include "Player/FTAPlayerCameraManger.h"
+#include "TargetingSystem/TargetingSystemComponent.h"
 
 UCameraSystemComponent::UCameraSystemComponent()
 {
@@ -29,11 +31,34 @@ UCameraSystemComponent::UCameraSystemComponent()
 
 	AnchorTransformLocation = FVector::ZeroVector;
 	AnchorTransformRotation = FRotator::ZeroRotator;
+
+	EnableInputBasedOffset = true;
+	// CurrentCameraOffset = FRotator::ZeroRotator;
+
+	InputBasedMaxYawOffset = 25.0f;
+	InputBasedMaxPitchOffset = 10.0f;
+	InputOffsetDecayRate = 3.0f;
+
+	
 }
 
 void UCameraSystemComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OwnerActor = GetOwner();
+	if (!OwnerActor)
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Cannot get Owner reference ..."), *GetName());
+		return;
+	}
+
+	OwnerPawn = Cast<APawn>(OwnerActor);
+	if (!ensure(OwnerPawn))
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to Pawn only ..."), *GetName());
+		return;
+	}
 
 	PlayerCharacter = Cast<APlayerCharacter>(GetOwner());
 
@@ -42,6 +67,8 @@ void UCameraSystemComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("PlayerCharacter is null"));
 		return;
 	}
+
+	SetupLocalPlayerController();
 
 	CameraAnchorComponent = PlayerCharacter->GetCameraAnchorComponent();
 
@@ -283,4 +310,63 @@ void UCameraSystemComponent::NeutralCameraState()
 
 void UCameraSystemComponent::ControlCameraOffset(float DeltaTime)
 {
+	if (EnableInputBasedOffset && OwnerPlayerController && TargetingSystemComponent->IsTargetLocked)
+	{
+		float YawInput = 0.0f;
+		float PitchInput = 0.0f;
+
+		OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
+
+		const float InputScale = InputOffsetScale;
+		YawInput *= InputScale;
+		PitchInput *= InputScale;
+
+		TargetingSystemComponent->CurrentCameraOffset.Yaw += YawInput;
+		TargetingSystemComponent->CurrentCameraOffset.Pitch += PitchInput;
+
+		TargetingSystemComponent->CurrentCameraOffset.Yaw = FMath::Clamp(TargetingSystemComponent->CurrentCameraOffset.Yaw, -InputBasedMaxYawOffset, InputBasedMaxYawOffset);
+		TargetingSystemComponent->CurrentCameraOffset.Pitch = FMath::Clamp(TargetingSystemComponent->CurrentCameraOffset.Pitch, -InputBasedMaxPitchOffset, InputBasedMaxPitchOffset);
+
+		const float DecayRate = InputOffsetDecayRate * DeltaTime;
+		TargetingSystemComponent->CurrentCameraOffset = FMath::RInterpTo(TargetingSystemComponent->CurrentCameraOffset, FRotator::ZeroRotator, DeltaTime, DecayRate);
+	}
+}
+
+void UCameraSystemComponent::SetupLocalPlayerController()
+{
+	if (!IsValid(OwnerPawn))
+	{
+		UE_LOG(LogTemp, Error, TEXT("[%s] TargetSystemComponent: Component is meant to be added to Pawn only ..."), *GetName());
+		return;
+	}
+
+	OwnerPlayerController = Cast<APlayerController>(OwnerPawn->GetController());
+
+	if (!IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCameraSystemComponent::SetupLocalPlayerController() - OwnerPlayerController is invalid"));
+		return;
+	}
+
+	if (!PlayerCharacter || !PlayerCharacter->CameraAnchorComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCameraSystemComponent::SetupLocalPlayerController() - Missing CameraAnchorComponent"));
+		return;
+	}
+
+	
+	FTAPlayerCameraManger = Cast<AFTAPlayerCameraManger>(OwnerPlayerController->PlayerCameraManager);
+	
+	if (!IsValid(FTAPlayerCameraManger))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCameraSystemComponent::SetupLocalPlayerController() - FTAPlayerCameraManger is invalid"));
+	}
+	
+	TargetingSystemComponent = PlayerCharacter->FindComponentByClass<UTargetingSystemComponent>();
+
+	if (!IsValid(TargetingSystemComponent))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCameraSystemComponent::SetupLocalPlayerController() - TargetingSystemComponent is invalid"));
+	}
+
 }

@@ -72,7 +72,8 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		ControlCameraOffset(DeltaTime);
+		CameraSystemComponent->ControlCameraOffset(DeltaTime);
+		// ControlCameraOffset(DeltaTime);
 		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime);
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
