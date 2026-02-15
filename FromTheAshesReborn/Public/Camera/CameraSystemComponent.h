@@ -28,9 +28,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<AFTAPlayerCameraManger> FTAPlayerCameraManger;
 
-	UPROPERTY()
-	APlayerController* OwnerPlayerController;
-
 
 protected:
 
@@ -92,12 +89,32 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input Offset")
 	float InputOffsetDecayRate = 0.75f;
 
-	// FRotator CurrentCameraOffset;
+	UPROPERTY(EditAnywhere, Category = "Catch up")
+	float CatchupInterpSpeed = 8.0f;
+
+	FRotator CurrentCameraOffset;
+
+	FVector SmoothedMidPoint = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float MaxDistance = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float MinDistance = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float DistanceBasedMaxPitchOffset = -20.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float DistanceBasedMaxYawOffset = -35.0f;
 
 public:
 	
 	UPROPERTY(BlueprintAssignable, Category = "Camera")
 	FOnCameraSystemAdjusted OnCameraSystemAdjusted;
+
+	UPROPERTY()
+	APlayerController* OwnerPlayerController;
 
 public:
 	
@@ -124,6 +141,14 @@ public:
 	void NeutralCameraState();
 	void ControlCameraOffset(float DeltaTime);
 	void SetupLocalPlayerController();
-	
-	
+	void DrawCameraAnchor();
+	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime);
+	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
+	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
+	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
+	bool ShouldUpdateControllerRotation = false;
+	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor) const;
+	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
+	float GetDistanceFromCharacter(const AActor* OtherActor) const;
+	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 };

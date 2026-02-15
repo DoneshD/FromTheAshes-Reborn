@@ -95,7 +95,6 @@ protected:
 
 	bool IgnoreLookInput = false;
 	bool ShouldUpdateControllerRotation = false;
-	bool bIsLockingOn = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
 	float DeltaLength = 400.0f;
@@ -203,5 +202,6 @@ public:
 
 	bool IsTargetLocked = false;
 	FRotator CurrentCameraOffset;
+	bool bIsLockingOn = false;
 	
 };

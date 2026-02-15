@@ -1,8 +1,11 @@
 #include "Camera/CameraSystemComponent.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HelperFunctionLibraries/ViewportUtilityFunctionLibrary.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Player/FTAPlayerCameraManger.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
 
@@ -33,11 +36,10 @@ UCameraSystemComponent::UCameraSystemComponent()
 	AnchorTransformRotation = FRotator::ZeroRotator;
 
 	EnableInputBasedOffset = true;
-	// CurrentCameraOffset = FRotator::ZeroRotator;
-
 	InputBasedMaxYawOffset = 25.0f;
 	InputBasedMaxPitchOffset = 10.0f;
 	InputOffsetDecayRate = 3.0f;
+	CurrentCameraOffset = FRotator::ZeroRotator;
 
 	
 }
@@ -302,9 +304,6 @@ void UCameraSystemComponent::NeutralCameraState()
 	
 	HandleCameraAnchorAdjustment(TargetAnchorLocation, TargetAnchorRotation, false, true, true, 2.0f);
 	HandleSpringArmAdjustment(DefaultSpringArmLength, 3.0, true, true);
-	
-	UE_LOG(LogTemp, Warning, TEXT("Length: %f"), DefaultSpringArmLength)
-
 
 }
 
@@ -316,19 +315,21 @@ void UCameraSystemComponent::ControlCameraOffset(float DeltaTime)
 		float PitchInput = 0.0f;
 
 		OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
-
+			
 		const float InputScale = InputOffsetScale;
+
 		YawInput *= InputScale;
 		PitchInput *= InputScale;
-
-		TargetingSystemComponent->CurrentCameraOffset.Yaw += YawInput;
-		TargetingSystemComponent->CurrentCameraOffset.Pitch += PitchInput;
-
-		TargetingSystemComponent->CurrentCameraOffset.Yaw = FMath::Clamp(TargetingSystemComponent->CurrentCameraOffset.Yaw, -InputBasedMaxYawOffset, InputBasedMaxYawOffset);
-		TargetingSystemComponent->CurrentCameraOffset.Pitch = FMath::Clamp(TargetingSystemComponent->CurrentCameraOffset.Pitch, -InputBasedMaxPitchOffset, InputBasedMaxPitchOffset);
+			
+		CurrentCameraOffset.Yaw += YawInput;
+		CurrentCameraOffset.Pitch += PitchInput;
+			
+		CurrentCameraOffset.Yaw = FMath::Clamp(CurrentCameraOffset.Yaw, -InputBasedMaxYawOffset, InputBasedMaxYawOffset);
+		CurrentCameraOffset.Pitch = FMath::Clamp(CurrentCameraOffset.Pitch, -InputBasedMaxPitchOffset, InputBasedMaxPitchOffset);
 
 		const float DecayRate = InputOffsetDecayRate * DeltaTime;
-		TargetingSystemComponent->CurrentCameraOffset = FMath::RInterpTo(TargetingSystemComponent->CurrentCameraOffset, FRotator::ZeroRotator, DeltaTime, DecayRate);
+
+		CurrentCameraOffset = FMath::RInterpTo(CurrentCameraOffset, FRotator::ZeroRotator, DeltaTime, DecayRate);
 	}
 }
 
@@ -369,4 +370,237 @@ void UCameraSystemComponent::SetupLocalPlayerController()
 		UE_LOG(LogTemp, Error, TEXT("UCameraSystemComponent::SetupLocalPlayerController() - TargetingSystemComponent is invalid"));
 	}
 
+}
+
+void UCameraSystemComponent::DrawCameraAnchor()
+{
+	DrawDebugSphere(
+	GetWorld(),
+	PlayerCharacter->CameraAnchorComponent->GetComponentLocation(),
+	15.0f,           
+	12,                 
+	FColor::Red,        
+	false,              
+	-1.0f,              
+	0                   
+	);
+}
+
+void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime)
+{
+	if (!PlayerOwner || !TargetActor || !OwnerPlayerController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation - Invalid Access"));
+		return;
+	}
+	
+	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
+	const FVector TargetLocation = TargetActor->GetActorLocation();
+	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, 0.5f);
+	float Distance = FVector::Dist(PlayerLocation, TargetLocation);
+	float DesiredRadius = Distance / 2.0f;
+
+	if (TargetingSystemComponent->bIsLockingOn)
+	{
+		SmoothedMidPoint = PlayerOwner->CameraAnchorComponent->GetComponentLocation();
+		TargetingSystemComponent->bIsLockingOn = false; 
+	}
+
+	DrawCameraAnchor();
+
+	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
+	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
+
+	DrawDebugSphere(
+	GetWorld(),
+	MidpointAnchorLocation,
+	15.0f,           
+	12,                 
+	FColor::Yellow,        
+	false,              
+	-1.0f,              
+	0                   
+	);
+
+	if (IsValid(PlayerOwner->CameraAnchorComponent))
+	{
+		//TODO: Fix later
+		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
+		
+		// PlayerOwner->CameraAnchorComponent->SetWorldLocation(MidpointAnchorLocation);
+
+		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
+		
+		// const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->CameraAnchorComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
+		// PlayerOwner->CameraAnchorComponent->SetWorldRotation(NewRotation);
+
+		DrawDebugSphere(
+			GetWorld(),
+			SmoothedMidPoint,
+			15.0f,           
+			12,                 
+			FColor::Blue,        
+			false,              
+			-1.0f,              
+			0                   
+			);
+		HandleCameraAnchorAdjustment(SmoothedMidPoint, LookAtRotation, true, true, true, OffScreenInterpSpeed);
+		
+	}
+
+	if (IsValid(PlayerOwner->SpringArmComponent))
+	{
+		float TargetArmLength = DesiredRadius + 300.0f;
+		if(PlayerOwner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+		{
+			TargetArmLength = DesiredRadius + 500.0f;
+		}
+
+		UAbilitySystemComponent* EnemyASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
+		if(EnemyASC)
+		{
+			if(EnemyASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+			{
+				TargetArmLength = DesiredRadius + 500.0f;
+			}
+			
+		}
+		// PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
+		
+		HandleSpringArmAdjustment(TargetArmLength, 3.0, true, true);
+		
+	}
+
+	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
+	if (ShouldUpdateControllerRotation)
+	{
+		FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor);
+		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, ControlRotationInterpSpeed);
+		OwnerPlayerController->SetControlRotation(FinalRotation);
+	}
+}
+
+float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed)
+{
+	float InterpSpeed = InInterpSpeed;
+	const float ScreenEdgeCatchupThreshold = .35f;
+
+	FVector2D PlayerScreenPosition;
+	if (OwnerPlayerController->ProjectWorldLocationToScreen(PlayerLocation, PlayerScreenPosition))
+	{
+		FVector2D ViewportSize;
+		GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
+		FVector2D ScreenCenter = ViewportSize * 0.5f;
+		FVector2D Offset = PlayerScreenPosition - ScreenCenter;
+		
+		float OffsetMagnitude = (Offset / ViewportSize).Size();
+
+		if (OffsetMagnitude > ScreenEdgeCatchupThreshold)
+		{
+			InterpSpeed = CatchupInterpSpeed;
+		}
+	}
+	return InterpSpeed;
+}
+
+float UCameraSystemComponent::CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner,
+	const AActor* TargetActor, bool& InShouldUpdateControlRotation)
+{
+	float PlayerDistanceToScreen = GetWorldDistanceFromCamera(OwnerPlayerController, PlayerOwner);
+	float TargetDistanceToScreen = GetWorldDistanceFromCamera(OwnerPlayerController, TargetActor);
+	
+	float DistanceToScreenDifference = TargetDistanceToScreen - PlayerDistanceToScreen;
+	if(DistanceToScreenDifference < 0.0f)
+	{
+		InShouldUpdateControlRotation = false;
+	}
+	else
+	{
+		InShouldUpdateControlRotation = true;
+	}
+	
+	float DistanceFactor = FMath::Clamp((DistanceToScreenDifference), 0.0f, 10.0f);
+	return FMath::Lerp(0.0f, 1.0f, DistanceFactor);
+}
+
+float UCameraSystemComponent::GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* ActorToCheck)
+{
+	if(!PlayerController || !ActorToCheck)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::GetWorldDistanceFromCamera - Invalid Actors"));
+		return 0.0f;
+	}
+	FVector CameraLocation;
+	FRotator CameraRotation;
+
+	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
+	return FVector::Distance(CameraLocation, ActorToCheck->GetActorLocation());
+}
+
+FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* OtherActor) const
+{
+	if (!IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetSystemComponent::GetControlRotationOnTarget - OwnerPlayerController is not valid ..."))
+		return FRotator::ZeroRotator;
+	}
+
+	const FRotator ControlRotation = OwnerPlayerController->GetControlRotation();
+
+	const FVector CharacterLocation = OwnerActor->GetActorLocation();
+	const FVector OtherActorLocation = OtherActor->GetActorLocation();
+
+	const FRotator LookRotation = FindLookAtRotation(CharacterLocation,OtherActorLocation);
+	float Yaw = LookRotation.Yaw;
+	float Pitch = LookRotation.Pitch;
+
+	const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
+	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxPitchOffset);
+	float DesiredYaw = 0.0;
+	
+	// if(PlayerSideRelativeToActorOnScreen(OtherActor))
+	// {
+	// 	DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
+	// }
+	
+	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen(GetWorld(), OtherActor, PlayerCharacter, OwnerPlayerController))
+	{
+		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
+	}
+	else
+	{
+		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
+	}
+	
+	Pitch = Pitch + DesiredPitch;
+	Yaw = Yaw + DesiredYaw;
+		
+	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
+	if (EnableInputBasedOffset)
+	{
+		TargetRotation += CurrentCameraOffset;
+	}
+	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
+}
+
+FRotator UCameraSystemComponent::FindLookAtRotation(const FVector Start, const FVector Target)
+{
+	return FRotationMatrix::MakeFromX(Target - Start).Rotator();
+	
+}
+
+float UCameraSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor) const
+{
+	return OwnerActor->GetDistanceTo(OtherActor);
+}
+
+float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, float MaxOffset) const
+{
+	if (Distance > MaxDistance)
+	{
+		return 0.0f;
+	}
+
+	float DistanceFactor = 1.0f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.0f, 1.0f);
+	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
 }

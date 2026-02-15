@@ -72,9 +72,12 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		CameraSystemComponent->ControlCameraOffset(DeltaTime);
-		// ControlCameraOffset(DeltaTime);
+		ControlCameraOffset(DeltaTime);
 		UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime);
+		
+		// CameraSystemComponent->ControlCameraOffset(DeltaTime);
+		// CameraSystemComponent->UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime);
+		
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
 	}
@@ -151,6 +154,7 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	{
 		if (IsValid(OwnerPlayerController))
 		{
+			CameraSystemComponent->OwnerPlayerController->SetIgnoreLookInput(false);;
 			OwnerPlayerController->SetIgnoreLookInput(false);
 		}
 	}
@@ -177,6 +181,7 @@ void UTargetingSystemComponent::CreateAndAttachTargetLockedOnWidgetComponent(AAc
 
 	if (IsValid(OwnerPlayerController))
 	{
+		TargetLockedOnWidgetComponent->SetOwnerPlayer(CameraSystemComponent->OwnerPlayerController->GetLocalPlayer());
 		TargetLockedOnWidgetComponent->SetOwnerPlayer(OwnerPlayerController->GetLocalPlayer());
 	}
 
@@ -433,18 +438,20 @@ void UTargetingSystemComponent::ControlCameraOffset(float DeltaTime)
 		float PitchInput = 0.0f;
 
 		OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
-
+			
 		const float InputScale = InputOffsetScale;
+
 		YawInput *= InputScale;
 		PitchInput *= InputScale;
-
+			
 		CurrentCameraOffset.Yaw += YawInput;
 		CurrentCameraOffset.Pitch += PitchInput;
-
+			
 		CurrentCameraOffset.Yaw = FMath::Clamp(CurrentCameraOffset.Yaw, -InputBasedMaxYawOffset, InputBasedMaxYawOffset);
 		CurrentCameraOffset.Pitch = FMath::Clamp(CurrentCameraOffset.Pitch, -InputBasedMaxPitchOffset, InputBasedMaxPitchOffset);
 
 		const float DecayRate = InputOffsetDecayRate * DeltaTime;
+
 		CurrentCameraOffset = FMath::RInterpTo(CurrentCameraOffset, FRotator::ZeroRotator, DeltaTime, DecayRate);
 	}
 }
@@ -835,6 +842,7 @@ void UTargetingSystemComponent::TargetLockOff()
 	{
 		if (IsValid(OwnerPlayerController))
 		{
+			CameraSystemComponent->OwnerPlayerController->ResetIgnoreLookInput();
 			OwnerPlayerController->ResetIgnoreLookInput();
 		}
 
