@@ -146,17 +146,6 @@ protected:
 	void SetupLocalPlayerController();
 	static bool TargetIsTargetable(const AActor* Actor);
 
-	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime);
-
-	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
-	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor) const;
-	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
-	void ControlCameraOffset(float DeltaTime);
-
-	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
-	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
-
-	float GetDistanceFromCharacter(const AActor* OtherActor) const;
 	void SetOwnerActorRotation();
 	void EnableControlRotation(bool ShouldControlRotation) const;
 	// void SetControlRotationOnTarget(AActor* TargetActor) const;
