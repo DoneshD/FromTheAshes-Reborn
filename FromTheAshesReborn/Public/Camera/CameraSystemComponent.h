@@ -44,9 +44,6 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
-
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly)
-	float DefaultSpringArmLength = 250.0f;
 	
 	float BaseArmLengthFromTargetingSystem = 400.0f;
 	float ArmLengthOffset = 0.0f;
@@ -76,6 +73,7 @@ protected:
 
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 
+	bool ShouldUpdateControllerRotation = false;
 
 
 public:
@@ -113,7 +111,6 @@ public:
 	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
 	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
-	bool ShouldUpdateControllerRotation = false;
 	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor, TObjectPtr<UCameraParamsDataAsset> CameraParams) const;
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
 	float GetDistanceFromCharacter(const AActor* OtherActor) const;

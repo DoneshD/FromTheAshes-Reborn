@@ -13,7 +13,6 @@
 UCameraSystemComponent::UCameraSystemComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-	DefaultSpringArmLength = 250.0f;
 	BaseArmLengthFromTargetingSystem = 400.0f;
 	ArmLengthOffset = 0.0f;
 	ArmLengthLerpSpeed = 0.0f;
@@ -92,8 +91,7 @@ void UCameraSystemComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("SpringArmComponent is null"));
 		return;
 	}
-
-	DefaultSpringArmLength = PlayerCharacter->GetDefaultSpringArmLength();
+	
 	DefaultCameraAnchorRelativeLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
 	DefaultCameraAnchorRelativeRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
 
@@ -300,7 +298,7 @@ void UCameraSystemComponent::NeutralCameraState()
 	PlayerCharacter->SpringArmComponent->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, 400, GetWorld()->GetDeltaSeconds(), 2.0f);
 	
 	HandleCameraAnchorAdjustment(TargetAnchorLocation, TargetAnchorRotation, false, true, true, 2.0f);
-	HandleSpringArmAdjustment(DefaultSpringArmLength, 3.0, true, true);
+	HandleSpringArmAdjustment(PlayerCharacter->DefaultSpringArmLength, 3.0, true, true);
 
 }
 

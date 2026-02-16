@@ -26,7 +26,6 @@ UTargetingSystemComponent::UTargetingSystemComponent()
 	TargetableActors = APawn::StaticClass();
 	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
 	
-	CurrentCameraOffset = FRotator::ZeroRotator;
 
 }
 

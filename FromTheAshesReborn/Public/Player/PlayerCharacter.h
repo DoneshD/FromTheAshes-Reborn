@@ -58,7 +58,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UParkourSystemComponent> ParkourSystemComponent;
 
-
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	// TObjectPtr<UCameraSystemComponent> CameraSystemComponent;
 

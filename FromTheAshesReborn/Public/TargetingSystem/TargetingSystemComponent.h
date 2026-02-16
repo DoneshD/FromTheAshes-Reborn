@@ -163,7 +163,6 @@ public:
 	float ClosestTargetDistance = 0.0f;
 
 	bool IsTargetLocked = false;
-	FRotator CurrentCameraOffset;
 	bool bIsLockingOn = false;
 	
 };
