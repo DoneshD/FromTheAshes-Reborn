@@ -13,25 +13,6 @@ class UHitCueObject;
 class UGA_ReceiveHit;
 class UGameplayEffect;
 
-// USTRUCT(BlueprintType)
-// struct FAttackDirectionStruct
-// {
-// 	GENERATED_BODY()
-//
-// 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-// 	bool bEnabled;
-// 	
-// 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-// 	ESpatialDirection AttackDirection;
-//
-// 	FAttackDirectionStruct()
-// 	:
-// 	bEnabled(false),
-// 	AttackDirection(ESpatialDirection::None)
-// 	{}
-// 	
-// 	
-// };
 
 USTRUCT(BlueprintType)
 struct FAttackDataStruct
@@ -57,9 +38,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
 	TSubclassOf<AWeaponActorBase> WeaponActorClass; 
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	// FAttackDirectionStruct AttackDirectionStruct;
 	
 };
 
@@ -69,9 +47,7 @@ class FROMTHEASHESREBORN_API UAttackAbilityDataAsset : public UFTAAbilityDataAss
 	GENERATED_BODY()
 
 public:
-
-	// UPROPERTY(EditDefaultsOnly, Category = "Attack")
-	// FAttackDataStruct AttackData;
+	
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
@@ -85,7 +61,5 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
 
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
-	// FAttackDirectionStruct AttackDirectionStruct;
 
 };

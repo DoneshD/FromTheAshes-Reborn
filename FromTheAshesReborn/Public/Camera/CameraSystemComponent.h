@@ -54,7 +54,6 @@ protected:
 	float ArmLengthLerpSpeed = 0.0f;
 	float NewSpringArmLength = 0.0f;
 	
-	
 	float CameraBaseFOV = 90.0f;
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;

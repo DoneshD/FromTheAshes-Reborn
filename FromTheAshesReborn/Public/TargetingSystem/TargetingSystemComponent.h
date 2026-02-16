@@ -44,36 +44,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	float BreakLineOfSightDelay = 2.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Catch up")
-	float CatchupInterpSpeed = 8.0f;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
 	float MaxDistance = 1000.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
 	float MinDistance = 100.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float DistanceBasedMaxPitchOffset = -20.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float DistanceBasedMaxYawOffset = -35.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	bool EnableInputBasedOffset = true;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputOffsetDecayRate = 0.75f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputOffsetScale = 1.5f;
-	
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputBasedMaxYawOffset = 25.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputBasedMaxPitchOffset = 10.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	bool ShouldDrawLockedOnWidget = true;
@@ -94,10 +70,6 @@ protected:
 	FTraceComponentSetRotation OnTargetSetRotation;
 
 	bool IgnoreLookInput = false;
-	bool ShouldUpdateControllerRotation = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Target System")
-	float DeltaLength = 400.0f;
 	
 
 private:

@@ -26,11 +26,7 @@ UTargetingSystemComponent::UTargetingSystemComponent()
 
 	TargetableActors = APawn::StaticClass();
 	TargetableCollisionChannel = ECollisionChannel::ECC_Pawn;
-
-	EnableInputBasedOffset = true;
-	InputBasedMaxYawOffset = 25.0f;
-	InputBasedMaxPitchOffset = 10.0f;
-	InputOffsetDecayRate = 3.0f;
+	
 	CurrentCameraOffset = FRotator::ZeroRotator;
 
 }
