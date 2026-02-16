@@ -38,11 +38,11 @@ struct FSpringArmParams
 };
 
 USTRUCT(BlueprintType)
-struct FTestCameraComponentParams
+struct FCameraComponentParams
 {
 	GENERATED_BODY()
 
-	FTestCameraComponentParams()
+	FCameraComponentParams()
 	: ShouldAdjustFOV(false)
 	, ShouldOverrideFOV(false)
 	, ShouldResetFOVOffset(false)
@@ -68,11 +68,11 @@ struct FTestCameraComponentParams
 };
 
 USTRUCT(BlueprintType)
-struct FTestCameraAnchorParams
+struct FCameraAnchorParams
 {
 	GENERATED_BODY()
 
-	FTestCameraAnchorParams()
+	FCameraAnchorParams()
 		: ShouldAdjustAnchor(false)
 		, ShouldOverrideAnchor(false)
 		, ShouldResetAnchorOffset(false)
@@ -100,6 +100,9 @@ struct FTestCameraAnchorParams
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	FRotator NewAnchorRotation;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor")
+	FTransform TargetTransform;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	float DeltaAnchorInterpSpeed = 5.0f;
 	
@@ -143,10 +146,10 @@ public:
 	FSpringArmParams SpringArmParams;
 
 	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	FTestCameraComponentParams CameraComponentParams;
+	FCameraComponentParams CameraComponentParams;
 
 	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	FTestCameraAnchorParams CameraAnchorParams;
+	FCameraAnchorParams CameraAnchorParams;
 
 	UPROPERTY(EditAnywhere, Category = "Catch up")
 	float CatchupInterpSpeed = 8.0f;

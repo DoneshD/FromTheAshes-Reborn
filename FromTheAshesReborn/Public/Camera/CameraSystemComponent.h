@@ -53,9 +53,6 @@ protected:
 	float CameraBaseFOV = 90.0f;
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;
-	
-	FVector DefaultCameraAnchorRelativeLocation;
-	FRotator DefaultCameraAnchorRelativeRotation;
 
 	FVector NewCameraAnchorLocation;
 	FRotator NewCameraAnchorRotation;
@@ -81,6 +78,9 @@ public:
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UCameraParamsDataAsset> NeutralCameraStateParams;
+
 public:
 	
 	UCameraSystemComponent();
@@ -103,7 +103,7 @@ public:
 
 
 	//Moving from targeting system
-	void NeutralCameraState();
+	void NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	void ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	void SetupLocalPlayerController();
 	void DrawCameraAnchor();

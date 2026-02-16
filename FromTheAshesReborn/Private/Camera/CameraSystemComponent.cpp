@@ -26,9 +26,6 @@ UCameraSystemComponent::UCameraSystemComponent()
 
 	UseWorldTransform = false;
 
-	DefaultCameraAnchorRelativeLocation = FVector::ZeroVector;
-	DefaultCameraAnchorRelativeRotation = FRotator::ZeroRotator;
-
 	NewCameraAnchorLocation = FVector::ZeroVector;
 	NewCameraAnchorRotation = FRotator::ZeroRotator;
 
@@ -275,16 +272,16 @@ void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset
 	}
 }
 
-void UCameraSystemComponent::NeutralCameraState()
+void UCameraSystemComponent::NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
 	const FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
-	const FVector TargetAnchorLocation = FVector(0.0f, 0.0f , 20.0f);
+	const FVector TargetAnchorLocation = CameraParams->CameraAnchorParams.TargetTransform.GetLocation();
 	const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
 	
 	PlayerCharacter->CameraAnchorComponent->SetRelativeLocation(NewLocation);
 	
 	const FRotator CurrentAnchorRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
-	const FRotator TargetAnchorRotation = FRotator(0.0f, 0.0f , 0.0f);
+	const FRotator TargetAnchorRotation = CameraParams->CameraAnchorParams.TargetTransform.Rotator();
 	// const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
 	
 	// PlayerCharacter->CameraAnchorComponent->SetRelativeRotation(NewRotation);
