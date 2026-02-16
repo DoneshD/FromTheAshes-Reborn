@@ -92,8 +92,6 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 	
-	DefaultCameraAnchorRelativeLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
-	DefaultCameraAnchorRelativeRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
 
 	// OnCameraSystemAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleCameraSystemAdjustment);
 }
@@ -282,13 +280,13 @@ void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset
 void UCameraSystemComponent::NeutralCameraState()
 {
 	const FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
-	const FVector TargetAnchorLocation = PlayerCharacter->GetDefaultCameraAnchorRelativeLocation();
+	const FVector TargetAnchorLocation = FVector(0.0f, 0.0f , 20.0f);
 	const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
 	
 	PlayerCharacter->CameraAnchorComponent->SetRelativeLocation(NewLocation);
 	
 	const FRotator CurrentAnchorRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
-	const FRotator TargetAnchorRotation = PlayerCharacter->GetDefaultCameraAnchorRelativeRotation();
+	const FRotator TargetAnchorRotation = FRotator(0.0f, 0.0f , 0.0f);
 	// const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
 	
 	// PlayerCharacter->CameraAnchorComponent->SetRelativeRotation(NewRotation);

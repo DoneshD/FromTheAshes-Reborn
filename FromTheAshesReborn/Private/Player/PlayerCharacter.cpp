@@ -22,9 +22,6 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	CameraAnchorComponent->SetupAttachment(RootComponent);
 	CameraAnchorComponent->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	
-	DefaultCameraAnchorRelativeLocation = CameraAnchorComponent->GetRelativeLocation();
-	DefaultCameraAnchorRelativeRotation = CameraAnchorComponent->GetRelativeRotation();
-	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
 	SpringArmComponent->SetupAttachment(CameraAnchorComponent);
 
@@ -32,15 +29,9 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	SpringArmComponent->bUsePawnControlRotation = true;
 	SpringArmComponent->SetUsingAbsoluteRotation(true);
 
-	DefaultSpringArmRelativeLocation = SpringArmComponent->GetRelativeLocation();
-	DefaultSpringArmRelativeRotation = SpringArmComponent->GetRelativeRotation();
-
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
 	CameraComponent->SetupAttachment(SpringArmComponent);
 	CameraComponent->bUsePawnControlRotation = false;
-
-	DefaultCameraComponentRelativeLocation = CameraComponent->GetRelativeLocation();
-	DefaultCameraComponentRelativeRotation = CameraComponent->GetRelativeRotation();
 
 	GetCharacterMovement()->JumpZVelocity = 1500.f;
 	GetCharacterMovement()->GravityScale = 4.0f;

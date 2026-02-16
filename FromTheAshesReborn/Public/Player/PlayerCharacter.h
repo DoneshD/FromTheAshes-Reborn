@@ -16,17 +16,6 @@ class FROMTHEASHESREBORN_API APlayerCharacter : public AFTACharacter
 {
 	GENERATED_BODY()
 
-private:
-	
-	FVector DefaultCameraAnchorRelativeLocation;
-	FRotator DefaultCameraAnchorRelativeRotation;
-
-	FVector DefaultSpringArmRelativeLocation;
-	FRotator DefaultSpringArmRelativeRotation;
-
-	FVector DefaultCameraComponentRelativeLocation;
-	FRotator DefaultCameraComponentRelativeRotation;
-
 public:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
@@ -86,16 +75,7 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void InitAbilitySystemComponent() override;
-
-	FVector GetDefaultCameraAnchorRelativeLocation() const { return DefaultCameraAnchorRelativeLocation; }
-	FRotator GetDefaultCameraAnchorRelativeRotation() const { return DefaultCameraAnchorRelativeRotation; }
-
-	FVector GetDefaultSpringArmRelativeLocation() const { return DefaultSpringArmRelativeLocation; }
-	FRotator GetDefaultSpringArmRelativeRotation() const { return DefaultSpringArmRelativeRotation; }
-	float GetDefaultSpringArmLength() const { return DefaultSpringArmLength; }
-
-	FVector GetDefaultCameraComponentRelativeLocation() const { return DefaultCameraComponentRelativeLocation; }
-	FRotator GetDefaultCameraComponentRelativeRotation() const { return DefaultCameraComponentRelativeRotation; }
+	
 
 	USceneComponent* GetCameraAnchorComponent();
 	USpringArmComponent* GetSpringArmComponent();
