@@ -5,6 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
+class UCameraParamsDataAsset;
 class UCameraSystemComponent;
 class AFTAPlayerCameraManger;
 class APlayerCharacter;
@@ -25,6 +26,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	float MinimumDistanceToEnable = 4000.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float MaxDistance = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
+	float MinDistance = 100.0f;
+
 	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOff;
 
@@ -36,6 +43,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	FCameraSystemParams CameraParams;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
+	TObjectPtr<UCameraParamsDataAsset> CameraParameters;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	TSubclassOf<AActor> TargetableActors;
 
@@ -44,12 +54,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	float BreakLineOfSightDelay = 2.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float MaxDistance = 1000.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float MinDistance = 100.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	bool ShouldDrawLockedOnWidget = true;
@@ -70,6 +74,7 @@ protected:
 	FTraceComponentSetRotation OnTargetSetRotation;
 
 	bool IgnoreLookInput = false;
+	
 	
 
 private:

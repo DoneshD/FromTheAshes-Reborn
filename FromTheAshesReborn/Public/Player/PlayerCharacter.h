@@ -23,12 +23,14 @@ private:
 
 	FVector DefaultSpringArmRelativeLocation;
 	FRotator DefaultSpringArmRelativeRotation;
-	float DefaultSpringArmLength = 250.0f;
 
 	FVector DefaultCameraComponentRelativeLocation;
 	FRotator DefaultCameraComponentRelativeRotation;
 
 public:
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	float DefaultSpringArmLength = 250.0f;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<USceneComponent> CameraAnchorComponent;

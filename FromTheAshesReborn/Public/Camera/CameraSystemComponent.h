@@ -5,6 +5,7 @@
 #include "Components/ActorComponent.h"
 #include "CameraSystemComponent.generated.h"
 
+class UCameraParamsDataAsset;
 class UTargetingSystemComponent;
 class AFTAPlayerCameraManger;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCameraSystemAdjusted, FCameraSystemParams, CameraParams);
@@ -73,39 +74,11 @@ protected:
 
 	//Move from targeting
 
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	bool EnableInputBasedOffset = true;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputOffsetScale = 1.5f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputBasedMaxYawOffset = 25.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputBasedMaxPitchOffset = 10.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputOffsetDecayRate = 0.75f;
-
-	UPROPERTY(EditAnywhere, Category = "Catch up")
-	float CatchupInterpSpeed = 8.0f;
-
 	FRotator CurrentCameraOffset;
 
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float MaxDistance = 1000.0f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float MinDistance = 100.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float DistanceBasedMaxPitchOffset = -20.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Offset")
-	float DistanceBasedMaxYawOffset = -35.0f;
 
 public:
 	
@@ -138,15 +111,15 @@ public:
 
 	//Moving from targeting system
 	void NeutralCameraState();
-	void ControlCameraOffset(float DeltaTime);
+	void ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	void SetupLocalPlayerController();
 	void DrawCameraAnchor();
-	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime);
-	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
+	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
+	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
 	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
 	bool ShouldUpdateControllerRotation = false;
-	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor) const;
+	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor, TObjectPtr<UCameraParamsDataAsset> CameraParams) const;
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
 	float GetDistanceFromCharacter(const AActor* OtherActor) const;
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;

@@ -3,6 +3,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/CameraParamsDataAsset.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "HelperFunctionLibraries/ViewportUtilityFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -34,11 +35,7 @@ UCameraSystemComponent::UCameraSystemComponent()
 
 	AnchorTransformLocation = FVector::ZeroVector;
 	AnchorTransformRotation = FRotator::ZeroRotator;
-
-	EnableInputBasedOffset = true;
-	InputBasedMaxYawOffset = 25.0f;
-	InputBasedMaxPitchOffset = 10.0f;
-	InputOffsetDecayRate = 3.0f;
+	
 	CurrentCameraOffset = FRotator::ZeroRotator;
 
 	
@@ -307,16 +304,16 @@ void UCameraSystemComponent::NeutralCameraState()
 
 }
 
-void UCameraSystemComponent::ControlCameraOffset(float DeltaTime)
+void UCameraSystemComponent::ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
-	if (EnableInputBasedOffset && OwnerPlayerController && TargetingSystemComponent->IsTargetLocked)
+	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset && OwnerPlayerController && TargetingSystemComponent->IsTargetLocked)
 	{
 		float YawInput = 0.0f;
 		float PitchInput = 0.0f;
 
 		OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
 			
-		const float InputScale = InputOffsetScale;
+		const float InputScale = CameraParams->InputOffsetInfo.InputOffsetScale;
 
 		YawInput *= InputScale;
 		PitchInput *= InputScale;
@@ -324,10 +321,10 @@ void UCameraSystemComponent::ControlCameraOffset(float DeltaTime)
 		CurrentCameraOffset.Yaw += YawInput;
 		CurrentCameraOffset.Pitch += PitchInput;
 			
-		CurrentCameraOffset.Yaw = FMath::Clamp(CurrentCameraOffset.Yaw, -InputBasedMaxYawOffset, InputBasedMaxYawOffset);
-		CurrentCameraOffset.Pitch = FMath::Clamp(CurrentCameraOffset.Pitch, -InputBasedMaxPitchOffset, InputBasedMaxPitchOffset);
+		CurrentCameraOffset.Yaw = FMath::Clamp(CurrentCameraOffset.Yaw, -CameraParams->InputOffsetInfo.InputBasedMaxYawOffset, CameraParams->InputOffsetInfo.InputBasedMaxYawOffset);
+		CurrentCameraOffset.Pitch = FMath::Clamp(CurrentCameraOffset.Pitch, -CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset, CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset);
 
-		const float DecayRate = InputOffsetDecayRate * DeltaTime;
+		const float DecayRate = CameraParams->InputOffsetInfo.InputOffsetDecayRate * DeltaTime;
 
 		CurrentCameraOffset = FMath::RInterpTo(CurrentCameraOffset, FRotator::ZeroRotator, DeltaTime, DecayRate);
 	}
@@ -386,7 +383,7 @@ void UCameraSystemComponent::DrawCameraAnchor()
 	);
 }
 
-void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime)
+void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
 	if (!PlayerOwner || !TargetActor || !OwnerPlayerController)
 	{
@@ -408,7 +405,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 
 	DrawCameraAnchor();
 
-	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed);
+	float OffScreenInterpSpeed = CatchupToOffScreen(PlayerLocation, CameraParams->CatchupInterpSpeed, CameraParams);
 	SmoothedMidPoint = FMath::VInterpTo(SmoothedMidPoint, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
 
 	DrawDebugSphere(
@@ -474,13 +471,13 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
 	if (ShouldUpdateControllerRotation)
 	{
-		FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor);
+		FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor, CameraParams);
 		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, ControlRotationInterpSpeed);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
 }
 
-float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed)
+float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
 	float InterpSpeed = InInterpSpeed;
 	const float ScreenEdgeCatchupThreshold = .35f;
@@ -497,7 +494,7 @@ float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, 
 
 		if (OffsetMagnitude > ScreenEdgeCatchupThreshold)
 		{
-			InterpSpeed = CatchupInterpSpeed;
+			InterpSpeed = CameraParams->CatchupInterpSpeed;
 		}
 	}
 	return InterpSpeed;
@@ -537,7 +534,7 @@ float UCameraSystemComponent::GetWorldDistanceFromCamera(APlayerController* Play
 	return FVector::Distance(CameraLocation, ActorToCheck->GetActorLocation());
 }
 
-FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* OtherActor) const
+FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* OtherActor, TObjectPtr<UCameraParamsDataAsset> CameraParams) const
 {
 	if (!IsValid(OwnerPlayerController))
 	{
@@ -555,7 +552,7 @@ FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* Ot
 	float Pitch = LookRotation.Pitch;
 
 	const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
-	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxPitchOffset);
+	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
 	// if(PlayerSideRelativeToActorOnScreen(OtherActor))
@@ -565,18 +562,18 @@ FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* Ot
 	
 	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen(GetWorld(), OtherActor, PlayerCharacter, OwnerPlayerController))
 	{
-		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
+		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
 	else
 	{
-		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
+		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
 	
 	Pitch = Pitch + DesiredPitch;
 	Yaw = Yaw + DesiredYaw;
 		
 	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
-	if (EnableInputBasedOffset)
+	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
 	{
 		TargetRotation += CurrentCameraOffset;
 	}
@@ -596,11 +593,11 @@ float UCameraSystemComponent::GetDistanceFromCharacter(const AActor* OtherActor)
 
 float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, float MaxOffset) const
 {
-	if (Distance > MaxDistance)
+	if (Distance > TargetingSystemComponent->MaxDistance)
 	{
 		return 0.0f;
 	}
 
-	float DistanceFactor = 1.0f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.0f, 1.0f);
+	float DistanceFactor = 1.0f - FMath::Clamp((Distance - TargetingSystemComponent->MinDistance) / (TargetingSystemComponent->MaxDistance - TargetingSystemComponent->MinDistance), 0.0f, 1.0f);
 	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
 }
