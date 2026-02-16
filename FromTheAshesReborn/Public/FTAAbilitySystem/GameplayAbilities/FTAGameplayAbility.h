@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraSystemParams.h"
 #include "Abilities/GameplayAbility.h"
 #include "FTACustomBase/FTAEnums.h"
 #include "FTAAbilitySystem/AbilityTypes/FTAAbilityTypes.h"
@@ -90,9 +89,6 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	FName WarpTargetName;
-
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Camera")
-	FCameraSystemParams CameraParams;
 
 	//Components
 	UPROPERTY()

@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Camera/CameraSystemParams.h"
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
@@ -39,9 +38,6 @@ public:
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
-	FCameraSystemParams CameraParams;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<UCameraParamsDataAsset> CameraParameters;

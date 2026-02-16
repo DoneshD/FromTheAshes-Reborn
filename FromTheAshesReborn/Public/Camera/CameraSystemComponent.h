@@ -1,14 +1,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CameraSystemParams.h"
 #include "Components/ActorComponent.h"
 #include "CameraSystemComponent.generated.h"
 
 class UCameraParamsDataAsset;
 class UTargetingSystemComponent;
 class AFTAPlayerCameraManger;
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCameraSystemAdjusted, FCameraSystemParams, CameraParams);
 
 class USpringArmComponent;
 class UCameraComponent;
@@ -82,9 +80,6 @@ protected:
 
 public:
 	
-	UPROPERTY(BlueprintAssignable, Category = "Camera")
-	FOnCameraSystemAdjusted OnCameraSystemAdjusted;
-
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;
 
