@@ -76,11 +76,6 @@ public:
 
 	virtual void InitAbilitySystemComponent() override;
 	
-
-	USceneComponent* GetCameraAnchorComponent();
-	USpringArmComponent* GetSpringArmComponent();
-	UCameraComponent* GetCameraComponentComponent();
-	
 	UFUNCTION()
 	void OnTargetLockedOn(AActor* Target);
 

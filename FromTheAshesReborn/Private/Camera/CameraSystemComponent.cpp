@@ -68,7 +68,7 @@ void UCameraSystemComponent::BeginPlay()
 
 	SetupLocalPlayerController();
 
-	CameraAnchorComponent = PlayerCharacter->GetCameraAnchorComponent();
+	CameraAnchorComponent = PlayerCharacter->CameraAnchorComponent;
 
 	if (!IsValid(CameraAnchorComponent))
 	{
@@ -76,7 +76,7 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 
-	CameraComponent = PlayerCharacter->GetCameraComponentComponent();
+	CameraComponent = PlayerCharacter->CameraComponent;
 
 	if (!CameraComponent)
 	{
@@ -84,7 +84,7 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 	
-	SpringArmComponent = PlayerCharacter->GetSpringArmComponent();
+	SpringArmComponent = PlayerCharacter->SpringArmComponent;
 	
 	if (!SpringArmComponent)
 	{
@@ -92,8 +92,6 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 	
-
-	// OnCameraSystemAdjusted.AddDynamic(this, &UCameraSystemComponent::HandleCameraSystemAdjustment);
 }
 
 void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

@@ -114,34 +114,6 @@ void APlayerCharacter::InitAbilitySystemComponent()
 	
 }
 
-USceneComponent* APlayerCharacter::GetCameraAnchorComponent()
-{
-	if(!CameraAnchorComponent)
-	{
-		return nullptr;
-	}
-	return CameraAnchorComponent;
-}
-
-USpringArmComponent* APlayerCharacter::GetSpringArmComponent()
-{
-	if(!SpringArmComponent)
-	{
-		return nullptr;
-	}
-	return SpringArmComponent;
-}
-
-UCameraComponent* APlayerCharacter::GetCameraComponentComponent()
-{
-	if(!CameraComponent)
-	{
-		return nullptr;
-	}
-	return CameraComponent;
-}
-
-
 void APlayerCharacter::OnTargetLockedOn(AActor* Target)
 {
 	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Target);
