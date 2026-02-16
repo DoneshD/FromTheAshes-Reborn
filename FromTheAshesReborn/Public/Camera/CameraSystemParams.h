@@ -4,35 +4,35 @@
 #include "CameraSystemParams.generated.h"
 
 
-USTRUCT(BlueprintType)
-struct FSpringArmLengthParams
-{
-	GENERATED_BODY()
-
-	FSpringArmLengthParams()
-	: ShouldAdjustArmLength(true)
-	, ShouldOverrideArmLength(false)
-	, ShouldResetOffset(false)
-	, DeltaArmLength(0.0f)
-	, DeltaArmLengthInterpSpeed(5.0f)
-	{}
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length")
-	bool ShouldAdjustArmLength = true;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
-	bool ShouldOverrideArmLength = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
-	bool ShouldResetOffset = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
-	float DeltaArmLength = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
-	float DeltaArmLengthInterpSpeed = 5.0f;
-	
-};
+// USTRUCT(BlueprintType)
+// struct FSpringArmLengthParams
+// {
+// 	GENERATED_BODY()
+//
+// 	FSpringArmLengthParams()
+// 	: ShouldAdjustArmLength(true)
+// 	, ShouldOverrideArmLength(false)
+// 	, ShouldResetOffset(false)
+// 	, DeltaArmLength(0.0f)
+// 	, DeltaArmLengthInterpSpeed(5.0f)
+// 	{}
+// 	
+// 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length")
+// 	bool ShouldAdjustArmLength = true;
+//
+// 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+// 	bool ShouldOverrideArmLength = false;
+//
+// 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+// 	bool ShouldResetOffset = false;
+//
+// 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+// 	float DeltaArmLength = 0.0f;
+//
+// 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+// 	float DeltaArmLengthInterpSpeed = 5.0f;
+// 	
+// };
 
 USTRUCT(BlueprintType)
 struct FCameraComponentParams
@@ -110,8 +110,8 @@ struct FCameraSystemParams
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	FCameraComponentParams CameraComponentParams;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SpringArm")
-	FSpringArmLengthParams ArmLengthParams;
+	// UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "SpringArm")
+	// FSpringArmLengthParams ArmLengthParams;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
 	FCameraAnchorParams CameraAnchorParams;

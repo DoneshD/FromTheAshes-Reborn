@@ -96,7 +96,7 @@ public:
 
 
 	UFUNCTION()
-	void HandleCameraSystemAdjustment(FCameraSystemParams Params);
+	void HandleCameraSystemAdjustment(UCameraParamsDataAsset* Params);
 	
 	UFUNCTION()
 	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);

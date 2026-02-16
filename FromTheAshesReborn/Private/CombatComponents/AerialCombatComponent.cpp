@@ -113,7 +113,7 @@ void UAerialCombatComponent::ClearStateAndVariables()
 		return;
 	}
 	
-	CSC->HandleCameraSystemAdjustment(CameraParams);
+	// CSC->HandleCameraSystemAdjustment(CameraParams);
 	
 }
 

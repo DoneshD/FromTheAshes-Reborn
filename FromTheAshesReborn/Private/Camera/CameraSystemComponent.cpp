@@ -252,32 +252,32 @@ void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FR
 	}
 }
 
-void UCameraSystemComponent::HandleCameraSystemAdjustment(FCameraSystemParams Params)
+void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset* Params)
 {
-	if(Params.ArmLengthParams.ShouldAdjustArmLength)
+	if(Params->SpringArmParams.ShouldAdjustArmLength)
 	{
-		HandleSpringArmAdjustment(Params.ArmLengthParams.DeltaArmLength,
-			Params.ArmLengthParams.DeltaArmLengthInterpSpeed,
-			Params.ArmLengthParams.ShouldOverrideArmLength,
-			Params.ArmLengthParams.ShouldResetOffset);
+		HandleSpringArmAdjustment(Params->SpringArmParams.DeltaArmLength,
+			Params->SpringArmParams.DeltaArmLengthInterpSpeed,
+			Params->SpringArmParams.ShouldOverrideArmLength,
+			Params->SpringArmParams.ShouldResetOffset);
 	}
 
-	if(Params.CameraComponentParams.ShouldAdjustFOV)
+	if(Params->CameraComponentParams.ShouldAdjustFOV)
 	{
-		HandleCameraComponentAdjustment(Params.CameraComponentParams.DeltaFOV,
-			Params.CameraComponentParams.DeltaFOVInterpSpeed,
-			Params.CameraComponentParams.ShouldOverrideFOV,
-			Params.CameraComponentParams.ShouldResetFOVOffset);
+		HandleCameraComponentAdjustment(Params->CameraComponentParams.DeltaFOV,
+			Params->CameraComponentParams.DeltaFOVInterpSpeed,
+			Params->CameraComponentParams.ShouldOverrideFOV,
+			Params->CameraComponentParams.ShouldResetFOVOffset);
 	}
 
-	if(Params.CameraAnchorParams.ShouldAdjustAnchor)
+	if(Params->CameraAnchorParams.ShouldAdjustAnchor)
 	{
-		HandleCameraAnchorAdjustment(Params.CameraAnchorParams.NewAnchorLocation,
-			Params.CameraAnchorParams.NewAnchorRotation,
-			Params.CameraAnchorParams.ShouldUseWorldTransform, 
-			Params.CameraAnchorParams.ShouldOverrideAnchor,
-			Params.CameraAnchorParams.ShouldResetAnchorOffset,
-			Params.CameraAnchorParams.DeltaAnchorInterpSpeed);
+		HandleCameraAnchorAdjustment(Params->CameraAnchorParams.NewAnchorLocation,
+			Params->CameraAnchorParams.NewAnchorRotation,
+			Params->CameraAnchorParams.ShouldUseWorldTransform, 
+			Params->CameraAnchorParams.ShouldOverrideAnchor,
+			Params->CameraAnchorParams.ShouldResetAnchorOffset,
+			Params->CameraAnchorParams.DeltaAnchorInterpSpeed);
 	}
 }
 
