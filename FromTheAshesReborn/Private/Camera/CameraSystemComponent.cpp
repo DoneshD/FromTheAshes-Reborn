@@ -439,24 +439,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
 		float TargetArmLength = DesiredRadius + 300.0f;
-		if(PlayerOwner->GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-		{
-			TargetArmLength = DesiredRadius + 500.0f;
-		}
-
-		UAbilitySystemComponent* EnemyASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
-		if(EnemyASC)
-		{
-			if(EnemyASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-			{
-				TargetArmLength = DesiredRadius + 500.0f;
-			}
-			
-		}
-		// PlayerOwner->SpringArmComponent->TargetArmLength = FMath::FInterpTo(PlayerOwner->SpringArmComponent->TargetArmLength, TargetArmLength, GetWorld()->GetDeltaSeconds(), 3.0f);
-		
 		HandleSpringArmAdjustment(TargetArmLength, 3.0, true, true);
-		
 	}
 
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
