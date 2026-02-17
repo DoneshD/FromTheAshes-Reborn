@@ -4,20 +4,22 @@
 #include "Engine/DataAsset.h"
 #include "CameraParamsDataAsset.generated.h"
 
+UENUM(BlueprintType)
+enum class ESpringArmOperation : uint8
+{
+	Set,
+	Additive
+};
+
 USTRUCT(BlueprintType)
 struct FSpringArmParams
 {
 	GENERATED_BODY()
 
 	FSpringArmParams()
-	: ShouldAdjustArmLength(true)
-	, ShouldOverrideArmLength(false)
-	, ShouldResetOffset(false)
-	, DeltaArmLength(0.0f)
-	, DeltaArmLengthInterpSpeed(5.0f)
 	{}
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length")
 	bool ShouldAdjustArmLength = true;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))

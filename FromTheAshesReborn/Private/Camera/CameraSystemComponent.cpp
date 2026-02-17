@@ -243,6 +243,11 @@ void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FR
 	}
 }
 
+void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)
+{
+	CameraParamsArray.AddUnique(CameraParams);
+}
+
 void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset* Params)
 {
 	if(Params->SpringArmParams.ShouldAdjustArmLength)
@@ -270,6 +275,11 @@ void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset
 			Params->CameraAnchorParams.ShouldResetAnchorOffset,
 			Params->CameraAnchorParams.DeltaAnchorInterpSpeed);
 	}
+}
+
+void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* CameraParams)
+{
+	CameraParamsArray.Remove(CameraParams);
 }
 
 void UCameraSystemComponent::NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams)
@@ -439,6 +449,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
 		float TargetArmLength = DesiredRadius + 300.0f;
+		AddCameraParameters(CameraParams);
 		HandleSpringArmAdjustment(TargetArmLength, 3.0, true, true);
 	}
 

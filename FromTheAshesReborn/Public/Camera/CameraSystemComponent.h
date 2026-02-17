@@ -27,6 +27,9 @@ private:
 	UPROPERTY()
 	TObjectPtr<AFTAPlayerCameraManger> FTAPlayerCameraManger;
 
+	UPROPERTY()
+	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
+
 
 protected:
 
@@ -98,9 +101,13 @@ public:
 	void HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
 
 	UFUNCTION()
-	void HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InTransformType, bool InShouldOverride, bool InShouldResetOffset, float
-	                                  InInterpSpeed);
+	void HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InTransformType, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed);
+	
+	UFUNCTION(BlueprintCallable)
+	void AddCameraParameters(UCameraParamsDataAsset* CameraParams);
 
+	UFUNCTION(BlueprintCallable)
+	void RemoveCameraParameters(UCameraParamsDataAsset* CameraParams);
 
 	//Moving from targeting system
 	void NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams);
