@@ -37,10 +37,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Target System Delegates")
 	FTraceComponentOnTargetLockedOnOff OnTargetLockedOn;
 
-protected:
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<UCameraParamsDataAsset> CameraParameters;
+	
+protected:
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "General")
 	TSubclassOf<AActor> TargetableActors;

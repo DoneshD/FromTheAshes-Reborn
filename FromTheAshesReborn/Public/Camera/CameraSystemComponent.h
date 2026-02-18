@@ -48,7 +48,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 	
-	float BaseArmLengthFromTargetingSystem = 400.0f;
+	float BaseArmLengthFromTargetingSystem = 250.0f;
 	float ArmLengthOffset = 0.0f;
 	float ArmLengthLerpSpeed = 0.0f;
 	float NewSpringArmLength = 0.0f;
@@ -89,6 +89,8 @@ public:
 	UCameraSystemComponent();
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	float ResolveSpringArmLength();
 
 
 	UFUNCTION()

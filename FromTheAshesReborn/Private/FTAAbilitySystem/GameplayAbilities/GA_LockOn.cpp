@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/GA_LockOn.h"
 
+#include "Camera/CameraSystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "Player/FTAPlayerController.h"
 #include "Player/FTAPlayerState.h"
@@ -38,6 +39,7 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 	UTargetingSystemComponent* TargetingSystemComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UTargetingSystemComponent>();
+	UCameraSystemComponent* CameraSystemComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 	
 	AFTAPlayerState* PS = GetFTAPlayerControllerFromActorInfo()->GetFTAPlayerState();
 
@@ -54,6 +56,7 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		PS->HardLockedTargetActor = LockedOnTarget;
 		TargetCharacter = Cast<AFTACharacter>(LockedOnTarget);
 		
+		// CameraSystemComponent->AddCameraParameters(TargetingSystemComponent->CameraParameters);
 	}
 
 	if(TargetCharacter)
@@ -77,6 +80,10 @@ void UGA_LockOn::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	IsTargeting = false;
 	LockedOnTarget = nullptr;
 	PS->HardLockedTargetActor = nullptr;
+
+	UCameraSystemComponent* CameraSystemComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+	// CameraSystemComponent->RemoveCameraParameters(TargetingSystemComponent->CameraParameters);
+	
 }
 
 void UGA_LockOn::InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo)

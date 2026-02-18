@@ -5,7 +5,7 @@
 #include "CameraParamsDataAsset.generated.h"
 
 UENUM(BlueprintType)
-enum class ESpringArmOperation : uint8
+enum class ECameraOperation : uint8
 {
 	Set,
 	Additive
@@ -22,19 +22,28 @@ struct FSpringArmParams
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length")
 	bool ShouldAdjustArmLength = true;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
 	bool ShouldOverrideArmLength = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spring Arm")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
 	float TargetArmLength = 250.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	float Priority = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	ECameraOperation CameraOperation= ECameraOperation::Set;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	float Value = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
 	bool ShouldResetOffset = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
 	float DeltaArmLength = 0.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
 	float DeltaArmLengthInterpSpeed = 5.0f;
 	
 };
@@ -52,19 +61,19 @@ struct FCameraComponentParams
 	, DeltaFOVInterpSpeed(5.0f)
 	{}
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | FOV")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV")
 	bool ShouldAdjustFOV = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | FOV", meta=(EditCondition="ShouldAdjustFOV"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
 	bool ShouldOverrideFOV = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | FOV", meta=(EditCondition="ShouldAdjustFOV"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
 	bool ShouldResetFOVOffset = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | FOV", meta=(EditCondition="ShouldAdjustFOV"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
 	float DeltaFOV = 0.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | FOV", meta=(EditCondition="ShouldAdjustFOV"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
 	float DeltaFOVInterpSpeed = 5.0f;
 	
 };
@@ -87,25 +96,25 @@ struct FCameraAnchorParams
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera| FOV")
 	bool ShouldAdjustAnchor = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	bool ShouldOverrideAnchor = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	bool ShouldResetAnchorOffset = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	bool ShouldUseWorldTransform = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	FVector NewAnchorLocation;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	FRotator NewAnchorRotation;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
 	FTransform TargetTransform;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera | Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjustAnchor"))
 	float DeltaAnchorInterpSpeed = 5.0f;
 	
 };

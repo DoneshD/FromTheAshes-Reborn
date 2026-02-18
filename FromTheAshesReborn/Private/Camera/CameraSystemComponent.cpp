@@ -88,22 +88,31 @@ void UCameraSystemComponent::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("SpringArmComponent is null"));
 		return;
 	}
-	
+	AddCameraParameters(NeutralCameraStateParams);
 }
 
 void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	/*for (const TObjectPtr<UCameraParamsDataAsset>& Params : CameraParamsArray)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("CameraParams: %s"),
+			Params ? *Params->GetName() : TEXT("NULL"));
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Size: %d"), CameraParamsArray.Num());*/
+
 	if (SpringArmComponent)
 	{
 		
 		float CurrentLength = SpringArmComponent->TargetArmLength;
-		float FinalTargetLength = NewSpringArmLength + ArmLengthOffset;
+		// float TargetLength = ResolveSpringArmLength();
+		float TargetLength = NewSpringArmLength + ArmLengthOffset;
 	
-		if (!FMath::IsNearlyEqual(CurrentLength, FinalTargetLength, 0.1f))
+		if (!FMath::IsNearlyEqual(CurrentLength, TargetLength, 0.1f))
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, FinalTargetLength, DeltaTime, ArmLengthLerpSpeed);
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, TargetLength, DeltaTime, ArmLengthLerpSpeed);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 	
 			// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
@@ -170,6 +179,47 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
+
+}
+
+float UCameraSystemComponent::ResolveSpringArmLength()
+{
+	float TargetSpringArmLength = BaseArmLengthFromTargetingSystem;
+
+	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
+	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
+	{
+		return A->SpringArmParams.Priority > B->SpringArmParams.Priority;
+	});
+
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params1 : Sorted)
+	{
+		if(!Params1->SpringArmParams.ShouldAdjustArmLength)
+		{
+			continue;
+		}
+		
+		if(Params1->SpringArmParams.CameraOperation == ECameraOperation::Set)
+		{
+			TargetSpringArmLength = Params1->SpringArmParams.Value;
+			UE_LOG(LogTemp, Warning, TEXT("Selecting: %s"), *Params1->GetName())
+			break;
+		}
+
+		for(const TObjectPtr<UCameraParamsDataAsset>& Params2 : Sorted)
+		{
+			if(!Params1->SpringArmParams.ShouldAdjustArmLength)
+			{
+				if(Params1->SpringArmParams.CameraOperation == ECameraOperation::Additive)
+				{
+					TargetSpringArmLength += Params1->SpringArmParams.Value;
+					break;
+				}
+			}
+		}
+		
+	}
+	return TargetSpringArmLength;
 
 }
 
@@ -250,13 +300,13 @@ void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraP
 
 void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset* Params)
 {
-	if(Params->SpringArmParams.ShouldAdjustArmLength)
-	{
-		HandleSpringArmAdjustment(Params->SpringArmParams.DeltaArmLength,
-			Params->SpringArmParams.DeltaArmLengthInterpSpeed,
-			Params->SpringArmParams.ShouldOverrideArmLength,
-			Params->SpringArmParams.ShouldResetOffset);
-	}
+	// if(Params->SpringArmParams.ShouldAdjustArmLength)
+	// {
+	// 	HandleSpringArmAdjustment(Params->SpringArmParams.DeltaArmLength,
+	// 		Params->SpringArmParams.DeltaArmLengthInterpSpeed,
+	// 		Params->SpringArmParams.ShouldOverrideArmLength,
+	// 		Params->SpringArmParams.ShouldResetOffset);
+	// }
 
 	if(Params->CameraComponentParams.ShouldAdjustFOV)
 	{
@@ -284,6 +334,7 @@ void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* Came
 
 void UCameraSystemComponent::NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
+	
 	const FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
 	const FVector TargetAnchorLocation = CameraParams->CameraAnchorParams.TargetTransform.GetLocation();
 	const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
@@ -449,8 +500,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
 		float TargetArmLength = DesiredRadius + 300.0f;
-		AddCameraParameters(CameraParams);
-		HandleSpringArmAdjustment(TargetArmLength, 3.0, true, true);
+		HandleSpringArmAdjustment(600, 3.0, true, true);
 	}
 
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
