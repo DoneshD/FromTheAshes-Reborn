@@ -107,12 +107,12 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		
 		float CurrentLength = SpringArmComponent->TargetArmLength;
-		// float TargetLength = ResolveSpringArmLength();
+		NewSpringArmLength = ResolveSpringArmLength();
 		float TargetLength = NewSpringArmLength + ArmLengthOffset;
 	
 		if (!FMath::IsNearlyEqual(CurrentLength, TargetLength, 0.1f))
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, TargetLength, DeltaTime, ArmLengthLerpSpeed);
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, TargetLength, DeltaTime, 3.0f);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 	
 			// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
@@ -202,7 +202,6 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		if(Params1->SpringArmParams.CameraOperation == ECameraOperation::Set)
 		{
 			TargetSpringArmLength = Params1->SpringArmParams.Value;
-			UE_LOG(LogTemp, Warning, TEXT("Selecting: %s"), *Params1->GetName())
 			break;
 		}
 
@@ -225,25 +224,12 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 
 void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset)
 {
-	if (SpringArmComponent)
+	/*if (SpringArmComponent)
 	{
-		if (InShouldOverride)
-		{
-			// BaseArmLengthFromTargetingSystem = InDeltaLength;
-			NewSpringArmLength = InDeltaLength;
-
-			if (InShouldResetOffset)
-			{
-				ArmLengthOffset = 0.0f;
-			}
-		}
-		else
-		{
-			ArmLengthOffset += InDeltaLength;
-		}
-
+		// BaseArmLengthFromTargetingSystem = InDeltaLength;
+		NewSpringArmLength = InDeltaLength;
 		ArmLengthLerpSpeed = InInterpSpeed;
-	}
+	}*/
 }
 
 void UCameraSystemComponent::HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset)
@@ -352,7 +338,7 @@ void UCameraSystemComponent::NeutralCameraState(TObjectPtr<UCameraParamsDataAsse
 	PlayerCharacter->SpringArmComponent->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, 400, GetWorld()->GetDeltaSeconds(), 2.0f);
 	
 	HandleCameraAnchorAdjustment(TargetAnchorLocation, TargetAnchorRotation, false, true, true, 2.0f);
-	HandleSpringArmAdjustment(PlayerCharacter->DefaultSpringArmLength, 3.0, true, true);
+	// HandleSpringArmAdjustment(PlayerCharacter->DefaultSpringArmLength, 3.0, true, true);
 
 }
 

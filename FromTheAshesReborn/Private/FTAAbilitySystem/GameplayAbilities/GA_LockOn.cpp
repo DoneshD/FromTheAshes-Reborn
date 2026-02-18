@@ -56,7 +56,7 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		PS->HardLockedTargetActor = LockedOnTarget;
 		TargetCharacter = Cast<AFTACharacter>(LockedOnTarget);
 		
-		// CameraSystemComponent->AddCameraParameters(TargetingSystemComponent->CameraParameters);
+		CameraSystemComponent->AddCameraParameters(TargetingSystemComponent->CameraParameters);
 	}
 
 	if(TargetCharacter)
@@ -82,7 +82,7 @@ void UGA_LockOn::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	PS->HardLockedTargetActor = nullptr;
 
 	UCameraSystemComponent* CameraSystemComponent = GetAvatarActorFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
-	// CameraSystemComponent->RemoveCameraParameters(TargetingSystemComponent->CameraParameters);
+	CameraSystemComponent->RemoveCameraParameters(TargetingSystemComponent->CameraParameters);
 	
 }
 
