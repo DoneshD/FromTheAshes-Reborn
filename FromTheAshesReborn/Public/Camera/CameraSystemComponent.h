@@ -108,7 +108,10 @@ public:
 	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
 	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
 	FRotator AddDistanceBasedAndInputOffset(const AActor* OtherActor, TObjectPtr<UCameraParamsDataAsset> CameraParams) const;
+	
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
 	float GetDistanceFromCharacter(const AActor* OtherActor) const;
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
+
+	void EntryTestFunc();
 };

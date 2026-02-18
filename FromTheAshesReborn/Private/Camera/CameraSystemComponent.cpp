@@ -332,7 +332,7 @@ void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* Came
 
 void UCameraSystemComponent::ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
-	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset && OwnerPlayerController && TargetingSystemComponent->IsTargetLocked)
+	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset && OwnerPlayerController)
 	{
 		float YawInput = 0.0f;
 		float PitchInput = 0.0f;
@@ -447,15 +447,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 
 	if (IsValid(PlayerOwner->CameraAnchorComponent))
 	{
-		//TODO: Fix later
-		// PlayerOwner->TargetCameraAnchor->SetWorldLocation(SmoothedMidPoint);
-		
-		// PlayerOwner->CameraAnchorComponent->SetWorldLocation(MidpointAnchorLocation);
-
 		FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(SmoothedMidPoint, TargetLocation);
-		
-		// const FRotator NewRotation = FMath::RInterpTo(PlayerOwner->CameraAnchorComponent->GetComponentRotation(), LookAtRotation, GetWorld()->GetDeltaSeconds(), 3.0f);
-		// PlayerOwner->CameraAnchorComponent->SetWorldRotation(NewRotation);
 
 		DrawDebugSphere(
 			GetWorld(),
@@ -472,8 +464,6 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 		LockOnTargetRotation = LookAtRotation;
 		UseWorldTransform = true;
 		LockOnLerpSpeed = OffScreenInterpSpeed;
-		
-		// HandleCameraAnchorAdjustment(SmoothedMidPoint, LookAtRotation, true, true, true, OffScreenInterpSpeed);
 		
 	}
 
@@ -615,4 +605,9 @@ float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, flo
 
 	float DistanceFactor = 1.0f - FMath::Clamp((Distance - TargetingSystemComponent->MinDistance) / (TargetingSystemComponent->MaxDistance - TargetingSystemComponent->MinDistance), 0.0f, 1.0f);
 	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
+}
+
+void UCameraSystemComponent::EntryTestFunc()
+{
+	
 }
