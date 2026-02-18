@@ -189,7 +189,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjustArmLength)
+		if(!Params->SpringArmParams.ShouldAdjust)
 		{
 			continue;
 		}
@@ -197,14 +197,14 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Set)
 		{
 			TargetSpringArmLength = Params->SpringArmParams.Value;
-			LerpSpeed = Params->SpringArmParams.LerpSpeed;
+			LerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			break;
 		}
 	}
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjustArmLength)
+		if(!Params->SpringArmParams.ShouldAdjust)
 		{
 			continue;
 		}
@@ -212,7 +212,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::LockOn)
 		{
 			TargetSpringArmLength = LockOnSpringArmLength;
-			LerpSpeed = Params->SpringArmParams.LerpSpeed;
+			LerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
 		}
@@ -220,7 +220,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjustArmLength)
+		if(!Params->SpringArmParams.ShouldAdjust)
 		{
 			continue;
 		}
@@ -228,7 +228,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Override)
 		{
 			TargetSpringArmLength = Params->SpringArmParams.Value;
-			LerpSpeed = Params->SpringArmParams.LerpSpeed;
+			LerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
 		}
@@ -236,7 +236,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjustArmLength)
+		if(!Params->SpringArmParams.ShouldAdjust)
 		{
 			continue;
 		}
@@ -244,7 +244,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Additive)
 		{
 			TargetSpringArmLength += Params->SpringArmParams.Value;
-			LerpSpeed = Params->SpringArmParams.LerpSpeed;
+			LerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
 		}
@@ -335,15 +335,15 @@ void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset
 			Params->CameraComponentParams.ShouldResetFOVOffset);
 	}
 
-	if(Params->CameraAnchorParams.ShouldAdjustAnchor)
-	{
-		HandleCameraAnchorAdjustment(Params->CameraAnchorParams.NewAnchorLocation,
-			Params->CameraAnchorParams.NewAnchorRotation,
-			Params->CameraAnchorParams.ShouldUseWorldTransform, 
-			Params->CameraAnchorParams.ShouldOverrideAnchor,
-			Params->CameraAnchorParams.ShouldResetAnchorOffset,
-			Params->CameraAnchorParams.DeltaAnchorInterpSpeed);
-	}
+	// if(Params->CameraAnchorParams.ShouldAdjustAnchor)
+	// {
+	// 	HandleCameraAnchorAdjustment(Params->CameraAnchorParams.NewAnchorLocation,
+	// 		Params->CameraAnchorParams.NewAnchorRotation,
+	// 		Params->CameraAnchorParams.ShouldUseWorldTransform, 
+	// 		Params->CameraAnchorParams.ShouldOverrideAnchor,
+	// 		Params->CameraAnchorParams.ShouldResetAnchorOffset,
+	// 		Params->CameraAnchorParams.DeltaAnchorInterpSpeed);
+	// }
 }
 
 void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* CameraParams)
@@ -353,26 +353,9 @@ void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* Came
 
 void UCameraSystemComponent::NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
-	
-	const FVector CurrentAnchorLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
-	const FVector TargetAnchorLocation = CameraParams->CameraAnchorParams.TargetTransform.GetLocation();
-	const FVector NewLocation = FMath::VInterpTo(CurrentAnchorLocation, TargetAnchorLocation, GetWorld()->GetDeltaSeconds(), 2.0f);
-	
-	PlayerCharacter->CameraAnchorComponent->SetRelativeLocation(NewLocation);
-	
-	const FRotator CurrentAnchorRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
-	const FRotator TargetAnchorRotation = CameraParams->CameraAnchorParams.TargetTransform.Rotator();
-	// const FRotator NewRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetAnchorRotation, GetWorld()->GetDeltaSeconds(), 2.0f);
-	
-	// PlayerCharacter->CameraAnchorComponent->SetRelativeRotation(NewRotation);
-	
-	
-	const float CurrentTargetArmLength = PlayerCharacter->SpringArmComponent->TargetArmLength;
-	PlayerCharacter->SpringArmComponent->TargetArmLength = FMath::FInterpTo(CurrentTargetArmLength, 400, GetWorld()->GetDeltaSeconds(), 2.0f);
-	
+	const FVector TargetAnchorLocation = CameraParams->CameraAnchorParams.TargetLocation;
+	const FRotator TargetAnchorRotation = CameraParams->CameraAnchorParams.TargetRotation;
 	HandleCameraAnchorAdjustment(TargetAnchorLocation, TargetAnchorRotation, false, true, true, 2.0f);
-	// HandleSpringArmAdjustment(PlayerCharacter->DefaultSpringArmLength, 3.0, true, true);
-
 }
 
 void UCameraSystemComponent::ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
