@@ -16,7 +16,6 @@ UCameraSystemComponent::UCameraSystemComponent()
 	BaseArmLengthFromTargetingSystem = 400.0f;
 	ArmLengthOffset = 0.0f;
 	ArmLengthLerpSpeed = 0.0f;
-	NewSpringArmLength = 0.0f;
 
 	CameraBaseFOV = 90.0f;
 	CameraFOVOffset = 0.0f;
@@ -107,14 +106,13 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		
 		float CurrentLength = SpringArmComponent->TargetArmLength;
-		NewSpringArmLength = ResolveSpringArmLength();
-		float TargetLength = NewSpringArmLength + ArmLengthOffset;
+		TargetSpringArmLength = ResolveSpringArmLength();
 	
-		if (!FMath::IsNearlyEqual(CurrentLength, TargetLength, 0.1f))
+		if (!FMath::IsNearlyEqual(CurrentLength, TargetSpringArmLength, 0.1f))
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, TargetLength, DeltaTime, 3.0f);
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, TargetSpringArmLength, DeltaTime, 3.0f);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
-	
+			
 			// UE_LOG(LogTemp, Warning, TEXT("Spring Arm Lerp Debug -> CurrentLength: %.2f, Base: %.2f, Offset: %.2f, FinalTarget: %.2f"),
 			// 	CurrentLength, BaseArmLengthFromTargetingSystem, ArmLengthOffset, InterpolatedLength);
 		}
@@ -184,40 +182,73 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 float UCameraSystemComponent::ResolveSpringArmLength()
 {
-	float TargetSpringArmLength = BaseArmLengthFromTargetingSystem;
-
 	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
 	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
 	{
 		return A->SpringArmParams.Priority > B->SpringArmParams.Priority;
 	});
+	
 
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params1 : Sorted)
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params1->SpringArmParams.ShouldAdjustArmLength)
+		if(!Params->SpringArmParams.ShouldAdjustArmLength)
 		{
 			continue;
 		}
 		
-		if(Params1->SpringArmParams.CameraOperation == ECameraOperation::Set)
+		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Set)
 		{
-			TargetSpringArmLength = Params1->SpringArmParams.Value;
+			TargetSpringArmLength = Params->SpringArmParams.Value;
 			break;
 		}
+	}
 
-		for(const TObjectPtr<UCameraParamsDataAsset>& Params2 : Sorted)
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
+	{
+		if(!Params->SpringArmParams.ShouldAdjustArmLength)
 		{
-			if(!Params1->SpringArmParams.ShouldAdjustArmLength)
-			{
-				if(Params1->SpringArmParams.CameraOperation == ECameraOperation::Additive)
-				{
-					TargetSpringArmLength += Params1->SpringArmParams.Value;
-					break;
-				}
-			}
+			continue;
+		}
+		
+		if(Params->SpringArmParams.CameraOperation == ECameraOperation::LockOn)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("LockOnSpringArmLength: %f"), LockOnSpringArmLength);
+			TargetSpringArmLength = LockOnSpringArmLength;
+			
+			break;
+		}
+	}
+
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
+	{
+		if(!Params->SpringArmParams.ShouldAdjustArmLength)
+		{
+			continue;
+		}
+		
+		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Override)
+		{
+			TargetSpringArmLength = Params->SpringArmParams.Value;
+			break;
+		}
+	}
+
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
+	{
+		if(!Params->SpringArmParams.ShouldAdjustArmLength)
+		{
+			continue;
+		}
+		
+		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Additive)
+		{
+			TargetSpringArmLength += Params->SpringArmParams.Value;
+			break;
 		}
 		
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Returning: %f"), TargetSpringArmLength);
+	
 	return TargetSpringArmLength;
 
 }
@@ -486,6 +517,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 	if (IsValid(PlayerOwner->SpringArmComponent))
 	{
 		float TargetArmLength = DesiredRadius + 300.0f;
+		LockOnSpringArmLength = TargetArmLength;
 		HandleSpringArmAdjustment(600, 3.0, true, true);
 	}
 
