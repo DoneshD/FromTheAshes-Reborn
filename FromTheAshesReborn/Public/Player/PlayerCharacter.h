@@ -50,7 +50,7 @@ protected:
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	// TObjectPtr<UCameraSystemComponent> CameraSystemComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "Components")
 	TObjectPtr<UCameraSystemComponent> CameraManagerComponent;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")

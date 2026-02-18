@@ -12,7 +12,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class APlayerCharacter;
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(BlueprintType, Const)
 class FROMTHEASHESREBORN_API UCameraSystemComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -53,6 +53,7 @@ protected:
 	float ArmLengthLerpSpeed = 0.0f;
 	float TargetSpringArmLength = 0.0f;
 	float LockOnSpringArmLength = 0.0f;
+	float LerpSpeed = 2.0f;
 	
 	float CameraBaseFOV = 90.0f;
 	float CameraFOVOffset = 0.0f;
