@@ -320,48 +320,6 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 	}
 }
 
-void UCameraSystemComponent::HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset)
-{
-	if (CameraComponent)
-	{
-		if (InShouldOverride)
-		{
-			CameraBaseFOV = InDeltaFOV;
-
-			if (InShouldResetOffset)
-			{
-				CameraFOVOffset = 0.0f;
-			}
-		}
-		else
-		{
-			CameraFOVOffset += InDeltaFOV;
-		}
-
-		CameraFOVLerpSpeed = InInterpSpeed;
-	}
-}
-
-void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool ShouldUseWorldTransform, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed)
-{
-	// if (CameraAnchorComponent)
-	// {
-	// 	if(ShouldUseWorldTransform)
-	// 	{
-	// 		UseWorldTransform = true;
-	// 	}
-	// 	else
-	// 	{
-	// 		UseWorldTransform = false;
-	// 	}
-	// 	
-	// 	TargetCameraAnchorLocation = InLocation;
-	// 	TargetCameraAnchorRotation = InRotation;
-	// 	
-	// 	CameraAnchorInterpSpeed = InInterpSpeed;
-	// }
-}
-
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.AddUnique(CameraParams);
@@ -370,19 +328,6 @@ void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraP
 void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.Remove(CameraParams);
-}
-
-void UCameraSystemComponent::NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams)
-{
-	// const FVector TargetAnchorLocation = CameraParams->CameraAnchorParams.TargetLocation;
-	// const FRotator TargetAnchorRotation = CameraParams->CameraAnchorParams.TargetRotation;
-	//
-	// LockOnTargetLocation = CameraParams->CameraAnchorParams.TargetLocation;
-	// LockOnTargetRotation = CameraParams->CameraAnchorParams.TargetRotation;
-	// UseWorldTransform = false;
-	// LockOnLerpSpeed = 2.0f;
-	
-	// HandleCameraAnchorAdjustment(TargetAnchorLocation, TargetAnchorRotation, false, true, true, 2.0f);
 }
 
 void UCameraSystemComponent::ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)

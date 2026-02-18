@@ -92,12 +92,6 @@ public:
 
 	float ResolveSpringArmLength();
 	void ResolveCameraAnchorTransform();
-
-	UFUNCTION()
-	void HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
-
-	UFUNCTION()
-	void HandleCameraAnchorAdjustment(FVector InLocation, FRotator InRotation, bool InTransformType, bool InShouldOverride, bool InShouldResetOffset, float InInterpSpeed);
 	
 	UFUNCTION(BlueprintCallable)
 	void AddCameraParameters(UCameraParamsDataAsset* CameraParams);
@@ -106,7 +100,6 @@ public:
 	void RemoveCameraParameters(UCameraParamsDataAsset* CameraParams);
 
 	//Moving from targeting system
-	void NeutralCameraState(TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	void ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	void SetupLocalPlayerController();
 	void DrawCameraAnchor();

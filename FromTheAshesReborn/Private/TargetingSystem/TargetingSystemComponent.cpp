@@ -62,7 +62,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	
 	if (!IsTargetLocked || !LockedOnTargetActor)
 	{
-		CameraSystemComponent->NeutralCameraState(CameraSystemComponent->NeutralCameraStateParams);
+		
 	}
 	else
 	{
