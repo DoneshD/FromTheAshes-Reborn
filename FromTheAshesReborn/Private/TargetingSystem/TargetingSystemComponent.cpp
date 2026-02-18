@@ -6,6 +6,7 @@
 #include "TargetingSystem/TargetingSystemTargetableInterface.h"
 #include "TimerManager.h"
 #include "Camera/CameraComponent.h"
+#include "Camera/CameraParamsDataAsset.h"
 #include "Components/WidgetComponent.h"
 #include "Engine/GameViewportClient.h"
 #include "Engine/World.h"
@@ -63,7 +64,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	if (!IsTargetLocked || !LockedOnTargetActor)
 	{
 		CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraSystemComponent->NeutralCameraStateParams);
-		CameraSystemComponent->EntryTestFunc();
+		CameraSystemComponent->EntryTestFunc(CameraSystemComponent->NeutralCameraStateParams->CameraAnchorParams.TargetLocation, CameraSystemComponent->NeutralCameraStateParams, DeltaTime);
 	}
 	else
 	{

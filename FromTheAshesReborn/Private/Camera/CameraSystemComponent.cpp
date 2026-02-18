@@ -2,6 +2,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "MaterialHLSLTree.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CameraParamsDataAsset.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -476,7 +477,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 	float ControlRotationInterpSpeed = CompareDistanceToScreenAndGetInterpSpeed(PlayerOwner, TargetActor, ShouldUpdateControllerRotation);
 	if (ShouldUpdateControllerRotation)
 	{
-		FRotator ControlRotation = AddDistanceBasedAndInputOffset(TargetActor, CameraParams);
+		FRotator ControlRotation = AddDistanceBasedAndInputOffset(SmoothedMidPoint, CameraParams);
 		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, ControlRotationInterpSpeed);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
@@ -539,7 +540,7 @@ float UCameraSystemComponent::GetWorldDistanceFromCamera(APlayerController* Play
 	return FVector::Distance(CameraLocation, ActorToCheck->GetActorLocation());
 }
 
-FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* OtherActor, TObjectPtr<UCameraParamsDataAsset> CameraParams) const
+FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams) const
 {
 	if (!IsValid(OwnerPlayerController))
 	{
@@ -549,18 +550,18 @@ FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* Ot
 
 	const FRotator ControlRotation = OwnerPlayerController->GetControlRotation();
 
-	const FVector CharacterLocation = OwnerActor->GetActorLocation();
-	const FVector OtherActorLocation = OtherActor->GetActorLocation();
-
-	const FRotator LookRotation = FindLookAtRotation(CharacterLocation,OtherActorLocation);
+	const FVector OwnerLocation = OwnerActor->GetActorLocation();
+	const FRotator LookRotation = FindLookAtRotation(OwnerLocation,Location);
+	
 	float Yaw = LookRotation.Yaw;
 	float Pitch = LookRotation.Pitch;
 
-	const float DistanceToTarget = GetDistanceFromCharacter(OtherActor);
+	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
+	
 	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
-	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), OtherActor->GetActorLocation(), PlayerCharacter, OwnerPlayerController))
+	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
 	{
 		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
@@ -571,6 +572,7 @@ FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* Ot
 	
 	Pitch = Pitch + DesiredPitch;
 	Yaw = Yaw + DesiredYaw;
+	
 		
 	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
 	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
@@ -602,7 +604,9 @@ float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, flo
 	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
 }
 
-void UCameraSystemComponent::EntryTestFunc()
+void UCameraSystemComponent::EntryTestFunc(FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime)
 {
-	
+	// FRotator ControlRotation = AddDistanceBasedAndInputOffset(Location, CameraParams);
+	// FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, 3.0f);
+	// OwnerPlayerController->SetControlRotation(FinalRotation);
 }
