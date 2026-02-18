@@ -147,18 +147,18 @@ class FROMTHEASHESREBORN_API UCameraParamsDataAsset : public UPrimaryDataAsset
 
 public:
 
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	FInputOffsetStruct InputOffsetInfo;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	FSpringArmParams SpringArmParams;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	FCameraComponentParams CameraComponentParams;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
+	UPROPERTY(EditAnywhere, Category = "Core Component")
 	FCameraAnchorParams CameraAnchorParams;
 
+	UPROPERTY(EditAnywhere, Category = "Core Component")
+	FSpringArmParams SpringArmParams;
+
+	UPROPERTY(EditAnywhere, Category = "Core Component")
+	FCameraComponentParams CameraComponentParams;
+	
+	UPROPERTY(EditAnywhere, Category = "Input")
+	FInputOffsetStruct InputOffsetInfo;
+	
 	UPROPERTY(EditAnywhere, Category = "Catch up")
 	float CatchupInterpSpeed = 8.0f;
 

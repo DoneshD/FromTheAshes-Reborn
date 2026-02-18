@@ -29,7 +29,8 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
-
+	
+	float LockOnLerpSpeed;
 
 protected:
 
@@ -48,24 +49,18 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 	
-	float BaseArmLengthFromTargetingSystem = 250.0f;
-	float ArmLengthOffset = 0.0f;
-	float ArmLengthLerpSpeed = 0.0f;
 	float TargetSpringArmLength = 0.0f;
 	float LockOnSpringArmLength = 0.0f;
-	float LerpSpeed = 2.0f;
+	float ArmLengthLerpSpeed = 2.0f;
 	
 	float CameraBaseFOV = 90.0f;
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;
 
-	FVector NewCameraAnchorLocation;
-	FRotator NewCameraAnchorRotation;
+	FVector TargetCameraAnchorLocation;
+	FRotator TargetCameraAnchorRotation;
 	
-	float CameraAnchorInterpSpeed = 5.0f;
-
-	FVector AnchorTransformLocation;
-	FRotator AnchorTransformRotation;
+	float CameraAnchorInterpSpeed = 2.0f;
 
 	bool UseWorldTransform = false;
 
@@ -75,6 +70,9 @@ protected:
 
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 
+	FVector LockOnTargetLocation = FVector::ZeroVector;
+	FRotator LockOnTargetRotation = FRotator::ZeroRotator;
+	
 	bool ShouldUpdateControllerRotation = false;
 
 
@@ -94,9 +92,6 @@ public:
 
 	float ResolveSpringArmLength();
 	void ResolveCameraAnchorTransform();
-	
-	UFUNCTION()
-	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
 
 	UFUNCTION()
 	void HandleCameraComponentAdjustment(float InDeltaFOV, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);
