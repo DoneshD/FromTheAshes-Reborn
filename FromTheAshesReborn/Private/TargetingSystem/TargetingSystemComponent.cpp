@@ -328,7 +328,7 @@ AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Acto
 	{
 		TArray<AActor*> ActorsToIgnore;
 		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
-		if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor, OwnerPlayerController))
+		if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor->GetActorLocation(), OwnerPlayerController))
 		{
 			ActorsHit.Add(Actor);
 		}
@@ -366,7 +366,7 @@ AActor* UTargetingSystemComponent::FindNearestTargetToCenterViewport(TArray<AAct
 	{
 		TArray<AActor*> ActorsToIgnore;
 		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
-		if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor, OwnerPlayerController))
+		if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor->GetActorLocation(), OwnerPlayerController))
 		{
 			ActorsHit.Add(Actor);
 		}

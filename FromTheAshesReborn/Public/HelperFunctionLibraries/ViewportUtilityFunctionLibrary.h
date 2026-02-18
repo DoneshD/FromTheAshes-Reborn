@@ -17,8 +17,8 @@ public:
 	static FVector2D FindCenterOfViewPort(UWorld* World, float SpringArmXOffset = 40.0f);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static bool IsInViewport(UWorld* World, const AActor* ActorToCheck, const APlayerController* PlayerController);
+	static bool IsInViewport(UWorld* World, FVector Location, const APlayerController* PlayerController);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static bool PlayerSideRelativeToActorOnScreen(UWorld* World, const AActor* ActorToCheck, const APlayerCharacter* PlayerCharacter, const APlayerController* PlayerController);
+	static bool PlayerSideRelativeToLocationOnScreen(UWorld* World, FVector Location, const APlayerCharacter* PlayerCharacter, const APlayerController* PlayerController);
 };

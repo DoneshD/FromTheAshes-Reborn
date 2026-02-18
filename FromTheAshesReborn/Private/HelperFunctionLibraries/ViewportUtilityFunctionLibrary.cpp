@@ -11,7 +11,7 @@ FVector2D UViewportUtilityFunctionLibrary::FindCenterOfViewPort(UWorld* World, c
 	return CenterViewportSize;
 }
 
-bool UViewportUtilityFunctionLibrary::IsInViewport(UWorld* World, const AActor* ActorToCheck, const APlayerController* PlayerController)
+bool UViewportUtilityFunctionLibrary::IsInViewport(UWorld* World, FVector Location, const APlayerController* PlayerController)
 {
 	if (!PlayerController)
 	{
@@ -21,7 +21,7 @@ bool UViewportUtilityFunctionLibrary::IsInViewport(UWorld* World, const AActor* 
 
 	FVector2D ScreenLocation;
 	
-	if (!PlayerController->ProjectWorldLocationToScreen(ActorToCheck->GetActorLocation(), ScreenLocation))
+	if (!PlayerController->ProjectWorldLocationToScreen(Location, ScreenLocation))
 	{
 		return false;
 	}
@@ -38,14 +38,8 @@ bool UViewportUtilityFunctionLibrary::IsInViewport(UWorld* World, const AActor* 
 }
 
 
-bool UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen(UWorld* World, const AActor* ActorToCheck, const APlayerCharacter* PlayerCharacter, const APlayerController* PlayerController)
+bool UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(UWorld* World, FVector Location, const APlayerCharacter* PlayerCharacter, const APlayerController* PlayerController)
 {
-	if (!IsValid(ActorToCheck))
-	{
-		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen - ActorToCheck is NULL or invalid."));
-		return false;
-	}
-
 	if (!IsValid(PlayerCharacter))
 	{
 		UE_LOG(LogTemp, Error, TEXT("UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen - PlayerCharacter is NULL or invalid."));
@@ -65,7 +59,7 @@ bool UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen(UWorld* 
 	PlayerController->ProjectWorldLocationToScreen(PlayerCharacter->GetActorLocation(), PlayerScreenLocation);
 
 	FVector2D TargetScreenLocation;
-	PlayerController->ProjectWorldLocationToScreen(ActorToCheck->GetActorLocation(), TargetScreenLocation);
+	PlayerController->ProjectWorldLocationToScreen(Location, TargetScreenLocation);
 
 	const float PlayerX = PlayerScreenLocation.X;
 	const float TargetX = TargetScreenLocation.X;

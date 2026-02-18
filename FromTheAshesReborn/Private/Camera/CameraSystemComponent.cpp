@@ -560,12 +560,7 @@ FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const AActor* Ot
 	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
-	// if(PlayerSideRelativeToActorOnScreen(OtherActor))
-	// {
-	// 	DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, DistanceBasedMaxYawOffset);
-	// }
-	
-	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToActorOnScreen(GetWorld(), OtherActor, PlayerCharacter, OwnerPlayerController))
+	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), OtherActor->GetActorLocation(), PlayerCharacter, OwnerPlayerController))
 	{
 		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
