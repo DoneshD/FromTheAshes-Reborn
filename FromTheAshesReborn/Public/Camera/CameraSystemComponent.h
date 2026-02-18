@@ -93,10 +93,6 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	float ResolveSpringArmLength();
-
-
-	UFUNCTION()
-	void HandleCameraSystemAdjustment(UCameraParamsDataAsset* Params);
 	
 	UFUNCTION()
 	void HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset);

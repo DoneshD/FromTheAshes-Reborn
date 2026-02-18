@@ -43,8 +43,6 @@ void UGA_Launched::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 		LaunchInfoObject->LaunchData.StallDuration = 0.2;
 		LaunchInfoObject->LaunchData.Offset = LaunchOffset;
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Task called"))
 	
 	LaunchTask = UAT_LaunchCharacterAndWait::AT_LaunchCharacterAndWait(
 		this,

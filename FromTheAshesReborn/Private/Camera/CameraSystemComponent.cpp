@@ -317,35 +317,6 @@ void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraP
 	CameraParamsArray.AddUnique(CameraParams);
 }
 
-void UCameraSystemComponent::HandleCameraSystemAdjustment(UCameraParamsDataAsset* Params)
-{
-	// if(Params->SpringArmParams.ShouldAdjustArmLength)
-	// {
-	// 	HandleSpringArmAdjustment(Params->SpringArmParams.DeltaArmLength,
-	// 		Params->SpringArmParams.DeltaArmLengthInterpSpeed,
-	// 		Params->SpringArmParams.ShouldOverrideArmLength,
-	// 		Params->SpringArmParams.ShouldResetOffset);
-	// }
-
-	if(Params->CameraComponentParams.ShouldAdjustFOV)
-	{
-		HandleCameraComponentAdjustment(Params->CameraComponentParams.DeltaFOV,
-			Params->CameraComponentParams.DeltaFOVInterpSpeed,
-			Params->CameraComponentParams.ShouldOverrideFOV,
-			Params->CameraComponentParams.ShouldResetFOVOffset);
-	}
-
-	// if(Params->CameraAnchorParams.ShouldAdjustAnchor)
-	// {
-	// 	HandleCameraAnchorAdjustment(Params->CameraAnchorParams.NewAnchorLocation,
-	// 		Params->CameraAnchorParams.NewAnchorRotation,
-	// 		Params->CameraAnchorParams.ShouldUseWorldTransform, 
-	// 		Params->CameraAnchorParams.ShouldOverrideAnchor,
-	// 		Params->CameraAnchorParams.ShouldResetAnchorOffset,
-	// 		Params->CameraAnchorParams.DeltaAnchorInterpSpeed);
-	// }
-}
-
 void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.Remove(CameraParams);
