@@ -40,6 +40,9 @@ struct FSpringArmParams
 	float Value = 0;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
+	float LerpSpeed = 1.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
 	bool ShouldResetOffset = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Arm Length", meta=(EditCondition="ShouldAdjustArmLength"))
