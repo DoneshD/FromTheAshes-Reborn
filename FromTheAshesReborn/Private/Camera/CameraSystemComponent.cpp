@@ -255,6 +255,11 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 
 }
 
+void UCameraSystemComponent::ResolveCameraAnchorTransform()
+{
+	
+}
+
 void UCameraSystemComponent::HandleSpringArmAdjustment(float InDeltaLength, float InInterpSpeed, bool InShouldOverride, bool InShouldResetOffset)
 {
 	/*if (SpringArmComponent)
@@ -303,11 +308,10 @@ void UCameraSystemComponent::HandleCameraAnchorAdjustment(FVector InLocation, FR
 			AnchorTransformLocation = PlayerCharacter->CameraAnchorComponent->GetRelativeLocation();
 			AnchorTransformRotation = PlayerCharacter->CameraAnchorComponent->GetRelativeRotation();
 		}
-		if (InShouldOverride)
-		{
-			NewCameraAnchorLocation = InLocation;
-			NewCameraAnchorRotation = InRotation;
-		}
+		
+		NewCameraAnchorLocation = InLocation;
+		NewCameraAnchorRotation = InRotation;
+		
 		CameraAnchorInterpSpeed = InInterpSpeed;
 	}
 }

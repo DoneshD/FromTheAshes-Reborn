@@ -13,6 +13,13 @@ enum class ECameraOperation : uint8
 	Override
 };
 
+UENUM(BlueprintType)
+enum class ETransformType : uint8
+{
+	World,
+	Relative
+};
+
 USTRUCT(BlueprintType)
 struct FBaseCameraParams
 {
