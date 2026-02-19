@@ -122,6 +122,7 @@ protected:
 
 	FVector CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	float CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
+	FRotator CalculateControlRotation();
 	// void SetControlRotationOnTarget(AActor* TargetActor) const;
 	
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
@@ -144,6 +145,7 @@ public:
 
 	FVector CurrentAnchorLocation = FVector::ZeroVector;
 	FVector TargetCameraAnchorLocation = FVector::ZeroVector;
+	FRotator TargetControlRotation = FRotator::ZeroRotator;
 
 	float TargetSpringArmLength = 0.0f;
 	

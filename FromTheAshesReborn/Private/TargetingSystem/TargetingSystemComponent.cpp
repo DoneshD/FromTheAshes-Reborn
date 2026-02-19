@@ -73,6 +73,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		// CameraSystemComponent->UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetCameraAnchorLocation = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetSpringArmLength = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
+	
 		
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
@@ -333,6 +334,11 @@ float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* 
 	float TargetArmLength = DesiredRadius + 300.0f;
 	
 	return TargetArmLength;
+}
+
+FRotator UTargetingSystemComponent::CalculateControlRotation()
+{
+	return FRotator();
 }
 
 /*
