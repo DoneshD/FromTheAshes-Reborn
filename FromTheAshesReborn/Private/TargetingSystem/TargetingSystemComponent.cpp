@@ -63,8 +63,8 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	
 	if (!IsTargetLocked || !LockedOnTargetActor)
 	{
-		CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraSystemComponent->NeutralCameraStateParams);
-		CameraSystemComponent->EntryTestFunc(CameraSystemComponent->NeutralCameraStateParams->CameraAnchorParams.TargetLocation, CameraSystemComponent->NeutralCameraStateParams, DeltaTime);
+		// CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraSystemComponent->NeutralCameraStateParams);
+		// CameraSystemComponent->EntryTestFunc(CameraSystemComponent->NeutralCameraStateParams->CameraAnchorParams.TargetLocation, CameraSystemComponent->NeutralCameraStateParams, DeltaTime);
 	}
 	else
 	{

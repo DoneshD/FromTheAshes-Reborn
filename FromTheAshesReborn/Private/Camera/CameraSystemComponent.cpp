@@ -570,13 +570,9 @@ FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const FVector Lo
 		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
 	
-	// Pitch = Pitch + DesiredPitch;
-	// Yaw = Yaw + DesiredYaw;
-
-	Pitch = TestPitch;
-	Yaw = TestYaw;
+	Pitch = Pitch + DesiredPitch;
+	Yaw = Yaw + DesiredYaw;
 	
-		
 	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
 	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
 	{
