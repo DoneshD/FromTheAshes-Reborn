@@ -75,6 +75,12 @@ protected:
 	
 	bool ShouldUpdateControllerRotation = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Testing")
+	float TestYaw = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Testing")
+	float TestPitch = 0;
+
 
 public:
 	

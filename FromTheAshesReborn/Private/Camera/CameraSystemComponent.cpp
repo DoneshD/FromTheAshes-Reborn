@@ -570,8 +570,11 @@ FRotator UCameraSystemComponent::AddDistanceBasedAndInputOffset(const FVector Lo
 		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
 	
-	Pitch = Pitch + DesiredPitch;
-	Yaw = Yaw + DesiredYaw;
+	// Pitch = Pitch + DesiredPitch;
+	// Yaw = Yaw + DesiredYaw;
+
+	Pitch = TestPitch;
+	Yaw = TestYaw;
 	
 		
 	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
@@ -606,7 +609,7 @@ float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, flo
 
 void UCameraSystemComponent::EntryTestFunc(FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime)
 {
-	// FRotator ControlRotation = AddDistanceBasedAndInputOffset(Location, CameraParams);
-	// FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, 3.0f);
-	// OwnerPlayerController->SetControlRotation(FinalRotation);
+	FRotator ControlRotation = AddDistanceBasedAndInputOffset(Location, CameraParams);
+	FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, 3.0f);
+	OwnerPlayerController->SetControlRotation(FinalRotation);
 }
