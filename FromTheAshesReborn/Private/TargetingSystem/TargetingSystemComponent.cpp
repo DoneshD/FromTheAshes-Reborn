@@ -73,7 +73,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		// CameraSystemComponent->UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetCameraAnchorLocation = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetSpringArmLength = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
-	
+		TargetControlRotation = CalculateControlRotation();
 		
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
@@ -338,7 +338,44 @@ float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* 
 
 FRotator UTargetingSystemComponent::CalculateControlRotation()
 {
-	return FRotator();
+	if (!IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetSystemComponent::GetControlRotationOnTarget - OwnerPlayerController is not valid ..."))
+		return FRotator::ZeroRotator;
+	}
+
+	const FRotator ControlRotation = OwnerPlayerController->GetControlRotation();
+
+	const FVector OwnerLocation = OwnerActor->GetActorLocation();
+	const FRotator LookRotation = FindLookAtRotation(OwnerLocation,Location);
+	
+	float Yaw = LookRotation.Yaw;
+	float Pitch = LookRotation.Pitch;
+
+	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
+	
+	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxPitchOffset);
+	float DesiredYaw = 0.0;
+	
+	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
+	{
+		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
+	}
+	else
+	{
+		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
+	}
+	
+	Pitch = Pitch + DesiredPitch;
+	Yaw = Yaw + DesiredYaw;
+	
+	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
+	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
+	{
+		TargetRotation += CurrentCameraOffset;
+	}
+	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
+	return ControlRotation;
 }
 
 /*
