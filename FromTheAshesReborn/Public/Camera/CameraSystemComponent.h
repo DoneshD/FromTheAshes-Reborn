@@ -50,7 +50,6 @@ protected:
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 	
 	float TargetSpringArmLength = 0.0f;
-	float LockOnSpringArmLength = 0.0f;
 	float ArmLengthLerpSpeed = 2.0f;
 	
 	float CameraBaseFOV = 90.0f;
@@ -61,8 +60,6 @@ protected:
 	FRotator TargetCameraAnchorRotation;
 	
 	float CameraAnchorInterpSpeed = 2.0f;
-
-	bool UseWorldTransform = false;
 
 	//Move from targeting
 
@@ -75,14 +72,11 @@ protected:
 	
 	bool ShouldUpdateControllerRotation = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Testing")
-	float TestYaw = 0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Testing")
-	float TestPitch = 0;
-
 
 public:
+
+	bool UseWorldTransform = false;
+	float LockOnSpringArmLength = 0.0f;
 	
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;

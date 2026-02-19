@@ -71,8 +71,6 @@ protected:
 	FTraceComponentSetRotation OnTargetSetRotation;
 
 	bool IgnoreLookInput = false;
-	
-	
 
 private:
 	UPROPERTY()
@@ -103,8 +101,7 @@ private:
 	FTimerHandle SwitchingTargetTimerHandle;
 
 	bool IsBreakingLineOfSight = false;
-	
-	FVector SmoothedMidPoint = FVector::ZeroVector;
+
 
 protected:
 
@@ -122,6 +119,9 @@ protected:
 
 	void SetOwnerActorRotation();
 	void EnableControlRotation(bool ShouldControlRotation) const;
+
+	FVector CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
+	float CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
 	// void SetControlRotationOnTarget(AActor* TargetActor) const;
 	
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
@@ -141,6 +141,15 @@ protected:
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
 
 public:
+
+	FVector CurrentAnchorLocation = FVector::ZeroVector;
+	FVector TargetCameraAnchorLocation = FVector::ZeroVector;
+
+	float TargetSpringArmLength = 0.0f;
+	
+	FRotator TargetCameraAnchorRotation = FRotator::ZeroRotator;
+	bool UseWorldTransform = true;
+	float CameraAnchorInterpSpeed;
 
 	//GA_LockOn entry point
 	UFUNCTION(BlueprintCallable, Category = "Target System")

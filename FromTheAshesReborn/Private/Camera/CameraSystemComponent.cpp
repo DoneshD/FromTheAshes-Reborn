@@ -203,7 +203,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::LockOn)
 		{
-			TargetSpringArmLength = LockOnSpringArmLength;
+			TargetSpringArmLength = TargetingSystemComponent->TargetSpringArmLength;
 			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
@@ -284,7 +284,7 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::LockOn)
 		{
 			
-			TargetCameraAnchorLocation = LockOnTargetLocation;
+			TargetCameraAnchorLocation = TargetingSystemComponent->TargetCameraAnchorLocation;
 			TargetCameraAnchorRotation = LockOnTargetRotation;
 			UseWorldTransform = true;
 			CameraAnchorInterpSpeed = LockOnLerpSpeed;
@@ -461,7 +461,7 @@ void UCameraSystemComponent::UpdateTargetingCameraAnchorAndRotation(APlayerChara
 			0                   
 			);
 
-		LockOnTargetLocation = SmoothedMidPoint;
+		// LockOnTargetLocation = SmoothedMidPoint;
 		LockOnTargetRotation = LookAtRotation;
 		UseWorldTransform = true;
 		LockOnLerpSpeed = OffScreenInterpSpeed;

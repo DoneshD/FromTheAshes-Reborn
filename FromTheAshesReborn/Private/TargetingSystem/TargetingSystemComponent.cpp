@@ -70,7 +70,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	{
 		
 		CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraParameters);
-		CameraSystemComponent->UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
+		// CameraSystemComponent->UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
+		TargetCameraAnchorLocation = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
+		TargetSpringArmLength = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
 		
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
@@ -265,6 +267,72 @@ void UTargetingSystemComponent::EnableControlRotation(const bool InShouldControl
 	{
 		CharacterMovementComponent->bOrientRotationToMovement = !InShouldControlRotation;
 	}
+}
+
+FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
+{
+	if (!IsValid(PlayerOwner) || !IsValid(TargetActor) || !IsValid(OwnerPlayerController))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation - Invalid Access"));
+		return FVector();
+	}
+	
+	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
+	const FVector TargetLocation = TargetActor->GetActorLocation();
+	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, 0.5f);
+
+	if (bIsLockingOn)
+	{
+		CurrentAnchorLocation = PlayerOwner->CameraAnchorComponent->GetComponentLocation();
+		bIsLockingOn = false; 
+	}
+
+	DrawCameraAnchor();
+
+	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, CameraParams->CatchupInterpSpeed, CameraParams);
+	CurrentAnchorLocation = FMath::VInterpTo(CurrentAnchorLocation, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
+	DrawDebugSphere(
+	GetWorld(),
+	MidpointAnchorLocation,
+	15.0f,           
+	12,                 
+	FColor::Yellow,        
+	false,              
+	-1.0f,              
+	0                   
+	);
+
+	if (IsValid(PlayerOwner->CameraAnchorComponent))
+	{
+		DrawDebugSphere(
+			GetWorld(),
+			CurrentAnchorLocation,
+			15.0f,           
+			12,                 
+			FColor::Green,        
+			false,              
+			-1.0f,              
+			0                   
+			);
+	}
+	
+	return CurrentAnchorLocation;
+
+}
+
+float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+{
+	if (!IsValid(PlayerOwner) || !IsValid(TargetActor))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UTargetingSystemComponent::UpdateTargetingCameraAnchorAndRotation - Invalid Access"));
+		return 0.0f;
+	}
+
+	float Distance = FVector::Dist(PlayerOwner->GetActorLocation(), TargetActor->GetActorLocation());
+	float DesiredRadius = Distance / 2.0f;
+	float TargetArmLength = DesiredRadius + 300.0f;
+	
+	return TargetArmLength;
 }
 
 /*
@@ -578,7 +646,7 @@ bool UTargetingSystemComponent::GetTargetLockedStatus()
 
 void UTargetingSystemComponent::TargetLockOff()
 {
-	SmoothedMidPoint = FVector::ZeroVector;
+	CurrentAnchorLocation = FVector::ZeroVector;
 	IsTargetLocked = false;
 	
 	if (TargetLockedOnWidgetComponent)
