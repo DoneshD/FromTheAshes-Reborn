@@ -62,37 +62,26 @@ struct FSpringArmParams : public FBaseCameraParams
 	{}
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spring Arm", meta=(EditCondition="ShouldAdjust"))
-	float Value = 0;
+	float ArmLength = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spring Arm", meta=(EditCondition="ShouldAdjust"))
+	FVector SocketOffset = FVector(0.0f, 60.0f, 0.0f);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spring Arm", meta=(EditCondition="ShouldAdjust"))
+	FVector TargetOffset = FVector::ZeroVector;
 	
 };
 
 USTRUCT(BlueprintType)
-struct FCameraComponentParams
+struct FCameraComponentParams : public FBaseCameraParams
 {
 	GENERATED_BODY()
 
 	FCameraComponentParams()
-	: ShouldAdjustFOV(false)
-	, ShouldOverrideFOV(false)
-	, ShouldResetFOVOffset(false)
-	, DeltaFOV(0.0f)
-	, DeltaFOVInterpSpeed(5.0f)
 	{}
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV")
-	bool ShouldAdjustFOV = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
-	bool ShouldOverrideFOV = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
-	bool ShouldResetFOVOffset = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
-	float DeltaFOV = 0.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FOV", meta=(EditCondition="ShouldAdjustFOV"))
-	float DeltaFOVInterpSpeed = 5.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spring Arm", meta=(EditCondition="ShouldAdjust"))
+	float FOV = 90.0f;
 	
 };
 

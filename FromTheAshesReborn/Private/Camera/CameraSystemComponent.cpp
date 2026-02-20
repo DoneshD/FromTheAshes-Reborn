@@ -103,6 +103,8 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			float InterpolatedLength = FMath::FInterpTo(CurrentLength, TargetSpringArmLength, DeltaTime, ArmLengthLerpSpeed);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 			
+			
+			
 		}
 		
 	}
@@ -193,7 +195,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Set)
 		{
-			TargetSpringArmLength = Params->SpringArmParams.Value;
+			TargetSpringArmLength = Params->SpringArmParams.ArmLength;
 			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			break;
 		}
@@ -224,7 +226,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Override)
 		{
-			TargetSpringArmLength = Params->SpringArmParams.Value;
+			TargetSpringArmLength = Params->SpringArmParams.ArmLength;
 			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
@@ -240,7 +242,7 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Additive)
 		{
-			TargetSpringArmLength += Params->SpringArmParams.Value;
+			TargetSpringArmLength += Params->SpringArmParams.ArmLength;
 			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
@@ -344,7 +346,6 @@ void UCameraSystemComponent::ResolveControlRotation()
 		
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Set)
 		{
-			// TargetControlRotation = FRotator(0.0f, 180.0f, 0.0f);
 			TargetControlRotation = OwnerPlayerController->GetControlRotation();
 			break;
 		}
@@ -671,11 +672,4 @@ float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, flo
  
 	float DistanceFactor = 1.0f - FMath::Clamp((Distance - TargetingSystemComponent->MinDistance) / (TargetingSystemComponent->MaxDistance - TargetingSystemComponent->MinDistance), 0.0f, 1.0f);
 	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
-}
-
-void UCameraSystemComponent::EntryTestFunc(FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime)
-{
-	FRotator ControlRotation = AddDistanceBasedAndInputOffset(Location, CameraParams);
-	FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), ControlRotation, DeltaTime, 3.0f);
-	OwnerPlayerController->SetControlRotation(FinalRotation);
 }

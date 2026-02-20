@@ -114,6 +114,4 @@ public:
 	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
 	float GetDistanceFromCharacter(const AActor* OtherActor) const;
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
-
-	void EntryTestFunc(FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime);
 };
