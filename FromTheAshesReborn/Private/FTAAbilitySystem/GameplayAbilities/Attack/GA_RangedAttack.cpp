@@ -23,7 +23,7 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	CurrentRangedAttackData = DefaultRangedAttackData;
+	CurrentAttackData = DefaultRangedAttackData;
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
@@ -185,7 +185,7 @@ void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAss
 	// }
 	
 	//Left or right weapon
-	CurrentRangedAttackData->Hand = RangedAttackAsset->Hand;
+	// CurrentRangedAttackData->Hand = RangedAttackAsset->Hand;
 	
 	
 }

@@ -187,8 +187,8 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 	}
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
-
-	if(!CurrentAttackData->PossibleHitReactions.IsEmpty())
+	
+	if (IsValid(CurrentAttackData) && !CurrentAttackData->PossibleHitReactions.IsEmpty())
 	{
 		for(FHitDataInfo& HitData : CurrentAttackData->PossibleHitReactions)
 		{
