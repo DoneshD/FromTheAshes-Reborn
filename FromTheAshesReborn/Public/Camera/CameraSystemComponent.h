@@ -58,6 +58,7 @@ protected:
 
 	FVector TargetCameraAnchorLocation;
 	FRotator TargetCameraAnchorRotation;
+	FRotator TargetControlRotation;
 	
 	float CameraAnchorInterpSpeed = 2.0f;
 
@@ -92,6 +93,7 @@ public:
 
 	float ResolveSpringArmLength();
 	void ResolveCameraAnchorTransform();
+	void ResolveControlRotation();
 	
 	UFUNCTION(BlueprintCallable)
 	void AddCameraParameters(UCameraParamsDataAsset* CameraParams);

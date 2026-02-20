@@ -69,11 +69,11 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	else
 	{
 		
-		CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraParameters);
+		// CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraParameters);
 		// CameraSystemComponent->UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetCameraAnchorLocation = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetSpringArmLength = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
-		TargetControlRotation = CalculateControlRotation();
+		TargetControlRotation = CalculateControlRotation(TargetCameraAnchorLocation, CameraParameters, DeltaTime);
 		
 		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
@@ -336,7 +336,7 @@ float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* 
 	return TargetArmLength;
 }
 
-FRotator UTargetingSystemComponent::CalculateControlRotation()
+FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime)
 {
 	if (!IsValid(OwnerPlayerController))
 	{
@@ -354,16 +354,16 @@ FRotator UTargetingSystemComponent::CalculateControlRotation()
 
 	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
 	
-	float DesiredPitch = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxPitchOffset);
+	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
 	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
 	{
-		DesiredYaw = CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
+		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
 	else
 	{
-		DesiredYaw = -CalculateControlRotationOffset(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
+		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
 	}
 	
 	Pitch = Pitch + DesiredPitch;
@@ -372,10 +372,47 @@ FRotator UTargetingSystemComponent::CalculateControlRotation()
 	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
 	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
 	{
-		TargetRotation += CurrentCameraOffset;
+		TargetRotation += CalculateControlRotationBasedOnInput(DeltaTime, CameraParams);
 	}
 	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
+}
+
+float UTargetingSystemComponent::CalculateControlRotationBasedOnDistance(float Distance, float MaxOffset)
+{
+	if (Distance > MaxDistance)
+	{
+		return 0.0f;
+	}
+ 
+	float DistanceFactor = 1.0f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.0f, 1.0f);
+	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
+}
+
+FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
+{
+	FRotator ControlRotation = FRotator::ZeroRotator;
+	
+	float YawInput = 0.0f;
+	float PitchInput = 0.0f;
+
+	OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
+		
+	const float InputScale = CameraParams->InputOffsetInfo.InputOffsetScale;
+
+	YawInput *= InputScale;
+	PitchInput *= InputScale;
+		
+	ControlRotation.Yaw += YawInput;
+	ControlRotation.Pitch += PitchInput;
+		
+	ControlRotation.Yaw = FMath::Clamp(ControlRotation.Yaw, -CameraParams->InputOffsetInfo.InputBasedMaxYawOffset, CameraParams->InputOffsetInfo.InputBasedMaxYawOffset);
+	ControlRotation.Pitch = FMath::Clamp(ControlRotation.Pitch, -CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset, CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset);
+
+	const float DecayRate = CameraParams->InputOffsetInfo.InputOffsetDecayRate * DeltaTime;
+
+	ControlRotation = FMath::RInterpTo(ControlRotation, FRotator::ZeroRotator, DeltaTime, DecayRate);
 	return ControlRotation;
+	
 }
 
 /*

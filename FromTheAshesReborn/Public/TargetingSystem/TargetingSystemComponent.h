@@ -122,7 +122,10 @@ protected:
 
 	FVector CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	float CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
-	FRotator CalculateControlRotation();
+	FRotator CalculateControlRotation(FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime);
+	float CalculateControlRotationBasedOnDistance(float Distance, float MaxOffset);
+	FRotator CalculateControlRotationBasedOnInput(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
+	
 	// void SetControlRotationOnTarget(AActor* TargetActor) const;
 	
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;

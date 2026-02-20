@@ -167,7 +167,12 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
-
+	if(OwnerPlayerController)
+	{
+		ResolveControlRotation();
+		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), TargetControlRotation, DeltaTime, 8.0f);
+		OwnerPlayerController->SetControlRotation(FinalRotation);
+	}
 }
 
 float UCameraSystemComponent::ResolveSpringArmLength()
@@ -303,6 +308,71 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Override)
 		{
 			
+			break;
+		}
+	}
+
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
+	{
+		if(!Params->CameraAnchorParams.ShouldAdjust)
+		{
+			continue;
+		}
+		
+		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Additive)
+		{
+			break;
+		}
+	}
+}
+
+void UCameraSystemComponent::ResolveControlRotation()
+{
+	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
+	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
+	{
+		return A->CameraAnchorParams.Priority > B->CameraAnchorParams.Priority;
+	});
+	
+
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
+	{
+		if(!Params->CameraAnchorParams.ShouldAdjust)
+		{
+			continue;
+		}
+		
+		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Set)
+		{
+			// TargetControlRotation = FRotator(0.0f, 180.0f, 0.0f);
+			TargetControlRotation = OwnerPlayerController->GetControlRotation();
+			break;
+		}
+	}
+
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
+	{
+		if(!Params->CameraAnchorParams.ShouldAdjust)
+		{
+			continue;
+		}
+		
+		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::LockOn)
+		{
+			TargetControlRotation = TargetingSystemComponent->TargetControlRotation;
+			break;
+		}
+	}
+
+	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
+	{
+		if(!Params->CameraAnchorParams.ShouldAdjust)
+		{
+			continue;
+		}
+		
+		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Override)
+		{
 			break;
 		}
 	}
@@ -598,7 +668,7 @@ float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, flo
 	{
 		return 0.0f;
 	}
-
+ 
 	float DistanceFactor = 1.0f - FMath::Clamp((Distance - TargetingSystemComponent->MinDistance) / (TargetingSystemComponent->MaxDistance - TargetingSystemComponent->MinDistance), 0.0f, 1.0f);
 	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
 }
