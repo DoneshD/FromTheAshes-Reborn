@@ -126,10 +126,7 @@ protected:
 	float CalculateControlRotationBasedOnDistance(float Distance, float MaxOffset);
 	FRotator CalculateControlRotationBasedOnInput(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	
-	// void SetControlRotationOnTarget(AActor* TargetActor) const;
-	
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
-	
 	AActor* FindNearestTargetToCenterViewport(TArray<AActor*> Actors) const;
 
 	bool LineTrace(FHitResult& OutHitResult, const AActor* OtherActor, const TArray<AActor*>& ActorsToIgnore) const;

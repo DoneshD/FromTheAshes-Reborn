@@ -441,19 +441,6 @@ void UCameraSystemComponent::SetupLocalPlayerController()
 
 }
 
-void UCameraSystemComponent::DrawCameraAnchor()
-{
-	DrawDebugSphere(
-	GetWorld(),
-	PlayerCharacter->CameraAnchorComponent->GetComponentLocation(),
-	15.0f,           
-	12,                 
-	FColor::Red,        
-	false,              
-	-1.0f,              
-	0                   
-	);
-}
 float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
 	float InterpSpeed = InInterpSpeed;
@@ -509,16 +496,4 @@ float UCameraSystemComponent::GetWorldDistanceFromCamera(APlayerController* Play
 
 	PlayerController->GetPlayerViewPoint(CameraLocation, CameraRotation);
 	return FVector::Distance(CameraLocation, ActorToCheck->GetActorLocation());
-}
-
-
-float UCameraSystemComponent::CalculateControlRotationOffset(float Distance, float MaxOffset) const
-{
-	if (Distance > TargetingSystemComponent->MaxDistance)
-	{
-		return 0.0f;
-	}
- 
-	float DistanceFactor = 1.0f - FMath::Clamp((Distance - TargetingSystemComponent->MinDistance) / (TargetingSystemComponent->MaxDistance - TargetingSystemComponent->MinDistance), 0.0f, 1.0f);
-	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
 }

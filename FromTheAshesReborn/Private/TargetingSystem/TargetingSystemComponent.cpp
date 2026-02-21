@@ -287,36 +287,9 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 		CurrentAnchorLocation = PlayerOwner->CameraAnchorComponent->GetComponentLocation();
 		bIsLockingOn = false; 
 	}
-
-	DrawCameraAnchor();
-
+	
 	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, CameraParams->CatchupInterpSpeed, CameraParams);
 	CurrentAnchorLocation = FMath::VInterpTo(CurrentAnchorLocation, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
-	DrawDebugSphere(
-	GetWorld(),
-	MidpointAnchorLocation,
-	15.0f,           
-	12,                 
-	FColor::Yellow,        
-	false,              
-	-1.0f,              
-	0                   
-	);
-
-	if (IsValid(PlayerOwner->CameraAnchorComponent))
-	{
-		DrawDebugSphere(
-			GetWorld(),
-			CurrentAnchorLocation,
-			15.0f,           
-			12,                 
-			FColor::Green,        
-			false,              
-			-1.0f,              
-			0                   
-			);
-	}
-	
 	return CurrentAnchorLocation;
 
 }
@@ -414,27 +387,6 @@ FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float D
 	return ControlRotation;
 	
 }
-
-/*
-void UTargetingSystemComponent::SetControlRotationOnTarget(AActor* TargetActor) const
-{
-	if (!IsValid(OwnerPlayerController))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UTargetingSystemComponent::SetControlRotationOnTarget - OwnerPlayerController is invalid"))
-		return;
-	}
-
-	const FRotator ControlRotation = GetControlRotationOnTarget(TargetActor);
-	if (OnTargetSetRotation.IsBound())
-	{
-		OnTargetSetRotation.Broadcast(TargetActor, ControlRotation);
-	}
-	else
-	{
-		OwnerPlayerController->SetControlRotation(ControlRotation);
-	}
-}
-*/
 
 TArray<AActor*> UTargetingSystemComponent::GetAllActorsOfClass(const TSubclassOf<AActor> ActorClass) const
 {

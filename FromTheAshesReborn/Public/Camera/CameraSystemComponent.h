@@ -91,6 +91,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void SetupLocalPlayerController();
+	
 	float ResolveSpringArmLength();
 	void ResolveCameraAnchorTransform();
 	void ResolveControlRotation();
@@ -100,14 +102,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveCameraParameters(UCameraParamsDataAsset* CameraParams);
-
-	void SetupLocalPlayerController();
-	void DrawCameraAnchor();
 	
 	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
-	
 	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
 	
-	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 };
