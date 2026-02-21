@@ -101,17 +101,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RemoveCameraParameters(UCameraParamsDataAsset* CameraParams);
 
-	//Moving from targeting system
-	void ControlCameraOffset(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	void SetupLocalPlayerController();
 	void DrawCameraAnchor();
-	void UpdateTargetingCameraAnchorAndRotation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
+	
 	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams);
 	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
-	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
-	FRotator AddDistanceBasedAndInputOffset(FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams) const;
 	
-	static FRotator FindLookAtRotation(const FVector Start, const FVector Target);
-	float GetDistanceFromCharacter(const AActor* OtherActor) const;
+	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
+	
 	float CalculateControlRotationOffset(float Distance, float MaxOffset) const;
 };
