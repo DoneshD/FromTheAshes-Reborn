@@ -85,6 +85,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UCameraParamsDataAsset> NeutralCameraStateParams;
 
+	UPROPERTY()
+	TObjectPtr<UCameraParamsDataAsset> CurrentCameraStateParams;
+
 public:
 	
 	UCameraSystemComponent();
@@ -96,6 +99,8 @@ public:
 	float ResolveSpringArmLength();
 	void ResolveCameraAnchorTransform();
 	void ResolveControlRotation();
+
+	void ResolveCameraStateParams();
 	
 	UFUNCTION(BlueprintCallable)
 	void AddCameraParameters(UCameraParamsDataAsset* CameraParams);

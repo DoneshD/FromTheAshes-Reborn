@@ -63,19 +63,14 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	
 	if (!IsTargetLocked || !LockedOnTargetActor)
 	{
-		// CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraSystemComponent->NeutralCameraStateParams);
-		// CameraSystemComponent->EntryTestFunc(CameraSystemComponent->NeutralCameraStateParams->CameraAnchorParams.TargetLocation, CameraSystemComponent->NeutralCameraStateParams, DeltaTime);
+
 	}
 	else
 	{
-		
-		// CameraSystemComponent->ControlCameraOffset(DeltaTime, CameraParameters);
-		// CameraSystemComponent->UpdateTargetingCameraAnchorAndRotation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetCameraAnchorLocation = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		TargetSpringArmLength = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
 		TargetControlRotation = CalculateControlRotation(TargetCameraAnchorLocation, CameraParameters, DeltaTime);
 		
-		// // DrawCameraAnchor();
 		SetOwnerActorRotation();
 	}
 

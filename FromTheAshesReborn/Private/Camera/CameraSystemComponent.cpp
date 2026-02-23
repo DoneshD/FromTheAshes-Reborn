@@ -392,6 +392,11 @@ void UCameraSystemComponent::ResolveControlRotation()
 	}
 }
 
+void UCameraSystemComponent::ResolveCameraStateParams()
+{
+	
+}
+
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.AddUnique(CameraParams);
