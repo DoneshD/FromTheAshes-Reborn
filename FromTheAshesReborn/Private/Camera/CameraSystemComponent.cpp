@@ -469,7 +469,7 @@ float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, 
 
 		if (OffsetMagnitude > ScreenEdgeCatchupThreshold)
 		{
-			InterpSpeed = CameraParams->CatchupInterpSpeed;
+			InterpSpeed = 8.0f;
 		}
 	}
 	return InterpSpeed;

@@ -283,7 +283,7 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 		bIsLockingOn = false; 
 	}
 	
-	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, CameraParams->CatchupInterpSpeed, CameraParams);
+	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed, CameraParams);
 	CurrentAnchorLocation = FMath::VInterpTo(CurrentAnchorLocation, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
 	return CurrentAnchorLocation;
 
@@ -322,16 +322,16 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 
 	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
 	
-	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->DistanceBasedMaxPitchOffset);
+	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
 	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
 	{
-		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
+		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, DistanceBasedMaxYawOffset);
 	}
 	else
 	{
-		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->DistanceBasedMaxYawOffset);
+		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, DistanceBasedMaxYawOffset);
 	}
 	
 	Pitch = Pitch + DesiredPitch;

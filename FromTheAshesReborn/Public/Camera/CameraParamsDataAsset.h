@@ -148,15 +148,15 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	FInputOffsetStruct InputOffsetInfo;
 	
-	UPROPERTY(EditAnywhere, Category = "Catch up")
-	float CatchupInterpSpeed = 8.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Based Offset")
-	float DistanceBasedMaxPitchOffset = -20.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Based Offset")
-	float DistanceBasedMaxYawOffset = -35.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Control Rotation")
-	bool ShouldUpdateControllerRotation = false;
+	// UPROPERTY(EditAnywhere, Category = "Catch up")
+	// float CatchupInterpSpeed = 8.0f;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Based Offset")
+	// float DistanceBasedMaxPitchOffset = -20.0f;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Based Offset")
+	// float DistanceBasedMaxYawOffset = -35.0f;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Control Rotation")
+	// bool ShouldUpdateControllerRotation = false;
 };
