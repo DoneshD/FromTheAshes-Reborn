@@ -169,7 +169,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(OwnerPlayerController)
 	{
 		ResolveControlRotation();
-		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), TargetControlRotation, DeltaTime, 8.0f);
+		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), CurrentCameraStateParams->ControlRotationParams.TargetControlRotation, DeltaTime, 8.0f);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
 }
@@ -228,8 +228,6 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Override)
 		{
-			// TargetSpringArmLength = Params->SpringArmParams.ArmLength;
-			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
 		}
@@ -356,7 +354,8 @@ void UCameraSystemComponent::ResolveControlRotation()
 		
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Set)
 		{
-			TargetControlRotation = OwnerPlayerController->GetControlRotation();
+			// TargetControlRotation = OwnerPlayerController->GetControlRotation();
+			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation = OwnerPlayerController->GetControlRotation();
 			break;
 		}
 	}
@@ -370,7 +369,9 @@ void UCameraSystemComponent::ResolveControlRotation()
 		
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::LockOn)
 		{
-			TargetControlRotation = TargetingSystemComponent->TargetControlRotation;
+			// TargetControlRotation = TargetingSystemComponent->TargetControlRotation;
+			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation = TargetingSystemComponent->CameraParameters->ControlRotationParams.TargetControlRotation;
+			
 			break;
 		}
 	}

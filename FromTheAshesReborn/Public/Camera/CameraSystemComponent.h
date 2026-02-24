@@ -58,7 +58,7 @@ protected:
 
 	// FVector TargetCameraAnchorLocation;
 	FRotator TargetCameraAnchorRotation;
-	FRotator TargetControlRotation;
+	// FRotator TargetControlRotation;
 	
 	// float CameraAnchorInterpSpeed = 2.0f;
 

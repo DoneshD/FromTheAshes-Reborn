@@ -108,6 +108,20 @@ struct FCameraAnchorParams : public FBaseCameraParams
 };
 
 USTRUCT(BlueprintType)
+struct FControlRotation : public FBaseCameraParams
+{
+	GENERATED_BODY()
+
+	FControlRotation()
+		: TargetControlRotation(FRotator::ZeroRotator)
+	{}
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjust"))
+	FRotator TargetControlRotation;
+	
+};
+
+USTRUCT(BlueprintType)
 struct FInputOffsetStruct
 {
 	GENERATED_BODY()
@@ -146,6 +160,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Core Component")
 	FCameraComponentParams CameraComponentParams;
+
+	UPROPERTY(EditAnywhere, Category = "Core Component")
+	FControlRotation ControlRotationParams;
 	
 	UPROPERTY(EditAnywhere, Category = "Input")
 	FInputOffsetStruct InputOffsetInfo;
