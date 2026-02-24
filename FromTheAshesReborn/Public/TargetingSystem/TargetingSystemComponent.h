@@ -150,8 +150,6 @@ public:
 	float TargetSpringArmLength = 0.0f;
 	
 	FRotator TargetCameraAnchorRotation = FRotator::ZeroRotator;
-	bool UseWorldTransform = true;
-	float CameraAnchorInterpSpeed;
 
 	//GA_LockOn entry point
 	UFUNCTION(BlueprintCallable, Category = "Target System")

@@ -96,14 +96,12 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		
 		float CurrentLength = SpringArmComponent->TargetArmLength;
-		TargetSpringArmLength = ResolveSpringArmLength();
+		float TestFloat = ResolveSpringArmLength();
 	
-		if (!FMath::IsNearlyEqual(CurrentLength, TargetSpringArmLength, 0.1f))
+		if (!FMath::IsNearlyEqual(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength, 0.1f))
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, TargetSpringArmLength, DeltaTime, ArmLengthLerpSpeed);
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength, DeltaTime, ArmLengthLerpSpeed);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
-			
-			
 			
 		}
 		
@@ -195,8 +193,10 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Set)
 		{
-			TargetSpringArmLength = Params->SpringArmParams.ArmLength;
-			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
+			// TargetSpringArmLength = Params->SpringArmParams.ArmLength;
+			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
+
+			CurrentCameraStateParams->SpringArmParams.ArmLength = Params->SpringArmParams.ArmLength;
 			break;
 		}
 	}
@@ -210,8 +210,10 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::LockOn)
 		{
-			TargetSpringArmLength = TargetingSystemComponent->TargetSpringArmLength;
-			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
+			// TargetSpringArmLength = TargetingSystemComponent->TargetSpringArmLength;
+			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
+
+			CurrentCameraStateParams->SpringArmParams.ArmLength = TargetingSystemComponent->TargetSpringArmLength;
 			
 			break;
 		}
@@ -226,8 +228,8 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Override)
 		{
-			TargetSpringArmLength = Params->SpringArmParams.ArmLength;
-			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
+			// TargetSpringArmLength = Params->SpringArmParams.ArmLength;
+			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
 		}
@@ -242,15 +244,15 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Additive)
 		{
-			TargetSpringArmLength += Params->SpringArmParams.ArmLength;
-			ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
+			// TargetSpringArmLength += Params->SpringArmParams.ArmLength;
+			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
 		}
 		
 	}
 	
-	return TargetSpringArmLength;
+	return 0.0;
 
 }
 

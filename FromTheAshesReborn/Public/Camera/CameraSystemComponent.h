@@ -49,7 +49,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 	
-	float TargetSpringArmLength = 0.0f;
+	// float TargetSpringArmLength = 0.0f;
 	float ArmLengthLerpSpeed = 2.0f;
 	
 	float CameraBaseFOV = 90.0f;
@@ -77,7 +77,7 @@ protected:
 public:
 
 	bool UseWorldTransform = false;
-	float LockOnSpringArmLength = 0.0f;
+	// float LockOnSpringArmLength = 0.0f;
 	
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;
@@ -85,7 +85,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UCameraParamsDataAsset> NeutralCameraStateParams;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UCameraParamsDataAsset> CurrentCameraStateParams;
 
 public:
