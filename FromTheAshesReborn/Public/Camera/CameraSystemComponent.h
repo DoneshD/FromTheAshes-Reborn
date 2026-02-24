@@ -56,7 +56,7 @@ protected:
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;
 
-	FVector TargetCameraAnchorLocation;
+	// FVector TargetCameraAnchorLocation;
 	FRotator TargetCameraAnchorRotation;
 	FRotator TargetControlRotation;
 	
