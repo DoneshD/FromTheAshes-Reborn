@@ -156,12 +156,6 @@ protected:
 public:
 
 	FVector CurrentAnchorLocation = FVector::ZeroVector;
-	// FVector TargetCameraAnchorLocation = FVector::ZeroVector;
-	FRotator TargetControlRotation = FRotator::ZeroRotator;
-
-	float TargetSpringArmLength = 0.0f;
-	
-	FRotator TargetCameraAnchorRotation = FRotator::ZeroRotator;
 
 	//GA_LockOn entry point
 	UFUNCTION(BlueprintCallable, Category = "Target System")

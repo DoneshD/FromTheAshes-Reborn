@@ -49,35 +49,17 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 	
-	// float TargetSpringArmLength = 0.0f;
 	float ArmLengthLerpSpeed = 2.0f;
 	
 	float CameraBaseFOV = 90.0f;
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;
 
-	// FVector TargetCameraAnchorLocation;
 	FRotator TargetCameraAnchorRotation;
-	// FRotator TargetControlRotation;
 	
-	// float CameraAnchorInterpSpeed = 2.0f;
-
-	//Move from targeting
-
 	FRotator CurrentCameraOffset;
 
-	FVector SmoothedMidPoint = FVector::ZeroVector;
-
-	FVector LockOnTargetLocation = FVector::ZeroVector;
-	// FRotator LockOnTargetRotation = FRotator::ZeroRotator;
-	
-	bool ShouldUpdateControllerRotation = false;
-
-
 public:
-
-	// bool UseWorldTransform = false;
-	// float LockOnSpringArmLength = 0.0f;
 	
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;

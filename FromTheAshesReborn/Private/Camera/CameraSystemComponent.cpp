@@ -18,10 +18,7 @@ UCameraSystemComponent::UCameraSystemComponent()
 	CameraBaseFOV = 90.0f;
 	CameraFOVOffset = 0.0f;
 	CameraFOVLerpSpeed = 2.0f;
-
 	
-	CurrentCameraOffset = FRotator::ZeroRotator;
-
 	
 }
 
