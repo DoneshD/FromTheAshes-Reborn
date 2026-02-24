@@ -128,7 +128,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		ResolveCameraAnchorTransform();
 		
-		if(UseWorldTransform)
+		if(CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
 		{
 			FVector CurrentAnchorLocation = CameraAnchorComponent->GetComponentLocation();
 	
@@ -147,7 +147,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 				CameraAnchorComponent->SetWorldRotation(InterpolatedRotation);
 			}
 		}
-		if(!UseWorldTransform)
+		if(!CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
 		{
 			FVector CurrentAnchorLocation = CameraAnchorComponent->GetRelativeLocation();
 	
@@ -277,10 +277,11 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 			// TargetCameraAnchorLocation = Params->CameraAnchorParams.TargetLocation;
 			// TargetCameraAnchorRotation = Params->CameraAnchorParams.TargetRotation;
 			CameraAnchorInterpSpeed = Params->CameraAnchorParams.InLerpSpeedFloat;
-			UseWorldTransform = false;
+			// UseWorldTransform = false;
 
 			CurrentCameraStateParams->CameraAnchorParams.TargetLocation = Params->CameraAnchorParams.TargetLocation;
 			CurrentCameraStateParams->CameraAnchorParams.TargetRotation = Params->CameraAnchorParams.TargetRotation;
+			CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = Params->CameraAnchorParams.UseWorldTransform;
 			
 			break;
 		}
@@ -299,7 +300,8 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 			// TargetCameraAnchorLocation = TargetingSystemComponent->TargetCameraAnchorLocation;
 			CurrentCameraStateParams->CameraAnchorParams.TargetLocation = TargetingSystemComponent->CameraParameters->CameraAnchorParams.TargetLocation;
 			TargetCameraAnchorRotation = LockOnTargetRotation;
-			UseWorldTransform = true;
+			// UseWorldTransform = true;
+			CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = TargetingSystemComponent->CameraParameters->CameraAnchorParams.UseWorldTransform;
 			CameraAnchorInterpSpeed = LockOnLerpSpeed;
 			
 			break;

@@ -76,7 +76,7 @@ protected:
 
 public:
 
-	bool UseWorldTransform = false;
+	// bool UseWorldTransform = false;
 	// float LockOnSpringArmLength = 0.0f;
 	
 	UPROPERTY()
