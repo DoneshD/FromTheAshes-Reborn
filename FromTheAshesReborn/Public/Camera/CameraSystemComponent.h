@@ -49,15 +49,12 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UTargetingSystemComponent> TargetingSystemComponent;
 	
-	float ArmLengthLerpSpeed = 2.0f;
-	
+	FRotator CurrentCameraOffset;
+
+	//Temp
 	float CameraBaseFOV = 90.0f;
 	float CameraFOVOffset = 0.0f;
 	float CameraFOVLerpSpeed = 2.0f;
-
-	FRotator TargetCameraAnchorRotation;
-	
-	FRotator CurrentCameraOffset;
 
 public:
 	

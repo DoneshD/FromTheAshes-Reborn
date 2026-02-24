@@ -96,7 +96,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 		if (!FMath::IsNearlyEqual(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength, 0.1f))
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength, DeltaTime, ArmLengthLerpSpeed);
+			float InterpolatedLength = FMath::FInterpTo(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength, DeltaTime, CurrentCameraStateParams->SpringArmParams.InLerpSpeedFloat);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 			
 		}
@@ -137,9 +137,9 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 			FRotator CurrentAnchorRotation = CameraAnchorComponent->GetComponentRotation();
 	
-			if (!CurrentAnchorRotation.Equals(TargetCameraAnchorRotation, 0.1f))
+			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation, 0.1f))
 			{
-				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CurrentCameraStateParams->CameraAnchorParams.InLerpSpeedFloat);
+				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, CurrentCameraStateParams->CameraAnchorParams.TargetRotation, GetWorld()->GetDeltaSeconds(), CurrentCameraStateParams->CameraAnchorParams.InLerpSpeedFloat);
 				CameraAnchorComponent->SetWorldRotation(InterpolatedRotation);
 			}
 		}
@@ -155,9 +155,9 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 			FRotator CurrentAnchorRotation = CameraAnchorComponent->GetRelativeRotation();
 	
-			if (!CurrentAnchorRotation.Equals(TargetCameraAnchorRotation, 0.1f))
+			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation, 0.1f))
 			{
-				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, TargetCameraAnchorRotation, GetWorld()->GetDeltaSeconds(), CurrentCameraStateParams->CameraAnchorParams.InLerpSpeedFloat);
+				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, CurrentCameraStateParams->CameraAnchorParams.TargetRotation, GetWorld()->GetDeltaSeconds(), CurrentCameraStateParams->CameraAnchorParams.InLerpSpeedFloat);
 				CameraAnchorComponent->SetRelativeRotation(InterpolatedRotation);
 			}
 		}
