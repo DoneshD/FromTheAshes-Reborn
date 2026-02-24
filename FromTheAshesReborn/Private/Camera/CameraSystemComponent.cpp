@@ -189,9 +189,6 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Set)
 		{
-			// TargetSpringArmLength = Params->SpringArmParams.ArmLength;
-			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
-
 			CurrentCameraStateParams->SpringArmParams.ArmLength = Params->SpringArmParams.ArmLength;
 			break;
 		}
@@ -206,10 +203,6 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::LockOn)
 		{
-			// TargetSpringArmLength = TargetingSystemComponent->TargetSpringArmLength;
-			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
-
-			// CurrentCameraStateParams->SpringArmParams.ArmLength = TargetingSystemComponent->TargetSpringArmLength;
 			CurrentCameraStateParams->SpringArmParams.ArmLength = TargetingSystemComponent->CameraParameters->SpringArmParams.ArmLength;
 			
 			break;
@@ -239,8 +232,6 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 		
 		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Additive)
 		{
-			// TargetSpringArmLength += Params->SpringArmParams.ArmLength;
-			// ArmLengthLerpSpeed = Params->SpringArmParams.InLerpSpeedFloat;
 			
 			break;
 		}
@@ -269,11 +260,6 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 		
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Set)
 		{
-			// TargetCameraAnchorLocation = Params->CameraAnchorParams.TargetLocation;
-			// TargetCameraAnchorRotation = Params->CameraAnchorParams.TargetRotation;
-			// CameraAnchorInterpSpeed = Params->CameraAnchorParams.InLerpSpeedFloat;
-			// UseWorldTransform = false;
-
 			CurrentCameraStateParams->CameraAnchorParams.TargetLocation = Params->CameraAnchorParams.TargetLocation;
 			CurrentCameraStateParams->CameraAnchorParams.TargetRotation = Params->CameraAnchorParams.TargetRotation;
 			CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = Params->CameraAnchorParams.UseWorldTransform;
@@ -292,14 +278,9 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 		
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::LockOn)
 		{
-			
-			// TargetCameraAnchorLocation = TargetingSystemComponent->TargetCameraAnchorLocation;
 			CurrentCameraStateParams->CameraAnchorParams.TargetLocation = TargetingSystemComponent->CameraParameters->CameraAnchorParams.TargetLocation;
-			// TargetCameraAnchorRotation = LockOnTargetRotation;
-			// UseWorldTransform = true;
 			CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = TargetingSystemComponent->CameraParameters->CameraAnchorParams.UseWorldTransform;
 			CurrentCameraStateParams->CameraAnchorParams.InLerpSpeedFloat = TargetingSystemComponent->CameraParameters->CameraAnchorParams.InLerpSpeedFloat;
-			// CameraAnchorInterpSpeed = LockOnLerpSpeed;
 			
 			break;
 		}
@@ -351,7 +332,6 @@ void UCameraSystemComponent::ResolveControlRotation()
 		
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Set)
 		{
-			// TargetControlRotation = OwnerPlayerController->GetControlRotation();
 			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation = OwnerPlayerController->GetControlRotation();
 			break;
 		}
@@ -366,7 +346,6 @@ void UCameraSystemComponent::ResolveControlRotation()
 		
 		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::LockOn)
 		{
-			// TargetControlRotation = TargetingSystemComponent->TargetControlRotation;
 			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation = TargetingSystemComponent->CameraParameters->ControlRotationParams.TargetControlRotation;
 			
 			break;
