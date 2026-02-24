@@ -144,7 +144,7 @@ protected:
 public:
 
 	FVector CurrentAnchorLocation = FVector::ZeroVector;
-	FVector TargetCameraAnchorLocation = FVector::ZeroVector;
+	// FVector TargetCameraAnchorLocation = FVector::ZeroVector;
 	FRotator TargetControlRotation = FRotator::ZeroRotator;
 
 	float TargetSpringArmLength = 0.0f;

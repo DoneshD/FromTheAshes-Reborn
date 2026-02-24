@@ -297,7 +297,7 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 		{
 			
 			// TargetCameraAnchorLocation = TargetingSystemComponent->TargetCameraAnchorLocation;
-			CurrentCameraStateParams->CameraAnchorParams.TargetLocation = TargetingSystemComponent->TargetCameraAnchorLocation;
+			CurrentCameraStateParams->CameraAnchorParams.TargetLocation = TargetingSystemComponent->CameraParameters->CameraAnchorParams.TargetLocation;
 			TargetCameraAnchorRotation = LockOnTargetRotation;
 			UseWorldTransform = true;
 			CameraAnchorInterpSpeed = LockOnLerpSpeed;
