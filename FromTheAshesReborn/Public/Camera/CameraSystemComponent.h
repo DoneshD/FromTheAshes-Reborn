@@ -60,7 +60,7 @@ protected:
 	FRotator TargetCameraAnchorRotation;
 	FRotator TargetControlRotation;
 	
-	float CameraAnchorInterpSpeed = 2.0f;
+	// float CameraAnchorInterpSpeed = 2.0f;
 
 	//Move from targeting
 
@@ -69,7 +69,7 @@ protected:
 	FVector SmoothedMidPoint = FVector::ZeroVector;
 
 	FVector LockOnTargetLocation = FVector::ZeroVector;
-	FRotator LockOnTargetRotation = FRotator::ZeroRotator;
+	// FRotator LockOnTargetRotation = FRotator::ZeroRotator;
 	
 	bool ShouldUpdateControllerRotation = false;
 
