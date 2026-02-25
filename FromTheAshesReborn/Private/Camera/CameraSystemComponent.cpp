@@ -163,10 +163,18 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 	}
 
+	
+
 	if(OwnerPlayerController)
 	{
-		// ResolveControlRotation();
+		ResolveControlRotation();
+		
 		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), CurrentCameraStateParams->ControlRotationParams.TargetControlRotation, DeltaTime, 8.0f);
+
+		if(UseControllerRotation)
+		{
+			FinalRotation = OwnerPlayerController->GetControlRotation();
+		}
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
 }
@@ -207,6 +215,53 @@ void UCameraSystemComponent::ResolveSpringArmLength()
 	);
 }
 
+void UCameraSystemComponent::ResolveControlRotation()
+{
+	ResolveCameraParam<FRotator, FControlRotation>(
+		CameraParamsArray,
+		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation,
+
+		FCameraParamAccessors<FRotator, FControlRotation>
+		{
+			[](const UCameraParamsDataAsset* DA) -> const FControlRotation&
+			{
+				return DA->ControlRotationParams;
+			},
+
+			[](const FControlRotation& P) -> const FCameraValueData&
+			{
+				static FCameraValueData DummyMeta;
+				return DummyMeta;
+			},
+
+			[](const FControlRotation& P) -> const FRotator&
+			{
+				return P.TargetControlRotation;
+			},
+
+			[](FRotator& Target, const FRotator& V)
+			{
+				Target = V;
+			},
+
+			[](const FRotator& A, const FRotator& B)
+			{
+				return A + B;
+			}
+		},
+
+		[this](FRotator& OutValue, const FControlRotation& Param, const UCameraParamsDataAsset* DA)
+		{
+			if (!DA) return;
+
+			if (DA->CameraState == ECameraState::Free && IsValid(OwnerPlayerController))
+			{
+				OutValue = OwnerPlayerController->GetControlRotation();
+				UseControllerRotation = true;
+			}
+		}
+	);
+}
 
 
 /*void UCameraSystemComponent::ResolveCameraAnchorTransform()

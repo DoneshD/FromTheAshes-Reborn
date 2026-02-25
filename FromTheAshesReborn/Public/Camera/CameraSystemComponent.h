@@ -68,6 +68,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UCameraParamsDataAsset> CurrentCameraStateParams;
 
+	bool UseControllerRotation = false;
+
 public:
 	
 	template<typename TValue, typename TParam>
@@ -82,18 +84,29 @@ public:
 	
 	template<typename TValue, typename TParam>
 	static void ResolveCameraParam(
-		const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
-		TValue& OutValue,
-		const FCameraParamAccessors<TValue, TParam>& Access
-	)
+	const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
+	TValue& OutValue,
+	const FCameraParamAccessors<TValue, TParam>& Access,
+	TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr
+)
 	{
+		// Special handler called first for all params
+		if (SpecialHandler)
+		{
+			for (const auto& Params : ParamsArray)
+			{
+				const TParam& Param = Access.GetParam(Params.Get());
+				SpecialHandler(OutValue, Param, Params.Get());
+			}
+		}
+
 		TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = ParamsArray;
 
 		Sorted.Sort([&](const TObjectPtr<UCameraParamsDataAsset>& A,
-		                const TObjectPtr<UCameraParamsDataAsset>& B)
+						const TObjectPtr<UCameraParamsDataAsset>& B)
 		{
 			return Access.GetMeta(Access.GetParam(A.Get())).Priority >
-			       Access.GetMeta(Access.GetParam(B.Get())).Priority;
+				   Access.GetMeta(Access.GetParam(B.Get())).Priority;
 		});
 
 		for (const auto& Params : Sorted)
@@ -148,7 +161,8 @@ public:
 	void ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray);
 
 	void ResolveSpringArmLength();
-	
+	void ResolveControlRotation();
+
 	/*void ResolveCameraAnchorTransform();
 	void ResolveControlRotation();*/
 
