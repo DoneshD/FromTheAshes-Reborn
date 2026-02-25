@@ -92,7 +92,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		
 		float CurrentLength = SpringArmComponent->TargetArmLength;
-		float TestFloat = ResolveSpringArmLength();
+		ResolveSpringArmLength();
 	
 		if (!FMath::IsNearlyEqual(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength.Value, 0.1f))
 		{
@@ -122,7 +122,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (CameraAnchorComponent)
 	{
-		ResolveCameraAnchorTransform();
+		// ResolveCameraAnchorTransform();
 		
 		if(CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
 		{
@@ -165,29 +165,28 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if(OwnerPlayerController)
 	{
-		ResolveControlRotation();
+		// ResolveControlRotation();
 		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), CurrentCameraStateParams->ControlRotationParams.TargetControlRotation, DeltaTime, 8.0f);
 		OwnerPlayerController->SetControlRotation(FinalRotation);
 	}
 }
 
-float UCameraSystemComponent::ResolveSpringArmLength()
+void UCameraSystemComponent::ResolveSpringArmLength()
 {
 	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
 	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
 	{
-		return A->SpringArmParams.Priority > B->SpringArmParams.Priority;
+		return A->SpringArmParams.ArmLength.MetaData.Priority > B->SpringArmParams.ArmLength.MetaData.Priority;
 	});
-	
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjust)
+		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
 		{
 			continue;
 		}
 		
-		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Set)
+		if(Params->SpringArmParams.ArmLength.MetaData.CameraOperation == ECameraOperation::Set)
 		{
 			CurrentCameraStateParams->SpringArmParams.ArmLength = Params->SpringArmParams.ArmLength;
 			break;
@@ -196,53 +195,48 @@ float UCameraSystemComponent::ResolveSpringArmLength()
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjust)
+		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
 		{
 			continue;
 		}
 		
-		if(Params->SpringArmParams.CameraOperation == ECameraOperation::LockOn)
+		if(Params->CameraState == ECameraState::LockOn)
 		{
 			CurrentCameraStateParams->SpringArmParams.ArmLength = TargetingSystemComponent->CameraParameters->SpringArmParams.ArmLength;
-			
 			break;
 		}
 	}
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjust)
+		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
 		{
 			continue;
 		}
 		
-		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Override)
+		if(Params->SpringArmParams.ArmLength.MetaData.CameraOperation == ECameraOperation::Override)
 		{
-			
 			break;
 		}
 	}
 
 	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
 	{
-		if(!Params->SpringArmParams.ShouldAdjust)
+		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
 		{
 			continue;
 		}
 		
-		if(Params->SpringArmParams.CameraOperation == ECameraOperation::Additive)
+		if(Params->SpringArmParams.ArmLength.MetaData.CameraOperation == ECameraOperation::Additive)
 		{
-			
 			break;
 		}
-		
 	}
-	
-	return 0.0;
-
 }
 
-void UCameraSystemComponent::ResolveCameraAnchorTransform()
+
+
+/*void UCameraSystemComponent::ResolveCameraAnchorTransform()
 {
 	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
 	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
@@ -316,9 +310,9 @@ void UCameraSystemComponent::ResolveCameraAnchorTransform()
 			break;
 		}
 	}
-}
+}*/
 
-void UCameraSystemComponent::ResolveControlRotation()
+/*void UCameraSystemComponent::ResolveControlRotation()
 {
 	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
 	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
@@ -380,7 +374,7 @@ void UCameraSystemComponent::ResolveControlRotation()
 			break;
 		}
 	}
-}
+}*/
 
 void UCameraSystemComponent::ResolveCameraStateParams()
 {
@@ -434,6 +428,11 @@ void UCameraSystemComponent::SetupLocalPlayerController()
 		UE_LOG(LogTemp, Error, TEXT("UCameraSystemComponent::SetupLocalPlayerController() - TargetingSystemComponent is invalid"));
 	}
 
+}
+
+void UCameraSystemComponent::ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray)
+{
+	
 }
 
 float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams)

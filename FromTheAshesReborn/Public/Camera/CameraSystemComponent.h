@@ -74,10 +74,13 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void SetupLocalPlayerController();
+
+	void ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray);
+
+	void ResolveSpringArmLength();
 	
-	float ResolveSpringArmLength();
-	void ResolveCameraAnchorTransform();
-	void ResolveControlRotation();
+	/*void ResolveCameraAnchorTransform();
+	void ResolveControlRotation();*/
 
 	void ResolveCameraStateParams();
 	
