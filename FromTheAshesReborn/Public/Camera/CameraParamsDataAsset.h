@@ -5,11 +5,17 @@
 #include "CameraParamsDataAsset.generated.h"
 
 UENUM(BlueprintType)
+enum class ECameraState : uint8
+{
+	Free,
+	LockOn
+};
+
+UENUM(BlueprintType)
 enum class ECameraOperation : uint8
 {
 	Set,
 	Additive,
-	LockOn,
 	Override
 };
 
@@ -27,19 +33,25 @@ struct FCameraValueData
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp")
-	ECameraOperation Operation = ECameraOperation::Set;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base")
+	bool ShouldAdjust = true;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base", meta=(EditCondition="ShouldAdjust"))
+	ECameraOperation CameraOperation = ECameraOperation::Set;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base", meta=(EditCondition="ShouldAdjust"))
+	float Priority = 0;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp", meta=(EditCondition="ShouldAdjust"))
 	float InLerpSpeedFloat = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp", meta=(EditCondition="ShouldAdjust"))
 	TObjectPtr<UCurveFloat> InLerpSpeedCurve;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp", meta=(EditCondition="ShouldAdjust"))
 	float OutLerpSpeed = 1.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp", meta=(EditCondition="ShouldAdjust"))
 	TObjectPtr<UCurveFloat> OutLerpSpeedCurve;
 };
 
@@ -50,10 +62,10 @@ struct FCameraFloatParam
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Float")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Value")
 	float Value = 0.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MetaData")
 	FCameraValueData MetaData;
 
 };
@@ -66,7 +78,7 @@ struct FCameraVectorParam
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Value")
 	FVector Value = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Lerp")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="MetaData")
 	FCameraValueData MetaData;
 };
 
@@ -80,7 +92,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Value")
 	FRotator Value = FRotator::ZeroRotator;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Lerp")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "MetaData")
 	FCameraValueData MetaData;
 
 };
@@ -95,14 +107,8 @@ public:
 	FBaseCameraParams()
 	{}
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base")
-	bool ShouldAdjust = true;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base", meta=(EditCondition="ShouldAdjust"))
-	ECameraOperation CameraOperation = ECameraOperation::Set;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base", meta=(EditCondition="ShouldAdjust"))
-	float Priority = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Base Params")
+	bool InheritBase = false;
 
 };
 
@@ -114,13 +120,13 @@ struct FSpringArmParams : public FBaseCameraParams
 	FSpringArmParams()
 	{}
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm")
 	FCameraFloatParam ArmLength;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm")
 	FCameraVectorParam SocketOffset;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm")
 	FCameraVectorParam TargetOffset;
 	
 };
@@ -133,7 +139,7 @@ struct FCameraComponentParams : public FBaseCameraParams
 	FCameraComponentParams()
 	{}
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spring Arm", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float FOV = 90.0f;
 	
 };
@@ -149,13 +155,13 @@ struct FCameraAnchorParams : public FBaseCameraParams
 	{}
 	
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
 	FCameraVectorParam TargetLocation;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
 	FCameraRotatorParam TargetRotation;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
 	bool UseWorldTransform = false;
 	
 };
@@ -169,7 +175,7 @@ struct FControlRotation : public FBaseCameraParams
 		: TargetControlRotation(FRotator::ZeroRotator)
 	{}
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor", meta=(EditCondition="ShouldAdjust"))
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
 	FRotator TargetControlRotation;
 	
 };
@@ -205,6 +211,9 @@ class FROMTHEASHESREBORN_API UCameraParamsDataAsset : public UPrimaryDataAsset
 
 public:
 
+	UPROPERTY(EditAnywhere, Category = "State")
+	ECameraState CameraState;
+	
 	UPROPERTY(EditAnywhere, Category = "Core Component")
 	FCameraAnchorParams CameraAnchorParams;
 
