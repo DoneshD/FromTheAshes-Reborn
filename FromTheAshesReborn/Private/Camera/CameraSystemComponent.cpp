@@ -162,9 +162,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			}
 		}
 	}
-
 	
-
 	if(OwnerPlayerController)
 	{
 		ResolveControlRotation();
