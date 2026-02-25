@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CameraParamsDataAsset.h"
 #include "Components/ActorComponent.h"
 #include "CameraSystemComponent.generated.h"
 
@@ -68,6 +69,75 @@ public:
 	TObjectPtr<UCameraParamsDataAsset> CurrentCameraStateParams;
 
 public:
+	
+	template<typename TValue, typename TParam>
+	struct FCameraParamAccessors
+	{
+		TFunction<const TParam&(const UCameraParamsDataAsset*)> GetParam;
+		TFunction<const FCameraValueData&(const TParam&)> GetMeta;
+		TFunction<const TValue&(const TParam&)> GetValue;
+		TFunction<void(TValue&, const TValue&)> SetValue;
+		TFunction<TValue(const TValue&, const TValue&)> AdditiveOp;
+	};
+	
+	template<typename TValue, typename TParam>
+	static void ResolveCameraParam(
+		const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
+		TValue& OutValue,
+		const FCameraParamAccessors<TValue, TParam>& Access
+	)
+	{
+		TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = ParamsArray;
+
+		Sorted.Sort([&](const TObjectPtr<UCameraParamsDataAsset>& A,
+		                const TObjectPtr<UCameraParamsDataAsset>& B)
+		{
+			return Access.GetMeta(Access.GetParam(A.Get())).Priority >
+			       Access.GetMeta(Access.GetParam(B.Get())).Priority;
+		});
+
+		for (const auto& Params : Sorted)
+		{
+			const TParam& Param = Access.GetParam(Params.Get());
+			const FCameraValueData& Meta = Access.GetMeta(Param);
+
+			if (!Meta.ShouldAdjust) continue;
+
+			if (Meta.CameraOperation == ECameraOperation::Set)
+			{
+				Access.SetValue(OutValue, Access.GetValue(Param));
+				break;
+			}
+		}
+
+		for (const auto& Params : Sorted)
+		{
+			const TParam& Param = Access.GetParam(Params.Get());
+			const FCameraValueData& Meta = Access.GetMeta(Param);
+
+			if (!Meta.ShouldAdjust) continue;
+
+			if (Meta.CameraOperation == ECameraOperation::Override)
+			{
+				Access.SetValue(OutValue, Access.GetValue(Param));
+				break;
+			}
+		}
+
+		for (const auto& Params : Sorted)
+		{
+			const TParam& Param = Access.GetParam(Params.Get());
+			const FCameraValueData& Meta = Access.GetMeta(Param);
+
+			if (!Meta.ShouldAdjust) continue;
+
+			if (Meta.CameraOperation == ECameraOperation::Additive)
+			{
+				OutValue = Access.AdditiveOp(OutValue, Access.GetValue(Param));
+			}
+		}
+	}
+
 	
 	UCameraSystemComponent();
 	virtual void BeginPlay() override;

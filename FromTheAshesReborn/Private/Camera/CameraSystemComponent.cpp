@@ -173,65 +173,38 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UCameraSystemComponent::ResolveSpringArmLength()
 {
-	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
-	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
-	{
-		return A->SpringArmParams.ArmLength.MetaData.Priority > B->SpringArmParams.ArmLength.MetaData.Priority;
-	});
+	ResolveCameraParam<float, FCameraFloatParam>(
+		CameraParamsArray,
+		CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
 
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
+		FCameraParamAccessors<float, FCameraFloatParam>
 		{
-			continue;
-		}
-		
-		if(Params->SpringArmParams.ArmLength.MetaData.CameraOperation == ECameraOperation::Set)
-		{
-			CurrentCameraStateParams->SpringArmParams.ArmLength = Params->SpringArmParams.ArmLength;
-			break;
-		}
-	}
+			[](const UCameraParamsDataAsset* DA) -> const FCameraFloatParam&
+			{
+				return DA->SpringArmParams.ArmLength;
+			},
 
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraState == ECameraState::LockOn)
-		{
-			CurrentCameraStateParams->SpringArmParams.ArmLength = TargetingSystemComponent->CameraParameters->SpringArmParams.ArmLength;
-			break;
-		}
-	}
+			[](const FCameraFloatParam& P) -> const FCameraValueData&
+			{
+				return P.MetaData;
+			},
 
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->SpringArmParams.ArmLength.MetaData.CameraOperation == ECameraOperation::Override)
-		{
-			break;
-		}
-	}
+			[](const FCameraFloatParam& P) -> const float&
+			{
+				return P.Value;
+			},
 
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->SpringArmParams.ArmLength.MetaData.ShouldAdjust)
-		{
-			continue;
+			[](float& Target, const float& V)
+			{
+				Target = V;
+			},
+
+			[](const float& A, const float& B)
+			{
+				return A + B;
+			}
 		}
-		
-		if(Params->SpringArmParams.ArmLength.MetaData.CameraOperation == ECameraOperation::Additive)
-		{
-			break;
-		}
-	}
+	);
 }
 
 
