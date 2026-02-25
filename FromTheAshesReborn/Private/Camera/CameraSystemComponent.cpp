@@ -92,7 +92,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		
 		float CurrentLength = SpringArmComponent->TargetArmLength;
-		ResolveSpringArmLength();
+		ResolveSpringArmParams();
 	
 		if (!FMath::IsNearlyEqual(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength.Value, 0.1f))
 		{
@@ -211,6 +211,25 @@ void UCameraSystemComponent::ResolveSpringArmLength()
 			}
 		}
 	);
+}
+
+void UCameraSystemComponent::ResolveSpringArmParams()
+{
+    if (!CurrentCameraStateParams) return;
+
+    ResolveCameraParam<float, FCameraFloatParam>(
+        CameraParamsArray,
+        CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
+        FCameraParamAccessors<float, FCameraFloatParam>
+        {
+            [](const UCameraParamsDataAsset* DA) -> const FCameraFloatParam& { return DA->SpringArmParams.ArmLength; },
+            [](const FCameraFloatParam& P) -> const FCameraValueData& { return P.MetaData; },
+            [](const FCameraFloatParam& P) -> const float& { return P.Value; },
+            [](float& Target, const float& V) { Target = V; },
+            [](const float& A, const float& B) { return A + B; }
+        }
+    );
+	
 }
 
 void UCameraSystemComponent::ResolveControlRotation()

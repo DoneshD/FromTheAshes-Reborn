@@ -90,7 +90,6 @@ public:
 	TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr
 )
 	{
-		// Special handler called first for all params
 		if (SpecialHandler)
 		{
 			for (const auto& Params : ParamsArray)
@@ -161,6 +160,7 @@ public:
 	void ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray);
 
 	void ResolveSpringArmLength();
+	void ResolveSpringArmParams();
 	void ResolveControlRotation();
 
 	/*void ResolveCameraAnchorTransform();
