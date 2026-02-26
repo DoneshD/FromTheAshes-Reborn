@@ -76,7 +76,7 @@ public:
 	struct FCameraParamAccessors
 	{
 		TFunction<const TParam&(const UCameraParamsDataAsset*)> GetParam;
-		TFunction<const FCameraValueData&(const TParam&)> GetMeta;
+		TFunction<const FCameraValueData&(const TParam&)> GetValueMetaData;
 		TFunction<const TValue&(const TParam&)> GetValue;
 		TFunction<void(TValue&, const TValue&)> SetValue;
 		TFunction<TValue(const TValue&, const TValue&)> AdditiveOp;
@@ -85,17 +85,16 @@ public:
 	template<typename TValue, typename TParam>
 	static void ResolveCameraParam(
 	const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
-	TValue& OutValue,
+	TValue& TargetValue,
 	const FCameraParamAccessors<TValue, TParam>& Access,
-	TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr
-)
+	TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr)
 	{
 		if (SpecialHandler)
 		{
 			for (const auto& Params : ParamsArray)
 			{
 				const TParam& Param = Access.GetParam(Params.Get());
-				SpecialHandler(OutValue, Param, Params.Get());
+				SpecialHandler(TargetValue, Param, Params.Get());
 			}
 		}
 
@@ -104,20 +103,20 @@ public:
 		Sorted.Sort([&](const TObjectPtr<UCameraParamsDataAsset>& A,
 						const TObjectPtr<UCameraParamsDataAsset>& B)
 		{
-			return Access.GetMeta(Access.GetParam(A.Get())).Priority >
-				   Access.GetMeta(Access.GetParam(B.Get())).Priority;
+			return Access.GetValueMetaData(Access.GetParam(A.Get())).Priority >
+				   Access.GetValueMetaData(Access.GetParam(B.Get())).Priority;
 		});
 
 		for (const auto& Params : Sorted)
 		{
 			const TParam& Param = Access.GetParam(Params.Get());
-			const FCameraValueData& Meta = Access.GetMeta(Param);
+			const FCameraValueData& MetaData = Access.GetValueMetaData(Param);
 
-			if (!Meta.ShouldAdjust) continue;
+			if (!MetaData.ShouldAdjust) continue;
 
-			if (Meta.CameraOperation == ECameraOperation::Set)
+			if (MetaData.CameraOperation == ECameraOperation::Set)
 			{
-				Access.SetValue(OutValue, Access.GetValue(Param));
+				Access.SetValue(TargetValue, Access.GetValue(Param));
 				break;
 			}
 		}
@@ -125,13 +124,13 @@ public:
 		for (const auto& Params : Sorted)
 		{
 			const TParam& Param = Access.GetParam(Params.Get());
-			const FCameraValueData& Meta = Access.GetMeta(Param);
+			const FCameraValueData& Meta = Access.GetValueMetaData(Param);
 
 			if (!Meta.ShouldAdjust) continue;
 
 			if (Meta.CameraOperation == ECameraOperation::Override)
 			{
-				Access.SetValue(OutValue, Access.GetValue(Param));
+				Access.SetValue(TargetValue, Access.GetValue(Param));
 				break;
 			}
 		}
@@ -139,13 +138,13 @@ public:
 		for (const auto& Params : Sorted)
 		{
 			const TParam& Param = Access.GetParam(Params.Get());
-			const FCameraValueData& Meta = Access.GetMeta(Param);
+			const FCameraValueData& Meta = Access.GetValueMetaData(Param);
 
 			if (!Meta.ShouldAdjust) continue;
 
 			if (Meta.CameraOperation == ECameraOperation::Additive)
 			{
-				OutValue = Access.AdditiveOp(OutValue, Access.GetValue(Param));
+				TargetValue = Access.AdditiveOp(TargetValue, Access.GetValue(Param));
 			}
 		}
 	}
@@ -158,8 +157,7 @@ public:
 	void SetupLocalPlayerController();
 
 	void ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray);
-
-	void ResolveSpringArmLength();
+	
 	void ResolveSpringArmParams();
 	void ResolveControlRotation();
 

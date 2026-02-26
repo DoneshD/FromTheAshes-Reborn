@@ -177,42 +177,6 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 }
 
-void UCameraSystemComponent::ResolveSpringArmLength()
-{
-	ResolveCameraParam<float, FCameraFloatParam>(
-		CameraParamsArray,
-		CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
-
-		FCameraParamAccessors<float, FCameraFloatParam>
-		{
-			[](const UCameraParamsDataAsset* DA) -> const FCameraFloatParam&
-			{
-				return DA->SpringArmParams.ArmLength;
-			},
-
-			[](const FCameraFloatParam& P) -> const FCameraValueData&
-			{
-				return P.MetaData;
-			},
-
-			[](const FCameraFloatParam& P) -> const float&
-			{
-				return P.Value;
-			},
-
-			[](float& Target, const float& V)
-			{
-				Target = V;
-			},
-
-			[](const float& A, const float& B)
-			{
-				return A + B;
-			}
-		}
-	);
-}
-
 void UCameraSystemComponent::ResolveSpringArmParams()
 {
     if (!CurrentCameraStateParams) return;
@@ -222,10 +186,10 @@ void UCameraSystemComponent::ResolveSpringArmParams()
         CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
         FCameraParamAccessors<float, FCameraFloatParam>
         {
-            [](const UCameraParamsDataAsset* DA) -> const FCameraFloatParam& { return DA->SpringArmParams.ArmLength; },
-            [](const FCameraFloatParam& P) -> const FCameraValueData& { return P.MetaData; },
-            [](const FCameraFloatParam& P) -> const float& { return P.Value; },
-            [](float& Target, const float& V) { Target = V; },
+            [](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->SpringArmParams.ArmLength; },
+            [](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
+            [](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
+            [](float& Target, const float& Value) { Target = Value; },
             [](const float& A, const float& B) { return A + B; }
         }
     );
