@@ -141,20 +141,6 @@ public:
 
 			if (!Meta.ShouldAdjust) continue;
 
-			if (Meta.CameraOperation == ECameraOperation::Override)
-			{
-				Access.SetValue(TargetValue, Access.GetValue(Param));
-				break;
-			}
-		}
-
-		for (const auto& Params : Sorted)
-		{
-			const TParam& Param = Access.GetParam(Params.Get());
-			const FCameraValueData& Meta = Access.GetValueMetaData(Param);
-
-			if (!Meta.ShouldAdjust) continue;
-
 			if (Meta.CameraOperation == ECameraOperation::Additive)
 			{
 				TargetValue = Access.AdditiveOp(TargetValue, Access.GetValue(Param));

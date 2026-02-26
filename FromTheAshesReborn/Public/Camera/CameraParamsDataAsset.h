@@ -15,8 +15,7 @@ UENUM(BlueprintType)
 enum class ECameraOperation : uint8
 {
 	Set,
-	Additive,
-	Override
+	Additive
 };
 
 UENUM(BlueprintType)
