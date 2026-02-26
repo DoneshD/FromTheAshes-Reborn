@@ -165,15 +165,15 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(OwnerPlayerController)
 	{
-		ResolveControlRotation();
+		// ResolveControlRotation();
 		
-		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), CurrentCameraStateParams->ControlRotationParams.TargetControlRotation, DeltaTime, 8.0f);
+		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value, DeltaTime, 8.0f);
 
 		if(UseControllerRotation)
 		{
 			FinalRotation = OwnerPlayerController->GetControlRotation();
 		}
-		OwnerPlayerController->SetControlRotation(FinalRotation);
+		OwnerPlayerController->SetControlRotation(OwnerPlayerController->GetControlRotation());
 	}
 }
 
@@ -184,13 +184,16 @@ void UCameraSystemComponent::ResolveSpringArmParams()
     ResolveCameraParam<float, FCameraFloatParam>(
         CameraParamsArray,
         CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
+		CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat, 
         FCameraParamAccessors<float, FCameraFloatParam>
         {
             [](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->SpringArmParams.ArmLength; },
             [](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
             [](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
             [](float& Target, const float& Value) { Target = Value; },
-            [](const float& A, const float& B) { return A + B; }
+            [](const float& A, const float& B) { return A + B; },
+        	[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+        	
         }
     );
 	
@@ -200,7 +203,8 @@ void UCameraSystemComponent::ResolveControlRotation()
 {
 	ResolveCameraParam<FRotator, FControlRotation>(
 		CameraParamsArray,
-		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation,
+		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value,
+		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.InLerpSpeedFloat,
 
 		FCameraParamAccessors<FRotator, FControlRotation>
 		{
@@ -217,7 +221,7 @@ void UCameraSystemComponent::ResolveControlRotation()
 
 			[](const FControlRotation& P) -> const FRotator&
 			{
-				return P.TargetControlRotation;
+				return P.TargetControlRotation.Value;
 			},
 
 			[](FRotator& Target, const FRotator& V)

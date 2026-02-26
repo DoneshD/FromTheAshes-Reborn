@@ -69,7 +69,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	{
 		CameraParameters->CameraAnchorParams.TargetLocation.Value = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		CameraParameters->SpringArmParams.ArmLength.Value = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
-		CameraParameters->ControlRotationParams.TargetControlRotation = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraParameters, DeltaTime);
+		CameraParameters->ControlRotationParams.TargetControlRotation.Value = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraParameters, DeltaTime);
 		
 		SetOwnerActorRotation();
 	}

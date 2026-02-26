@@ -80,12 +80,14 @@ public:
 		TFunction<const TValue&(const TParam&)> GetValue;
 		TFunction<void(TValue&, const TValue&)> SetValue;
 		TFunction<TValue(const TValue&, const TValue&)> AdditiveOp;
+		TFunction<float(const FCameraValueData&)> GetInLerp;
 	};
 	
 	template<typename TValue, typename TParam>
 	static void ResolveCameraParam(
 	const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
 	TValue& TargetValue,
+	float& TargetLerpSpeed, 
 	const FCameraParamAccessors<TValue, TParam>& Access,
 	TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr)
 	{
@@ -106,6 +108,17 @@ public:
 			return Access.GetValueMetaData(Access.GetParam(A.Get())).Priority >
 				   Access.GetValueMetaData(Access.GetParam(B.Get())).Priority;
 		});
+
+		for (const auto& Params : Sorted)
+		{
+			const TParam& Param = Access.GetParam(Params.Get());
+			const FCameraValueData& Meta = Access.GetValueMetaData(Param);
+
+			if (!Meta.ShouldAdjust) continue;
+
+			TargetLerpSpeed = Access.GetInLerp(Meta);
+			break;
+		}
 
 		for (const auto& Params : Sorted)
 		{

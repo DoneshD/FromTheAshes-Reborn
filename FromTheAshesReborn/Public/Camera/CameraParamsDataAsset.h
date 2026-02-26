@@ -176,7 +176,7 @@ struct FControlRotation : public FBaseCameraParams
 	{}
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
-	FRotator TargetControlRotation;
+	FCameraRotatorParam TargetControlRotation;
 	
 };
 
