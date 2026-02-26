@@ -30,8 +30,6 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
-	
-	float LockOnLerpSpeed;
 
 protected:
 
@@ -68,7 +66,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UCameraParamsDataAsset> CurrentCameraStateParams;
 
-	bool UseControllerRotation = false;
+	bool UseControllerRotation = true;
 
 public:
 	

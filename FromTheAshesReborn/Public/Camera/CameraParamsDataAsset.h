@@ -5,13 +5,6 @@
 #include "CameraParamsDataAsset.generated.h"
 
 UENUM(BlueprintType)
-enum class ECameraState : uint8
-{
-	Free,
-	LockOn
-};
-
-UENUM(BlueprintType)
 enum class ECameraOperation : uint8
 {
 	Set,
@@ -106,9 +99,6 @@ public:
 	FBaseCameraParams()
 	{}
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Base Params")
-	bool InheritBase = false;
-
 };
 
 USTRUCT(BlueprintType)
@@ -174,8 +164,11 @@ struct FControlRotation : public FBaseCameraParams
 		: TargetControlRotation(FRotator::ZeroRotator)
 	{}
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Control Rotation")
 	FCameraRotatorParam TargetControlRotation;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Anchor")
+	bool UseControllerRotation = true;
 	
 };
 
@@ -209,9 +202,6 @@ class FROMTHEASHESREBORN_API UCameraParamsDataAsset : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-
-	UPROPERTY(EditAnywhere, Category = "State")
-	ECameraState CameraState;
 	
 	UPROPERTY(EditAnywhere, Category = "Core Component")
 	FCameraAnchorParams CameraAnchorParams;
