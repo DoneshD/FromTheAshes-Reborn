@@ -191,7 +191,7 @@ void UCameraSystemComponent::ResolveSpringArmParams()
             [](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
             [](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
             [](float& Target, const float& Value) { Target = Value; },
-            [](const float& A, const float& B) { return A + B; },
+            [](const float& Target, const float& Value) { return Target + Value; },
         	[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
         	
         }
@@ -201,45 +201,25 @@ void UCameraSystemComponent::ResolveSpringArmParams()
 
 void UCameraSystemComponent::ResolveControlRotation()
 {
-	ResolveCameraParam<FRotator, FControlRotation>(
+	ResolveCameraParam<FRotator, FCameraRotatorParam>(
 		CameraParamsArray,
 		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value,
 		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.InLerpSpeedFloat,
-
-		FCameraParamAccessors<FRotator, FControlRotation>
+		FCameraParamAccessors<FRotator, FCameraRotatorParam>
 		{
-			[](const UCameraParamsDataAsset* DA) -> const FControlRotation&
-			{
-				return DA->ControlRotationParams;
-			},
-
-			[](const FControlRotation& P) -> const FCameraValueData&
-			{
-				static FCameraValueData DummyMeta;
-				return DummyMeta;
-			},
-
-			[](const FControlRotation& P) -> const FRotator&
-			{
-				return P.TargetControlRotation.Value;
-			},
-
-			[](FRotator& Target, const FRotator& V)
-			{
-				Target = V;
-			},
-
-			[](const FRotator& A, const FRotator& B)
-			{
-				return A + B;
-			}
+			[](const UCameraParamsDataAsset* CameraParamsAsset) -> const FCameraRotatorParam& {return CameraParamsAsset->ControlRotationParams.TargetControlRotation; },
+			[](const FCameraRotatorParam& RotatorParam) -> const FCameraValueData& { return RotatorParam.MetaData; },
+			[](const FCameraRotatorParam& RotatorParam) -> const FRotator& { return RotatorParam.Value; },
+			[](FRotator& Target, const FRotator& Value){ Target = Value; },
+			[](const FRotator& Target, const FRotator& Value){ return Target + Value; },
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
 		},
 
-		[this](FRotator& OutValue, const FControlRotation& Param, const UCameraParamsDataAsset* DA)
+		[this](FRotator& OutValue, const FCameraRotatorParam& Param, const UCameraParamsDataAsset* CameraParamsAsset)
 		{
-			if (!DA) return;
+			if (!CameraParamsAsset) return;
 
-			if (DA->CameraState == ECameraState::Free && IsValid(OwnerPlayerController))
+			if (CameraParamsAsset->CameraState == ECameraState::Free && IsValid(OwnerPlayerController))
 			{
 				OutValue = OwnerPlayerController->GetControlRotation();
 				UseControllerRotation = true;
