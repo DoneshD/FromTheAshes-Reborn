@@ -151,6 +151,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void HandleSpringArmParams(float DeltaTime);
+	
 	void SetupLocalPlayerController();
 
 	void ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray);
@@ -160,6 +162,7 @@ public:
 	void ResolveCameraAnchorParams();
 
 	void ResolveCameraStateParams();
+	
 	
 	UFUNCTION(BlueprintCallable)
 	void AddCameraParameters(UCameraParamsDataAsset* CameraParams);

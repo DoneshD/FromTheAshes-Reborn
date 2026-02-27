@@ -84,34 +84,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (SpringArmComponent)
 	{
-		float CurrentLength = SpringArmComponent->TargetArmLength;
-	
-		if (!FMath::IsNearlyEqual(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength.Value, 0.1f))
-		{
-			float InterpolatedLength = FMath::FInterpTo(
-				CurrentLength,
-				CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
-				DeltaTime,
-				CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat);
-			SpringArmComponent->TargetArmLength = InterpolatedLength;
-		}
-
-		FVector TestVector = SpringArmComponent->SocketOffset;
-	
-		if (!TestVector.Equals(CurrentCameraStateParams->SpringArmParams.SocketOffset.Value, 0.1f))
-		{
-			
-			FVector TestInterpolatedLength = FMath::VInterpTo(
-					TestVector,
-					CurrentCameraStateParams->SpringArmParams.SocketOffset.Value,
-					GetWorld()->GetDeltaSeconds(),
-					CurrentCameraStateParams->SpringArmParams.SocketOffset.MetaData.InLerpSpeedFloat);
-			
-			SpringArmComponent->SocketOffset = TestInterpolatedLength;
-			
-			
-		}
-		
+		HandleSpringArmParams(DeltaTime);
 	}
 	
 	if (CameraComponent)
@@ -199,6 +172,38 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			FinalRotation = OwnerPlayerController->GetControlRotation();
 		}
 		OwnerPlayerController->SetControlRotation(FinalRotation);
+	}
+}
+
+void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
+{
+	float CurrentArmLength = SpringArmComponent->TargetArmLength;
+	
+	if (!FMath::IsNearlyEqual(CurrentArmLength, CurrentCameraStateParams->SpringArmParams.ArmLength.Value, 0.1f))
+	{
+		float InterpolatedArmLength = FMath::FInterpTo(
+			CurrentArmLength,
+			CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
+			DeltaTime,
+			CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat);
+		
+		SpringArmComponent->TargetArmLength = InterpolatedArmLength;
+	}
+
+	FVector CurrentSocketOffset = SpringArmComponent->SocketOffset;
+	
+	if (!CurrentSocketOffset.Equals(CurrentCameraStateParams->SpringArmParams.SocketOffset.Value, 0.1f))
+	{
+			
+		FVector InterpolatedSocketOffset = FMath::VInterpTo(
+				CurrentSocketOffset,
+				CurrentCameraStateParams->SpringArmParams.SocketOffset.Value,
+				GetWorld()->GetDeltaSeconds(),
+				CurrentCameraStateParams->SpringArmParams.SocketOffset.MetaData.InLerpSpeedFloat);
+			
+		SpringArmComponent->SocketOffset = InterpolatedSocketOffset;
+			
+			
 	}
 }
 

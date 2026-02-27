@@ -117,6 +117,9 @@ struct FSpringArmParams : public FBaseCameraParams
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm")
 	FCameraVectorParam TargetOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm")
+	bool EnableCameraLag = true;
 	
 };
 
