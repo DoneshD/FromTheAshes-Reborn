@@ -95,6 +95,22 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 				CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
 		}
+
+		FVector TestVector = SpringArmComponent->SocketOffset;
+	
+		if (!TestVector.Equals(CurrentCameraStateParams->SpringArmParams.SocketOffset.Value, 0.1f))
+		{
+			
+			FVector TestInterpolatedLength = FMath::VInterpTo(
+					TestVector,
+					CurrentCameraStateParams->SpringArmParams.SocketOffset.Value,
+					GetWorld()->GetDeltaSeconds(),
+					CurrentCameraStateParams->SpringArmParams.SocketOffset.MetaData.InLerpSpeedFloat);
+			
+			SpringArmComponent->SocketOffset = TestInterpolatedLength;
+			
+			
+		}
 		
 	}
 	
@@ -190,6 +206,7 @@ void UCameraSystemComponent::ResolveSpringArmParams()
 {
     if (!CurrentCameraStateParams) return;
 
+	//Arm length
     ResolveCameraParam<float, FCameraFloatParam>(
         CameraParamsArray,
         CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
@@ -205,6 +222,23 @@ void UCameraSystemComponent::ResolveSpringArmParams()
         	
         }
     );
+
+	//Socket Offset
+	ResolveCameraParam<FVector, FCameraVectorParam>(
+		CameraParamsArray,
+		CurrentCameraStateParams->SpringArmParams.SocketOffset.Value,
+		CurrentCameraStateParams->SpringArmParams.SocketOffset.MetaData.InLerpSpeedFloat,
+		FCameraParamAccessors<FVector, FCameraVectorParam>
+		{
+			[](const UCameraParamsDataAsset* CameraParamsAsset) -> const FCameraVectorParam& {return CameraParamsAsset->SpringArmParams.SocketOffset; },
+			[](const FCameraVectorParam& VectorParam) -> const FCameraValueData& { return VectorParam.MetaData; },
+			[](const FCameraVectorParam& VectorParam) -> const FVector& { return VectorParam.Value; },
+			[](FVector& Target, const FVector& Value){ Target = Value; },
+			[](const FVector& Target, const FVector& Value){ return Target + Value; },
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+		}
+
+	);
 	
 }
 
