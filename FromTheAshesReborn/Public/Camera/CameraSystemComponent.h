@@ -157,14 +157,12 @@ public:
 	void HandleControlRotationParams(float DeltaTime);
 	
 	void SetupLocalPlayerController();
-
-	void ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray);
 	
 	void ResolveSpringArmParams();
 	void ResolveControlRotationParams();
 	void ResolveCameraAnchorParams();
-
-	void ResolveCameraStateParams();
+	
+	void ResolveCameraParams();
 	
 	
 	UFUNCTION(BlueprintCallable)

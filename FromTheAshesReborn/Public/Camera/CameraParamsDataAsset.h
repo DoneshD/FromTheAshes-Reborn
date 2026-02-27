@@ -93,11 +93,19 @@ USTRUCT(BlueprintType)
 struct FBaseCameraParams
 {
 	GENERATED_BODY()
-
-public:
-
+	
 	FBaseCameraParams()
 	{}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Base")
+	bool PropagateAdjust = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Base")
+	bool PropagateOperation = true;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base")
+	bool PropagatePriority = true;
+
 
 };
 

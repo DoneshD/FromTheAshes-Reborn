@@ -80,7 +80,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	ResolveCameraStateParams();
+	ResolveCameraParams();
 
 	if (SpringArmComponent)
 	{
@@ -319,7 +319,7 @@ void UCameraSystemComponent::ResolveCameraAnchorParams()
 	);
 }
 
-void UCameraSystemComponent::ResolveCameraStateParams()
+void UCameraSystemComponent::ResolveCameraParams()
 {
 	ResolveSpringArmParams();
 	ResolveControlRotationParams();
@@ -375,10 +375,7 @@ void UCameraSystemComponent::SetupLocalPlayerController()
 
 }
 
-void UCameraSystemComponent::ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray)
-{
-	
-}
+
 
 float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams)
 {
