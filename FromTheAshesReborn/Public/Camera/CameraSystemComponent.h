@@ -156,10 +156,8 @@ public:
 	void ResolveCameraValue(TArray<TObjectPtr<UCameraParamsDataAsset>> SortedArray);
 	
 	void ResolveSpringArmParams();
-	void ResolveControlRotation();
-
-	/*void ResolveCameraAnchorTransform();
-	void ResolveControlRotation();*/
+	void ResolveControlRotationParams();
+	void ResolveCameraAnchorParams();
 
 	void ResolveCameraStateParams();
 	

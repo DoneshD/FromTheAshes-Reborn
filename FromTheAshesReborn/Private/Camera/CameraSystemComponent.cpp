@@ -80,25 +80,20 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	/*for (const TObjectPtr<UCameraParamsDataAsset>& Params : CameraParamsArray)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("CameraParams: %s"),
-			Params ? *Params->GetName() : TEXT("NULL"));
-	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Size: %d"), CameraParamsArray.Num());*/
+	ResolveCameraStateParams();
 
 	if (SpringArmComponent)
 	{
-		
 		float CurrentLength = SpringArmComponent->TargetArmLength;
-		ResolveSpringArmParams();
 	
 		if (!FMath::IsNearlyEqual(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength.Value, 0.1f))
 		{
-			float InterpolatedLength = FMath::FInterpTo(CurrentLength, CurrentCameraStateParams->SpringArmParams.ArmLength.Value, DeltaTime, CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat);
+			float InterpolatedLength = FMath::FInterpTo(
+				CurrentLength,
+				CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
+				DeltaTime,
+				CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat);
 			SpringArmComponent->TargetArmLength = InterpolatedLength;
-			
 		}
 		
 	}
@@ -122,7 +117,6 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	if (CameraAnchorComponent)
 	{
-		// ResolveCameraAnchorTransform();
 		
 		if(CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
 		{
@@ -139,7 +133,11 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, 0.1f))
 			{
-				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, GetWorld()->GetDeltaSeconds(), CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
+				FRotator InterpolatedRotation = FMath::RInterpTo(
+					CurrentAnchorRotation,
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value,
+					GetWorld()->GetDeltaSeconds(),
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
 				CameraAnchorComponent->SetWorldRotation(InterpolatedRotation);
 			}
 		}
@@ -149,7 +147,12 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 			if (!CurrentAnchorLocation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.1f))
 			{
-				FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, GetWorld()->GetDeltaSeconds(), CurrentCameraStateParams->CameraAnchorParams.TargetLocation.MetaData.InLerpSpeedFloat);
+				FVector InterpolatedLocation = FMath::VInterpTo(
+					CurrentAnchorLocation,
+					CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value,
+					GetWorld()->GetDeltaSeconds(),
+					CurrentCameraStateParams->CameraAnchorParams.TargetLocation.MetaData.InLerpSpeedFloat);
+				
 				CameraAnchorComponent->SetRelativeLocation(InterpolatedLocation);
 			}
 	
@@ -157,7 +160,11 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, 0.1f))
 			{
-				FRotator InterpolatedRotation = FMath::RInterpTo(CurrentAnchorRotation, CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, GetWorld()->GetDeltaSeconds(),CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
+				FRotator InterpolatedRotation = FMath::RInterpTo(
+					CurrentAnchorRotation,
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value,
+					GetWorld()->GetDeltaSeconds(),
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
 				CameraAnchorComponent->SetRelativeRotation(InterpolatedRotation);
 			}
 		}
@@ -165,9 +172,11 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if(OwnerPlayerController)
 	{
-		ResolveControlRotation();
-		
-		FRotator FinalRotation = FMath::RInterpTo(OwnerPlayerController->GetControlRotation(), CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value, DeltaTime, 8.0f);
+		FRotator FinalRotation = FMath::RInterpTo(
+			OwnerPlayerController->GetControlRotation(),
+			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value,
+			DeltaTime,
+			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.InLerpSpeedFloat);
 		
 		if(CurrentCameraStateParams->ControlRotationParams.UseControllerRotation)
 		{
@@ -199,7 +208,7 @@ void UCameraSystemComponent::ResolveSpringArmParams()
 	
 }
 
-void UCameraSystemComponent::ResolveControlRotation()
+void UCameraSystemComponent::ResolveControlRotationParams()
 {
 	ResolveCameraParam<FRotator, FCameraRotatorParam>(
 		CameraParamsArray,
@@ -227,150 +236,40 @@ void UCameraSystemComponent::ResolveControlRotation()
 	);
 }
 
-
-/*void UCameraSystemComponent::ResolveCameraAnchorTransform()
+void UCameraSystemComponent::ResolveCameraAnchorParams()
 {
-	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
-	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
-	{
-		return A->CameraAnchorParams.Priority > B->CameraAnchorParams.Priority;
-	});
-	
-
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
+	ResolveCameraParam<FVector, FCameraVectorParam>(
+		CameraParamsArray,
+		CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value,
+		CurrentCameraStateParams->CameraAnchorParams.TargetLocation.MetaData.InLerpSpeedFloat,
+		FCameraParamAccessors<FVector, FCameraVectorParam>
 		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Set)
-		{
-			// CurrentCameraStateParams->CameraAnchorParams.TargetLocation = Params->CameraAnchorParams.TargetLocation;
-			// CurrentCameraStateParams->CameraAnchorParams.TargetRotation = Params->CameraAnchorParams.TargetRotation;
-			// CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = Params->CameraAnchorParams.UseWorldTransform;
-			// CurrentCameraStateParams->CameraAnchorParams.InLerpSpeedFloat = Params->CameraAnchorParams.InLerpSpeedFloat;
+			[](const UCameraParamsDataAsset* CameraParamsAsset) -> const FCameraVectorParam& {return CameraParamsAsset->CameraAnchorParams.TargetLocation; },
+			[](const FCameraVectorParam& VectorParam) -> const FCameraValueData& { return VectorParam.MetaData; },
+			[](const FCameraVectorParam& VectorParam) -> const FVector& { return VectorParam.Value; },
+			[](FVector& Target, const FVector& Value){ Target = Value; },
+			[](const FVector& Target, const FVector& Value){ return Target + Value; },
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+		},
 
-			CurrentCameraStateParams->CameraAnchorParams = Params->CameraAnchorParams;
+		[this](FVector& OutValue, const FCameraVectorParam& Param, const UCameraParamsDataAsset* CameraParamsAsset)
+		{
+			if (!CameraParamsAsset)
+			{
+				return;
+			}
+			CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = CameraParamsAsset->CameraAnchorParams.UseWorldTransform;
 			
-			break;
 		}
-	}
 
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::LockOn)
-		{
-			// CurrentCameraStateParams->CameraAnchorParams.TargetLocation = TargetingSystemComponent->CameraParameters->CameraAnchorParams.TargetLocation;
-			// CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = TargetingSystemComponent->CameraParameters->CameraAnchorParams.UseWorldTransform;
-			// CurrentCameraStateParams->CameraAnchorParams.InLerpSpeedFloat = TargetingSystemComponent->CameraParameters->CameraAnchorParams.InLerpSpeedFloat;
-
-			CurrentCameraStateParams->CameraAnchorParams = TargetingSystemComponent->CameraParameters->CameraAnchorParams;
-			
-			break;
-		}
-	}
-
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Override)
-		{
-			
-			break;
-		}
-	}
-
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Additive)
-		{
-			break;
-		}
-	}
-}*/
-
-/*void UCameraSystemComponent::ResolveControlRotation()
-{
-	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
-	Sorted.Sort([](const TObjectPtr<UCameraParamsDataAsset>& A, const TObjectPtr<UCameraParamsDataAsset>& B)
-	{
-		return A->CameraAnchorParams.Priority > B->CameraAnchorParams.Priority;
-	});
-
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Set)
-		{
-			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation = OwnerPlayerController->GetControlRotation();
-			break;
-		}
-	}
-
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::LockOn)
-		{
-			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation = TargetingSystemComponent->CameraParameters->ControlRotationParams.TargetControlRotation;
-			
-			break;
-		}
-	}
-
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Override)
-		{
-			break;
-		}
-	}
-
-	for(const TObjectPtr<UCameraParamsDataAsset>& Params : Sorted)
-	{
-		if(!Params->CameraAnchorParams.ShouldAdjust)
-		{
-			continue;
-		}
-		
-		if(Params->CameraAnchorParams.CameraOperation == ECameraOperation::Additive)
-		{
-			break;
-		}
-	}
-}*/
+	);
+}
 
 void UCameraSystemComponent::ResolveCameraStateParams()
 {
-	
+	ResolveSpringArmParams();
+	ResolveControlRotationParams();
+	ResolveCameraAnchorParams();
 }
 
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)
