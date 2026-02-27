@@ -119,8 +119,10 @@ struct FSpringArmParams : public FBaseCameraParams
 	FCameraVectorParam TargetOffset;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm")
-	bool EnableCameraLag = true;
+	FCameraFloatParam CameraLocationLagSpeed;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="SpringArm")
+	FCameraFloatParam CameraRotationLagSpeed;
 };
 
 USTRUCT(BlueprintType)
@@ -132,7 +134,7 @@ struct FCameraComponentParams : public FBaseCameraParams
 	{}
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
-	float FOV = 90.0f;
+	FCameraFloatParam FieldOfView;
 	
 };
 

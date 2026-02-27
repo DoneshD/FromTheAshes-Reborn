@@ -152,6 +152,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	void HandleSpringArmParams(float DeltaTime);
+	void HandleCameraComponentParams(float DeltaTime);
+	void HandleCameraAnchorParams(float DeltaTime);
+	void HandleControlRotationParams(float DeltaTime);
 	
 	void SetupLocalPlayerController();
 

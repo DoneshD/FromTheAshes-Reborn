@@ -89,89 +89,17 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	
 	if (CameraComponent)
 	{
-		float CurrentFOV = CameraComponent->FieldOfView;
-		float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
-		
-		FinalTargetFOV = FMath::Clamp(FinalTargetFOV, 80.0, 100.0f);
-	
-		if (!FMath::IsNearlyEqual(CurrentFOV, FinalTargetFOV, 0.1f))
-		{
-			const float InterpolatedFOV = FMath::InterpEaseOut(CurrentFOV, FinalTargetFOV, DeltaTime * CameraFOVLerpSpeed, 2.0);
-			CameraComponent->SetFieldOfView(InterpolatedFOV);
-	
-			// UE_LOG(LogTemp, Warning, TEXT("FOV Lerp Debug -> Current: %.2f, Base: %.2f, Offset: %.2f, Target: %.2f, Interpolated: %.2f, DeltaTime: %.2f, Speed: %.2f"),
-			// 	CurrentFOV, CameraBaseFOV, CameraFOVOffset, FinalTargetFOV, InterpolatedFOV, DeltaTime, CameraFOVLerpSpeed);
-		}
+		HandleCameraComponentParams(DeltaTime);
 	}
 
 	if (CameraAnchorComponent)
 	{
-		
-		if(CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
-		{
-			FVector CurrentAnchorLocation = CameraAnchorComponent->GetComponentLocation();
-	
-			if (!CurrentAnchorLocation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.1f))
-			{
-				// FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
-				FVector InterpolatedLocation = FMath::Lerp(CurrentAnchorLocation, CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.5f);
-				CameraAnchorComponent->SetWorldLocation(InterpolatedLocation);
-			}
-	
-			FRotator CurrentAnchorRotation = CameraAnchorComponent->GetComponentRotation();
-	
-			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, 0.1f))
-			{
-				FRotator InterpolatedRotation = FMath::RInterpTo(
-					CurrentAnchorRotation,
-					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value,
-					GetWorld()->GetDeltaSeconds(),
-					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
-				CameraAnchorComponent->SetWorldRotation(InterpolatedRotation);
-			}
-		}
-		if(!CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
-		{
-			FVector CurrentAnchorLocation = CameraAnchorComponent->GetRelativeLocation();
-	
-			if (!CurrentAnchorLocation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.1f))
-			{
-				FVector InterpolatedLocation = FMath::VInterpTo(
-					CurrentAnchorLocation,
-					CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value,
-					GetWorld()->GetDeltaSeconds(),
-					CurrentCameraStateParams->CameraAnchorParams.TargetLocation.MetaData.InLerpSpeedFloat);
-				
-				CameraAnchorComponent->SetRelativeLocation(InterpolatedLocation);
-			}
-	
-			FRotator CurrentAnchorRotation = CameraAnchorComponent->GetRelativeRotation();
-	
-			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, 0.1f))
-			{
-				FRotator InterpolatedRotation = FMath::RInterpTo(
-					CurrentAnchorRotation,
-					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value,
-					GetWorld()->GetDeltaSeconds(),
-					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
-				CameraAnchorComponent->SetRelativeRotation(InterpolatedRotation);
-			}
-		}
+		HandleCameraAnchorParams(DeltaTime);
 	}
 	
 	if(OwnerPlayerController)
 	{
-		FRotator FinalRotation = FMath::RInterpTo(
-			OwnerPlayerController->GetControlRotation(),
-			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value,
-			DeltaTime,
-			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.InLerpSpeedFloat);
-		
-		if(CurrentCameraStateParams->ControlRotationParams.UseControllerRotation)
-		{
-			FinalRotation = OwnerPlayerController->GetControlRotation();
-		}
-		OwnerPlayerController->SetControlRotation(FinalRotation);
+		HandleControlRotationParams(DeltaTime);
 	}
 }
 
@@ -205,6 +133,93 @@ void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
 			
 			
 	}
+}
+
+void UCameraSystemComponent::HandleCameraComponentParams(float DeltaTime)
+{
+	float CurrentFOV = CameraComponent->FieldOfView;
+	float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
+		
+	FinalTargetFOV = FMath::Clamp(FinalTargetFOV, 80.0, 100.0f);
+	
+	if (!FMath::IsNearlyEqual(CurrentFOV, FinalTargetFOV, 0.1f))
+	{
+		const float InterpolatedFOV = FMath::InterpEaseOut(CurrentFOV, FinalTargetFOV, DeltaTime * CameraFOVLerpSpeed, 2.0);
+		CameraComponent->SetFieldOfView(InterpolatedFOV);
+	
+		// UE_LOG(LogTemp, Warning, TEXT("FOV Lerp Debug -> Current: %.2f, Base: %.2f, Offset: %.2f, Target: %.2f, Interpolated: %.2f, DeltaTime: %.2f, Speed: %.2f"),
+		// 	CurrentFOV, CameraBaseFOV, CameraFOVOffset, FinalTargetFOV, InterpolatedFOV, DeltaTime, CameraFOVLerpSpeed);
+	}
+}
+
+void UCameraSystemComponent::HandleCameraAnchorParams(float DeltaTime)
+{
+	if(CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
+		{
+			FVector CurrentAnchorLocation = CameraAnchorComponent->GetComponentLocation();
+	
+			if (!CurrentAnchorLocation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.1f))
+			{
+				// FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
+				FVector InterpolatedAnchorLocation = FMath::Lerp(CurrentAnchorLocation, CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.5f);
+				CameraAnchorComponent->SetWorldLocation(InterpolatedAnchorLocation);
+			}
+	
+			FRotator CurrentAnchorRotation = CameraAnchorComponent->GetComponentRotation();
+	
+			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, 0.1f))
+			{
+				FRotator InterpolatedAnchorRotation = FMath::RInterpTo(
+					CurrentAnchorRotation,
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value,
+					DeltaTime,
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
+				CameraAnchorComponent->SetWorldRotation(InterpolatedAnchorRotation);
+			}
+		}
+	
+		if(!CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform)
+		{
+			FVector CurrentAnchorLocation = CameraAnchorComponent->GetRelativeLocation();
+	
+			if (!CurrentAnchorLocation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.1f))
+			{
+				FVector InterpolatedLocation = FMath::VInterpTo(
+					CurrentAnchorLocation,
+					CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value,
+					DeltaTime,
+					CurrentCameraStateParams->CameraAnchorParams.TargetLocation.MetaData.InLerpSpeedFloat);
+				
+				CameraAnchorComponent->SetRelativeLocation(InterpolatedLocation);
+			}
+	
+			FRotator CurrentAnchorRotation = CameraAnchorComponent->GetRelativeRotation();
+	
+			if (!CurrentAnchorRotation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value, 0.1f))
+			{
+				FRotator InterpolatedRotation = FMath::RInterpTo(
+					CurrentAnchorRotation,
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.Value,
+					DeltaTime,
+					CurrentCameraStateParams->CameraAnchorParams.TargetRotation.MetaData.InLerpSpeedFloat);
+				CameraAnchorComponent->SetRelativeRotation(InterpolatedRotation);
+			}
+		}
+	}
+
+void UCameraSystemComponent::HandleControlRotationParams(float DeltaTime)
+{
+	FRotator FinalRotation = FMath::RInterpTo(
+			OwnerPlayerController->GetControlRotation(),
+			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value,
+			DeltaTime,
+			CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.InLerpSpeedFloat);
+		
+	if(CurrentCameraStateParams->ControlRotationParams.UseControllerRotation)
+	{
+		FinalRotation = OwnerPlayerController->GetControlRotation();
+	}
+	OwnerPlayerController->SetControlRotation(FinalRotation);
 }
 
 void UCameraSystemComponent::ResolveSpringArmParams()
@@ -352,7 +367,7 @@ void UCameraSystemComponent::SetupLocalPlayerController()
 	}
 	
 	TargetingSystemComponent = PlayerCharacter->FindComponentByClass<UTargetingSystemComponent>();
-
+ 
 	if (!IsValid(TargetingSystemComponent))
 	{
 		UE_LOG(LogTemp, Error, TEXT("UCameraSystemComponent::SetupLocalPlayerController() - TargetingSystemComponent is invalid"));
