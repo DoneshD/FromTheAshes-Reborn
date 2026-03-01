@@ -164,7 +164,6 @@ public:
 	
 	void ResolveCameraParams();
 	
-	
 	UFUNCTION(BlueprintCallable)
 	void AddCameraParameters(UCameraParamsDataAsset* CameraParams);
 

@@ -312,6 +312,10 @@ void UCameraSystemComponent::ResolveCameraAnchorParams()
 			{
 				return;
 			}
+			if(!CameraParamsAsset->CameraAnchorParams.TargetLocation.MetaData.ShouldAdjust)
+			{
+				return;
+			}
 			CurrentCameraStateParams->CameraAnchorParams.UseWorldTransform = CameraParamsAsset->CameraAnchorParams.UseWorldTransform;
 			
 		}
