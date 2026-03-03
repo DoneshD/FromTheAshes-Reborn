@@ -19,6 +19,9 @@ struct FWarpData
 	AActor* WarpTargetActor;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
+	FVector WarpTargetLocation;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Warp Data")
 	float WarpTargetLocationOffset;
 
 	FWarpData()
@@ -56,7 +59,10 @@ protected:
 	void UpdateWarpTarget(FVector TargetLocation, FRotator TargetRotation);
 
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
-	void WarpToTarget(FWarpData WarpData);
+	void WarpToTargetActor(FWarpData WarpData);
+	
+	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
+	void WarpToTargetLocation(FWarpData WarpData);
 
 	UFUNCTION(BlueprintCallable, Category = "Motion Warping")
 	void RemoveWarpTarget();

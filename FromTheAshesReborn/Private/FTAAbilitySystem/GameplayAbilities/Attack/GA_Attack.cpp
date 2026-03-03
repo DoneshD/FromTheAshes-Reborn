@@ -391,7 +391,6 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	{
 		if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag8")))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Dont apply"))
 			return;
 		}
 	}

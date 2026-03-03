@@ -48,13 +48,14 @@ void UFTAMotionWarpingComponent::UpdateWarpTarget(FVector TargetLocation, FRotat
 	MotionWarpingComponent->AddOrUpdateWarpTargetFromLocationAndRotation(CurrentWarpTargetName, TargetLocation,  FRotator(0, TargetRotation.Yaw, 0));
 }
 
-void UFTAMotionWarpingComponent::WarpToTarget(FWarpData WarpData)
+void UFTAMotionWarpingComponent::WarpToTargetActor(FWarpData WarpData)
 {
 	CurrentWarpTargetName = WarpData.WarpTargetName;
 	
 	//Actor warp
 	if(WarpData.WarpTargetActor)
 	{
+		
 		AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(WarpData.WarpTargetActor);
 		if (EnemyActor && !EnemyActor->IsDead)
 		{
@@ -94,7 +95,19 @@ void UFTAMotionWarpingComponent::WarpToTarget(FWarpData WarpData)
 			UpdateWarpTarget(WarpTargetLocation, WarpTargetRotation);
 		}
 	}
+}
+
+void UFTAMotionWarpingComponent::WarpToTargetLocation(FWarpData WarpData)
+{
+	CurrentWarpTargetName = WarpData.WarpTargetName;
 	
+	FVector EnemyLocation = GetOwner()->GetActorLocation();
+		
+	FVector WarpTargetLocation = EnemyLocation + GetOwner()->GetActorForwardVector() * WarpData.WarpTargetLocationOffset;
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), GetOwner()->GetActorLocation());
+	FRotator WarpTargetRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
+	
+	UpdateWarpTarget(WarpTargetLocation, WarpTargetRotation);
 	
 }
 
