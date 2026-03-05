@@ -41,6 +41,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<FSoundCueStruct> SoundCueArray;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	bool ActivateAllCues = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 	float DefaultVolumeMultiplier = 1.0;

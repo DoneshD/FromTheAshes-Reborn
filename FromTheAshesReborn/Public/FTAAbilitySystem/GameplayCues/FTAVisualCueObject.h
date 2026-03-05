@@ -19,9 +19,15 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FVector Location;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FVector LocationOffset;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FRotator Rotation;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FRotator RotationOffset;
 	
 };
 
@@ -37,4 +43,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TArray<FVisualCueStruct> VisualCueArray;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	bool ActivateAllCues = false;
 };

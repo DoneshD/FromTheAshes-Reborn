@@ -18,4 +18,5 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FName SocketName;
+	
 };
