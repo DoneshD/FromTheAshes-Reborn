@@ -161,8 +161,9 @@ void UCameraSystemComponent::HandleCameraAnchorParams(float DeltaTime)
 			if (!CurrentAnchorLocation.Equals(CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.1f))
 			{
 				// FVector InterpolatedLocation = FMath::VInterpTo(CurrentAnchorLocation, NewCameraAnchorLocation, GetWorld()->GetDeltaSeconds(), CameraAnchorInterpSpeed);
-				FVector InterpolatedAnchorLocation = FMath::Lerp(CurrentAnchorLocation, CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 0.5f);
+				FVector InterpolatedAnchorLocation = FMath::Lerp(CurrentAnchorLocation, CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value, 1.0f);
 				CameraAnchorComponent->SetWorldLocation(InterpolatedAnchorLocation);
+
 			}
 	
 			FRotator CurrentAnchorRotation = CameraAnchorComponent->GetComponentRotation();
