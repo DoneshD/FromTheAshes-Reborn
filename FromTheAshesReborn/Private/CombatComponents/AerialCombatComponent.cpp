@@ -88,7 +88,6 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		}
 
 		// CMC->GravityScale = 0.1;
-		UE_LOG(LogTemp, Warning, TEXT("GravityScale: %f"), CMC->GravityScale);
 	}
 }
 
