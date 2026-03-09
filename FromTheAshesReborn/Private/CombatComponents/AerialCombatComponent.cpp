@@ -86,6 +86,9 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 			TotalAirTime += DeltaTime;
 			CMC->GravityScale = CalculateTimeSpentGravityMultiplier();
 		}
+
+		// CMC->GravityScale = 0.1;
+		UE_LOG(LogTemp, Warning, TEXT("GravityScale: %f"), CMC->GravityScale);
 	}
 }
 
@@ -97,11 +100,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
-
-	// CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
-	// CameraParams.ArmLengthParams.ShouldOverrideArmLength = true;
-	// CameraParams.ArmLengthParams.ShouldResetOffset = true;
-	// CameraParams.ArmLengthParams.DeltaArmLength = 400.0f;
 
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 	EnableCollision();

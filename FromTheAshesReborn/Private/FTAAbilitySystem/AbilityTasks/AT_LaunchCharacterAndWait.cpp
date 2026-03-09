@@ -119,7 +119,7 @@ void UAT_LaunchCharacterAndWait::LocationReached()
 
 void UAT_LaunchCharacterAndWait::EndStall()
 {
-	CMC->GravityScale = 4.0f;
+	// CMC->GravityScale = 4.0f;
 
 	OnLaunchComplete.Broadcast();
 	EndTask();
