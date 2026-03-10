@@ -63,10 +63,11 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	StartTime = GetWorld()->GetTimeSeconds();
 	
 	StartLocation = GetAvatarActor()->GetActorLocation();
-	EndLocation = GetAvatarActor()->GetActorLocation() + FVector(
-		MoveToLocationData->ForwardDistance,
-		MoveToLocationData->RightDistance,
-		MoveToLocationData->UpDistance);
+	
+	EndLocation = GetAvatarActor()->GetActorLocation()
+	+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationOffset.X
+	+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationOffset.Y
+	+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationOffset.Z;
 
 }
 
@@ -103,7 +104,11 @@ void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 
 void UFTAAT_MoveToLocationAndWait::LocationReached()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Location reached"))
+	CMC->Velocity.Z = 0.0f;
+	CMC->GravityScale = 0.0f;
+	
+	CMC->Velocity = FVector::ZeroVector;
+	
 	OnMoveCompleted.Broadcast();
 	EndTask();
 }

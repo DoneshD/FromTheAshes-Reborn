@@ -11,26 +11,22 @@ class FROMTHEASHESREBORN_API UMoveToLocationDataAsset : public UPrimaryDataAsset
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Location Offset")
 	float Duration = 1.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forward")
-	float ForwardDistance = 100.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Forward")
-	float ForwardLaunchVelocity = 0.0f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Right")
-	float RightDistance = 100.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Right")
-	float RightLaunchVelocity = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Location Offset")
+	FVector LocationOffset = FVector::ZeroVector;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Up")
-	float UpDistance = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
+	FVector LaunchVelocity = FVector::ZeroVector;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
+	bool SetGravity = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Up")
-	float UpLaunchVelocity = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached", meta = (EditCondition = "SetGravity"))
+	float Gravity = 0.0f;
+
+	
 
 	
 
