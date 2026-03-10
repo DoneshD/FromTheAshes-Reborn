@@ -7,6 +7,8 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UMoveToLocationDataAsset;
+class UFTAAT_MoveToLocationAndWait;
 class UCentralStateComponent;
 class UComboManagerComponent;
 class UFTAAbilityDataAsset;
@@ -89,6 +91,16 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	FName WarpTargetName;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
+	bool EnableManualMovement = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="EnableManualMovement"))
+	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAT_MoveToLocationAndWait> MoveToLocationAndWaitTask;
+	
 
 	//Components
 	UPROPERTY()

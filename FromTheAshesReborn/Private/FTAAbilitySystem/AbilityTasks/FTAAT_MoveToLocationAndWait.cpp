@@ -4,9 +4,10 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-UFTAAT_MoveToLocationAndWait* UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(UGameplayAbility* OwningAbility)
+UFTAAT_MoveToLocationAndWait* UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(UGameplayAbility* OwningAbility, TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData)
 {
 	UFTAAT_MoveToLocationAndWait* Task = NewAbilityTask<UFTAAT_MoveToLocationAndWait>(OwningAbility);
+	Task->MoveToLocationData = MoveToLocationData;
 	return Task;
 }
 
@@ -75,6 +76,7 @@ void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 
 void UFTAAT_MoveToLocationAndWait::UpdateMovement(float DeltaTime)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Moving"));
 }
 
 void UFTAAT_MoveToLocationAndWait::LocationReached()

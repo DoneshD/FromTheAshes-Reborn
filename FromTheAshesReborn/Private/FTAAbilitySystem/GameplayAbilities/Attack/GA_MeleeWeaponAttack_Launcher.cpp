@@ -10,6 +10,7 @@
 #include "EventObjects/LaunchEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_LaunchCharacterAndWait.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_MoveToLocationAndWait.h"
 #include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
@@ -148,6 +149,12 @@ void UGA_MeleeWeaponAttack_Launcher::EventMontageReceived(FGameplayTag EventTag,
 			LaunchTask->OnLaunchComplete.AddDynamic(this, &UGA_MeleeWeaponAttack_Launcher::OnLaunchComplete);
 			LaunchTask->ReadyForActivation();
 		}
+
+		if (MoveToLocationAndWaitTask)
+		{
+			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UGA_MeleeWeaponAttack_Launcher::OnLaunchComplete);
+			MoveToLocationAndWaitTask->ReadyForActivation();
+		}	
 	}
 	
 	

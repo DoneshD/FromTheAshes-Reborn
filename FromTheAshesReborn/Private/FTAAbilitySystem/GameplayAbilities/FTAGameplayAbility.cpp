@@ -10,6 +10,7 @@
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
+#include "FTAAbilitySystem/AbilityTasks/FTAAT_MoveToLocationAndWait.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
@@ -259,6 +260,11 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	if (WaitInputTagAndQueueWindowEventTask)
 	{
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
+	}
+
+	if(EnableManualMovement)
+	{
+		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, MoveToLocationDataAsset);
 	}
 
 	/*if (MovingAbility)

@@ -4,6 +4,7 @@
 #include "Abilities/Tasks/AbilityTask.h"
 #include "FTAAT_MoveToLocationAndWait.generated.h"
 
+class UMoveToLocationDataAsset;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMoveCompleted);
 
 class AFTACharacter;
@@ -28,24 +29,17 @@ protected:
 	TObjectPtr<AFTACharacter> FTAChar;
 
 	bool IsMoving = false;
-
-	FVector StartLocation;
-	FVector EndLocation;
 	
 	float ElapsedTime = 0.0f;
 	float StartTime = 0.0f;
 
-	float LaunchVerticalDistance;
-	float LaunchDuration;
-	float StallDuration;
-	float LaunchOffset;
-
-	FTimerHandle AerialStallTimerHandle;
+	UPROPERTY()
+	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData;
 
 
 public:
 	
-	static UFTAAT_MoveToLocationAndWait* FTAAT_MoveToLocationAndWait(UGameplayAbility* OwningAbility);
+	static UFTAAT_MoveToLocationAndWait* FTAAT_MoveToLocationAndWait(UGameplayAbility* OwningAbility, TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData);
 
 protected:
 	
