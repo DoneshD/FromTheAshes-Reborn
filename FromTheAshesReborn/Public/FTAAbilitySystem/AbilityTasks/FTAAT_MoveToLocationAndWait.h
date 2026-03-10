@@ -33,6 +33,9 @@ protected:
 	float ElapsedTime = 0.0f;
 	float StartTime = 0.0f;
 
+	FVector StartLocation;
+	FVector EndLocation;
+
 	UPROPERTY()
 	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData;
 
@@ -52,6 +55,6 @@ protected:
 	virtual FString GetDebugString() const override;
 	virtual void OnDestroy(bool AbilityEnded) override;
 
-	void UpdateMovement(float DeltaTime);
+	void UpdateLocation(float DeltaTime);
 	void LocationReached();
 };

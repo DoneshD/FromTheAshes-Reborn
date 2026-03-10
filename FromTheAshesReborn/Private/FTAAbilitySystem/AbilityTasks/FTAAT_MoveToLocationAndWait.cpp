@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/AbilityTasks/FTAAT_MoveToLocationAndWait.h"
 
+#include "DataAsset/MoveToLocationDataAsset.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -22,7 +23,7 @@ void UFTAAT_MoveToLocationAndWait::TickTask(float DeltaTime)
 
 	if(IsMoving)
 	{
-		UpdateMovement(DeltaTime);
+		UpdateLocation(DeltaTime);
 	}
 }
 
@@ -57,6 +58,16 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	}
 
 	IsMoving = true;
+
+	ElapsedTime = 0.0f;
+	StartTime = GetWorld()->GetTimeSeconds();
+	
+	StartLocation = GetAvatarActor()->GetActorLocation();
+	EndLocation = GetAvatarActor()->GetActorLocation() + FVector(
+		MoveToLocationData->ForwardDistance,
+		MoveToLocationData->RightDistance,
+		MoveToLocationData->UpDistance);
+
 }
 
 void UFTAAT_MoveToLocationAndWait::ExternalCancel()
@@ -74,11 +85,25 @@ void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 	Super::OnDestroy(AbilityEnded);
 }
 
-void UFTAAT_MoveToLocationAndWait::UpdateMovement(float DeltaTime)
+void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Moving"));
+	ElapsedTime += DeltaTime;
+
+	const float Alpha = FMath::Clamp(ElapsedTime / MoveToLocationData->Duration, 0.0f, 1.0f);
+	const FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
+
+	FHitResult Hit;
+	GetAvatarActor()->SetActorLocation(NewLocation, true, &Hit);
+
+	if (Alpha >= 1.0f || Hit.bBlockingHit)
+	{
+		LocationReached();
+	}
 }
 
 void UFTAAT_MoveToLocationAndWait::LocationReached()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Location reached"))
+	OnMoveCompleted.Broadcast();
+	EndTask();
 }
