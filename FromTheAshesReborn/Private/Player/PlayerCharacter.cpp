@@ -87,8 +87,6 @@ void APlayerCharacter::Tick(float DeltaSeconds)
 
 	// UE_LOG(LogTemp, Warning, TEXT("[%s] Movement Mode: %s"), *GetActorNameOrLabel(), *UEnum::GetValueAsString(GetCharacterMovement()->MovementMode));
 
-	UE_LOG(LogTemp, Warning, TEXT("Gravity:%f "), GetCharacterMovement()->GravityScale);
-
 }
 
 void APlayerCharacter::PossessedBy(AController* NewController)

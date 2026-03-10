@@ -23,6 +23,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> AddAerialCombatGravity;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
+	TObjectPtr<UCurveFloat> GravityCurve;
 	
 
 private:

@@ -61,7 +61,17 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(IsComponentActive)
 	{
 		TotalAirTime += DeltaTime;
-		CMC->GravityScale = TotalAirTime / 10;
+		// CMC->GravityScale = FMath::Pow(TotalAirTime, 2) / 10.f;
+		// CMC->GravityScale = 4.0f;
+		if(GravityCurve)
+		{
+			CMC->GravityScale = GravityCurve->GetFloatValue(TotalAirTime);
+		}
+		else
+		{
+			CMC->GravityScale = 0.0f;
+		}
+		// PrintGravity();
 	}
 }
 
