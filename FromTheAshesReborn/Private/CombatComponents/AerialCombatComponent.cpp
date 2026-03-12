@@ -44,13 +44,9 @@ void UAerialCombatComponent::BeginPlay()
 		return;
 	}
 
-	DownedComp = FTACharacter->FindComponentByClass<UDownedCombatComponent>();
 
 	FDelegateHandle Handle = FTAAbilitySystemComponent->RegisterGameplayTagEvent(EnableTag, EGameplayTagEventType::NewOrRemoved)
 		.AddUObject(this, &UAerialCombatComponent::EnableComponent);
-
-	FDelegateHandle HandleTwo = FTAAbilitySystemComponent->RegisterGameplayTagEvent(AerialAttackCounterTag, EGameplayTagEventType::AnyCountChange)
-		.AddUObject(this, &UAerialCombatComponent::AddAttackCounterTag);
 	
 }
 
@@ -61,8 +57,6 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(IsComponentActive)
 	{
 		TotalAirTime += DeltaTime;
-		// CMC->GravityScale = FMath::Pow(TotalAirTime, 2) / 10.f;
-		// CMC->GravityScale = 4.0f;
 		if(GravityCurve)
 		{
 			CMC->GravityScale = GravityCurve->GetFloatValue(TotalAirTime);
@@ -79,21 +73,10 @@ void UAerialCombatComponent::ClearStateAndVariables()
 {
 	IsComponentActive = false;
 	CMC->GravityScale = 4.0f;
-	AttackCounter = 0;
-	AttackLastResetTime = GetWorld()->GetTimeSeconds();
 	TotalAirTime = 0.0f;
-	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 	EnableCollision();
-
-	UCameraSystemComponent* CSC = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
-	if(!CSC)
-	{
-		return;
-	}
-	
-	// CSC->HandleCameraSystemAdjustment(CameraParams);
 	
 }
 
@@ -101,12 +84,10 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 {
 	IsComponentActive = true;
 
-	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	CMC->AirControl = 0.10f;
 	CMC->AirControlBoostMultiplier = 0.10f;
 	
 	DisableCollision();
-	ResetAttackTimer();
 	
 }
 
@@ -115,31 +96,10 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	if (NewCount > 0)
 	{
 		InitializeStateAndVariables();
-
-		if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(FTACharacter->GetController()))
-		{
-			FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.AirStunned");
-		
-			const UStateTreeComponent* STComp = EnemyController->StateTreeComponent;
-
-			if (STComp)
-			{
-				FStateTreeEvent HitEvent;
-				HitEvent.Tag = HitTag;
-				EnemyController->StateTreeComponent->SendStateTreeEvent(HitEvent);
-			}
-		}
-		
 	}
 	else
 	{
 		ClearStateAndVariables();
-
-		if(!FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished")))
-		{
-			FTAAbilitySystemComponent->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished"));
-			FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished"));
-		}
 		
 	}
 }
@@ -162,68 +122,11 @@ void UAerialCombatComponent::PrintGravity()
 	}
 }
 
-
-void UAerialCombatComponent::AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount)
-{
-	if (NewCount > PreviousCount)
-	{
-		CalculateAttackAntiGravityMultiplier(NewCount);
-	}
-
-	PreviousCount = NewCount;
-}
-
-float UAerialCombatComponent::CalculateAttackAntiGravityMultiplier(int InNewCount)
-{
-	AttackCounter = InNewCount;
-	if (AttackCounter <= 3)
-	{
-		LaunchStrength = 100.0f;
-	}
-	else if (AttackCounter > 3 && AttackCounter <= 6)
-	{
-		LaunchStrength = 200.0f;
-	}
-	else if (AttackCounter > 6 && AttackCounter <= 9)
-	{
-		LaunchStrength = 300.0f;
-	}
-	else
-	{
-		LaunchStrength = 0.0f;
-	}
-
-	ResetAttackTimer();
-
-	FVector LaunchVelocity = FVector(0.0f, 0.0f, LaunchStrength);
-	CMC->Velocity = FVector::ZeroVector;
-	FTACharacter->LaunchCharacter(LaunchVelocity, true, true);
-
-	return 0.0f;
-}
-
-
-float UAerialCombatComponent::CalculateTimeSpentGravityMultiplier() const
-{
-	float CurrentGravityScale = (TotalAirTime) * TimeGravityMultiplier;
-	CurrentGravityScale = FMath::Clamp(CurrentGravityScale, MinimumGravityScale, MaximumGravityScale);
-	return CurrentGravityScale;
-}
-
-void UAerialCombatComponent::ResetAttackTimer()
-{
-	AttackLastResetTime = GetWorld()->GetTimeSeconds();
-}
-
-float UAerialCombatComponent::GetAttackElapsedTime() const
-{
-	return GetWorld()->GetTimeSeconds() - AttackLastResetTime;
-}
-
 void UAerialCombatComponent::DisableCollision()
 {
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Ignore);
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 
 }
 
@@ -231,5 +134,6 @@ void UAerialCombatComponent::EnableCollision()
 {
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Block);
 	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECR_Block);
+	FTACharacter->GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Block);
 
 }

@@ -49,33 +49,14 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag AerialAttackCounterTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Parameters")
-	float TimeGravityMultiplier = 0.65f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Parameters")
-	float LaunchStrengthMultiplier = 1.0f;
 	
-	int AttackCounter = 0;
-	float AttackLastResetTime;
-	float AttackTimeInAir = 0.0f;
 	float TotalAirTime = 0.0f;
 
-	float LaunchStrength = 100.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
-	float MinimumGravityScale = 2.5f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
-	float MaximumGravityScale = 4.0f;
 
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
-
-	UPROPERTY()
-	TObjectPtr<UDownedCombatComponent> DownedComp;
 
 
 protected:
@@ -84,12 +65,6 @@ protected:
 	void InitializeStateAndVariables();
 	
 	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
-	
-	void AddAttackCounterTag(const FGameplayTag InAttackCounterTag, int32 NewCount);
-	
-	float CalculateTimeSpentGravityMultiplier() const;
-	void ResetAttackTimer();
-	float GetAttackElapsedTime() const;
 	
 	void DisableCollision();
 	void EnableCollision();
@@ -103,6 +78,5 @@ public:
 	void SetGravity(float NewGravity);
 	void PrintGravity();
 	
-	float CalculateAttackAntiGravityMultiplier(int InNewCount);
 	
 };
