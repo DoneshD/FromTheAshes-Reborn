@@ -16,6 +16,7 @@
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Player/FTAPlayerController.h"
 #include "Weapon/WeaponActorBase.h"
@@ -231,6 +232,19 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 			{
 				return false;
 			}
+		}
+	}
+	else
+	{
+		ACharacter* Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
+		if (!Character)
+		{
+			return false;
+		}
+
+		if(Character->GetCharacterMovement()->IsFalling() || Character->GetCharacterMovement()->IsFlying())
+		{
+			return false;
 		}
 	}
 	return true;
