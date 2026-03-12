@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UAerialAbilityModifier;
 class UMoveToLocationDataAsset;
 class UFTAAT_MoveToLocationAndWait;
 class UCentralStateComponent;
@@ -118,6 +119,12 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Aerial")
+	bool IsAerialAbility = false;
+	
+	UPROPERTY(EditDefaultsOnly, Instanced, Category = "Aerial", meta=(EditCondition="IsAerialAbility"))
+	TObjectPtr<UAerialAbilityModifier> AerialModifer;
 	
 public:
 	
@@ -189,9 +196,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
-
-	UFUNCTION()
-	void AdjustFOV(const FGameplayTag InEnableTag, int32 NewCount);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetAbility();

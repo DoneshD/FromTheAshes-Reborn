@@ -12,7 +12,6 @@ class FROMTHEASHESREBORN_API UAerialAbilityModifier : public UObject
 	GENERATED_BODY()
 
 	UPROPERTY(EditDefaultsOnly)
-
 	TObjectPtr<UAerialAbilityDataAsset> AerialData;
 
 	bool CanActivate() const;
