@@ -16,5 +16,7 @@ class FROMTHEASHESREBORN_API IAerialAbilityInterface
 
 	
 public:
-	virtual bool IsCharacterAirborne() const = 0;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool IsCharacterAirborne();
 };
