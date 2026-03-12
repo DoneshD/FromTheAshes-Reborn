@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/FTAGameplayAbility.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "AerialAbilityModifier.h"
 #include "Camera/CameraSystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
@@ -215,6 +216,21 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		if (!FTAASC->HasMatchingGameplayTag(QueueWindowTag))
 		{
 			return false;
+		}
+	}
+	if(IsAerialAbility)
+	{
+		if(AerialModifer)
+		{
+			ACharacter* Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
+			if (!Character)
+			{
+				return false;
+			}
+			if(!AerialModifer->CanActivate(Character))
+			{
+				return false;
+			}
 		}
 	}
 	return true;
