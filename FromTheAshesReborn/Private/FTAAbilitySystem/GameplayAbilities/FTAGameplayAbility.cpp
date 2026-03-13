@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "MotionWarpingComponent.h"
 #include "Abilities/Tasks/AbilityTask_MoveToLocation.h"
+#include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -291,6 +292,23 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	{
 		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 	}
+	
+
+	if(IsAerialAbility)
+	{
+		if(AerialModifer)
+		{
+			UAerialCombatComponent* AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+
+			if(!AerialCombatComponent)
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Aerial::ActivateAbility - AerialCombatComponent"));
+				return;
+			}
+			GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = 0;
+			AerialModifer->EnableAerialComponent(this, AerialCombatComponent, GetAbilitySystemComponentFromActorInfo());
+		}
+	}
 
 	if(EnableManualMovement)
 	{
@@ -310,22 +328,6 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			MoveToLocationTask->ReadyForActivation();
 		}
 	}*/
-
-	
-
-	/*
-	AdjustFOVDelegateHandle = GetFTAAbilitySystemComponentFromActorInfo()->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("CameraTag.Event.AdjustFOV"), EGameplayTagEventType::NewOrRemoved).AddUObject(this, &UFTAGameplayAbility::AdjustFOV);
-
-	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
-	if(!CSC)
-	{
-		return;
-	}
-	
-	CameraParams.ArmLengthParams.ShouldAdjustArmLength = true;
-	CameraParams.ArmLengthParams.ShouldOverrideArmLength = false;
-	
-	CSC->HandleCameraSystemAdjustment(CameraParams);*/
 
 	ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
 	CentralStateComponent = GetFTACharacterFromActorInfo()->CentralStateComponent;

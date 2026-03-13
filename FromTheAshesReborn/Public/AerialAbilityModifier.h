@@ -4,6 +4,9 @@
 #include "UObject/Object.h"
 #include "AerialAbilityModifier.generated.h"
 
+class UAbilitySystemComponent;
+class UAerialCombatComponent;
+class UGameplayAbility;
 class UAerialAbilityDataAsset;
 
 UCLASS(Blueprintable, EditInlineNew, DefaultToInstanced)
@@ -19,4 +22,8 @@ public:
 	bool CanActivate(TObjectPtr<ACharacter> Character) const;
 
 	bool IsCharacterAirborne(TObjectPtr<ACharacter> Character) const;
+
+	void EnableAerialComponent(TObjectPtr<UGameplayAbility> InGameplayAbility,
+		TObjectPtr<UAerialCombatComponent> AirCombatComponent,
+		TObjectPtr<UAbilitySystemComponent> ASC);
 };
