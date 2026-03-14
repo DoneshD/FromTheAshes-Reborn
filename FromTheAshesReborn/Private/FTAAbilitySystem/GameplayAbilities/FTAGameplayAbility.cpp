@@ -306,7 +306,10 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 				return;
 			}
 			GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity.Z = 0;
+			GetFTACharacterFromActorInfo()->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 			AerialModifer->EnableAerialComponent(this, AerialCombatComponent, GetAbilitySystemComponentFromActorInfo());
+			AerialCombatComponent->AbilityInitTest();
+			AerialCombatComponent->TestAttackCounter += 1;
 		}
 	}
 

@@ -40,6 +40,8 @@ private:
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> CMC;
 
+	float LastGravityCurveValue = 0.0f;
+
 protected:
 
 	bool IsComponentActive = false;
@@ -52,12 +54,12 @@ protected:
 	
 	float TotalAirTime = 0.0f;
 
-
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
 
+	int TestAttackCounter = 0;
 
 protected:
 
@@ -77,6 +79,9 @@ public:
 
 	void SetGravity(float NewGravity);
 	void PrintGravity();
+
+
+	void AbilityInitTest();
 	
 	
 };

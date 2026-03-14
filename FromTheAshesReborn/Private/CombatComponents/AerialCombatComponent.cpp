@@ -59,6 +59,7 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		TotalAirTime += DeltaTime;
 		if(GravityCurve)
 		{
+			LastGravityCurveValue = GravityCurve->GetFloatValue(TotalAirTime); 
 			CMC->GravityScale = GravityCurve->GetFloatValue(TotalAirTime);
 		}
 		else
@@ -74,6 +75,8 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	IsComponentActive = false;
 	CMC->GravityScale = 4.0f;
 	TotalAirTime = 0.0f;
+	LastGravityCurveValue = 0.0f;
+	TestAttackCounter = 0.0f;
 
 	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 	EnableCollision();
@@ -82,8 +85,8 @@ void UAerialCombatComponent::ClearStateAndVariables()
 
 void UAerialCombatComponent::InitializeStateAndVariables()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Initializing"));
 	IsComponentActive = true;
-
 	CMC->AirControl = 0.10f;
 	CMC->AirControlBoostMultiplier = 0.10f;
 	
@@ -120,6 +123,16 @@ void UAerialCombatComponent::PrintGravity()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("[No Owner] Gravity: %f"), CMC->GravityScale);
 	}
+}
+
+void UAerialCombatComponent::AbilityInitTest()
+{
+	if(TestAttackCounter < 4)
+	{
+		TotalAirTime = 0.0f;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Curve val: %f"), LastGravityCurveValue);
+	
 }
 
 void UAerialCombatComponent::DisableCollision()
