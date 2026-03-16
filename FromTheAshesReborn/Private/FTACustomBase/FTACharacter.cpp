@@ -338,7 +338,6 @@ bool AFTACharacter::HasSlammingTag() const
 bool AFTACharacter::HasSlammingHeavyTag() const
 {
 	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
-	
 }
 
 bool AFTACharacter::HasDownedTag() const

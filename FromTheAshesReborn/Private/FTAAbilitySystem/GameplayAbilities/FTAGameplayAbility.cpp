@@ -9,6 +9,7 @@
 #include "Abilities/Tasks/AbilityTask_MoveToLocation.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
+#include "DataAsset/MoveToLocationDataAsset.h"
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/AT_WaitInputTagAndQueueWindowEvent.h"
@@ -22,6 +23,11 @@
 #include "Player/FTAPlayerController.h"
 #include "Weapon/WeaponActorBase.h"
 
+
+void UFTAGameplayAbility::OnMoveComplete()
+{
+	
+}
 
 UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -316,6 +322,11 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	if(EnableManualMovement)
 	{
 		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, MoveToLocationDataAsset);
+	}
+	if(MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
+	{
+		MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
+		MoveToLocationAndWaitTask->ReadyForActivation();
 	}
 
 	/*if (MovingAbility)

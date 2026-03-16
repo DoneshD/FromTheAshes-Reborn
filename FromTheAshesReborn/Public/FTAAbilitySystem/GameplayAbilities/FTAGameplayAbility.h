@@ -101,6 +101,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UFTAAT_MoveToLocationAndWait> MoveToLocationAndWaitTask;
+
+	UFUNCTION()
+	virtual void OnMoveComplete();
 	
 
 	//Components

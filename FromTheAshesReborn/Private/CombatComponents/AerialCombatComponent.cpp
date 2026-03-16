@@ -85,7 +85,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 
 void UAerialCombatComponent::InitializeStateAndVariables()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Initializing"));
 	IsComponentActive = true;
 	CMC->AirControl = 0.10f;
 	CMC->AirControlBoostMultiplier = 0.10f;
@@ -131,7 +130,6 @@ void UAerialCombatComponent::AbilityInitTest()
 	{
 		TotalAirTime = 0.0f;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Curve val: %f"), LastGravityCurveValue);
 	
 }
 
