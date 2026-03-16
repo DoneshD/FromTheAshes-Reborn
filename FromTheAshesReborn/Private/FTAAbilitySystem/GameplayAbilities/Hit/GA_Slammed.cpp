@@ -3,8 +3,6 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "EventObjects/SlamEventObject.h"
-#include "FTAAbilitySystem/AbilityTasks/AT_SlamCharacterAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -29,7 +27,7 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	const USlamEventObject* SlamInfoObject = Cast<USlamEventObject>(CurrentEventData.OptionalObject);
+	// const USlamEventObject* SlamInfoObject = Cast<USlamEventObject>(CurrentEventData.OptionalObject);
 	
 	// if(!SlamInfoObject)
 	// {
@@ -38,37 +36,37 @@ void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	// 	return;
 	// }
 
-	if(!SlamInfoObject)
-	{
-		FVector DiagonalLocation = TempDiagonalLocation();
-		
-		SlamInfoObject = NewObject<USlamEventObject>(this);
-		SlamInfoObject->SlamData.Location = DiagonalLocation,
-		SlamInfoObject->SlamData.Speed = 3000.0f,
-		SlamInfoObject->SlamData.Duration = 0.20f;
+	// if(!SlamInfoObject)
+	// {
+	// 	FVector DiagonalLocation = TempDiagonalLocation();
+	// 	
+	// 	SlamInfoObject = NewObject<USlamEventObject>(this);
+	// 	SlamInfoObject->SlamData.Location = DiagonalLocation,
+	// 	SlamInfoObject->SlamData.Speed = 3000.0f,
+	// 	SlamInfoObject->SlamData.Duration = 0.20f;
+	//
+	//
+	// }
 
-	
-	}
+	// SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(this,
+	// SlamInfoObject->SlamData.Location,
+	// SlamInfoObject->SlamData.Speed,
+	// SlamInfoObject->SlamData.Duration);
 
-	SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(this,
-	SlamInfoObject->SlamData.Location,
-	SlamInfoObject->SlamData.Speed,
-	SlamInfoObject->SlamData.Duration);
-
-	PossibleFollowupReactions = SlamInfoObject->HitData.PossibleFollowupReactions;
-
-	HitLocation = SlamInfoObject->SlamData.Location;
+	// PossibleFollowupReactions = SlamInfoObject->HitData.PossibleFollowupReactions;
+	//
+	// HitLocation = SlamInfoObject->SlamData.Location;
 
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation(),
 		GetFTACharacterFromActorInfo()->GetActorLocation());
 	
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
 	
-	if (SlamTask)
-	{
-		SlamTask->OnSlamComplete.AddDynamic(this, &UGA_Slammed::OnSlamComplete);
-		SlamTask->ReadyForActivation();
-	}
+	// if (SlamTask)
+	// {
+	// 	SlamTask->OnSlamComplete.AddDynamic(this, &UGA_Slammed::OnSlamComplete);
+	// 	SlamTask->ReadyForActivation();
+	// }
 }
 
 void UGA_Slammed::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

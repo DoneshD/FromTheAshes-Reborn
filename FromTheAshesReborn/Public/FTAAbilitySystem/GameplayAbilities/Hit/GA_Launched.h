@@ -13,17 +13,6 @@ class FROMTHEASHESREBORN_API UGA_Launched : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
 
-protected:
-
-	UPROPERTY()
-	TObjectPtr<UAT_LaunchCharacterAndWait> LaunchTask;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-	float LaunchOffset;
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	// TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
-
 public:
 
 	UGA_Launched();
@@ -35,7 +24,5 @@ public:
 	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
 	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 
-	UFUNCTION()
-	void OnLaunchComplete();
 };
 

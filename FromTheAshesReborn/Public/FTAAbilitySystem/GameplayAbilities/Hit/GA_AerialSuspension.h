@@ -13,9 +13,9 @@ class FROMTHEASHESREBORN_API UGA_AerialSuspension : public UGA_ReceiveHit
 	GENERATED_BODY()
 
 public:
-
-	UPROPERTY()
-	TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
+	//
+	// UPROPERTY()
+	// TObjectPtr<UAT_SuspendInAirAndWait> SuspendTask;
 
 public:
 

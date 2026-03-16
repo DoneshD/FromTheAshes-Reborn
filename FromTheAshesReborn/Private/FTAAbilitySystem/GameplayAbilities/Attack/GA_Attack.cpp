@@ -386,14 +386,6 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	HitInfoObj->HitData.HitDirection = HitData.Direction;
 	HitInfoObj->HitData.Distance = HitData.Distance;
 	
-
-	if(TargetASC)
-	{
-		if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag8")))
-		{
-			return;
-		}
-	}
 	
 	if(WeaponActors.IsEmpty())
 	{

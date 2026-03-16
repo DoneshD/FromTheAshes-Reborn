@@ -26,8 +26,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UGA_ReceiveHit> BackFollowup;
 
-	UPROPERTY()
-	TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
+	// UPROPERTY()
+	// TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
 
 	UPROPERTY()
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;

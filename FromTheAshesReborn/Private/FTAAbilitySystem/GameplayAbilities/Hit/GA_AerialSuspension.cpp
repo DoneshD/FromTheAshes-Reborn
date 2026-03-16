@@ -3,9 +3,7 @@
 #include "MaterialHLSLTree.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
-#include "EventObjects/SuspendEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
-#include "FTAAbilitySystem/AbilityTasks/AT_SuspendInAirAndWait.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -46,7 +44,7 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
+	// const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
 	
 	/*if(!SuspendEventObj)
 	{
