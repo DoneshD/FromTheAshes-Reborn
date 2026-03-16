@@ -22,6 +22,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
 	ETriggerMovementType TriggerType = ETriggerMovementType::None;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
+	bool EndAbilityOnCompleted = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Location Offset")
 	float Duration = 1.0f;
 	

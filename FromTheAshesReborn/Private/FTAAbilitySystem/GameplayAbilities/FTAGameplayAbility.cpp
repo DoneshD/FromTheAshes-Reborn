@@ -24,10 +24,6 @@
 #include "Weapon/WeaponActorBase.h"
 
 
-void UFTAGameplayAbility::OnMoveComplete()
-{
-	
-}
 
 UFTAGameplayAbility::UFTAGameplayAbility(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -323,7 +319,8 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	{
 		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, MoveToLocationDataAsset);
 	}
-	if(MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
+	
+	if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
 	{
 		MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
 		MoveToLocationAndWaitTask->ReadyForActivation();
@@ -617,6 +614,14 @@ void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEve
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 }
 
+void UFTAGameplayAbility::OnMoveComplete()
+{
+	if(MoveToLocationDataAsset->EndAbilityOnCompleted)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	}
+}
+
 void UFTAGameplayAbility::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	
@@ -624,7 +629,21 @@ void UFTAGameplayAbility::OnMontageBlendingOut(FGameplayTag EventTag, FGameplayE
 
 void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	if(!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(EventTag))
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::EventMontageReceived - EventTag is invalid"))
+		return;
+	}
 	
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("MovementTag.Event.ActivateTask")))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Here"))
+		if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnTagReceived)
+		{
+			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
+			MoveToLocationAndWaitTask->ReadyForActivation();
+		}
+	}	
 }
 
 
