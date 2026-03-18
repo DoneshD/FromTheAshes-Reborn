@@ -8,4 +8,29 @@ UCLASS()
 class FROMTHEASHESREBORN_API UGA_MeleeAttack_Aerial_Slam : public UGA_MeleeAttack
 {
 	GENERATED_BODY()
+
+public:
+
+	UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer& = FObjectInitializer::Get());
+	
+	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
+	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
+	virtual void CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility) override;
+	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
+
+	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
+	
+	virtual void OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData) override;
+	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData) override;
+
+	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
+	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
+	virtual void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData) override;
+	
+	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
+
+	virtual void OnHitAdded(FHitResult LastItem) override;
+
+	
 };

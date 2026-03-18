@@ -1,4 +1,78 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack_Aerial_Slam.h"
 
+UGA_MeleeAttack_Aerial_Slam::UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer&)
+{
+}
 
-#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack_Aerial_Slam.h"
+bool UGA_MeleeAttack_Aerial_Slam::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
+	const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+{
+	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	const FGameplayEventData* TriggerEventData)
+{
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::CancelAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateCancelAbility)
+{
+	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::EndAbility(const FGameplayAbilitySpecHandle Handle,
+	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
+	bool bReplicateEndAbility, bool bWasCancelled)
+{
+	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
+{
+	Super::PlayAbilityAnimMontage(AnimMontage);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageCancelled(EventTag, EventData);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::OnMontageCompleted(EventTag, EventData);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
+{
+	Super::EventMontageReceived(EventTag, EventData);
+}
+
+UFTAAbilityDataAsset* UGA_MeleeAttack_Aerial_Slam::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
+{
+	return Super::SelectAbilityAsset(InAbilityAssets);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
+{
+	Super::ExtractAssetProperties(InAbilityAsset);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
+{
+	Super::SetRuntimeAbilityData(InAbilityRuntimeData);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
+{
+	Super::PerformAbility(InAbilityAsset);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::OnHitAdded(FHitResult LastItem)
+{
+	Super::OnHitAdded(LastItem);
+}
