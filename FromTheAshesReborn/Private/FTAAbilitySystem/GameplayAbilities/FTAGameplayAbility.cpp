@@ -598,7 +598,7 @@ void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEve
 void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
-	ResetAbility();
+	ResetCombo();
 
 	if(CurrentAbilityAsset->EndAbilityOnCompleted)
 	{
@@ -638,7 +638,7 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 }
 
 
-void UFTAGameplayAbility::ResetAbility()
+void UFTAGameplayAbility::ResetCombo()
 {
 	ComboManagerComponent->GetCurrentComboContainer().Reset();
 	ComboManagerComponent->SetCurrentComboIndex(0);

@@ -87,9 +87,13 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
+						
 						QueuedInputTag = FGameplayTag::EmptyTag;
 						EndTask();
-						return;
+					}
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("INPUT: Could not activate ability"));
 					}
 				}
 			}
@@ -149,7 +153,10 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 					{
 						QueuedInputTag = FGameplayTag::EmptyTag;
 						EndTask();
-						return;
+					}
+					else
+					{
+						UE_LOG(LogTemp, Warning, TEXT("QUEUE: Could not activate ability"));
 					}
 				}
 			}

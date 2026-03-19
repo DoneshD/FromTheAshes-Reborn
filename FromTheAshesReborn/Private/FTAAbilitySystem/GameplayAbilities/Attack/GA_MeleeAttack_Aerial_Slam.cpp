@@ -1,6 +1,8 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack_Aerial_Slam.h"
 
+#include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTACustomBase/FTACharacter.h"
 
 UGA_MeleeAttack_Aerial_Slam::UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer&)
 {
@@ -17,6 +19,13 @@ void UGA_MeleeAttack_Aerial_Slam::ActivateAbility(const FGameplayAbilitySpecHand
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
+	if(!ComboManagerComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - ComboManagerComponent is Null"));
+		ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
+	}
+	
+	ResetCombo();
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 }
 
@@ -90,6 +99,18 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 
 	UE_LOG(LogTemp, Warning, TEXT("Removing"))
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
+	ComboManagerComponent->SetCurrentComboIndex(ComboManagerComponent->GetCurrentComboIndex() + 1);
 
-	PlayAbilityAnimMontage(EndMontage);
+	// PlayAbilityAnimMontage(EndMontage);
+
+	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
+	
+	if(!CurrentAbilityAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SLAM::OnMoveComplete - CurrentAbilityAsset is Null"))
+		return;
+	}
+	
+	ExtractAssetProperties(CurrentAbilityAsset);
+	PerformAbility(CurrentAbilityAsset);
 }

@@ -111,7 +111,6 @@ TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetMeleeAssetByRequirem
 			}
 		}
 	}
-	
 	GetCurrentComboContainer().Reset();
 	SetCurrentComboIndex(0);
 	return AbilityAssets[0];
@@ -172,7 +171,6 @@ TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetRangedAssetByRequire
 			}
 		}
 	}
-	
 	GetCurrentComboContainer().Reset();
 	SetCurrentComboIndex(0);
 	return AbilityAssets[0];

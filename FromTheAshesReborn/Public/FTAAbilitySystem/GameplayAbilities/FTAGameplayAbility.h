@@ -201,6 +201,6 @@ public:
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION(BlueprintCallable)
-	virtual void ResetAbility();
+	virtual void ResetCombo();
 	
 };
