@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
 	TObjectPtr<UAnimMontage> MontageToPlay;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
+	bool EndAbilityOnCompleted = true;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
 	int RequiredIndex;
 

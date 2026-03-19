@@ -156,8 +156,6 @@ void UGA_ReceiveHit::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventDat
 {
 	Super::OnMontageCompleted(EventTag, EventData);
 
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-
 }
 
 void UGA_ReceiveHit::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)

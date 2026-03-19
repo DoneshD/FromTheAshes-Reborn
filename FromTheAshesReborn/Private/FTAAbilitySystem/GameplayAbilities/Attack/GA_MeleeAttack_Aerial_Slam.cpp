@@ -46,7 +46,7 @@ void UGA_MeleeAttack_Aerial_Slam::OnMontageCancelled(FGameplayTag EventTag, FGam
 
 void UGA_MeleeAttack_Aerial_Slam::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
+	Super::OnMontageCompleted(EventTag, EventData);
 }
 
 void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)

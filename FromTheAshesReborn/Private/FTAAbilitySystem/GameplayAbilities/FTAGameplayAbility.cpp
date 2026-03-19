@@ -288,13 +288,15 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			TickTask->ReadyForActivation();
 		}
 	}
-	
-	WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
-	if (WaitInputTagAndQueueWindowEventTask)
+
+	if(QueueWindowTag.IsValid())
 	{
-		WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
+		WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
+		if (WaitInputTagAndQueueWindowEventTask)
+		{
+			WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
+		}	
 	}
-	
 
 	if(IsAerialAbility)
 	{
@@ -597,7 +599,11 @@ void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEve
 {
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
 	ResetAbility();
-	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+
+	if(CurrentAbilityAsset->EndAbilityOnCompleted)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	}
 }
 
 void UFTAGameplayAbility::OnMoveComplete()
