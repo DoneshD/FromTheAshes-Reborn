@@ -36,5 +36,7 @@ public:
 
 	virtual void OnHitAdded(FHitResult LastItem) override;
 
+	virtual void OnMoveComplete() override;
+
 	
 };

@@ -31,10 +31,6 @@ void UGA_MeleeAttack_Aerial_Slam::EndAbility(const FGameplayAbilitySpecHandle Ha
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Removing"))
-	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
-
-	PlayAbilityAnimMontage(EndMontage);
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -86,4 +82,14 @@ void UGA_MeleeAttack_Aerial_Slam::PerformAbility(UFTAAbilityDataAsset* InAbility
 void UGA_MeleeAttack_Aerial_Slam::OnHitAdded(FHitResult LastItem)
 {
 	Super::OnHitAdded(LastItem);
+}
+
+void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
+{
+	Super::OnMoveComplete();
+
+	UE_LOG(LogTemp, Warning, TEXT("Removing"))
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
+
+	PlayAbilityAnimMontage(EndMontage);
 }
