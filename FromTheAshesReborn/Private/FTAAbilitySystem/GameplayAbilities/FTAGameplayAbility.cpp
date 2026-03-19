@@ -326,20 +326,6 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		MoveToLocationAndWaitTask->ReadyForActivation();
 	}
 
-	/*if (MovingAbility)
-	{
-		MoveToLocationTask = UAbilityTask_MoveToLocation::MoveToLocation(this, FName(TEXT("MoveToLocation")),
-			MoveToLocation,
-			1.0f,
-			nullptr,
-			nullptr);
-		
-		if (MoveToLocationTask)
-		{
-			MoveToLocationTask->ReadyForActivation();
-		}
-	}*/
-
 	ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
 	CentralStateComponent = GetFTACharacterFromActorInfo()->CentralStateComponent;
 

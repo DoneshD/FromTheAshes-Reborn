@@ -1,5 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack_Aerial_Slam.h"
 
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+
 UGA_MeleeAttack_Aerial_Slam::UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer&)
 {
 }
@@ -29,6 +31,10 @@ void UGA_MeleeAttack_Aerial_Slam::EndAbility(const FGameplayAbilitySpecHandle Ha
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Removing"))
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
+
+	PlayAbilityAnimMontage(EndMontage);
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 }
 
@@ -44,12 +50,17 @@ void UGA_MeleeAttack_Aerial_Slam::OnMontageCancelled(FGameplayTag EventTag, FGam
 
 void UGA_MeleeAttack_Aerial_Slam::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Super::OnMontageCompleted(EventTag, EventData);
+	
 }
 
 void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::EventMontageReceived(EventTag, EventData);
+
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("MovementTag.Event.ActivateTask")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
+	}	
 }
 
 UFTAAbilityDataAsset* UGA_MeleeAttack_Aerial_Slam::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
