@@ -77,6 +77,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 			{
 				if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
 				{
+					
 					FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
 
 					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
@@ -93,7 +94,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 					}
 					else
 					{
-						UE_LOG(LogTemp, Warning, TEXT("INPUT: Could not activate ability"));
 					}
 				}
 			}
@@ -156,7 +156,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 					}
 					else
 					{
-						UE_LOG(LogTemp, Warning, TEXT("QUEUE: Could not activate ability"));
+						
 					}
 				}
 			}
