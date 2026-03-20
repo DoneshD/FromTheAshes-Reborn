@@ -93,7 +93,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 					}
 					else
 					{
-						UE_LOG(LogTemp, Warning, TEXT("INPUT: Could not activate ability"));
 					}
 				}
 			}
@@ -156,7 +155,6 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 					}
 					else
 					{
-						UE_LOG(LogTemp, Warning, TEXT("QUEUE: Could not activate ability"));
 					}
 				}
 			}

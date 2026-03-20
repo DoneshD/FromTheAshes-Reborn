@@ -89,7 +89,7 @@ void UGA_Recover::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData E
 
 void UGA_Recover::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	Super::OnMontageCompleted(EventTag, EventData);
+	// Super::OnMontageCompleted(EventTag, EventData);
 
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	

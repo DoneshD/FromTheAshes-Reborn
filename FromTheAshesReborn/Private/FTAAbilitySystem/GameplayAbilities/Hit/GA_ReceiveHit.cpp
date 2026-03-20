@@ -81,45 +81,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
 	}
 	
-	/*if(!NonMontageAbility)
-	{
-		TArray<UHitReactionDataAsset*> AssetsToTry;
-		for (UHitReactionDataAsset* Asset : HitAbilityAssets)
-		{
-			if(Asset->Direction == HitInfoObject->HitData.HitDirection || Asset->Direction == ESpatialDirection::Any)
-			{
-				if(Asset->MontageToPlay)
-				{
-					AssetsToTry.Add(Asset);
-				}
-			}
-		}
-		
-		if(AssetsToTry.Num() > 0)
-		{
-			ESpatialDirection Dir = HitInfoObject->HitData.HitDirection;
-
-			// UE_LOG(LogTemp, Warning, TEXT("HitDirection: %s"),
-			// 	*StaticEnum<ESpatialDirection>()->GetNameStringByValue((int64)Dir));
-			
-			int Selection = FMath::RandRange(0, AssetsToTry.Num() - 1);
-			if(HitInfoObject->HitData.HitDirection == ESpatialDirection::Knockback)
-			{
-				Selection = 0;
-				if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-				{
-					Selection = 1;
-				}
-			}
-			// PlayAbilityAnimMontage(AssetsToTry[Selection]->MontageToPlay);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("UGA_ReceiveHit::ActivateAbility - No possible assets"));
-			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-			return;
-		}
-	}*/
 }
 
 void UGA_ReceiveHit::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)

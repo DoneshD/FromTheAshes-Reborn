@@ -124,6 +124,9 @@ public:
 	FGameplayTag QueueWindowTag;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Aerial")
+	bool IsOrientationAgnostic = false;
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Aerial")
 	bool IsAerialAbility = false;
 	
 	UPROPERTY(EditDefaultsOnly, Instanced, Category = "Aerial", meta=(EditCondition="IsAerialAbility"))

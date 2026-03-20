@@ -50,6 +50,12 @@ void UCentralStateComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// if(CMC)
+	// {
+	// 	UE_LOG(LogTemp, Warning, TEXT("%s"),
+	// 	*StaticEnum<EMovementMode>()->GetNameStringByValue((int64)CMC->MovementMode));
+	// }
+
 }
 
 FGameplayTag UCentralStateComponent::GetCurrentState()
@@ -90,28 +96,26 @@ void UCentralStateComponent::SetCurrentState(FGameplayTag StateTag)
 
 void UCentralStateComponent::SetCurrentOrientation(FGameplayTag OrientationTag, EMovementMode MovementMode)
 {
-	if(CurrentStateTag.MatchesTagExact(OrientationTag))
+	
+	// UE_LOG(LogTemp, Warning, TEXT("%s | MovementMode: %s | OrientationTag: %s"),
+	// *GetOwner()->GetName(),
+	// *StaticEnum<EMovementMode>()->GetNameStringByValue((int64)MovementMode),
+	// *OrientationTag.ToString());
+	
+	if(OrientationTag.MatchesTagExact(GroundedOrientationTag))
 	{
-		// UE_LOG(LogTemp, Error, TEXT("UCentralStateComponent::SetCurrentOrientation - Already set [%s] to [%s]"),
-		// 	*GetOwner()->GetActorNameOrLabel(), *OrientationTag.GetTagName().ToString())
-		return;
+		HandleGroundedOrientation();
 	}
-	if(!CurrentStateTag.MatchesTagExact(OrientationTag))
+	else if(OrientationTag.MatchesTagExact(AirborneOrientationTag))
 	{
-		if(OrientationTag.MatchesTagExact(GroundedOrientationTag))
-		{
-			HandleGroundedOrientation();
-		}
-		else if(OrientationTag.MatchesTagExact(AirborneOrientationTag))
-		{
-			HandeAirborneOrientation(MovementMode);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("UCentralStateComponent::SetCurrentState - [%s] - [%s] is does not match any orientation"),
-				*GetOwner()->GetActorNameOrLabel(), *OrientationTag.GetTagName().ToString())
-		}
+		HandeAirborneOrientation(MovementMode);
 	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCentralStateComponent::SetCurrentState - [%s] - [%s] is does not match any orientation"),
+			*GetOwner()->GetActorNameOrLabel(), *OrientationTag.GetTagName().ToString())
+	}
+	
 }
 
 void UCentralStateComponent::HandleNeutralState()

@@ -222,6 +222,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 			return false;
 		}
 	}
+	//Aerial
 	if(IsAerialAbility)
 	{
 		if(AerialModifer)
@@ -237,6 +238,12 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 			}
 		}
 	}
+	//both
+	else if (IsOrientationAgnostic)
+	{
+		return true;
+	}
+	//Grounded check
 	else
 	{
 		ACharacter* Character = Cast<ACharacter>(ActorInfo->AvatarActor.Get());
@@ -244,7 +251,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		{
 			return false;
 		}
-
+	
 		if(Character->GetCharacterMovement()->IsFalling() || Character->GetCharacterMovement()->IsFlying())
 		{
 			return false;

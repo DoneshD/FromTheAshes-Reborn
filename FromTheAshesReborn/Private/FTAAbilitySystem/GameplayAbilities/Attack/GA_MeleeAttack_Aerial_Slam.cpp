@@ -21,7 +21,6 @@ void UGA_MeleeAttack_Aerial_Slam::ActivateAbility(const FGameplayAbilitySpecHand
 {
 	if(!ComboManagerComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - ComboManagerComponent is Null"));
 		ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
 	}
 	
@@ -97,11 +96,8 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 {
 	Super::OnMoveComplete();
 
-	UE_LOG(LogTemp, Warning, TEXT("Removing"))
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
 	ComboManagerComponent->SetCurrentComboIndex(ComboManagerComponent->GetCurrentComboIndex() + 1);
-
-	// PlayAbilityAnimMontage(EndMontage);
 
 	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
 	
