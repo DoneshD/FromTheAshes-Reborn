@@ -26,47 +26,13 @@ bool UGA_Slammed::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 void UGA_Slammed::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	// const USlamEventObject* SlamInfoObject = Cast<USlamEventObject>(CurrentEventData.OptionalObject);
 	
-	// if(!SlamInfoObject)
-	// {
-	// 	UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::ActivateAbility - SlamInfoObject is Null"));
-	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-	// 	return;
-	// }
-
-	// if(!SlamInfoObject)
-	// {
-	// 	FVector DiagonalLocation = TempDiagonalLocation();
-	// 	
-	// 	SlamInfoObject = NewObject<USlamEventObject>(this);
-	// 	SlamInfoObject->SlamData.Location = DiagonalLocation,
-	// 	SlamInfoObject->SlamData.Speed = 3000.0f,
-	// 	SlamInfoObject->SlamData.Duration = 0.20f;
-	//
-	//
-	// }
-
-	// SlamTask = UAT_SlamCharacterAndWait::AT_SlamCharacterAndWait(this,
-	// SlamInfoObject->SlamData.Location,
-	// SlamInfoObject->SlamData.Speed,
-	// SlamInfoObject->SlamData.Duration);
-
-	// PossibleFollowupReactions = SlamInfoObject->HitData.PossibleFollowupReactions;
-	//
-	// HitLocation = SlamInfoObject->SlamData.Location;
 
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation(),
 		GetFTACharacterFromActorInfo()->GetActorLocation());
 	
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0.0f, LookAtRotation.Yaw, 0.0f));
 	
-	// if (SlamTask)
-	// {
-	// 	SlamTask->OnSlamComplete.AddDynamic(this, &UGA_Slammed::OnSlamComplete);
-	// 	SlamTask->ReadyForActivation();
-	// }
 }
 
 void UGA_Slammed::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
