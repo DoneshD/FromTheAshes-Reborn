@@ -4,6 +4,7 @@
 #include "FTAAbilityDataAsset.h"
 #include "HitReactionDataAsset.generated.h"
 
+class UMoveToLocationDataAsset;
 class UGA_ReceiveHit;
 class UGameplayEffect;
 
@@ -14,6 +15,9 @@ struct FHitDataInfo
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<UGA_ReceiveHit> HitAbilityClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	ESpatialDirection Direction;

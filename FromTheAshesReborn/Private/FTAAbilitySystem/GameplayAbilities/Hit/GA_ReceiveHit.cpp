@@ -2,6 +2,7 @@
 
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/HitReactionDataAsset.h"
+#include "DataAsset/MoveToLocationDataAsset.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -34,7 +35,26 @@ bool UGA_ReceiveHit::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
 
 void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	if(!CurrentEventData.OptionalObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+
+	HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
+
+	if(HitInfoObject->HitData.MoveToLocationData)
+	{
+		MoveToLocationDataAsset->LocationOffset = HitInfoObject->HitData.MoveToLocationData->LocationOffset;
+	}
+	else
+	{
+		
+	}
+	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
 
 	for (const FGameplayTag& Tag : HitTagContainer)
 	{
@@ -50,12 +70,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return;
 	}
 	
-	if(!CurrentEventData.OptionalObject)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
 
 	if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit")))
 	{

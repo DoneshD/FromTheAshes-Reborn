@@ -327,13 +327,13 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	if(EnableManualMovement)
 	{
 		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, MoveToLocationDataAsset);
+		if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
+		{
+			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
+			MoveToLocationAndWaitTask->ReadyForActivation();
+		}
 	}
 	
-	if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
-	{
-		MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
-		MoveToLocationAndWaitTask->ReadyForActivation();
-	}
 
 	ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
 	CentralStateComponent = GetFTACharacterFromActorInfo()->CentralStateComponent;

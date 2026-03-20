@@ -52,10 +52,12 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
 	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
+	bool SupplyMovementDataOnHit = false;
 	
 public:
 	
-
 	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
 

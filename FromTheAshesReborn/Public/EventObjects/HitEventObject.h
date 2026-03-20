@@ -5,6 +5,7 @@
 #include "UObject/Object.h"
 #include "HitEventObject.generated.h"
 
+class UMoveToLocationDataAsset;
 enum class EHitReactionDirection : uint8;
 class UGA_Recover;
 class UGA_ReceiveHit;
@@ -15,13 +16,12 @@ struct FHitInfo
 	GENERATED_BODY()
 
 	FHitInfo()
-		: Location(FVector::ZeroVector)
-		, Instigator(nullptr)
+		: 
+			Instigator(nullptr)
 		, HitDirection(ESpatialDirection::Front)
 	{}
 
-	UPROPERTY()
-	FVector Location;
+
 
 	UPROPERTY()
 	TObjectPtr<AActor> Instigator;
@@ -32,7 +32,8 @@ struct FHitInfo
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
 	TArray<TSubclassOf<UGA_Recover>> PossibleRecoveryOptions;
 
-	float Distance;
+	UPROPERTY()
+	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData;
 };
 
 

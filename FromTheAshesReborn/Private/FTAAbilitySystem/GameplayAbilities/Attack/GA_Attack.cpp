@@ -384,7 +384,11 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	HitInfoObj->HitData.HitDirection = HitData.Direction;
-	HitInfoObj->HitData.Distance = HitData.Distance;
+	
+	if(SupplyMovementDataOnHit)
+	{
+		HitInfoObj->HitData.MoveToLocationData = MoveToLocationDataAsset;
+	}
 	
 	
 	if(WeaponActors.IsEmpty())
