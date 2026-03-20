@@ -55,11 +55,7 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	FollowupEventData.OptionalObject = HitInfoObj;
-
-	if(PossibleFollowupReactions.IsEmpty())
-	{
-		PossibleFollowupReactions.Add(BackFollowup);
-	}
+	
 	
 	if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
 	{
@@ -114,57 +110,6 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 
 void UGA_Slammed::OnSlamComplete()
 {
-
-	if (ImpactNiagara)
-	{
-		float RandomPitch = FMath::FRandRange(-30.f, 30.f);
-		FRotator RandomRotation(RandomPitch, 0.f, 0.f);
-
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			GetWorld(),
-			ImpactNiagara,
-			HitLocation,
-			RandomRotation,
-			FVector(1.f),
-			true,  
-			true,  
-			ENCPoolMethod::None,
-			true);
-
-	}
-
-	if (ImpactSound)
-	{
-		float RandomPitch = UKismetMathLibrary::RandomFloatInRange(0.90, 1.30f);
-		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, HitLocation, .2, RandomPitch, .1);
-	}
-
 	
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-}
-
-FVector UGA_Slammed::TempDiagonalLocation()
-{
-	FHitResult HitResult;
-	FVector TraceStartLocation = GetFTACharacterFromActorInfo()->GetActorLocation();
-	
-	FVector Direction = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorForwardVector();
-	FVector TraceEndLocation = TraceStartLocation + FVector((Direction.X * 2000.0f), (Direction.Y * 2000.0f), -3000.0f);
-	
-
-	FCollisionObjectQueryParams GroundCollisionQueryParams;
-	GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	GroundCollisionQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-
-	if(bool bHitResult = GetWorld()->LineTraceSingleByObjectType(HitResult, TraceStartLocation, TraceEndLocation, GroundCollisionQueryParams))
-	{
-		FVector GroundPoundEndLocation = HitResult.ImpactPoint;
-		// DrawDebugSphere(GetWorld(), GroundPoundEndLocation, 12, 12, FColor::Green, true);
-		return GroundPoundEndLocation;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Ground not found"));
-		return FVector(0, 0, 0);
-	}
 }

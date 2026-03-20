@@ -16,18 +16,7 @@ class FROMTHEASHESREBORN_API UGA_Slammed : public UGA_ReceiveHit
 protected:
 
 	FVector HitLocation;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<UNiagaraSystem> ImpactNiagara;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<USoundBase> ImpactSound;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TSubclassOf<UGA_ReceiveHit> BackFollowup;
-
-	// UPROPERTY()
-	// TObjectPtr<UAT_SlamCharacterAndWait> SlamTask;
+	
 
 	UPROPERTY()
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
