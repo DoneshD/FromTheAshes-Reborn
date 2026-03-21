@@ -18,7 +18,7 @@ protected:
 	FVector HitLocation;
 	
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
 
 public:
