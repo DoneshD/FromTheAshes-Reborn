@@ -351,17 +351,20 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
-	
-	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
-	
-	if(!CurrentAbilityAsset)
+
+	if(!NonMontageAbility)
 	{
-		// UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
-		return;
+		CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
+		
+		if(!CurrentAbilityAsset)
+		{
+			// UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
+			return;
+		}
+		
+		ExtractAssetProperties(CurrentAbilityAsset);
+		PerformAbility(CurrentAbilityAsset);
 	}
-	
-	ExtractAssetProperties(CurrentAbilityAsset);
-	PerformAbility(CurrentAbilityAsset);
 	
 }
 
@@ -604,6 +607,7 @@ void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEve
 
 void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
 	ResetCombo();
 
@@ -611,6 +615,7 @@ void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEve
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	}
+	
 }
 
 void UFTAGameplayAbility::OnMoveComplete()
