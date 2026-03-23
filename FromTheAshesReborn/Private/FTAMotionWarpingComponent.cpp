@@ -104,6 +104,7 @@ void UFTAMotionWarpingComponent::WarpToTargetLocation(FWarpData WarpData)
 	FVector EnemyLocation = GetOwner()->GetActorLocation();
 		
 	FVector WarpTargetLocation = EnemyLocation + GetOwner()->GetActorForwardVector() * WarpData.WarpTargetLocationOffset;
+	
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), GetOwner()->GetActorLocation());
 	FRotator WarpTargetRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
 	

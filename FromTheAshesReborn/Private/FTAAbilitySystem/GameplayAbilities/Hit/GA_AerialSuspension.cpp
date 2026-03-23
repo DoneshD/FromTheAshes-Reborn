@@ -44,31 +44,6 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	// const USuspendEventObject* SuspendEventObj = Cast<USuspendEventObject>(CurrentEventData.OptionalObject);
-	
-	/*if(!SuspendEventObj)
-	{
-		UE_LOG(LogTemp, Error, TEXT("SuspendEventObj is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-		
-	}
-	
-	SuspendTask = UAT_SuspendInAirAndWait::AT_SuspendInAirAndWait(this,
-	SuspendEventObj->SuspendData.DescentSpeed,
-	5.0f);;
-	
-	if (SuspendTask)
-	{
-		SuspendTask->OnSuspendComplete.AddDynamic(this, &UGA_AerialSuspension::OnSuspendComplete);
-		SuspendTask->ReadyForActivation();
-	}
-
-	*/
-	
-
-	//-----------
-
 
 	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail")))
 	{
@@ -76,6 +51,7 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	}
 
 	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+	ACC->TotalAirTime = 0.0f;
 	
 	if(ACC->EnableAerialCombatEffect)
 	{
@@ -87,11 +63,6 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	{
 		if(ACC->AddAerialCombatGravity)
 		{
-			UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
-			if(CSC)
-			{
-				CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Falling);
-			}
 			if(ACC->AddAerialCombatGravity)
 			{
 				FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->AddAerialCombatGravity, 1.0f);

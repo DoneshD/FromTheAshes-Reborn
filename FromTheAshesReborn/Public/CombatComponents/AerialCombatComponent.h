@@ -52,7 +52,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
 	FGameplayTag AerialAttackCounterTag;
 	
-	float TotalAirTime = 0.0f;
 
 public:
 
@@ -60,6 +59,7 @@ public:
 	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
 
 	int TestAttackCounter = 0;
+	float TotalAirTime = 0.0f;
 
 protected:
 
