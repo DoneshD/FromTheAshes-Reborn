@@ -518,7 +518,22 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 		return;
 	}
 
-	// CurrentAttackData = AttackAsset->AttackData;
+	if (!AttackAsset->PossibleHitReactions.IsEmpty())
+	{
+		if (!CurrentAttackData)
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
+			return;
+		}
+
+		for (const FHitDataInfo& HitData : AttackAsset->PossibleHitReactions)
+		{
+			if (HitData.HitAbilityClass)
+			{
+				CurrentAttackData->PossibleHitReactions.Insert(HitData, 0);
+			}
+		}
+	}
 	
 }
 

@@ -368,7 +368,7 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		
 		if(!CurrentAbilityAsset)
 		{
-			// UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
+			UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - CurrentAbilityAsset is Null"))
 			return;
 		}
 		
@@ -584,7 +584,10 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 
 void UFTAGameplayAbility::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
 {
-	
+	if(InAbilityRuntimeData)
+	{
+		
+	}
 }
 
 
