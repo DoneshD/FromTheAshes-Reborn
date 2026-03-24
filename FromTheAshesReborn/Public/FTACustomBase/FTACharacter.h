@@ -177,9 +177,6 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	bool HasSlammingHeavyTag() const;
-	
-	UFUNCTION(BlueprintPure)
-	bool HasSpinningTag() const;
 
 	UFUNCTION(BlueprintPure)
 	bool HasDownedTag() const;

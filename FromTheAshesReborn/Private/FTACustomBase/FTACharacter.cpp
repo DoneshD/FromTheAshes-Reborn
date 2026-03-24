@@ -340,11 +340,6 @@ bool AFTACharacter::HasSlammingHeavyTag() const
 	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
 }
 
-bool AFTACharacter::HasSpinningTag() const
-{
-	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Spin.Light"));
-}
-
 bool AFTACharacter::HasDownedTag() const
 {
 	return FTAAbilitySystemComponent && FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
