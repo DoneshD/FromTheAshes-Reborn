@@ -160,8 +160,15 @@ public:
 	void SetupLocalPlayerController();
 	
 	void ResolveSpringArmParams();
+	
+	void ResolveSpringArmLength();
+	void ResolveSpringArmSocketOffset();
+	
 	void ResolveControlRotationParams();
+	void ResolveTargetControlRotation();
+	
 	void ResolveCameraAnchorParams();
+	void ResolveCameraAnchorLocation();
 	
 	void ResolveCameraParams();
 	

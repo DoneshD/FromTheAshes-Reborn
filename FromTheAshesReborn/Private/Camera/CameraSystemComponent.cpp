@@ -230,23 +230,33 @@ void UCameraSystemComponent::ResolveSpringArmParams()
 {
     if (!CurrentCameraStateParams) return;
 
-	//Arm length
-    ResolveCameraParam<float, FCameraFloatParam>(
-        CameraParamsArray,
-        CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
-		CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat, 
-        FCameraParamAccessors<float, FCameraFloatParam>
-        {
-            [](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->SpringArmParams.ArmLength; },
-            [](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
-            [](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
-            [](float& Target, const float& Value) { Target = Value; },
-            [](const float& Target, const float& Value) { return Target + Value; },
-        	[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
-        	
-        }
-    );
+	ResolveSpringArmLength();
+	ResolveSpringArmSocketOffset();
+	
+}
 
+void UCameraSystemComponent::ResolveSpringArmLength()
+{
+	//Arm length
+	ResolveCameraParam<float, FCameraFloatParam>(
+		CameraParamsArray,
+		CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
+		CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat, 
+		FCameraParamAccessors<float, FCameraFloatParam>
+		{
+			[](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->SpringArmParams.ArmLength; },
+			[](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
+			[](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
+			[](float& Target, const float& Value) { Target = Value; },
+			[](const float& Target, const float& Value) { return Target + Value; },
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+        	
+		}
+	);
+}
+
+void UCameraSystemComponent::ResolveSpringArmSocketOffset()
+{
 	//Socket Offset
 	ResolveCameraParam<FVector, FCameraVectorParam>(
 		CameraParamsArray,
@@ -263,10 +273,14 @@ void UCameraSystemComponent::ResolveSpringArmParams()
 		}
 
 	);
-	
 }
 
 void UCameraSystemComponent::ResolveControlRotationParams()
+{
+	ResolveTargetControlRotation();
+}
+
+void UCameraSystemComponent::ResolveTargetControlRotation()
 {
 	ResolveCameraParam<FRotator, FCameraRotatorParam>(
 		CameraParamsArray,
@@ -307,6 +321,11 @@ void UCameraSystemComponent::ResolveControlRotationParams()
 }
 
 void UCameraSystemComponent::ResolveCameraAnchorParams()
+{
+	ResolveCameraAnchorLocation();
+}
+
+void UCameraSystemComponent::ResolveCameraAnchorLocation()
 {
 	ResolveCameraParam<FVector, FCameraVectorParam>(
 		CameraParamsArray,
