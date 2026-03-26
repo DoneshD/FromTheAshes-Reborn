@@ -83,6 +83,10 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		CameraParameters->SpringArmParams.ArmLength.Value = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
 		CameraParameters->ControlRotationParams.TargetControlRotation.Value = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraParameters, DeltaTime);
 
+		// CameraSystemComponent->ResolveCameraParams();
+		CameraSystemComponent->ResolveSpringArmParams();
+		CameraSystemComponent->ResolveCameraAnchorParams();
+		
 		if(FTAAbilitySystemComponent)
 		{
 			if(!FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation")))

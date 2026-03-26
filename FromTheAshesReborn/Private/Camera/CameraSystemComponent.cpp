@@ -75,15 +75,11 @@ void UCameraSystemComponent::BeginPlay()
 	}
 	AddCameraParameters(NeutralCameraStateParams);
 
-	BaseRotation = OwnerPlayerController->GetControlRotation();
-	CurrentCameraStateParams->StopCalculating = false;
 }
 
 void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	ResolveCameraParams();
 
 	if (SpringArmComponent)
 	{
@@ -294,9 +290,8 @@ void UCameraSystemComponent::ResolveTargetControlRotation()
 			[](FRotator& Target, const FRotator& Value){ Target = Value; },
 			[this](const FRotator& Target, const FRotator& Value)
 						{
-							FRotator Result = Target + Value;
+							FRotator Result = OwnerPlayerController->GetControlRotation() + Value;
 
-							CurrentCameraStateParams->StopCalculating = true;
 							UE_LOG(LogTemp, Warning, TEXT("Current: %s | Target: %s | Value: %s | Result: %s"),
 								*OwnerPlayerController->GetControlRotation().ToString(),
 								*Target.ToString(),
@@ -362,21 +357,22 @@ void UCameraSystemComponent::ResolveCameraParams()
 {
 	ResolveSpringArmParams();
 	ResolveCameraAnchorParams();
-	if(!CurrentCameraStateParams->StopCalculating)
-	{
-		ResolveControlRotationParams();
-	}
+	
+	ResolveControlRotationParams();
+	
 	
 }
 
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.AddUnique(CameraParams);
+	ResolveCameraParams();
 }
 
 void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.Remove(CameraParams);
+	ResolveCameraParams();
 }
 
 void UCameraSystemComponent::SetupLocalPlayerController()

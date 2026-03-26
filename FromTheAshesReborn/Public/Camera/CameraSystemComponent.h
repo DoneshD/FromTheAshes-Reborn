@@ -30,7 +30,6 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
-	FRotator BaseRotation;
 
 protected:
 
@@ -143,6 +142,8 @@ public:
 			if (Meta.CameraOperation == ECameraOperation::Additive)
 			{
 				TargetValue = Access.AdditiveOp(TargetValue, Access.GetValue(Param));
+				// UE_LOG(LogTemp, Display, TEXT("TargetValue = %f"), TargetValue);
+				break;
 			}
 		}
 	}
