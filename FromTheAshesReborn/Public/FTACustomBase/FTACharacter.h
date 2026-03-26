@@ -42,6 +42,12 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilityS
 
 public:
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "TempTag")
+	FGameplayTag TempSlamLoopTag;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "TempTag")
+	FGameplayTag TempRushdownLoopTag;
+
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
@@ -177,6 +183,9 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	bool HasSlammingHeavyTag() const;
+
+	UFUNCTION(BlueprintPure)
+	bool HasAerialRushdownTag() const;
 
 	UFUNCTION(BlueprintPure)
 	bool HasDownedTag() const;

@@ -26,6 +26,11 @@ void UGA_MeleeAttack_Aerial_Slam::ActivateAbility(const FGameplayAbilitySpecHand
 	
 	ResetCombo();
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+
+	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation"));
+	}
 }
 
 void UGA_MeleeAttack_Aerial_Slam::CancelAbility(const FGameplayAbilitySpecHandle Handle,
@@ -33,6 +38,7 @@ void UGA_MeleeAttack_Aerial_Slam::CancelAbility(const FGameplayAbilitySpecHandle
 	bool bReplicateCancelAbility)
 {
 	Super::CancelAbility(Handle, ActorInfo, ActivationInfo, bReplicateCancelAbility);
+	
 }
 
 void UGA_MeleeAttack_Aerial_Slam::EndAbility(const FGameplayAbilitySpecHandle Handle,
@@ -40,6 +46,12 @@ void UGA_MeleeAttack_Aerial_Slam::EndAbility(const FGameplayAbilitySpecHandle Ha
 	bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	
+	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation"));
+	}
 }
 
 void UGA_MeleeAttack_Aerial_Slam::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
@@ -63,7 +75,7 @@ void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FG
 
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("MovementTag.Event.ActivateTask")))
 	{
-		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
+		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(LoopTag);
 	}	
 }
 
@@ -96,7 +108,7 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 {
 	Super::OnMoveComplete();
 
-	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("CombatMovementTag.Slam.Heavy"));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LoopTag);
 	ComboManagerComponent->SetCurrentComboIndex(ComboManagerComponent->GetCurrentComboIndex() + 1);
 
 	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);

@@ -55,6 +55,18 @@ void UTargetingSystemComponent::BeginPlay()
 	}
 
 	SetupLocalPlayerController();
+
+	FTAAbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()));
+
+	if(FTAAbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("FTAASC found"));
+	}
+	
+	if(!FTAAbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("FTAASC not found"));
+	}
 }
 
 void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -70,8 +82,14 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		CameraParameters->CameraAnchorParams.TargetLocation.Value = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
 		CameraParameters->SpringArmParams.ArmLength.Value = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
 		CameraParameters->ControlRotationParams.TargetControlRotation.Value = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraParameters, DeltaTime);
-		
-		SetOwnerActorRotation();
+
+		if(FTAAbilitySystemComponent)
+		{
+			if(!FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation")))
+			{
+				SetOwnerActorRotation();
+			}
+		}
 	}
 
 	if (!IsTargetLocked || !LockedOnTargetActor)

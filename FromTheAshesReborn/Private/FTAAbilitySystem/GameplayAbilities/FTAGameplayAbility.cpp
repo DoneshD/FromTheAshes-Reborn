@@ -656,6 +656,7 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 	{
 		if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnTagReceived)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Hello"))
 			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
 			MoveToLocationAndWaitTask->ReadyForActivation();
 		}

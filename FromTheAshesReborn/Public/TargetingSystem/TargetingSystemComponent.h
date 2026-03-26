@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
+class UFTAAbilitySystemComponent;
 class UCameraParamsDataAsset;
 class UCameraSystemComponent;
 class AFTAPlayerCameraManger;
@@ -105,6 +106,9 @@ private:
 
 	UPROPERTY()
 	UWidgetComponent* TargetLockedOnWidgetComponent;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
 	UPROPERTY()
 	AActor* LockedOnTargetActor;

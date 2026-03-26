@@ -9,6 +9,10 @@ class FROMTHEASHESREBORN_API UGA_MeleeAttack_Aerial_Slam : public UGA_MeleeAttac
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FGameplayTag LoopTag = FGameplayTag::EmptyTag;
+
 public:
 
 	UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer& = FObjectInitializer::Get());

@@ -68,7 +68,16 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationOffset.X
 	+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationOffset.Y
 	+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationOffset.Z;
-	
+
+	DrawDebugSphere(
+	GetWorld(),
+	EndLocation,
+	25.0f,        
+	12,           
+	FColor::Green,
+	false,      
+	2.0f          
+);
 }
 
 void UFTAAT_MoveToLocationAndWait::ExternalCancel()
