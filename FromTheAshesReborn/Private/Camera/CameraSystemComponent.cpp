@@ -74,6 +74,9 @@ void UCameraSystemComponent::BeginPlay()
 		return;
 	}
 	AddCameraParameters(NeutralCameraStateParams);
+
+	BaseRotation = OwnerPlayerController->GetControlRotation();
+	CurrentCameraStateParams->StopCalculating = false;
 }
 
 void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -275,7 +278,19 @@ void UCameraSystemComponent::ResolveControlRotationParams()
 			[](const FCameraRotatorParam& RotatorParam) -> const FCameraValueData& { return RotatorParam.MetaData; },
 			[](const FCameraRotatorParam& RotatorParam) -> const FRotator& { return RotatorParam.Value; },
 			[](FRotator& Target, const FRotator& Value){ Target = Value; },
-			[](const FRotator& Target, const FRotator& Value){ return Target + Value; },
+			[this](const FRotator& Target, const FRotator& Value)
+						{
+							FRotator Result = Target + Value;
+
+							CurrentCameraStateParams->StopCalculating = true;
+							UE_LOG(LogTemp, Warning, TEXT("Current: %s | Target: %s | Value: %s | Result: %s"),
+								*OwnerPlayerController->GetControlRotation().ToString(),
+								*Target.ToString(),
+								*Value.ToString(),
+								*Result.ToString());
+
+							return Result;
+						},
 			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
 		},
 
@@ -327,8 +342,12 @@ void UCameraSystemComponent::ResolveCameraAnchorParams()
 void UCameraSystemComponent::ResolveCameraParams()
 {
 	ResolveSpringArmParams();
-	ResolveControlRotationParams();
 	ResolveCameraAnchorParams();
+	if(!CurrentCameraStateParams->StopCalculating)
+	{
+		ResolveControlRotationParams();
+	}
+	
 }
 
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)

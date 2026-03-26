@@ -230,5 +230,7 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Input")
 	FInputOffsetStruct InputOffsetInfo;
+
+	bool StopCalculating = false;
 	
 };

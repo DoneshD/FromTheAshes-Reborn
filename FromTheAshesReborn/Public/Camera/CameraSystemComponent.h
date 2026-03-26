@@ -30,6 +30,7 @@ private:
 
 	UPROPERTY()
 	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
+	FRotator BaseRotation;
 
 protected:
 
