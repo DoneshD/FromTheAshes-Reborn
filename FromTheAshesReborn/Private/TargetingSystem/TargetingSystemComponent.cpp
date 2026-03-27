@@ -83,9 +83,19 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		CameraParameters->SpringArmParams.ArmLength.Value = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
 		CameraParameters->ControlRotationParams.TargetControlRotation.Value = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraParameters, DeltaTime);
 
-		// CameraSystemComponent->ResolveCameraParams();
 		CameraSystemComponent->ResolveSpringArmParams();
 		CameraSystemComponent->ResolveCameraAnchorParams();
+		
+
+		if(CameraSystemComponent->CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.Priority < 50)
+		{
+			CameraSystemComponent->ResolveControlRotationParams();
+		}
+		UE_LOG(LogTemp, Warning, TEXT("Priority: %f"),
+		CameraSystemComponent
+		->CurrentCameraStateParams
+		->ControlRotationParams
+		.TargetControlRotation.MetaData.Priority);
 		
 		if(FTAAbilitySystemComponent)
 		{

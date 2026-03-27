@@ -28,9 +28,6 @@ private:
 	UPROPERTY()
 	TObjectPtr<AFTAPlayerCameraManger> FTAPlayerCameraManger;
 
-	UPROPERTY()
-	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
-
 protected:
 
 	UPROPERTY()
@@ -68,6 +65,9 @@ public:
 
 	bool UseControllerRotation = true;
 
+	UPROPERTY()
+	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
+
 public:
 	
 	template<typename TValue, typename TParam>
@@ -79,13 +79,15 @@ public:
 		TFunction<void(TValue&, const TValue&)> SetValue;
 		TFunction<TValue(const TValue&, const TValue&)> AdditiveOp;
 		TFunction<float(const FCameraValueData&)> GetInLerp;
+		TFunction<float(const FCameraValueData&)> GetPriority;
 	};
 	
 	template<typename TValue, typename TParam>
 	static void ResolveCameraParam(
 	const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
 	TValue& TargetValue,
-	float& TargetLerpSpeed, 
+	float& TargetLerpSpeed,
+	float& Priority,
 	const FCameraParamAccessors<TValue, TParam>& Access,
 	TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr)
 	{
@@ -111,10 +113,12 @@ public:
 		{
 			const TParam& Param = Access.GetParam(Params.Get());
 			const FCameraValueData& Meta = Access.GetValueMetaData(Param);
+			Priority = Access.GetPriority(Meta);
 
 			if (!Meta.ShouldAdjust) continue;
 
 			TargetLerpSpeed = Access.GetInLerp(Meta);
+			Priority = Access.GetPriority(Meta);
 			break;
 		}
 
@@ -142,7 +146,6 @@ public:
 			if (Meta.CameraOperation == ECameraOperation::Additive)
 			{
 				TargetValue = Access.AdditiveOp(TargetValue, Access.GetValue(Param));
-				// UE_LOG(LogTemp, Display, TEXT("TargetValue = %f"), TargetValue);
 				break;
 			}
 		}

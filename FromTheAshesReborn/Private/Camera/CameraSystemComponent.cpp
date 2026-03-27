@@ -237,7 +237,8 @@ void UCameraSystemComponent::ResolveSpringArmLength()
 	ResolveCameraParam<float, FCameraFloatParam>(
 		CameraParamsArray,
 		CurrentCameraStateParams->SpringArmParams.ArmLength.Value,
-		CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat, 
+		CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.InLerpSpeedFloat,
+		CurrentCameraStateParams->SpringArmParams.ArmLength.MetaData.Priority,
 		FCameraParamAccessors<float, FCameraFloatParam>
 		{
 			[](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->SpringArmParams.ArmLength; },
@@ -245,7 +246,9 @@ void UCameraSystemComponent::ResolveSpringArmLength()
 			[](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
 			[](float& Target, const float& Value) { Target = Value; },
 			[](const float& Target, const float& Value) { return Target + Value; },
-			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;},
+			[](const FCameraValueData& MetaData) -> float {return MetaData.Priority;}
+			
         	
 		}
 	);
@@ -258,6 +261,7 @@ void UCameraSystemComponent::ResolveSpringArmSocketOffset()
 		CameraParamsArray,
 		CurrentCameraStateParams->SpringArmParams.SocketOffset.Value,
 		CurrentCameraStateParams->SpringArmParams.SocketOffset.MetaData.InLerpSpeedFloat,
+		CurrentCameraStateParams->SpringArmParams.SocketOffset.MetaData.Priority,
 		FCameraParamAccessors<FVector, FCameraVectorParam>
 		{
 			[](const UCameraParamsDataAsset* CameraParamsAsset) -> const FCameraVectorParam& {return CameraParamsAsset->SpringArmParams.SocketOffset; },
@@ -265,7 +269,8 @@ void UCameraSystemComponent::ResolveSpringArmSocketOffset()
 			[](const FCameraVectorParam& VectorParam) -> const FVector& { return VectorParam.Value; },
 			[](FVector& Target, const FVector& Value){ Target = Value; },
 			[](const FVector& Target, const FVector& Value){ return Target + Value; },
-			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;},
+			[](const FCameraValueData& MetaData) -> float {return MetaData.Priority;}
 		}
 
 	);
@@ -282,6 +287,7 @@ void UCameraSystemComponent::ResolveTargetControlRotation()
 		CameraParamsArray,
 		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.Value,
 		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.InLerpSpeedFloat,
+		CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.Priority,
 		FCameraParamAccessors<FRotator, FCameraRotatorParam>
 		{
 			[](const UCameraParamsDataAsset* CameraParamsAsset) -> const FCameraRotatorParam& {return CameraParamsAsset->ControlRotationParams.TargetControlRotation; },
@@ -291,16 +297,25 @@ void UCameraSystemComponent::ResolveTargetControlRotation()
 			[this](const FRotator& Target, const FRotator& Value)
 						{
 							FRotator Result = OwnerPlayerController->GetControlRotation() + Value;
-
+							
 							UE_LOG(LogTemp, Warning, TEXT("Current: %s | Target: %s | Value: %s | Result: %s"),
 								*OwnerPlayerController->GetControlRotation().ToString(),
 								*Target.ToString(),
 								*Value.ToString(),
 								*Result.ToString());
-
+							
 							return Result;
 						},
-			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+			[](const FCameraValueData& MetaData) -> float
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Lerp: %f"), MetaData.InLerpSpeedFloat);
+				return MetaData.InLerpSpeedFloat;
+			},
+			[](const FCameraValueData& MetaData) -> float
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Control rotation priority: %f"), MetaData.Priority);
+				return MetaData.Priority;
+			}
 		},
 
 		[this](FRotator& OutValue, const FCameraRotatorParam& Param, const UCameraParamsDataAsset* CameraParamsAsset)
@@ -326,6 +341,7 @@ void UCameraSystemComponent::ResolveCameraAnchorLocation()
 		CameraParamsArray,
 		CurrentCameraStateParams->CameraAnchorParams.TargetLocation.Value,
 		CurrentCameraStateParams->CameraAnchorParams.TargetLocation.MetaData.InLerpSpeedFloat,
+		CurrentCameraStateParams->CameraAnchorParams.TargetLocation.MetaData.Priority,
 		FCameraParamAccessors<FVector, FCameraVectorParam>
 		{
 			[](const UCameraParamsDataAsset* CameraParamsAsset) -> const FCameraVectorParam& {return CameraParamsAsset->CameraAnchorParams.TargetLocation; },
@@ -333,7 +349,8 @@ void UCameraSystemComponent::ResolveCameraAnchorLocation()
 			[](const FCameraVectorParam& VectorParam) -> const FVector& { return VectorParam.Value; },
 			[](FVector& Target, const FVector& Value){ Target = Value; },
 			[](const FVector& Target, const FVector& Value){ return Target + Value; },
-			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;}
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;},
+			[](const FCameraValueData& MetaData) -> float {return MetaData.Priority;}
 		},
 
 		[this](FVector& OutValue, const FCameraVectorParam& Param, const UCameraParamsDataAsset* CameraParamsAsset)
