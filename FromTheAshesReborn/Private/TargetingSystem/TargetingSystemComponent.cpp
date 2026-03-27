@@ -87,9 +87,10 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		CameraSystemComponent->ResolveCameraAnchorParams();
 		
 
-		if(CameraSystemComponent->CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.Priority < 50)
+		if(CameraSystemComponent->CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.Priority <= 50)
 		{
 			CameraSystemComponent->ResolveControlRotationParams();
+			UE_LOG(LogTemp, Warning, TEXT("Here"))
 		}
 		UE_LOG(LogTemp, Warning, TEXT("Priority: %f"),
 		CameraSystemComponent
