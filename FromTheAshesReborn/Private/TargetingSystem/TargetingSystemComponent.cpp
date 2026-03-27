@@ -57,11 +57,6 @@ void UTargetingSystemComponent::BeginPlay()
 	SetupLocalPlayerController();
 
 	FTAAbilitySystemComponent = Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetOwner()));
-
-	if(FTAAbilitySystemComponent)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("FTAASC found"));
-	}
 	
 	if(!FTAAbilitySystemComponent)
 	{
@@ -90,13 +85,7 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 		if(CameraSystemComponent->CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.Priority <= 50)
 		{
 			CameraSystemComponent->ResolveControlRotationParams();
-			UE_LOG(LogTemp, Warning, TEXT("Here"))
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Priority: %f"),
-		CameraSystemComponent
-		->CurrentCameraStateParams
-		->ControlRotationParams
-		.TargetControlRotation.MetaData.Priority);
 		
 		if(FTAAbilitySystemComponent)
 		{

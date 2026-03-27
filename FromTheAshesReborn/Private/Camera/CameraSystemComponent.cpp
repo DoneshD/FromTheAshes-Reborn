@@ -297,23 +297,14 @@ void UCameraSystemComponent::ResolveTargetControlRotation()
 			[this](const FRotator& Target, const FRotator& Value)
 						{
 							FRotator Result = OwnerPlayerController->GetControlRotation() + Value;
-							
-							UE_LOG(LogTemp, Warning, TEXT("Current: %s | Target: %s | Value: %s | Result: %s"),
-								*OwnerPlayerController->GetControlRotation().ToString(),
-								*Target.ToString(),
-								*Value.ToString(),
-								*Result.ToString());
-							
 							return Result;
 						},
 			[](const FCameraValueData& MetaData) -> float
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Lerp: %f"), MetaData.InLerpSpeedFloat);
 				return MetaData.InLerpSpeedFloat;
 			},
 			[](const FCameraValueData& MetaData) -> float
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Control rotation priority: %f"), MetaData.Priority);
 				return MetaData.Priority;
 			}
 		},
