@@ -39,6 +39,20 @@ UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponen
 	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor, LookForComponent));
 }
 
+void UFTAAbilitySystemComponent::GiveAbilityToASC(TSubclassOf<UFTAGameplayAbility> AbilityToGrant, FGameplayTag InputTag, FGameplayTag ActivationGroupTag)
+{
+	UFTAGameplayAbility* AbilityCDO = AbilityToGrant->GetDefaultObject<UFTAGameplayAbility>();
+	
+	// FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilityToGrant.AbilityLevel);
+	FGameplayAbilitySpec AbilitySpec(AbilityCDO);
+	
+	// AbilitySpec.SourceObject = SourceObject;
+	AbilitySpec.GetDynamicSpecSourceTags().AddTag(InputTag);
+	AbilitySpec.GetDynamicSpecSourceTags().AddTag(ActivationGroupTag);
+	
+	const FGameplayAbilitySpecHandle AbilitySpecHandle = GiveAbility(AbilitySpec);
+}
+
 void UFTAAbilitySystemComponent::AbilityLocalInputPressed(int32 InputID)
 {
 	if (IsGenericConfirmInputBound(InputID))

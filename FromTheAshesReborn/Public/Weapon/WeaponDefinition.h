@@ -40,7 +40,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category=Equipment)
 	TSubclassOf<UWeaponInstance> InstanceType;
 
-	UPROPERTY(EditDefaultsOnly, Category=Equipment)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category=Equipment)
 	TArray<TObjectPtr<const UFTAAbilitySet>> AbilitySetsToGrant;
 
 	UPROPERTY(EditDefaultsOnly, Category=Equipment)

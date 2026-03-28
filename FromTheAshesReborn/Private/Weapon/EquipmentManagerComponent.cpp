@@ -64,6 +64,7 @@ UWeaponInstance* UEquipmentManagerComponent::SetEquippedWeapon(TSubclassOf<UWeap
 	check(WeaponDefinition != nullptr);
 	
 	const UWeaponDefinition* WeaponCDO = GetDefault<UWeaponDefinition>(WeaponDefinition);
+	CurrentEquippedWeaponDefinition = WeaponCDO;
 
 	TSubclassOf<UWeaponInstance> InstanceType = WeaponCDO->InstanceType;
 	if (InstanceType == nullptr)
@@ -115,6 +116,16 @@ UWeaponInstance* UEquipmentManagerComponent::GetEquippedWeaponInstance()
 		return CurrentEquippedWeaponInstance;
 	}
 	UE_LOG(LogTemp, Error, TEXT("No currently equipped instance"));
+	return nullptr;
+}
+
+const UWeaponDefinition* UEquipmentManagerComponent::GetEquippedWeaponDefinition()
+{
+	if(CurrentEquippedWeaponDefinition)
+	{
+		return CurrentEquippedWeaponDefinition;
+	}
+	UE_LOG(LogTemp, Error, TEXT("No currently equipped definition"));
 	return nullptr;
 }
 

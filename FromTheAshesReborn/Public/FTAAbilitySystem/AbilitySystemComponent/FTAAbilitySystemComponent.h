@@ -69,6 +69,9 @@ public:
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
 
+	UFUNCTION(BlueprintCallable)
+	void GiveAbilityToASC(TSubclassOf<UFTAGameplayAbility> AbilityToGrant, FGameplayTag InputTag, FGameplayTag ActivationGroupTag);
+
 	virtual void AbilityLocalInputPressed(int32 InputID) override;
 
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);

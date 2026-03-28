@@ -19,16 +19,16 @@ struct FFTAAbilitySet_GameplayAbility
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "Ability"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Meta = (Categories = "Ability"))
 	TSubclassOf<UFTAGameplayAbility> Ability = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AbilityLevel")
 	int32 AbilityLevel = 1;
 	
-	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "InputTag"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;
 
-	UPROPERTY(EditDefaultsOnly, Meta = (Categories = "ActivationGroupTag"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Meta = (Categories = "ActivationGroupTag"))
 	FGameplayTag DefaultActivationGroupTag;
 };
 
@@ -93,9 +93,13 @@ public:
 	
 	void GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFTAAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject = nullptr) const;
 
+	UFUNCTION(BlueprintCallable)
+	void AddAbilityToAbilitySet(UFTAAbilitySystemComponent* FTAASC, FFTAAbilitySet_GameplayAbility GameplayAbilityToAdd);
+
+
 protected:
 
-	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Abilities", meta=(TitleProperty=Ability))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Gameplay Abilities", meta=(TitleProperty=Ability))
 	TArray<FFTAAbilitySet_GameplayAbility> GrantedGameplayAbilities;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Gameplay Effects", meta=(TitleProperty=GameplayEffect))

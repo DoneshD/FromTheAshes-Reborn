@@ -139,3 +139,23 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 		}
 	}
 }
+
+void UFTAAbilitySet::AddAbilityToAbilitySet(UFTAAbilitySystemComponent* FTAASC, FFTAAbilitySet_GameplayAbility GameplayAbilityToAdd)
+{
+	
+	UFTAGameplayAbility* AbilityCDO = GameplayAbilityToAdd.Ability->GetDefaultObject<UFTAGameplayAbility>();
+	
+	FGameplayAbilitySpec AbilitySpec(AbilityCDO, GameplayAbilityToAdd.AbilityLevel);
+	// AbilitySpec.SourceObject = SourceObject;
+	AbilitySpec.GetDynamicSpecSourceTags().AddTag(GameplayAbilityToAdd.InputTag);
+	AbilitySpec.GetDynamicSpecSourceTags().AddTag(GameplayAbilityToAdd.DefaultActivationGroupTag);
+	
+	const FGameplayAbilitySpecHandle AbilitySpecHandle = FTAASC->GiveAbility(AbilitySpec);
+
+	GrantedGameplayAbilities.Add(GameplayAbilityToAdd);
+	
+	// if (OutGrantedHandles)
+	// {
+	// 	OutGrantedHandles->AddAbilitySpecHandle(AbilitySpecHandle);
+	// }
+}
