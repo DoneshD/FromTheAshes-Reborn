@@ -59,6 +59,12 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	}
 	
+	UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+	if(CSC)
+	{
+		CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Falling);
+	}
+	
 	if(ACC && ACC->IsValidLowLevel())
 	{
 		if(ACC->AddAerialCombatGravity)
@@ -85,7 +91,7 @@ void UGA_AerialSuspension::EndAbility(const FGameplayAbilitySpecHandle Handle, c
 
 void UGA_AerialSuspension::OnSuspendComplete()
 {
-	// EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	
 }
 
 void UGA_AerialSuspension::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

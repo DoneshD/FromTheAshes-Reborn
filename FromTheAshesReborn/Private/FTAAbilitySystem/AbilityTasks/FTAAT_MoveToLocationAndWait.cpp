@@ -113,10 +113,30 @@ void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 
 void UFTAAT_MoveToLocationAndWait::LocationReached()
 {
-	CMC->Velocity.Z = 0.0f;
-	CMC->GravityScale = 0.0f;
+	// CMC->Velocity.Z = 0.0f;
+	// CMC->GravityScale = 0.0f;
+	//
+	// CMC->Velocity = FVector::ZeroVector;
+
 	
-	CMC->Velocity = FVector::ZeroVector;
+	if(MoveToLocationData->SetGravity)
+	{
+		CMC->GravityScale = MoveToLocationData->Gravity;
+	}
+	else
+	{
+		CMC->GravityScale = 0.0f;
+	}
+
+	if(MoveToLocationData->SetVelocity)
+	{
+		CMC->Velocity = MoveToLocationData->LocationReachedVelocity;
+	}
+	else
+	{
+		// CMC->Velocity.Z = 0.0f;
+		// CMC->Velocity = FVector::ZeroVector;
+	}
 	
 	OnMoveCompleted.Broadcast();
 	EndTask();

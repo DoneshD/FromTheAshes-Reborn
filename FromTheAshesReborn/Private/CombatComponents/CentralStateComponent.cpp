@@ -52,10 +52,12 @@ void UCentralStateComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 	// if(CMC)
 	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("%s"),
-	// 	*StaticEnum<EMovementMode>()->GetNameStringByValue((int64)CMC->MovementMode));
+	// 	UE_LOG(LogTemp, Warning, TEXT("%s | MovementMode: %s | OrientationTag: %s | CurrentStateTag: %s"),
+	// 	*GetOwner()->GetName(),
+	// 	*StaticEnum<EMovementMode>()->GetNameStringByValue((int64)CMC->MovementMode),
+	// 	*CurrentOrientationTag.ToString(),
+	// 	*CurrentStateTag.ToString());
 	// }
-
 }
 
 FGameplayTag UCentralStateComponent::GetCurrentState()
@@ -96,11 +98,6 @@ void UCentralStateComponent::SetCurrentState(FGameplayTag StateTag)
 
 void UCentralStateComponent::SetCurrentOrientation(FGameplayTag OrientationTag, EMovementMode MovementMode)
 {
-	
-	// UE_LOG(LogTemp, Warning, TEXT("%s | MovementMode: %s | OrientationTag: %s"),
-	// *GetOwner()->GetName(),
-	// *StaticEnum<EMovementMode>()->GetNameStringByValue((int64)MovementMode),
-	// *OrientationTag.ToString());
 	
 	if(OrientationTag.MatchesTagExact(GroundedOrientationTag))
 	{
@@ -154,7 +151,7 @@ void UCentralStateComponent::HandleGroundedOrientation()
 	{
 		ASC->RemoveLooseGameplayTag(AirborneOrientationTag);
 	}
-	CurrentStateTag = GroundedOrientationTag;
+	CurrentOrientationTag = GroundedOrientationTag;
 	CMC->SetMovementMode(MOVE_Walking);
 	
 	AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
@@ -180,7 +177,7 @@ void UCentralStateComponent::HandeAirborneOrientation(EMovementMode MovementMode
 		ASC->RemoveLooseGameplayTag(DownedStateTag);
 	}
 	
-	CurrentStateTag = AirborneOrientationTag;
+	CurrentOrientationTag = AirborneOrientationTag;
 
 	if(MovementMode == MOVE_Falling)
 	{

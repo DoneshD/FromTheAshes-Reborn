@@ -30,14 +30,20 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Location Offset")
 	FVector LocationOffset = FVector::ZeroVector;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
-	FVector LaunchVelocity = FVector::ZeroVector;
+	bool SetVelocity = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached", meta = (EditCondition = "SetGravity"))
+	FVector LocationReachedVelocity = FVector::ZeroVector;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
 	bool SetGravity = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached", meta = (EditCondition = "SetGravity"))
 	float Gravity = 0.0f;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
+	FVector LaunchVelocity = FVector::ZeroVector;
 	
 };

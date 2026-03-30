@@ -57,8 +57,11 @@ protected:
 	void HandeAirborneOrientation(EMovementMode MovementMode);
 
 public:
-	
+
+	UFUNCTION(BlueprintCallable)
 	void SetCurrentState(FGameplayTag StateTag);
+
+	UFUNCTION(BlueprintCallable)
 	void SetCurrentOrientation(FGameplayTag OrientationTag, EMovementMode MovementMode);
 
 	FGameplayTag GetCurrentState();
