@@ -17,8 +17,8 @@ bool UAerialAbilityModifier::IsCharacterAirborne(TObjectPtr<ACharacter> Characte
 	return Character->GetCharacterMovement()->IsFalling() || Character->GetCharacterMovement()->IsFlying();
 }
 
-void UAerialAbilityModifier::EnableAerialComponent(TObjectPtr<UGameplayAbility> InGameplayAbility,
-	TObjectPtr<UAerialCombatComponent> AirCombatComponent, TObjectPtr<UAbilitySystemComponent> ASC)
+void UAerialAbilityModifier::EnableAerialComponent(UGameplayAbility* InGameplayAbility,
+	UAerialCombatComponent* AirCombatComponent, UAbilitySystemComponent* ASC)
 {
 	if(AirCombatComponent->EnableAerialCombatEffect)
 	{

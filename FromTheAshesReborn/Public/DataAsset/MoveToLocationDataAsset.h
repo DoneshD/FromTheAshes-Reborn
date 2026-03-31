@@ -45,5 +45,8 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
 	FVector LaunchVelocity = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
+	bool EnableAerialCombat = false;
 	
 };

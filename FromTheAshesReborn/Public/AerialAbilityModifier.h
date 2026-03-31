@@ -23,7 +23,9 @@ public:
 
 	bool IsCharacterAirborne(TObjectPtr<ACharacter> Character) const;
 
-	void EnableAerialComponent(TObjectPtr<UGameplayAbility> InGameplayAbility,
-		TObjectPtr<UAerialCombatComponent> AirCombatComponent,
-		TObjectPtr<UAbilitySystemComponent> ASC);
+
+	UFUNCTION(BlueprintCallable)
+	void EnableAerialComponent(UGameplayAbility* InGameplayAbility,
+		UAerialCombatComponent* AirCombatComponent,
+		UAbilitySystemComponent* ASC);
 };

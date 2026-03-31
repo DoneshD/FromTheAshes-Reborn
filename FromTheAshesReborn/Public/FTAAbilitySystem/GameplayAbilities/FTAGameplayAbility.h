@@ -129,7 +129,7 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Aerial")
 	bool IsAerialAbility = false;
 	
-	UPROPERTY(EditDefaultsOnly, Instanced, Category = "Aerial", meta=(EditCondition="IsAerialAbility"))
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Instanced, Category = "Aerial", meta=(EditCondition="IsAerialAbility"))
 	TObjectPtr<UAerialAbilityModifier> AerialModifer;
 	
 public:
