@@ -21,9 +21,6 @@ public:
 	
 	bool ActivateFromLauncher = false;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> AddAerialCombatGravity;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
 	TObjectPtr<UCurveFloat> GravityCurve;
 	
@@ -46,11 +43,7 @@ protected:
 
 	bool IsComponentActive = false;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
-	FGameplayTag EnableTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Logic Tags")
-	FGameplayTag AerialAttackCounterTag;
+	FGameplayTag EnableTag = FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent");
 	
 
 public:
@@ -79,9 +72,7 @@ public:
 
 	void SetGravity(float NewGravity);
 	void PrintGravity();
-
-
-	void AbilityInitTest();
 	
+	void AbilityInitTest();
 	
 };

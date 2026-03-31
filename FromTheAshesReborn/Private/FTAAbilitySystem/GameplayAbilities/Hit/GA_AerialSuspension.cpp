@@ -67,15 +67,7 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 	
 	if(ACC && ACC->IsValidLowLevel())
 	{
-		if(ACC->AddAerialCombatGravity)
-		{
-			if(ACC->AddAerialCombatGravity)
-			{
-				FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->AddAerialCombatGravity, 1.0f);
-				GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-			}
-			
-		}
+		
 	}
 }
 
