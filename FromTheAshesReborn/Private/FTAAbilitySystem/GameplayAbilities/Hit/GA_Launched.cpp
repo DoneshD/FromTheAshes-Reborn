@@ -52,10 +52,14 @@ void UGA_Launched::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGa
 
 	if(AerialCombatComponent && AerialCombatComponent->IsValidLowLevel())
 	{
-		if(AerialCombatComponent->EnableAerialCombatEffect)
+		// if(AerialCombatComponent->EnableAerialCombatEffect)
+		// {
+		// 	FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AerialCombatComponent->EnableAerialCombatEffect, 1.0f);
+		// 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+		// }
+		if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
 		{
-			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(AerialCombatComponent->EnableAerialCombatEffect, 1.0f);
-			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+			GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
 		}
 	}
 	else

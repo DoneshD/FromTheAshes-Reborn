@@ -78,7 +78,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	LastGravityCurveValue = 0.0f;
 	TestAttackCounter = 0.0f;
 
-	FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.AttackCounter")));
 	EnableCollision();
 	
 }
@@ -97,10 +96,13 @@ void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 {
 	if (NewCount > 0)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Init here Owner: %s"), *GetOwner()->GetName());
 		InitializeStateAndVariables();
 	}
 	else
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Clear here Owner: %s"), *GetOwner()->GetName());
+		
 		ClearStateAndVariables();
 		
 	}

@@ -6,6 +6,7 @@
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
@@ -50,17 +51,30 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	if(ACC && ACC->IsValidLowLevel())
 	{
 		
-		if(ACC->EnableAerialCombatEffect)
+		// if(ACC->EnableAerialCombatEffect)
+		// {
+		// 	UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+		// 	if(CSC)
+		// 	{
+		// 		CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
+		// 	}
+		// 	FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
+		// 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+		// 	
+		// }
+
+		
+		UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+		if(CSC)
 		{
-			UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
-			if(CSC)
-			{
-				CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
-			}
-			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
-			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-			
+			CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
 		}
+		if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+		{
+			GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+		}
+			
+		
 	}
 	
 

@@ -48,8 +48,8 @@ protected:
 
 public:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
+	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
+	// TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
 
 	int TestAttackCounter = 0;
 	float TotalAirTime = 0.0f;
