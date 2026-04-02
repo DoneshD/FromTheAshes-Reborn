@@ -51,19 +51,6 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	if(ACC && ACC->IsValidLowLevel())
 	{
 		
-		// if(ACC->EnableAerialCombatEffect)
-		// {
-		// 	UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
-		// 	if(CSC)
-		// 	{
-		// 		CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
-		// 	}
-		// 	FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
-		// 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-		// 	
-		// }
-
-		
 		UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
 		if(CSC)
 		{
@@ -73,11 +60,8 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		{
 			GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
 		}
-			
 		
 	}
-	
-
 }
 
 void UGA_Bounce::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,

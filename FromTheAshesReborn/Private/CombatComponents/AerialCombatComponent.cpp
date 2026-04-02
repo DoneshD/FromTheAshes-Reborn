@@ -1,10 +1,6 @@
 #include "CombatComponents/AerialCombatComponent.h"
-
 #include "AbilitySystemBlueprintLibrary.h"
-#include "Camera/CameraSystemComponent.h"
-#include "CombatComponents/DownedCombatComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "Enemy/AIControllerEnemyBase.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
