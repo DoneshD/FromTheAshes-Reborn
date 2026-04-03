@@ -4,6 +4,7 @@
 #include "AbilitySystemGlobals.h"
 #include "Camera/CameraSystemComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
+#include "DataAsset/MoveToLocationDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -387,6 +388,9 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	
 	if(SupplyMovementDataOnHit)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("here"))
+							
+		UE_LOG(LogTemp, Warning, TEXT("here: %f"), MoveToLocationDataAsset->Duration);
 		HitInfoObj->HitData.MoveToLocationData = MoveToLocationDataAsset;
 	}
 	

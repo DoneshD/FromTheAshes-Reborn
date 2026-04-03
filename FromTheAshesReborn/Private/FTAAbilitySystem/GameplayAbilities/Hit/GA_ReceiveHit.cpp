@@ -47,6 +47,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	if(HitInfoObject->HitData.MoveToLocationData)
 	{
 		MoveToLocationDataAsset->LocationOffset = HitInfoObject->HitData.MoveToLocationData->LocationOffset;
+		MoveToLocationDataAsset->Duration = HitInfoObject->HitData.MoveToLocationData->Duration;
 	}
 	else
 	{

@@ -2,6 +2,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "AerialAbilityModifier.h"
+#include "FTAAnimNotifyState.h"
 #include "Camera/CameraSystemComponent.h"
 #include "FTAAbilitySystem/AbilityTypes/FTATargetType.h"
 #include "GameplayTagContainer.h"
@@ -340,6 +341,24 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		}
 	}
 
+
+	if(CurrentMontage)
+	{
+		for (const FAnimNotifyEvent& Event : CurrentMontage->Notifies)
+		{
+			if (Event.NotifyStateClass)
+			{
+				if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
+				{
+					float Duration = Event.GetDuration();
+					MoveToLocationDataAsset->Duration = Duration;
+					UE_LOG(LogTemp, Warning, TEXT("Found Notify State Name: %s"), *Event.NotifyStateClass->GetName());
+							
+					UE_LOG(LogTemp, Warning, TEXT("Found Notify State Duration: %f"), Duration);
+				}
+			}
+		}
+	}
 	if(EnableManualMovement)
 	{
 		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, MoveToLocationDataAsset);
@@ -380,6 +399,23 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		
 		ExtractAssetProperties(CurrentAbilityAsset);
 		PerformAbility(CurrentAbilityAsset);
+		// if(CurrentMontage)
+		// {
+		// 	for (const FAnimNotifyEvent& Event : CurrentMontage->Notifies)
+		// 	{
+		// 		if (Event.NotifyStateClass)
+		// 		{
+		// 			if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
+		// 			{
+		// 				float Duration = Event.GetDuration();
+		// 				MoveToLocationDataAsset->Duration = Duration;
+		// 				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Name: %s"), *Event.NotifyStateClass->GetName());
+		// 					
+		// 				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Duration: %f"), Duration);
+		// 			}
+		// 		}
+		// 	}
+		// }
 	}
 	
 }
@@ -617,21 +653,6 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 
 	PlayMontageTask->ReadyForActivation();
 
-	if(AnimMontage)
-	{
-		for (const FAnimNotifyEvent& Event : AnimMontage->Notifies)
-		{
-			if (Event.NotifyStateClass)
-			{
-				float Duration = Event.GetDuration();
-
-				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Name: %s"), *Event.NotifyStateClass->GetName());
-						
-				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Duration: %f"), Duration);
-			}
-		}
-	}
-
 }
 
 void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -675,6 +696,23 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("MovementTag.Event.ActivateTask")))
 	{
+		if(CurrentMontage)
+		{
+			for (const FAnimNotifyEvent& Event : CurrentMontage->Notifies)
+			{
+				if (Event.NotifyStateClass)
+				{
+					if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
+					{
+						float Duration = Event.GetDuration();
+						MoveToLocationDataAsset->Duration = Duration;
+						UE_LOG(LogTemp, Warning, TEXT("Found Notify State Name: %s"), *Event.NotifyStateClass->GetName());
+							
+						UE_LOG(LogTemp, Warning, TEXT("Found Notify State Duration: %f"), Duration);
+					}
+				}
+			}
+		}
 		if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnTagReceived)
 		{
 			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
