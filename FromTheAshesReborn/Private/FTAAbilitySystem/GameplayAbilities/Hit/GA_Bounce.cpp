@@ -50,17 +50,20 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	
 	if(ACC && ACC->IsValidLowLevel())
 	{
-		
-		UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
-		if(CSC)
+		// UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
+		// if(CSC)
+		// {
+		// 	CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
+		// }
+		// if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+		// {
+		// 	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+		// }
+
+		if(ACC && ACC->IsValidLowLevel())
 		{
-			CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
+			ACC->EnableComponent(MOVE_Flying);
 		}
-		if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-		{
-			GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
-		}
-		
 	}
 }
 
@@ -107,11 +110,10 @@ void UGA_Bounce::CheckGroundBelow()
 	if (bHit)
 	{
 		TraceForFloor = false;
-
-		UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
-		if(CSC)
+		UAerialCombatComponent* AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+		if(AerialCombatComponent && AerialCombatComponent->IsValidLowLevel())
 		{
-			CSC->SetCurrentOrientation(CSC->GroundedOrientationTag, MOVE_Walking);
+			AerialCombatComponent->ClearStateAndVariables();
 		}
 
 		UDownedCombatComponent* DCC = GetFTACharacterFromActorInfo()->FindComponentByClass<UDownedCombatComponent>();

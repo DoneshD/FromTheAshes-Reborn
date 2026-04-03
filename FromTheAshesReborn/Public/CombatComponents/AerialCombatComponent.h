@@ -52,12 +52,13 @@ public:
 	int TestAttackCounter = 0;
 	float TotalAirTime = 0.0f;
 
-protected:
+public:
 
 	void ClearStateAndVariables();
 	void InitializeStateAndVariables(EMovementMode MovementMode);
-	
-	void EnableComponent(EMovementMode MovementMode);
+
+	UFUNCTION(BlueprintCallable)
+	void EnableComponent(TEnumAsByte<EMovementMode> MovementMode);
 	
 	void DisableCollision();
 	void EnableCollision();

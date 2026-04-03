@@ -191,16 +191,8 @@ void AEnemyBaseCharacter::Death()
 	if(DeathMontage && DeathMontage->IsValidLowLevel())
 	{
 		ShouldRotate = false;
-
-		if(GetAbilitySystemComponent()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-		{
-			PlayAnimMontage(AirDeathMontage);
-		}
-		else
-		{
-			PlayAnimMontage(DeathMontage);
-		}
 		
+		PlayAnimMontage(DeathMontage);
 		if (DeathSound)
 		{
 			float RandomPitch = UKismetMathLibrary::RandomFloatInRange(1.0f, 2.0f);

@@ -288,11 +288,13 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 	
 	if(!CentralStateComponent || !CentralStateComponent->IsValidLowLevel())
 	{
+		UE_LOG(LogTemp, Error, TEXT("Error CSC"))
 		return;
 	}
 	
-	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
+	// CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 
+	UE_LOG(LogTemp, Warning, TEXT("Here"))
 	RemoveAerialEffects();
 }
 
@@ -379,9 +381,23 @@ void AFTACharacter::RemoveAerialEffects()
 	
 	
 	// FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")));
-	if(FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+	// if(FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+	// {
+	// 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+	// }
+	// UCentralStateComponent* CSC = GetOwner()->FindComponentByClass<UCentralStateComponent>();
+	// if(CSC)
+	// {
+	// 	CSC->SetCurrentOrientation(CSC->GroundedOrientationTag, MOVE_Walking);
+	// }
+	
+	if(AirCombatComponent && AirCombatComponent->IsValidLowLevel())
 	{
-		FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+		AirCombatComponent->ClearStateAndVariables();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Error ACC RemoveAera"));
 	}
 }
 

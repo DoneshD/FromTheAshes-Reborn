@@ -25,8 +25,12 @@ void UAerialAbilityModifier::EnableAerialComponent(UGameplayAbility* InGameplayA
 	// 	FGameplayEffectSpecHandle GEHandle = InGameplayAbility->MakeOutgoingGameplayEffectSpec(AirCombatComponent->EnableAerialCombatEffect, 1.0f);
 	// 	ASC->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
 	// }
-	if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+	// if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+	// {
+	// 	ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+	// }
+	if(AirCombatComponent && AirCombatComponent->IsValidLowLevel())
 	{
-		ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+		AirCombatComponent->EnableComponent(MOVE_Falling);
 	}
 }

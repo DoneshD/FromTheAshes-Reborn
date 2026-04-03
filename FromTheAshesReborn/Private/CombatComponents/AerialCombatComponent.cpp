@@ -1,5 +1,6 @@
 #include "CombatComponents/AerialCombatComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "CombatComponents/CentralStateComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -65,6 +66,13 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
+	UE_LOG(LogTemp, Warning, TEXT("HERE 1"));
+	UCentralStateComponent* CSC = GetOwner()->FindComponentByClass<UCentralStateComponent>();
+	if(CSC)
+	{
+		CSC->SetCurrentOrientation(CSC->GroundedOrientationTag, MOVE_Walking);
+	}
+	
 	IsComponentActive = false;
 	CMC->GravityScale = 4.0f;
 	TotalAirTime = 0.0f;
@@ -77,6 +85,12 @@ void UAerialCombatComponent::ClearStateAndVariables()
 
 void UAerialCombatComponent::InitializeStateAndVariables(EMovementMode MovementMode)
 {
+	UCentralStateComponent* CSC = GetOwner()->FindComponentByClass<UCentralStateComponent>();
+	if(CSC)
+	{
+		CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MovementMode);
+	}
+	
 	IsComponentActive = true;
 	CMC->AirControl = 0.10f;
 	CMC->AirControlBoostMultiplier = 0.10f;
@@ -85,7 +99,7 @@ void UAerialCombatComponent::InitializeStateAndVariables(EMovementMode MovementM
 	
 }
 
-void UAerialCombatComponent::EnableComponent(EMovementMode MovementMode)
+void UAerialCombatComponent::EnableComponent(TEnumAsByte<EMovementMode> MovementMode)
 {
 	InitializeStateAndVariables(MovementMode);
 }

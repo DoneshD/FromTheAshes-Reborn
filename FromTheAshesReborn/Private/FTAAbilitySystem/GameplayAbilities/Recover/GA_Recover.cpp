@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
 
+#include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "DataAsset/RecoverAbilityDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
@@ -41,14 +42,22 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	}
 
 	// GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Neutral"));
-	GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentOrientation(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
-	GetFTACharacterFromActorInfo()->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	// GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentOrientation(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
+	// GetFTACharacterFromActorInfo()->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	
 	// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")));
-	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+	// if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+	// {
+	// 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+	// }
+	UAerialCombatComponent* AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
+	
+	if(AerialCombatComponent && AerialCombatComponent->IsValidLowLevel())
 	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+		AerialCombatComponent->ClearStateAndVariables();
 	}
+
+	
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("DownedCombatTag.EnableComponent")));
 	

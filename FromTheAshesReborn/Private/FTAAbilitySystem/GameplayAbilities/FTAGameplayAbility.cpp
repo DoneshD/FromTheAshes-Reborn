@@ -331,9 +331,14 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 			
 			// AerialModifer->EnableAerialComponent(this, AerialCombatComponent, GetAbilitySystemComponentFromActorInfo());
 
-			if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+			// if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
+			// {
+			// 	GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+			// }
+
+			if(AerialCombatComponent && AerialCombatComponent->IsValidLowLevel())
 			{
-				GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+				AerialCombatComponent->EnableComponent(MOVE_Falling);
 			}
 			
 			AerialCombatComponent->AbilityInitTest();

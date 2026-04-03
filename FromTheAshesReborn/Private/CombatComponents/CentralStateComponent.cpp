@@ -154,12 +154,12 @@ void UCentralStateComponent::HandleGroundedOrientation()
 	CurrentOrientationTag = GroundedOrientationTag;
 	CMC->SetMovementMode(MOVE_Walking);
 	
-	AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
-
-	if(FTAChar)
-	{
-		FTAChar->RemoveAerialEffects();
-	}
+	// AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
+	//
+	// if(FTAChar)
+	// {
+	// 	FTAChar->RemoveAerialEffects();
+	// }
 }
 
 void UCentralStateComponent::HandeAirborneOrientation(EMovementMode MovementMode)
