@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "MotionWarpingComponent.h"
 #include "Abilities/Tasks/AbilityTask_MoveToLocation.h"
+#include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
@@ -615,6 +616,21 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 	
 
 	PlayMontageTask->ReadyForActivation();
+
+	if(AnimMontage)
+	{
+		for (const FAnimNotifyEvent& Event : AnimMontage->Notifies)
+		{
+			if (Event.NotifyStateClass)
+			{
+				float Duration = Event.GetDuration();
+
+				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Name: %s"), *Event.NotifyStateClass->GetName());
+						
+				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Duration: %f"), Duration);
+			}
+		}
+	}
 
 }
 

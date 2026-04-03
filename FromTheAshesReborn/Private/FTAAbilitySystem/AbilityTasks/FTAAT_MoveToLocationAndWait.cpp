@@ -129,7 +129,7 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 		UAerialCombatComponent* ACC = FTAChar->FindComponentByClass<UAerialCombatComponent>();
 		if(ACC)
 		{
-			
+			ACC->EnableComponent(MOVE_Falling);
 		}
 	}
 
