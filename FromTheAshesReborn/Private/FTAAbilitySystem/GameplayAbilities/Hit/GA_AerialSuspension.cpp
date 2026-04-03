@@ -52,17 +52,6 @@ void UGA_AerialSuspension::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 
 	UAerialCombatComponent* ACC = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
 	ACC->TotalAirTime = 0.0f;
-	
-	// if(ACC->EnableAerialCombatEffect)
-	// {
-	// 	FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(ACC->EnableAerialCombatEffect, 1.0f);
-	// 	GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-	// }
-
-	// if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-	// {
-	// 	GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
-	// }
 
 	if(ACC && ACC->IsValidLowLevel())
 	{

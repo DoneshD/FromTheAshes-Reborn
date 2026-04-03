@@ -66,7 +66,6 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
-	UE_LOG(LogTemp, Warning, TEXT("HERE 1"));
 	UCentralStateComponent* CSC = GetOwner()->FindComponentByClass<UCentralStateComponent>();
 	if(CSC)
 	{

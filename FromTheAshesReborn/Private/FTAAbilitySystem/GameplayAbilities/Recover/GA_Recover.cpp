@@ -40,16 +40,7 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	{
 		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("TestTag.Tag8"));
 	}
-
-	// GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Neutral"));
-	// GetFTACharacterFromActorInfo()->CentralStateComponent->SetCurrentOrientation(GetFTACharacterFromActorInfo()->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
-	// GetFTACharacterFromActorInfo()->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	
-	// GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")));
-	// if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-	// {
-	// 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
-	// }
 	UAerialCombatComponent* AerialCombatComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UAerialCombatComponent>();
 	
 	if(AerialCombatComponent && AerialCombatComponent->IsValidLowLevel())

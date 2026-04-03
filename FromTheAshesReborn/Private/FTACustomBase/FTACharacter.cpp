@@ -291,26 +291,13 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 		UE_LOG(LogTemp, Error, TEXT("Error CSC"))
 		return;
 	}
-	
-	// CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 
-	UE_LOG(LogTemp, Warning, TEXT("Here"))
 	RemoveAerialEffects();
 }
 
 void AFTACharacter::Falling()
 {
 	Super::Falling();
-
-	// if(!CentralStateComponent || !CentralStateComponent->IsValidLowLevel())
-	// {
-	// 	return;
-	// }
-	//
-	// if(CentralStateComponent && CentralStateComponent->IsValidLowLevel())
-	// {
-	// 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->AirborneOrientationTag, MOVE_Falling);
-	// }
 
 }
 
@@ -377,28 +364,13 @@ void AFTACharacter::RemoveAerialEffects()
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slammed"));
-	// FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
 	
-	
-	// FTAAbilitySystemComponent->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")));
-	// if(FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-	// {
-	// 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
-	// }
-	// UCentralStateComponent* CSC = GetOwner()->FindComponentByClass<UCentralStateComponent>();
-	// if(CSC)
-	// {
-	// 	CSC->SetCurrentOrientation(CSC->GroundedOrientationTag, MOVE_Walking);
-	// }
 	
 	if(AirCombatComponent && AirCombatComponent->IsValidLowLevel())
 	{
 		AirCombatComponent->ClearStateAndVariables();
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Error ACC RemoveAera"));
-	}
+	
 }
 
 

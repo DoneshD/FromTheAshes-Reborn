@@ -42,12 +42,8 @@ private:
 protected:
 
 	bool IsComponentActive = false;
-	
-	// FGameplayTag EnableTag = FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent");
-	
 
 public:
-	
 
 	int TestAttackCounter = 0;
 	float TotalAirTime = 0.0f;

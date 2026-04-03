@@ -20,15 +20,6 @@ bool UAerialAbilityModifier::IsCharacterAirborne(TObjectPtr<ACharacter> Characte
 void UAerialAbilityModifier::EnableAerialComponent(UGameplayAbility* InGameplayAbility,
 	UAerialCombatComponent* AirCombatComponent, UAbilitySystemComponent* ASC)
 {
-	// if(AirCombatComponent->EnableAerialCombatEffect)
-	// {
-	// 	FGameplayEffectSpecHandle GEHandle = InGameplayAbility->MakeOutgoingGameplayEffectSpec(AirCombatComponent->EnableAerialCombatEffect, 1.0f);
-	// 	ASC->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
-	// }
-	// if(!ASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-	// {
-	// 	ASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
-	// }
 	if(AirCombatComponent && AirCombatComponent->IsValidLowLevel())
 	{
 		AirCombatComponent->EnableComponent(MOVE_Falling);

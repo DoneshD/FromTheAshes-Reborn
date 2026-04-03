@@ -50,16 +50,6 @@ void UGA_Bounce::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	
 	if(ACC && ACC->IsValidLowLevel())
 	{
-		// UCentralStateComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCentralStateComponent>();
-		// if(CSC)
-		// {
-		// 	CSC->SetCurrentOrientation(CSC->AirborneOrientationTag, MOVE_Flying);
-		// }
-		// if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent")))
-		// {
-		// 	GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
-		// }
-
 		if(ACC && ACC->IsValidLowLevel())
 		{
 			ACC->EnableComponent(MOVE_Flying);
