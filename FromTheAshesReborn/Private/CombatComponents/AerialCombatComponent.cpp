@@ -39,10 +39,7 @@ void UAerialCombatComponent::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("UAerialCombatComponent::BeginPlay() - CMC is Null"));
 		return;
 	}
-
-
-	FDelegateHandle Handle = FTAAbilitySystemComponent->RegisterGameplayTagEvent(EnableTag, EGameplayTagEventType::NewOrRemoved)
-		.AddUObject(this, &UAerialCombatComponent::EnableComponent);
+	
 	
 }
 
@@ -78,7 +75,7 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	
 }
 
-void UAerialCombatComponent::InitializeStateAndVariables()
+void UAerialCombatComponent::InitializeStateAndVariables(EMovementMode MovementMode)
 {
 	IsComponentActive = true;
 	CMC->AirControl = 0.10f;
@@ -88,20 +85,9 @@ void UAerialCombatComponent::InitializeStateAndVariables()
 	
 }
 
-void UAerialCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int32 NewCount)
+void UAerialCombatComponent::EnableComponent(EMovementMode MovementMode)
 {
-	if (NewCount > 0)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Init here Owner: %s"), *GetOwner()->GetName());
-		InitializeStateAndVariables();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Clear here Owner: %s"), *GetOwner()->GetName());
-		
-		ClearStateAndVariables();
-		
-	}
+	InitializeStateAndVariables(MovementMode);
 }
 
 void UAerialCombatComponent::SetGravity(float NewGravity)

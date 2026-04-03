@@ -43,13 +43,11 @@ protected:
 
 	bool IsComponentActive = false;
 	
-	FGameplayTag EnableTag = FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent");
+	// FGameplayTag EnableTag = FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent");
 	
 
 public:
-
-	// UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
-	// TSubclassOf<UGameplayEffect> EnableAerialCombatEffect;
+	
 
 	int TestAttackCounter = 0;
 	float TotalAirTime = 0.0f;
@@ -57,9 +55,9 @@ public:
 protected:
 
 	void ClearStateAndVariables();
-	void InitializeStateAndVariables();
+	void InitializeStateAndVariables(EMovementMode MovementMode);
 	
-	void EnableComponent(const FGameplayTag InEnableTag, int32 NewCount);
+	void EnableComponent(EMovementMode MovementMode);
 	
 	void DisableCollision();
 	void EnableCollision();
