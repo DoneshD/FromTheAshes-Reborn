@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UTracingComponent;
 class UCombatTracingComponent;
 class UFTAMotionWarpingComponent;
 class UAfterImageComponent;
@@ -102,6 +103,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UCombatTracingComponent> CombatTracingComponent;
+
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
+	TObjectPtr<UTracingComponent> LimbTracingComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UComboManagerComponent> ComboManagerComponent;

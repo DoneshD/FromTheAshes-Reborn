@@ -20,6 +20,7 @@
 #include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "TracingComponent/TracingComponent.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -60,6 +61,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	CombatTracingComponent = CreateDefaultSubobject<UCombatTracingComponent>(TEXT("CombatTracingComponent"));
 	this->AddOwnedComponent(CombatTracingComponent);
 	InitializedActorComponents.AddUnique(CombatTracingComponent);
+
+	LimbTracingComponent = CreateDefaultSubobject<UTracingComponent>(TEXT("LimbTracingComponent"));
+	this->AddOwnedComponent(LimbTracingComponent);
+	InitializedActorComponents.AddUnique(LimbTracingComponent);
 	
 	ComboManagerComponent = CreateDefaultSubobject<UComboManagerComponent>(TEXT("ComboManagerComponent"));
 	this->AddOwnedComponent(ComboManagerComponent);
