@@ -388,9 +388,6 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	
 	if(SupplyMovementDataOnHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("here"))
-							
-		UE_LOG(LogTemp, Warning, TEXT("here: %f"), MoveToLocationDataAsset->Duration);
 		HitInfoObj->HitData.MoveToLocationData = MoveToLocationDataAsset;
 	}
 	
