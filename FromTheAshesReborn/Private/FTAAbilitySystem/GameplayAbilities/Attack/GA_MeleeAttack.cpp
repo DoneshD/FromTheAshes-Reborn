@@ -72,14 +72,14 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
-		StartMeleeWeaponTrace();
+		StartMeleeTrace();
 		VisualCueCDO = AddMeleeTrailVisualCue();
 		SoundCueCDO = AddMeleeTrailSoundCue();
 
 	}
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
-		EndMeleeWeaponTrace();
+		EndMeleeTrace();
 		if(VisualCueCDO)
 		{
 			K2_RemoveGameplayCue(VisualCueCDO->VisualCueTag);
@@ -182,27 +182,40 @@ void UGA_MeleeAttack::OnHitAdded(FHitResult LastItem)
 	Super::OnHitAdded(LastItem);
 }
 
-void UGA_MeleeAttack::StartMeleeWeaponTrace()
+void UGA_MeleeAttack::StartMeleeTrace()
 {
-	for (AWeaponActorBase* WeaponActor : WeaponActors)
+	if(CurrentMeleeAttackData->MeleeSource.MeleeType == EMeleeType::Weapon)
 	{
-		//Another instance of crashing here
-		if(WeaponActor)
+		UE_LOG(LogTemp, Warning, TEXT("Weapon Selected"));
+		for (AWeaponActorBase* WeaponActor : WeaponActors)
 		{
-			if(WeaponActor->TracingComponent)
+			//Another instance of crashing here
+			if(WeaponActor)
 			{
-				WeaponActor->TracingComponent->BoxHalfSize = FVector(
-				50.0f,
-				50.0f,
-				50.0f);
+				if(WeaponActor->TracingComponent)
+				{
+					WeaponActor->TracingComponent->BoxHalfSize = FVector(
+					50.0f,
+					50.0f,
+					50.0f);
 				
-				WeaponActor->TracingComponent->ToggleTraceCheck(true);
+					WeaponActor->TracingComponent->ToggleTraceCheck(true);
+				}
+			
 			}
 		}
 	}
+	else if(CurrentMeleeAttackData->MeleeSource.MeleeType == EMeleeType::Limb)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Limb Selected"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("None selected"));
+	}
 }
 
-void UGA_MeleeAttack::EndMeleeWeaponTrace()
+void UGA_MeleeAttack::EndMeleeTrace()
 {
 	for (AWeaponActorBase* WeaponActor : WeaponActors)
 	{

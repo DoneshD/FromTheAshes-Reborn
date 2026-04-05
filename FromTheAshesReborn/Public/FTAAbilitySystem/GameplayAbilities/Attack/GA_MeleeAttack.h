@@ -59,8 +59,8 @@ protected:
 
 	virtual void OnHitAdded(FHitResult LastItem) override;
 
-	void StartMeleeWeaponTrace();
-	void EndMeleeWeaponTrace();
+	void StartMeleeTrace();
+	void EndMeleeTrace();
 	
 	TObjectPtr<UWeaponCueObject> AddMeleeTrailVisualCue();
 	TObjectPtr<UFTASoundCueObject> AddMeleeTrailSoundCue();
