@@ -207,22 +207,36 @@ void UGA_MeleeAttack::StartMeleeTrace()
 	}
 	else if(CurrentMeleeAttackData->MeleeSource.MeleeType == EMeleeType::Limb)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Limb Selected"));
-
 		if(GetFTACharacterFromActorInfo()->LimbTracingComponent)
 		{
-			GetFTACharacterFromActorInfo()->LimbTracingComponent->InclusionStringFilter = TEXT("Test");
-			GetFTACharacterFromActorInfo()->LimbTracingComponent->SetupVariables(GetFTACharacterFromActorInfo()->GetMesh(), nullptr);
-			GetFTACharacterFromActorInfo()->LimbTracingComponent->MyActorsToIgnore.AddUnique(GetFTACharacterFromActorInfo());
-			GetFTACharacterFromActorInfo()->LimbTracingComponent->ShouldIgnoreSelf = true;
-			
-			GetFTACharacterFromActorInfo()->LimbTracingComponent->BoxHalfSize = FVector(
-			20.0f,
-			20.0f,
-			20.0f);
-				
-			GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(true);
+			if(CurrentMeleeAttackData->MeleeSource.Limb == ELimb::LeftLeg)
+			{
+				GetFTACharacterFromActorInfo()->LimbTracingComponent->InclusionStringFilter = TEXT("LeftLeg");
+			}
+			else if(CurrentMeleeAttackData->MeleeSource.Limb == ELimb::LeftArm)
+			{
+				GetFTACharacterFromActorInfo()->LimbTracingComponent->InclusionStringFilter = TEXT("LeftArm");
+			}
+			else if(CurrentMeleeAttackData->MeleeSource.Limb == ELimb::RightArm)
+			{
+				GetFTACharacterFromActorInfo()->LimbTracingComponent->InclusionStringFilter = TEXT("RightArm");
+			}
+			else if(CurrentMeleeAttackData->MeleeSource.Limb == ELimb::RightLeg)
+			{
+				GetFTACharacterFromActorInfo()->LimbTracingComponent->InclusionStringFilter = TEXT("RightLeg");
+			}
 		}
+
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->SetupVariables(GetFTACharacterFromActorInfo()->GetMesh(), nullptr);
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->MyActorsToIgnore.AddUnique(GetFTACharacterFromActorInfo());
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->ShouldIgnoreSelf = true;
+			
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->BoxHalfSize = FVector(
+		20.0f,
+		20.0f,
+		20.0f);
+				
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(true);
 	}
 	else
 	{
