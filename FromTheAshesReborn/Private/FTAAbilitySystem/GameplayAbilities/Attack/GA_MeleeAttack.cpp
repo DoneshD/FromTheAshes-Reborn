@@ -198,9 +198,9 @@ void UGA_MeleeAttack::StartMeleeTrace()
 				if(WeaponActor->TracingComponent)
 				{
 					WeaponActor->TracingComponent->BoxHalfSize = FVector(
-					200.0f,
-					200.0f,
-					200.0f);
+					50.0f,
+					50.0f,
+					50.0f);
 				
 					WeaponActor->TracingComponent->ToggleTraceCheck(true);
 				}

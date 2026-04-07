@@ -68,7 +68,7 @@ void UFTAMotionWarpingComponent::WarpToTargetActor(FWarpData WarpData)
 			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), EnemyActor->GetActorLocation());
 			FRotator WarpTargetRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
 
-			// DrawDebugSphere(GetWorld(), WarpTargetLocation, 25.0f, 12, FColor::Blue, false, 5.0f);
+			DrawDebugSphere(GetWorld(), WarpTargetLocation, 25.0f, 12, FColor::Blue, false, 5.0f);
 		
 			// const FVector Forward = WarpTargetRotation.Vector();
 			// DrawDebugLine(
