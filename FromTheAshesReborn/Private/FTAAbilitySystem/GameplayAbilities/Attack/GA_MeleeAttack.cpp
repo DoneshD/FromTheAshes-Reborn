@@ -209,6 +209,9 @@ void UGA_MeleeAttack::StartMeleeTrace()
 	{
 		if(GetFTACharacterFromActorInfo()->LimbTracingComponent)
 		{
+			
+			GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeAttack::OnHitAdded);
+			
 			if(CurrentMeleeAttackData->MeleeSource.Limb == ELimb::LeftLeg)
 			{
 				GetFTACharacterFromActorInfo()->LimbTracingComponent->InclusionStringFilter = TEXT("LeftLeg");
@@ -232,9 +235,9 @@ void UGA_MeleeAttack::StartMeleeTrace()
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ShouldIgnoreSelf = true;
 			
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->BoxHalfSize = FVector(
-		20.0f,
-		20.0f,
-		20.0f);
+		75.0f,
+		75.0f,
+		75.0f);
 				
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(true);
 	}
@@ -256,6 +259,12 @@ void UGA_MeleeAttack::EndMeleeTrace()
 				WeaponActor->TracingComponent->ClearHitArray();
 			}
 		}
+	}
+
+	if(GetFTACharacterFromActorInfo()->LimbTracingComponent)
+	{
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(false);
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->ClearHitArray();
 	}
 }
 

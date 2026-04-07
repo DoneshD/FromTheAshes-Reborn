@@ -46,7 +46,8 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	if(HitInfoObject->HitData.MoveToLocationData)
 	{
-		MoveToLocationDataAsset->LocationOffset = HitInfoObject->HitData.MoveToLocationData->LocationOffset;
+		FVector TempVec = FVector(-HitInfoObject->HitData.MoveToLocationData->LocationOffset.X, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Y, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Z);
+		MoveToLocationDataAsset->LocationOffset = TempVec;
 		MoveToLocationDataAsset->Duration = HitInfoObject->HitData.MoveToLocationData->Duration;
 	}
 	else
