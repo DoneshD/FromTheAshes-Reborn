@@ -50,6 +50,8 @@ void UGA_MeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	
 	CurrentMeleeAttackData = nullptr;
+	CurrentVisualCueCDO = nullptr;
+	CurrentSoundCueCDO = nullptr;
 	// CurrentAttackData->AttackDirectionStruct.AttackDirection = ESpatialDirection::None;
 }
 
@@ -67,27 +69,29 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 {
 	Super::EventMontageReceived(EventTag, EventData);
 	
-	UWeaponCueObject* VisualCueCDO = nullptr;
-	UFTASoundCueObject* SoundCueCDO = nullptr;
 	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		StartMeleeTrace();
-		VisualCueCDO = AddMeleeTrailVisualCue();
-		SoundCueCDO = AddMeleeTrailSoundCue();
+		CurrentVisualCueCDO = AddMeleeTrailVisualCue();
+		CurrentSoundCueCDO = AddMeleeTrailSoundCue();
 
 	}
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.EndSlash")))
 	{
+		if(CurrentVisualCueCDO)
+		{
+			K2_RemoveGameplayCue(CurrentVisualCueCDO->VisualCueTag);
+			CurrentVisualCueCDO = nullptr;
+		}
+		
+		if(CurrentSoundCueCDO)
+		{
+			K2_RemoveGameplayCue(CurrentSoundCueCDO->SoundCueTag);
+			CurrentSoundCueCDO = nullptr;
+		}
+	
 		EndMeleeTrace();
-		if(VisualCueCDO)
-		{
-			K2_RemoveGameplayCue(VisualCueCDO->VisualCueTag);
-		}
-		if(SoundCueCDO)
-		{
-			K2_RemoveGameplayCue(SoundCueCDO->SoundCueTag);
-		}
 	}
 }
 
@@ -186,7 +190,6 @@ void UGA_MeleeAttack::StartMeleeTrace()
 {
 	if(CurrentMeleeAttackData->MeleeSource.MeleeType == EMeleeType::Weapon)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon Selected"));
 		for (AWeaponActorBase* WeaponActor : WeaponActors)
 		{
 			//Another instance of crashing here
@@ -195,9 +198,9 @@ void UGA_MeleeAttack::StartMeleeTrace()
 				if(WeaponActor->TracingComponent)
 				{
 					WeaponActor->TracingComponent->BoxHalfSize = FVector(
-					50.0f,
-					50.0f,
-					50.0f);
+					200.0f,
+					200.0f,
+					200.0f);
 				
 					WeaponActor->TracingComponent->ToggleTraceCheck(true);
 				}
@@ -265,7 +268,10 @@ void UGA_MeleeAttack::EndMeleeTrace()
 	{
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(false);
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ClearHitArray();
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
 	}
+	CurrentVisualCueCDO = nullptr;
+	CurrentSoundCueCDO = nullptr;
 }
 
 TObjectPtr<UWeaponCueObject> UGA_MeleeAttack::AddMeleeTrailVisualCue()

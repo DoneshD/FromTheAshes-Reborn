@@ -35,6 +35,12 @@ protected:
 	
 	UPROPERTY()
 	TObjectPtr<UMeleeAbilityDataAsset> CurrentMeleeAttackData;
+
+	UPROPERTY()
+	UWeaponCueObject* CurrentVisualCueCDO = nullptr;
+
+	UPROPERTY()
+	UFTASoundCueObject* CurrentSoundCueCDO = nullptr;
 	
 protected:
 	

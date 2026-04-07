@@ -126,7 +126,6 @@ void AFTACharacter::PostInitializeComponents()
 		ensureMsgf(false, TEXT("[%s] AFTACharacter::PostInitializeComponents() failed validation. Check the log for details."),
 			*GetActorNameOrLabel());
 	}
-	
 }
 
 UAbilitySystemComponent* AFTACharacter::GetAbilitySystemComponent() const

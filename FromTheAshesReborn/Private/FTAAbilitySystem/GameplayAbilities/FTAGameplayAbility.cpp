@@ -703,9 +703,6 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 					{
 						float Duration = Event.GetDuration();
 						MoveToLocationDataAsset->Duration = Duration;
-						UE_LOG(LogTemp, Warning, TEXT("Found Notify State Name: %s"), *Event.NotifyStateClass->GetName());
-							
-						UE_LOG(LogTemp, Warning, TEXT("Found Notify State Duration: %f"), Duration);
 					}
 				}
 			}

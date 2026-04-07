@@ -132,10 +132,6 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 			ACC->EnableComponent(MOVE_Falling);
 		}
 	}
-	if (AActor* OwnerActor = GetAvatarActor())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Owner Actor: %s"), *OwnerActor->GetName());
-	}
 	
 	
 	// if(MoveToLocationData->SetGravity)
