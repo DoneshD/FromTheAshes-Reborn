@@ -59,8 +59,6 @@ ELockOnInputOrientationDirection ULockOnFunctionLibrary::GetOrientationOfInput(F
 	{
 		return ELockOnInputOrientationDirection::Backward;
 	}
-
-	UE_LOG(LogTemp, Error, TEXT("OrientationOfInput None"));
 	return ELockOnInputOrientationDirection::None;
 }
 

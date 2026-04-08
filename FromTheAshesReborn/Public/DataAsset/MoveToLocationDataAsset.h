@@ -25,28 +25,29 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
 	bool EndAbilityOnCompleted = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Location Offset")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params")
+	bool SupplyMovementDataOnHit = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float Duration = 1.0f;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Location Offset")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	FVector LocationOffset = FVector::ZeroVector;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
-	bool SetVelocity = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached", meta = (EditCondition = "SetGravity"))
-	FVector LocationReachedVelocity = FVector::ZeroVector;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
-	bool SetGravity = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Aerial")
+	bool EnableAerialCombat = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached", meta = (EditCondition = "SetGravity"))
-	float Gravity = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Aerial", meta = (EditCondition = "EnableAerialCombat"))
+	TEnumAsByte<EMovementMode> PostMovementMode = MOVE_Falling;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Velocity")
 	FVector LaunchVelocity = FVector::ZeroVector;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LocationReached")
-	bool EnableAerialCombat = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Velocity")
+	bool SetVelocity = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Velocity", meta = (EditCondition = "SetVelocity"))
+	FVector PostVelocity;
+
 	
 };

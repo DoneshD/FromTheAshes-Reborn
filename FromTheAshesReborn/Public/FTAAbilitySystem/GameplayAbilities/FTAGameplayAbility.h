@@ -101,6 +101,9 @@ protected:
 	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationDataAsset;
 
 	UPROPERTY()
+	TObjectPtr<UMoveToLocationDataAsset>  CurrentMoveToLocationAsset;
+
+	UPROPERTY()
 	TObjectPtr<UFTAAT_MoveToLocationAndWait> MoveToLocationAndWaitTask;
 
 	UFUNCTION()

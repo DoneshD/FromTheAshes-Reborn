@@ -103,11 +103,6 @@ void UAerialCombatComponent::EnableComponent(TEnumAsByte<EMovementMode> Movement
 	InitializeStateAndVariables(MovementMode);
 }
 
-void UAerialCombatComponent::SetGravity(float NewGravity)
-{
-	CMC->GravityScale = NewGravity;
-}
-
 void UAerialCombatComponent::PrintGravity()
 {
 	if (AActor* Owner = GetOwner())

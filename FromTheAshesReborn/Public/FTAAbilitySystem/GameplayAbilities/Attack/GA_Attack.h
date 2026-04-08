@@ -52,9 +52,6 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
 	virtual void SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData);
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
-	bool SupplyMovementDataOnHit = false;
 	
 public:
 	

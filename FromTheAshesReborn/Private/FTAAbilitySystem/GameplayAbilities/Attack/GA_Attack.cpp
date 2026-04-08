@@ -386,7 +386,7 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	
 	HitInfoObj->HitData.HitDirection = HitData.Direction;
 	
-	if(SupplyMovementDataOnHit)
+	if(MoveToLocationDataAsset->SupplyMovementDataOnHit)
 	{
 		HitInfoObj->HitData.MoveToLocationData = MoveToLocationDataAsset;
 	}

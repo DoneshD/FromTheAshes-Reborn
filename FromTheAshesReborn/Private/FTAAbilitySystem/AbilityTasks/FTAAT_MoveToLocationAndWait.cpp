@@ -121,7 +121,6 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 	+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LaunchVelocity.Y
 	+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LaunchVelocity.Z;
 	
-	// CMC->Velocity = FVector::ZeroVector;
 	CMC->Launch(FinalLaunchVelocity);
 
 	if(MoveToLocationData->EnableAerialCombat)
@@ -129,29 +128,9 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 		UAerialCombatComponent* ACC = FTAChar->FindComponentByClass<UAerialCombatComponent>();
 		if(ACC)
 		{
-			ACC->EnableComponent(MOVE_Falling);
+			ACC->EnableComponent(MoveToLocationData->PostMovementMode);
 		}
 	}
-	
-	
-	// if(MoveToLocationData->SetGravity)
-	// {
-	// 	CMC->GravityScale = MoveToLocationData->Gravity;
-	// }
-	// else
-	// {
-	// 	CMC->GravityScale = 0.0f;
-	// }
-	//
-	// if(MoveToLocationData->SetVelocity)
-	// {
-	// 	CMC->Velocity = MoveToLocationData->LocationReachedVelocity;
-	// }
-	// else
-	// {
-	// 	// CMC->Velocity.Z = 0.0f;
-	// 	// CMC->Velocity = FVector::ZeroVector;
-	// }
 	
 	OnMoveCompleted.Broadcast();
 	EndTask();
