@@ -358,32 +358,6 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		}
 	}
 
-
-	if(CurrentMontage)
-	{
-		for (const FAnimNotifyEvent& Event : CurrentMontage->Notifies)
-		{
-			if (Event.NotifyStateClass)
-			{
-				if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
-				{
-					float Duration = Event.GetDuration();
-					MoveToLocationDataAsset->Duration = Duration;
-				}
-			}
-		}
-	}
-	if(EnableManualMovement)
-	{
-		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, MoveToLocationDataAsset);
-		if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
-		{
-			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
-			MoveToLocationAndWaitTask->ReadyForActivation();
-		}
-	}
-	
-
 	ComboManagerComponent = GetFTACharacterFromActorInfo()->ComboManagerComponent;
 	CentralStateComponent = GetFTACharacterFromActorInfo()->CentralStateComponent;
 
@@ -399,6 +373,49 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ActivateAbility - ComboManagerComponent is Null"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
+	}
+
+	if(EnableManualMovement)
+	{
+		if(!DefaultMoveToLocationDataAsset)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Default Move To Location Data asset must be set"))
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+			return;
+		}
+		if(!CurrentMoveToLocationAsset)
+		{
+			CurrentMoveToLocationAsset = DuplicateObject<UMoveToLocationDataAsset>(DefaultMoveToLocationDataAsset,this);
+		}
+		else
+		{
+			
+		}
+	
+	}
+
+	if(CurrentMontage)
+	{
+		for (const FAnimNotifyEvent& Event : CurrentMontage->Notifies)
+		{
+			if (Event.NotifyStateClass)
+			{
+				if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
+				{
+					float Duration = Event.GetDuration();
+					CurrentMoveToLocationAsset->Duration = Duration;
+				}
+			}
+		}
+	}
+	if(EnableManualMovement)
+	{
+		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, CurrentMoveToLocationAsset);
+		if(MoveToLocationAndWaitTask && CurrentMoveToLocationAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
+		{
+			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
+			MoveToLocationAndWaitTask->ReadyForActivation();
+		}
 	}
 
 	if(!NonMontageAbility)
@@ -689,7 +706,7 @@ void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEve
 
 void UFTAGameplayAbility::OnMoveComplete()
 {
-	if(MoveToLocationDataAsset->EndAbilityOnCompleted)
+	if(CurrentMoveToLocationAsset->EndAbilityOnCompleted)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	}
@@ -719,12 +736,12 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 					if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
 					{
 						float Duration = Event.GetDuration();
-						MoveToLocationDataAsset->Duration = Duration;
+						CurrentMoveToLocationAsset->Duration = Duration;
 					}
 				}
 			}
 		}
-		if(MoveToLocationAndWaitTask && MoveToLocationDataAsset->TriggerType == ETriggerMovementType::OnTagReceived)
+		if(MoveToLocationAndWaitTask && CurrentMoveToLocationAsset->TriggerType == ETriggerMovementType::OnTagReceived)
 		{
 			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
 			MoveToLocationAndWaitTask->ReadyForActivation();

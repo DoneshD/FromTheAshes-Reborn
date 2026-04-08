@@ -42,14 +42,31 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return;
 	}
 
+	if(EnableManualMovement)
+	{
+		if(!DefaultMoveToLocationDataAsset)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Default Move To Location Data asset must be set"))
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+			return;
+		}
+		if(!CurrentMoveToLocationAsset)
+		{
+			CurrentMoveToLocationAsset = DuplicateObject<UMoveToLocationDataAsset>(DefaultMoveToLocationDataAsset,this);
+		}
+		else
+		{
+			
+		}
+	}
 	HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
 
 	if(HitInfoObject->HitData.MoveToLocationData)
 	{
 		//Build inverse logic for hits
 		FVector TempVec = FVector(-HitInfoObject->HitData.MoveToLocationData->LocationOffset.X, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Y, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Z);
-		MoveToLocationDataAsset->LocationOffset = TempVec;
-		MoveToLocationDataAsset->Duration = HitInfoObject->HitData.MoveToLocationData->Duration;
+		CurrentMoveToLocationAsset->LocationOffset = TempVec;
+		CurrentMoveToLocationAsset->Duration = HitInfoObject->HitData.MoveToLocationData->Duration;
 	}
 	else
 	{
@@ -57,7 +74,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	}
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
 
 	for (const FGameplayTag& Tag : HitTagContainer)
 	{

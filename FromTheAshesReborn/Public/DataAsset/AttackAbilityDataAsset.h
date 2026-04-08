@@ -55,11 +55,16 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	TArray<FHitDataInfo> PossibleHitReactions;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack Data")
+	bool SupplyMovementDataOnHit = false;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	TArray<TSubclassOf<UFTAVisualCueObject>> HitEnemyVisualCueClassArray;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
+
+	
 
 
 };

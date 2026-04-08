@@ -25,9 +25,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
 	bool EndAbilityOnCompleted = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params")
-	bool SupplyMovementDataOnHit = false;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float Duration = 1.0f;
 	

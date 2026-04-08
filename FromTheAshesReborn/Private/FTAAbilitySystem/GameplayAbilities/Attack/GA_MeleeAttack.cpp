@@ -171,7 +171,13 @@ void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRunti
 	{
 		return;
 	}
-
+	if(MeleeAsset->MeleeSource.MeleeType == EMeleeType::Limb)
+	{
+		if(CurrentMeleeAttackData)
+		{
+			CurrentMeleeAttackData->MeleeSource.Limb = MeleeAsset->MeleeSource.Limb;
+		}
+	}
 }
 
 void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)

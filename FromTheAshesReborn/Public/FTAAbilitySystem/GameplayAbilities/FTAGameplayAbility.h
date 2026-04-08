@@ -98,10 +98,10 @@ protected:
 	bool EnableManualMovement = false;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="EnableManualMovement"))
-	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationDataAsset;
+	TObjectPtr<UMoveToLocationDataAsset> DefaultMoveToLocationDataAsset;
 
 	UPROPERTY()
-	TObjectPtr<UMoveToLocationDataAsset>  CurrentMoveToLocationAsset;
+	TObjectPtr<UMoveToLocationDataAsset> CurrentMoveToLocationAsset;
 
 	UPROPERTY()
 	TObjectPtr<UFTAAT_MoveToLocationAndWait> MoveToLocationAndWaitTask;

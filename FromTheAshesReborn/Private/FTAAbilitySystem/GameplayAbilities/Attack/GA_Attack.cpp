@@ -203,7 +203,7 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 					if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
 					{
 						ApplyHitEffects(TargetDataHandle, HitData.HitAbilityClass);
-						SendMeleeHitGameplayEvents(TargetDataHandle, HitData);
+						SendHitGameplayEvents(TargetDataHandle, HitData);
 						AddHitCues(TargetDataHandle, HitData.HitAbilityClass);
 						break;
 					}
@@ -372,8 +372,9 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 	}
 }
 
-void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
+void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
 {
+
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 	
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
@@ -385,12 +386,14 @@ void UGA_Attack::SendMeleeHitGameplayEvents(const FGameplayAbilityTargetDataHand
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	HitInfoObj->HitData.HitDirection = HitData.Direction;
-	
-	if(MoveToLocationDataAsset->SupplyMovementDataOnHit)
+
+	if(CurrentMoveToLocationAsset)
 	{
-		HitInfoObj->HitData.MoveToLocationData = MoveToLocationDataAsset;
+		if(CurrentAttackData->SupplyMovementDataOnHit)
+		{
+			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
+		}	
 	}
-	
 	
 	if(WeaponActors.IsEmpty())
 	{
@@ -535,6 +538,8 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 			}
 		}
 	}
+
+	CurrentAttackData->SupplyMovementDataOnHit = AttackAsset->SupplyMovementDataOnHit;
 	
 }
 
