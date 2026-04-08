@@ -21,6 +21,7 @@
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Player/FTAPlayerController.h"
 #include "Weapon/WeaponActorBase.h"
@@ -251,6 +252,22 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		if(Character->GetCharacterMovement()->IsFalling() || Character->GetCharacterMovement()->IsFlying())
 		{
 			return false;
+		}
+	}
+
+	if(IsLockOnDirectionalInput)
+	{
+		AFTAPlayerState* PS = Cast<AFTAPlayerState>(ActorInfo->OwnerActor.Get());
+
+		if(PS->HardLockedTargetActor)
+		{
+			FLockOnAngleResult AngleResult = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
+			ELockOnInputOrientationDirection InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleResult);
+
+			if(InputDirection != LockOnInputDirection)
+			{
+				return false;
+			}
 		}
 	}
 	return true;

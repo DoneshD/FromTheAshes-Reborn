@@ -54,8 +54,8 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 
 	if(PS->HardLockedTargetActor)
 	{
-		float AngleOfInput = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
-		InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleOfInput);
+		FLockOnAngleResult AngleResult = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
+		InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleResult);
 	}
 
 	TObjectPtr<UDashAbilityDataAsset> MatchingDataAsset;

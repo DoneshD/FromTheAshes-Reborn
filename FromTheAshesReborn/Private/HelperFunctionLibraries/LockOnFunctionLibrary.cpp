@@ -4,8 +4,10 @@
 #include "Kismet/KismetMathLibrary.h"
 
 
-float ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget)
+FLockOnAngleResult ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget)
 {
+	FLockOnAngleResult Result;
+	
 	FVector AttackTargetLocation = LockOnTarget->GetActorLocation();
 	FVector OwnerLocation = OwningActor->GetActorLocation();
 	UCharacterMovementComponent* CMC = nullptr;
@@ -17,11 +19,11 @@ float ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AActor* OwningA
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Error getting CharacterMovementComponent"));
-		return 0.0f;
+		return FLockOnAngleResult();
 	}
+	Result.InputVector = CMC->GetLastInputVector();
+	
 	FVector MovementVectorAnchored = CMC->GetLastInputVector() + OwningActor->GetActorLocation();
-
-	float AngleFromTarget = 0.0f;
 
 	FVector TargetDifference = AttackTargetLocation - OwnerLocation;
 	FVector TargetVector = FVector(TargetDifference.X, TargetDifference.Y, 0.0f);
@@ -34,27 +36,26 @@ float ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AActor* OwningA
 	float TargetDotProduct = FVector::DotProduct(CrossProduct, FVector(0.0f, 0.0f, 1.0f));
 	float DotProduct = FVector::DotProduct(TargetVector, MovementVector);
 
-	float TanVal = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct);
-
-	AngleFromTarget = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
-	return AngleFromTarget;
+	Result.Angle = UKismetMathLibrary::Atan2(TargetDotProduct, DotProduct) * 180.f / PI;
+	
+	return Result;
 }
 
-ELockOnInputOrientationDirection ULockOnFunctionLibrary::GetOrientationOfInput(float Angle)
+ELockOnInputOrientationDirection ULockOnFunctionLibrary::GetOrientationOfInput(FLockOnAngleResult AngleResult)
 {
-	if (Angle >= -25.0f && Angle < 25.0f)
+	if (AngleResult.Angle >= -25.0f && AngleResult.Angle < 25.0f && !AngleResult.InputVector.IsNearlyZero())
 	{
 		return ELockOnInputOrientationDirection::Forward;
 	}
-	if (Angle > 25.0f && Angle < 135.0f)
+	if (AngleResult.Angle > 25.0f && AngleResult.Angle < 135.0f)
 	{
 		return ELockOnInputOrientationDirection::Right;
 	}
-	if (Angle < -25.0f && Angle > -135.0f)
+	if (AngleResult.Angle < -25.0f && AngleResult.Angle > -135.0f)
 	{
 		return ELockOnInputOrientationDirection::Left;
 	}
-	if (FMath::Abs(Angle) >= 135.0f)
+	if (FMath::Abs(AngleResult.Angle) >= 135.0f)
 	{
 		return ELockOnInputOrientationDirection::Backward;
 	}

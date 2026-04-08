@@ -4,6 +4,18 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "LockOnFunctionLibrary.generated.h"
 
+USTRUCT(BlueprintType)
+struct FLockOnAngleResult
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly)
+	float Angle;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector InputVector;
+};
+
 UENUM(BlueprintType)
 enum class ELockOnInputOrientationDirection : uint8
 {
@@ -22,10 +34,10 @@ class FROMTHEASHESREBORN_API ULockOnFunctionLibrary : public UBlueprintFunctionL
 public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static float AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget);
+	static FLockOnAngleResult AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	static ELockOnInputOrientationDirection GetOrientationOfInput(float Angle);
+	static ELockOnInputOrientationDirection GetOrientationOfInput(FLockOnAngleResult AngleResult);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	static FRotator CheckRotationBasedOnTarget(AActor* OwningActor, AActor* LockOnTarget, FVector Location);

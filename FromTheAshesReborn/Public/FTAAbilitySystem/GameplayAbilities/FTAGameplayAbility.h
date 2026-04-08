@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+enum class ELockOnInputOrientationDirection : uint8;
 class UAerialAbilityModifier;
 class UMoveToLocationDataAsset;
 class UFTAAT_MoveToLocationAndWait;
@@ -122,6 +123,12 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input")
+	bool IsLockOnDirectionalInput = false;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", meta=(EditCondition="IsLockOnDirectionalInput"))
+	ELockOnInputOrientationDirection LockOnInputDirection;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Aerial")
 	bool IsOrientationAgnostic = false;
