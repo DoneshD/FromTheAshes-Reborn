@@ -388,19 +388,8 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
-	HitInfoObj->HitData.HitDirection = HitData.Direction;
-	// HitData.d
-	// UE_LOG(LogTemp, Warning, TEXT("Num: %s"), HitInfoObj->HitData.di)
-
-	if(HitData.MoveToLocationData)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Here 11"));
-		CurrentMoveToLocationAsset = HitData.MoveToLocationData;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Here 12"));
-	}
+	HitInfoObj->HitData.Direction = HitData.Direction;
+	
 
 	if(CurrentMoveToLocationAsset)
 	{
@@ -409,6 +398,12 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
 		}	
 	}
+
+	if(HitData.MoveToLocationData)
+	{
+		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
+	}
+	
 	
 	if(WeaponActors.IsEmpty())
 	{

@@ -24,6 +24,9 @@ struct FHitDataInfo
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float Distance;
+
+	UPROPERTY()
+	TObjectPtr<AActor> Instigator;
 	
 };
 
