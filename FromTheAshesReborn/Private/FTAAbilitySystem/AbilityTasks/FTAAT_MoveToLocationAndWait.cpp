@@ -65,10 +65,40 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	
 	StartLocation = GetAvatarActor()->GetActorLocation();
 	
-	EndLocation = GetAvatarActor()->GetActorLocation()
+	FVector TargetEndLocation = GetAvatarActor()->GetActorLocation()
 	+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationOffset.X
 	+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationOffset.Y
 	+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationOffset.Z;
+
+	FHitResult Hit;
+
+	float Radius = 34.f;
+
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(Radius);
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetAvatarActor());
+
+	bool bHit = GetWorld()->SweepSingleByChannel(
+		Hit,
+		StartLocation,
+		TargetEndLocation,
+		FQuat::Identity,
+		ECC_Pawn,
+		Sphere,
+		Params
+	);
+	
+	DrawDebugLine(GetWorld(), StartLocation, TargetEndLocation, FColor::Green, false, 2.f);
+	
+	if (bHit)
+	{
+		EndLocation = Hit.Location;
+	}
+	else
+	{
+		EndLocation = TargetEndLocation;
+	}
 
 	DrawDebugSphere(
 	GetWorld(),
@@ -78,7 +108,22 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	FColor::Green,
 	false,      
 	2.0f          
-);
+	);
+
+	StartLocation = GetAvatarActor()->GetActorLocation();
+
+	float OriginalDistance = MoveToLocationData->LocationOffset.Size();
+	float ActualDistance = FVector::Dist(StartLocation, EndLocation);
+
+	// Avoid divide by zero
+	if (OriginalDistance > KINDA_SMALL_NUMBER)
+	{
+		AdjustedDuration = MoveToLocationData->Duration * (ActualDistance / OriginalDistance);
+	}
+	else
+	{
+		AdjustedDuration = MoveToLocationData->Duration;
+	}
 }
 
 void UFTAAT_MoveToLocationAndWait::ExternalCancel()
@@ -95,18 +140,19 @@ void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 {
 	Super::OnDestroy(AbilityEnded);
 }
-
 void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 {
 	ElapsedTime += DeltaTime;
 
-	const float Alpha = FMath::Clamp(ElapsedTime / MoveToLocationData->Duration, 0.0f, 1.0f);
+	const float Alpha = FMath::Clamp(ElapsedTime / AdjustedDuration, 0.0f, 1.0f);
 	const FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
 
 	FHitResult Hit;
 	GetAvatarActor()->SetActorLocation(NewLocation, true, &Hit);
 
-	if (Alpha >= 1.0f || Hit.bBlockingHit)
+	const float DistanceToTarget = FVector::Dist(NewLocation, EndLocation);
+
+	if (Alpha >= 1.0f || Hit.bBlockingHit || DistanceToTarget <= 10.0f)
 	{
 		LocationReached();
 	}

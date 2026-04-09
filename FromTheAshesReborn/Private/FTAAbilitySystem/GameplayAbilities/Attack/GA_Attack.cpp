@@ -200,16 +200,19 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 				{
 					GrantHitAbility(TargetDataHandle, HitData.HitAbilityClass);
 					const FGameplayAbilitySpec* TargetSpec = TargetASC->FindAbilitySpecFromClass(HitData.HitAbilityClass);
-					if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
+					if(TargetSpec)
 					{
-						ApplyHitEffects(TargetDataHandle, HitData.HitAbilityClass);
-						SendHitGameplayEvents(TargetDataHandle, HitData);
-						AddHitCues(TargetDataHandle, HitData.HitAbilityClass);
-						break;
+						if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
+						{
+							ApplyHitEffects(TargetDataHandle, HitData.HitAbilityClass);
+							SendHitGameplayEvents(TargetDataHandle, HitData);
+							AddHitCues(TargetDataHandle, HitData.HitAbilityClass);
+							break;
+						}
 					}
 					else
 					{
-						
+						UE_LOG(LogTemp, Warning, TEXT("UGA_Attack::ExecuteHitLogic: Invalid spec from class "))
 					}
 				}
 			}
@@ -386,6 +389,18 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	HitInfoObj->HitData.HitDirection = HitData.Direction;
+	// HitData.d
+	// UE_LOG(LogTemp, Warning, TEXT("Num: %s"), HitInfoObj->HitData.di)
+
+	if(HitData.MoveToLocationData)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Here 11"));
+		CurrentMoveToLocationAsset = HitData.MoveToLocationData;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Here 12"));
+	}
 
 	if(CurrentMoveToLocationAsset)
 	{

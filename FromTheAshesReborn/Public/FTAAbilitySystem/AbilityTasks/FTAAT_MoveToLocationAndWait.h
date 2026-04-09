@@ -56,5 +56,6 @@ protected:
 	virtual void OnDestroy(bool AbilityEnded) override;
 
 	void UpdateLocation(float DeltaTime);
+	float AdjustedDuration;
 	void LocationReached();
 };

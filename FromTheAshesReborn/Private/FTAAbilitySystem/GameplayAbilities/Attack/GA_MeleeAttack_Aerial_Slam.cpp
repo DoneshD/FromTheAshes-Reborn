@@ -109,7 +109,8 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 	Super::OnMoveComplete();
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LoopTag);
-	ComboManagerComponent->SetCurrentComboIndex(ComboManagerComponent->GetCurrentComboIndex() + 1);
+	ComboManagerComponent->SetCurrentComboIndex(1);
+	UE_LOG(LogTemp, Warning, TEXT("Current before:%d"), ComboManagerComponent->GetCurrentComboIndex());
 
 	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
 	
@@ -121,4 +122,7 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 	
 	ExtractAssetProperties(CurrentAbilityAsset);
 	PerformAbility(CurrentAbilityAsset);
+	UE_LOG(LogTemp, Warning, TEXT("CurrentAbilityAsset name:%s"), *CurrentAbilityAsset->GetName());
+	UE_LOG(LogTemp, Warning, TEXT("Current after:%d"), ComboManagerComponent->GetCurrentComboIndex());
+	
 }
