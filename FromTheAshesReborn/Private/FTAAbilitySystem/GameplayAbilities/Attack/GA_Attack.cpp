@@ -549,7 +549,16 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 		}
 	}
 
-	CurrentAttackData->SupplyMovementDataOnHit = AttackAsset->SupplyMovementDataOnHit;
+	//Sometimes null here
+	if(CurrentAttackData)
+	{
+		CurrentAttackData->SupplyMovementDataOnHit = AttackAsset->SupplyMovementDataOnHit;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
+		return;
+	}
 	
 }
 
