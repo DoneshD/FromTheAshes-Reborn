@@ -115,6 +115,7 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 		
 		WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 	}
+	
 	CurrentAttackData = nullptr;
 }
 
@@ -471,7 +472,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 	{
 		if (!CurrentAttackData)
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
+			UE_LOG(LogTemp, Error, TEXT("1 UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
 			return;
 		}
 
@@ -525,18 +526,25 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 {
 	Super::SetRuntimeAbilityData(InAbilityRuntimeData);
 
+	if(!InAbilityRuntimeData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::SetRuntimeAbilityData - InAbilityRuntimeData is null"))
+		return;
+	}
+	
 	UAttackAbilityDataAsset* AttackAsset = Cast<UAttackAbilityDataAsset>(InAbilityRuntimeData);
 
 	if(!AttackAsset)
 	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::SetRuntimeAbilityData - AttackAsset is null"))
 		return;
 	}
-
+	
 	if (!AttackAsset->PossibleHitReactions.IsEmpty())
 	{
 		if (!CurrentAttackData)
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
+			UE_LOG(LogTemp, Error, TEXT("UGA_Attack::SetRuntimeAbilityData - CurrentAttackData is null"));
 			return;
 		}
 
@@ -556,7 +564,7 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
+		UE_LOG(LogTemp, Error, TEXT("3 UGA_Attack::SetRuntimeAbilityData - CurrentAttackData is null"));
 		return;
 	}
 	

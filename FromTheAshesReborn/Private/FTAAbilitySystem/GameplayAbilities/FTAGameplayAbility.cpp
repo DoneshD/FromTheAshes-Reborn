@@ -474,6 +474,7 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 	}
 	
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.InputQueue.Open"));
+	GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.RemoveDynamic(this, &UFTAGameplayAbility::SetRuntimeAbilityData);
 	CurrentAbilityAsset = nullptr;
 }
 

@@ -94,6 +94,21 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
 	}
+
+	FVector TargetLocation;
+	
+	if(!HitInfoObject->HitData.Instigator)
+	{
+		TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+	}
+	else
+	{
+		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
+	}
+	
+	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
 	
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
 	{
@@ -176,21 +191,6 @@ UFTAAbilityDataAsset* UGA_ReceiveHit::SelectAbilityAsset(TArray<UFTAAbilityDataA
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return nullptr;
 	}
-	
-	FVector TargetLocation;
-	
-	if(!HitInfoObject->HitData.Instigator)
-	{
-		TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
-	}
-	else
-	{
-		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
-	}
-	
-	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
-	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
 
 	TArray<UHitReactionDataAsset*> HitDataAssets;
 

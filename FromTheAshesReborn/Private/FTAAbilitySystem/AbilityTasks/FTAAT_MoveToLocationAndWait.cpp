@@ -84,7 +84,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		StartLocation,
 		TargetEndLocation,
 		FQuat::Identity,
-		ECC_Pawn,
+		ECC_Visibility,
 		Sphere,
 		Params
 	);
@@ -115,7 +115,6 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	float OriginalDistance = MoveToLocationData->LocationOffset.Size();
 	float ActualDistance = FVector::Dist(StartLocation, EndLocation);
 
-	// Avoid divide by zero
 	if (OriginalDistance > KINDA_SMALL_NUMBER)
 	{
 		AdjustedDuration = MoveToLocationData->Duration * (ActualDistance / OriginalDistance);

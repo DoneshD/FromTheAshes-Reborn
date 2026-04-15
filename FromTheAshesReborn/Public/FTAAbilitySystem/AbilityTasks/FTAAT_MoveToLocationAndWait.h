@@ -36,6 +36,8 @@ protected:
 	FVector StartLocation;
 	FVector EndLocation;
 
+	float AdjustedDuration;
+
 	UPROPERTY()
 	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData;
 
@@ -56,6 +58,5 @@ protected:
 	virtual void OnDestroy(bool AbilityEnded) override;
 
 	void UpdateLocation(float DeltaTime);
-	float AdjustedDuration;
 	void LocationReached();
 };
