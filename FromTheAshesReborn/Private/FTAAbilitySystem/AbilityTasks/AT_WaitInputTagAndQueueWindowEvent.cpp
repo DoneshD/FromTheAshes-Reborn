@@ -61,7 +61,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 
 void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputTag)
 {
-	QueuedInputTag = InputTag;
+	QueuedInputData.InputTag = InputTag;
 
 	for (const auto& Pair : QueueableAbilities)
 	{
@@ -75,7 +75,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 
 			for (UFTAGameplayAbility* FTAAbility : *AbilitiesPtr)
 			{
-				if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputTag))
+				if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))
 				{
 					FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
 
@@ -88,7 +88,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 					if (bIsActivated)
 					{
 						
-						QueuedInputTag = FGameplayTag::EmptyTag;
+						QueuedInputData.InputTag = FGameplayTag::EmptyTag;
 						EndTask();
 					}
 					else
@@ -140,7 +140,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 			{
 				FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
 
-				if (FTAAbility->InputTag.MatchesTag(QueuedInputTag))
+				if (FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))
 				{
 					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
 					{
@@ -150,7 +150,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
 					if (bIsActivated)
 					{
-						QueuedInputTag = FGameplayTag::EmptyTag;
+						QueuedInputData.InputTag = FGameplayTag::EmptyTag;
 						EndTask();
 					}
 					else
@@ -181,13 +181,13 @@ FString UAT_WaitInputTagAndQueueWindowEvent::GetDebugString() const
 {
 	FString DebugString = TEXT("WaitInputTagAndQueueWindowEvent: ");
 
-	if (!QueuedInputTag.IsValid())
+	if (!QueuedInputData.InputTag.IsValid())
 	{
 		DebugString += TEXT("Waiting for any input tag");
 	}
 	else
 	{
-		DebugString += FString::Printf(TEXT("Waiting for input tag: %s"), *QueuedInputTag.ToString());
+		DebugString += FString::Printf(TEXT("Waiting for input tag: %s"), *QueuedInputData.InputTag.ToString());
 	}
 
 	return DebugString;
@@ -206,7 +206,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnDestroy(bool AbilityEnded)
 		}
 
 		QueueWindowHandles.Empty();
-		FTAASC->RemoveLooseGameplayTag(QueuedInputTag);
+		FTAASC->RemoveLooseGameplayTag(QueuedInputData.InputTag);
 	}
 	
 	Super::OnDestroy(AbilityEnded);

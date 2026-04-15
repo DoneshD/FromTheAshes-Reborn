@@ -2,8 +2,22 @@
 
 #include "CoreMinimal.h"
 #include "Abilities/Tasks/AbilityTask.h"
+#include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "AT_WaitInputTagAndQueueWindowEvent.generated.h"
 
+
+USTRUCT()
+struct FQueuedInputData
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FGameplayTag InputTag;
+
+	UPROPERTY()
+	ELockOnInputOrientationDirection Direction;
+	
+};
 
 class UFTAGameplayAbility;
 class UFTAAbilitySystemComponent;
@@ -18,7 +32,7 @@ protected:
 	UPROPERTY()
 	UFTAAbilitySystemComponent* FTAASC = nullptr;
 	
-	FGameplayTag QueuedInputTag;
+	FQueuedInputData QueuedInputData;
 
 	struct FQueueWindowHandle
 	{
