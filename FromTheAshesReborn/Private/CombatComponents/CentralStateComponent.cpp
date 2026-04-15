@@ -50,14 +50,14 @@ void UCentralStateComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(CMC)
+	/*if(CMC)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s | MovementMode: %s | OrientationTag: %s | CurrentStateTag: %s"),
 		*GetOwner()->GetName(),
 		*StaticEnum<EMovementMode>()->GetNameStringByValue((int64)CMC->MovementMode),
 		*CurrentOrientationTag.ToString(),
 		*CurrentStateTag.ToString());
-	}
+	}*/
 }
 
 FGameplayTag UCentralStateComponent::GetCurrentState()

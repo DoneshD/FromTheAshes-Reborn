@@ -57,6 +57,7 @@ ELockOnInputOrientationDirection ULockOnFunctionLibrary::GetOrientationOfInput(F
 	}
 	if (FMath::Abs(AngleResult.Angle) >= 135.0f)
 	{
+		
 		return ELockOnInputOrientationDirection::Backward;
 	}
 	return ELockOnInputOrientationDirection::None;

@@ -269,6 +269,10 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 				return false;
 			}
 		}
+		else
+		{
+			return false;
+		}
 	}
 	return true;
 }
