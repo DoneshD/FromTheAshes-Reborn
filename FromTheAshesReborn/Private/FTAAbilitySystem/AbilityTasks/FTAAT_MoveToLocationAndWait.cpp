@@ -64,15 +64,32 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	StartTime = GetWorld()->GetTimeSeconds();
 	
 	StartLocation = GetAvatarActor()->GetActorLocation();
-	
-	FVector TargetEndLocation = GetAvatarActor()->GetActorLocation()
-	+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationOffset.X
-	+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationOffset.Y
-	+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationOffset.Z;
 
-	UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->TestVector.ToString());
+	FVector TargetEndLocation;
+	if(!MoveToLocationData->TestVector.IsNearlyZero())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->TestVector.ToString());
+		TargetEndLocation = MoveToLocationData->TestVector;
+		TargetEndLocation.X += -200.0f;
+		
+		DrawDebugSphere(
+				GetWorld(),
+				TargetEndLocation,
+				25.0f,        
+				12,           
+				FColor::Red,
+				false,      
+				2.0f          
+				);
+	}
+	else
+	{
+		TargetEndLocation = GetAvatarActor()->GetActorLocation()
+		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationOffset.X
+		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationOffset.Y
+		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationOffset.Z;
+	}
 	
-
 	FHitResult Hit;
 
 	float Radius = 34.f;

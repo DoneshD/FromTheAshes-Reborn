@@ -396,27 +396,18 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	{
 		if(CurrentAttackData->SupplyMovementDataOnHit)
 		{
-			FVector TargetEndLocation = GetFTACharacterFromActorInfo()->GetActorLocation()
-			+ GetFTACharacterFromActorInfo()->GetActorForwardVector() * CurrentMoveToLocationAsset->LocationOffset.X
-			+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * CurrentMoveToLocationAsset->LocationOffset.Y
-			+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * CurrentMoveToLocationAsset->LocationOffset.Z;
+			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
+			HitInfoObj->HitData.MoveToLocationData->TestVector = SupplyHitVector;
 
-			DrawDebugSphere(
+			/*DrawDebugSphere(
 				GetWorld(),
 				TargetEndLocation,
-				25.f,        // Radius
-				12,          // Segments
+				25.0f,        
+				12,           
 				FColor::Yellow,
-				false,       // Persistent
-				2.0f         // Lifetime
-			);
-
-
-			// CurrentMoveToLocationAsset->TestVector = TargetEndLocation;
-			
-			UE_LOG(LogTemp, Warning, TEXT("Attack vec: %s"), *TargetEndLocation.ToString())
-			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
-			HitInfoObj->HitData.MoveToLocationData->TestVector = TargetEndLocation;
+				false,      
+				2.0f          
+				);*/
 			
 		}	
 	}

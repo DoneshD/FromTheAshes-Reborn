@@ -60,8 +60,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		}
 	}
 	HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
-
-	UE_LOG(LogTemp, Warning, TEXT("Hit vec: %s"), *HitInfoObject->HitData.MoveToLocationData->TestVector.ToString())
 	
 	if(HitInfoObject->HitData.MoveToLocationData)
 	{

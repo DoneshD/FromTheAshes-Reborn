@@ -29,6 +29,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Attack Data")
 	FGameplayEventData OnHitEventData;
 
+
 protected:
 
 	UGA_Attack(const FObjectInitializer& = FObjectInitializer::Get());

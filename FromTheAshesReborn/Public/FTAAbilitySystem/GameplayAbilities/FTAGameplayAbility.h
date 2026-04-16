@@ -108,6 +108,8 @@ protected:
 
 	UFUNCTION()
 	virtual void OnMoveComplete();
+
+	FVector SupplyHitVector = FVector::ZeroVector;
 	
 
 	//Components
