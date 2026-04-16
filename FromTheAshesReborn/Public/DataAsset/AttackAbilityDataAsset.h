@@ -58,6 +58,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack Data")
 	bool SupplyMovementDataOnHit = false;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack Data")
+	bool FollowEndLocationOnHit = false;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	TArray<TSubclassOf<UFTAVisualCueObject>> HitEnemyVisualCueClassArray;
 

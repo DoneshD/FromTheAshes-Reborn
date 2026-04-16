@@ -397,7 +397,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		if(CurrentAttackData->SupplyMovementDataOnHit)
 		{
 			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
-			HitInfoObj->HitData.MoveToLocationData->TestVector = SupplyHitVector;
+			HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
 
 			/*DrawDebugSphere(
 				GetWorld(),
@@ -447,6 +447,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 	OnHitEventData.OptionalObject = nullptr;
+	EndLocationVector = FVector::ZeroVector;
 }
 
 UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)

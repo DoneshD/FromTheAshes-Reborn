@@ -109,7 +109,7 @@ protected:
 	UFUNCTION()
 	virtual void OnMoveComplete();
 
-	FVector SupplyHitVector = FVector::ZeroVector;
+	FVector EndLocationVector = FVector::ZeroVector;
 	
 
 	//Components

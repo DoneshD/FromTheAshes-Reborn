@@ -66,10 +66,10 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	StartLocation = GetAvatarActor()->GetActorLocation();
 
 	FVector TargetEndLocation;
-	if(!MoveToLocationData->TestVector.IsNearlyZero())
+	if(!MoveToLocationData->EndLocationVector.IsNearlyZero())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->TestVector.ToString());
-		TargetEndLocation = MoveToLocationData->TestVector;
+		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->EndLocationVector.ToString());
+		TargetEndLocation = MoveToLocationData->EndLocationVector;
 		TargetEndLocation.X += -200.0f;
 		
 		DrawDebugSphere(

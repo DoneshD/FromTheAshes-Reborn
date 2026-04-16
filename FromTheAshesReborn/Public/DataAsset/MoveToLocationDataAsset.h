@@ -47,6 +47,6 @@ public:
 	FVector PostVelocity;
 
 	UPROPERTY()
-	FVector TestVector = FVector::ZeroVector;
+	FVector EndLocationVector = FVector::ZeroVector;
 	
 };
