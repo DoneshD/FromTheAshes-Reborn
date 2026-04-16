@@ -44,8 +44,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D LookAxisVector;
 
-	UPROPERTY(BlueprintReadWrite)
-	float InputMagnitude;
+
 
 protected:
 	
@@ -77,4 +76,6 @@ protected:
 public:
 	AFTAPlayerState* GetFTAPlayerState();
 
+	UPROPERTY(BlueprintReadWrite)
+	float InputMagnitude;
 };

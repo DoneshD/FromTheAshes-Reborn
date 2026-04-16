@@ -14,6 +14,9 @@ struct FLockOnAngleResult
 
 	UPROPERTY(BlueprintReadOnly)
 	FVector InputVector;
+
+	UPROPERTY(BlueprintReadOnly)
+	float InputMagnitude;
 };
 
 UENUM(BlueprintType)

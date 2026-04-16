@@ -2,6 +2,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/FTAPlayerController.h"
 
 
 FLockOnAngleResult ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AActor* OwningActor, AActor* LockOnTarget)
@@ -15,13 +16,24 @@ FLockOnAngleResult ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AA
 	if (ACharacter* CharacterOwner = Cast<ACharacter>(OwningActor))
 	{
 		CMC = CharacterOwner->GetCharacterMovement();
+		AFTAPlayerController* FTAPC = Cast<AFTAPlayerController>(CharacterOwner->GetController());
+		if(FTAPC)
+		{
+			Result.InputMagnitude = FTAPC->InputMagnitude;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Play controller null"));
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Error getting CharacterMovementComponent"));
 		return FLockOnAngleResult();
 	}
+	
 	Result.InputVector = CMC->GetLastInputVector();
+	// UE_LOG(LogTemp, Warning, TEXT("InputVector: %f"), CMC->GetLastInputVector().Size());
 	
 	FVector MovementVectorAnchored = CMC->GetLastInputVector() + OwningActor->GetActorLocation();
 
@@ -43,7 +55,7 @@ FLockOnAngleResult ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(AA
 
 ELockOnInputOrientationDirection ULockOnFunctionLibrary::GetOrientationOfInput(FLockOnAngleResult AngleResult)
 {
-	if (AngleResult.Angle >= -25.0f && AngleResult.Angle < 25.0f && !AngleResult.InputVector.IsNearlyZero())
+	if (AngleResult.Angle >= -25.0f && AngleResult.Angle < 25.0f && !AngleResult.InputVector.IsNearlyZero() && AngleResult.InputMagnitude > 300.0f)
 	{
 		return ELockOnInputOrientationDirection::Forward;
 	}
@@ -55,9 +67,8 @@ ELockOnInputOrientationDirection ULockOnFunctionLibrary::GetOrientationOfInput(F
 	{
 		return ELockOnInputOrientationDirection::Left;
 	}
-	if (FMath::Abs(AngleResult.Angle) >= 135.0f)
+	if (FMath::Abs(AngleResult.Angle) >= 135.0f && AngleResult.InputMagnitude > 300.0f)
 	{
-		
 		return ELockOnInputOrientationDirection::Backward;
 	}
 	return ELockOnInputOrientationDirection::None;

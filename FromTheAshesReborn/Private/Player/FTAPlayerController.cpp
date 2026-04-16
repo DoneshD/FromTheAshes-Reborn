@@ -93,6 +93,8 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	
 	PlayerCharacter->AddMovementInput(RightVector, InputDirection.X);
 
+	InputMagnitude = InputActionValue.GetMagnitude() * 20.0f;
+	
 	float WalkSpeed = InputActionValue.GetMagnitude() * 20.0f;
 	float ClampedWalkSpeed = FMath::Clamp(WalkSpeed, 200, 1000);
 

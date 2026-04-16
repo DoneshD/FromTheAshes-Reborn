@@ -62,6 +62,20 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputTag)
 {
 	QueuedInputData.InputTag = InputTag;
+	AFTAPlayerState* PS = Cast<AFTAPlayerState>(Ability->GetActorInfo().OwnerActor);
+	if (!PS)
+	{
+		UE_LOG(LogTemp, Error, TEXT("NULL PS"));
+		return;
+	}
+	
+	if(PS->HardLockedTargetActor)
+	{
+		FLockOnAngleResult AngleResult = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(Ability->GetAvatarActorFromActorInfo(), PS->HardLockedTargetActor);
+		ELockOnInputOrientationDirection InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleResult);
+		QueuedInputData.Direction = InputDirection;
+	}
+	
 
 	for (const auto& Pair : QueueableAbilities)
 	{
@@ -82,6 +96,19 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
 					{
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
+					}
+
+					/*UE_LOG(LogTemp, Warning, TEXT("FTAAbility->LockOnInputDirection: %s"),
+					*StaticEnum<ELockOnInputOrientationDirection>()->GetNameStringByValue((int64)FTAAbility->LockOnInputDirection));
+					
+					UE_LOG(LogTemp, Warning, TEXT("QueuedInputData.Direction: %s"),
+					*StaticEnum<ELockOnInputOrientationDirection>()->GetNameStringByValue((int64)QueuedInputData.Direction));*/
+					if(FTAAbility->IsLockOnDirectionalInput)
+					{
+						if(FTAAbility->LockOnInputDirection != QueuedInputData.Direction)
+						{
+							continue;
+						}
 					}
 
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
@@ -145,6 +172,14 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
 					{
 						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
+					}
+
+					if(FTAAbility->IsLockOnDirectionalInput)
+					{
+						if(FTAAbility->LockOnInputDirection != QueuedInputData.Direction)
+						{
+							continue;
+						}
 					}
 					
 					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
