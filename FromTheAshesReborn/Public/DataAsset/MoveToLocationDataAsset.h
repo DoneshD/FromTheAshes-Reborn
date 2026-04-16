@@ -46,5 +46,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Velocity", meta = (EditCondition = "SetVelocity"))
 	FVector PostVelocity;
 
+	UPROPERTY()
+	FVector TestVector = FVector::ZeroVector;
 	
 };

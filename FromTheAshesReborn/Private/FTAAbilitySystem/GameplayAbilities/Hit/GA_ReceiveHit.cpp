@@ -61,12 +61,15 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	}
 	HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
 
+	UE_LOG(LogTemp, Warning, TEXT("Hit vec: %s"), *HitInfoObject->HitData.MoveToLocationData->TestVector.ToString())
+	
 	if(HitInfoObject->HitData.MoveToLocationData)
 	{
 		//Build inverse logic for hits
 		FVector TempVec = FVector(-HitInfoObject->HitData.MoveToLocationData->LocationOffset.X, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Y, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Z);
 		CurrentMoveToLocationAsset->LocationOffset = TempVec;
 		CurrentMoveToLocationAsset->Duration = HitInfoObject->HitData.MoveToLocationData->Duration;
+		CurrentMoveToLocationAsset->TestVector = HitInfoObject->HitData.MoveToLocationData->TestVector;
 	}
 	else
 	{

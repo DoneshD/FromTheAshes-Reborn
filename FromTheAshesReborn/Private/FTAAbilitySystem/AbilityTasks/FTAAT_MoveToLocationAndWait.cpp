@@ -70,6 +70,9 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationOffset.Y
 	+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationOffset.Z;
 
+	UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->TestVector.ToString());
+	
+
 	FHitResult Hit;
 
 	float Radius = 34.f;
