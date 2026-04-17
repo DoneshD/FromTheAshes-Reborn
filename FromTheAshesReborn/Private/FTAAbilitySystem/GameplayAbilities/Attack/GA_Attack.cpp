@@ -401,6 +401,9 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 			if(CurrentAttackData->FollowEndLocationOnHit)
 			{
 				HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
+				HitInfoObj->HitData.MoveToLocationData->RelativeOffsetVector = RelativeOffsetVector;
+				UE_LOG(LogTemp, Warning, TEXT("Relative Offset: %s"), *RelativeOffsetVector.ToString());
+				
 			}
 
 			/*DrawDebugSphere(
@@ -422,6 +425,9 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		if(CurrentAttackData->FollowEndLocationOnHit)
 		{
 			HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
+			HitInfoObj->HitData.MoveToLocationData->RelativeOffsetVector = RelativeOffsetVector;
+		UE_LOG(LogTemp, Warning, TEXT("Relative Offset: %s"), *RelativeOffsetVector.ToString());
+			
 		}
 
 	}
@@ -457,6 +463,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 	OnHitEventData.OptionalObject = nullptr;
 	EndLocationVector = FVector::ZeroVector;
+	RelativeOffsetVector = FVector::ZeroVector;
 }
 
 UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
@@ -612,9 +619,12 @@ void UGA_Attack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData 
 	if(CurrentAttackData->FollowEndLocationOnHit)
 	{
 		EndLocationVector = GetFTACharacterFromActorInfo()->GetActorLocation()
-			+ GetFTACharacterFromActorInfo()->GetActorForwardVector() * CurrentMoveToLocationAsset->LocationOffset.X
-				+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * CurrentMoveToLocationAsset->LocationOffset.Y
-					+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * CurrentMoveToLocationAsset->LocationOffset.Z;
+		+ GetFTACharacterFromActorInfo()->GetActorForwardVector() * (CurrentMoveToLocationAsset->LocationOffset.X + CurrentAttackData->RelativeOffset.X)
+		+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * (CurrentMoveToLocationAsset->LocationOffset.Y + CurrentAttackData->RelativeOffset.Y)
+		+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * (CurrentMoveToLocationAsset->LocationOffset.Z + CurrentAttackData->RelativeOffset.Z);
+
+		RelativeOffsetVector = CurrentAttackData->RelativeOffset;
+		
 	}
 	Super::EventMontageReceived(EventTag, EventData);
 }

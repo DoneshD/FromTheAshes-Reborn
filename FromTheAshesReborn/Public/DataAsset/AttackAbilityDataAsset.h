@@ -14,33 +14,6 @@ class UGA_ReceiveHit;
 class UGameplayEffect;
 
 
-USTRUCT(BlueprintType)
-struct FAttackDataStruct
-{
-	GENERATED_BODY()
-
-public:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TArray<FHitDataInfo> PossibleHitReactions;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
-	TArray<TSubclassOf<UWeaponCueObject>> MeleeTrailCueClassArray;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
-	TArray<TSubclassOf<UFTAVisualCueObject>> HitEnemyVisualCueClassArray;
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Cue Data")
-	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TSubclassOf<AWeaponActorBase> WeaponActorClass; 
-	
-};
-
 UCLASS()
 class FROMTHEASHESREBORN_API UAttackAbilityDataAsset : public UFTAAbilityDataAsset
 {
@@ -67,7 +40,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
 
-	
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	FVector RelativeOffset = FVector::ZeroVector;
 
 };

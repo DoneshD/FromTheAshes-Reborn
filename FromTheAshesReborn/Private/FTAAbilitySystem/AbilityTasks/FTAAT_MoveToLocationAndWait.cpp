@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/AbilityTasks/FTAAT_MoveToLocationAndWait.h"
 
+#include "AIController.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -68,9 +69,9 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	FVector TargetEndLocation;
 	if(!MoveToLocationData->EndLocationVector.IsNearlyZero())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->EndLocationVector.ToString());
+		// UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->EndLocationVector.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Off vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->RelativeOffsetVector.ToString());
 		TargetEndLocation = MoveToLocationData->EndLocationVector;
-		TargetEndLocation.X += -200.0f;
 		
 		DrawDebugSphere(
 				GetWorld(),
@@ -160,6 +161,7 @@ void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 	Super::OnDestroy(AbilityEnded);
 
 	MoveToLocationData->EndLocationVector = FVector::ZeroVector;
+	MoveToLocationData->RelativeOffsetVector = FVector::ZeroVector;
 }
 void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 {

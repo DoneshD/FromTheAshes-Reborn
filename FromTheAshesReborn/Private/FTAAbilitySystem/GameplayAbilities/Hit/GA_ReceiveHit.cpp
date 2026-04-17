@@ -68,6 +68,9 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		CurrentMoveToLocationAsset->LocationOffset = TempVec;
 		CurrentMoveToLocationAsset->Duration = HitInfoObject->HitData.MoveToLocationData->Duration;
 		CurrentMoveToLocationAsset->EndLocationVector = HitInfoObject->HitData.MoveToLocationData->EndLocationVector;
+		UE_LOG(LogTemp, Warning, TEXT("Relative Offset: %s"), *HitInfoObject->HitData.MoveToLocationData->RelativeOffsetVector.ToString());
+		
+		CurrentMoveToLocationAsset->RelativeOffsetVector = HitInfoObject->HitData.MoveToLocationData->RelativeOffsetVector;
 	}
 	else
 	{

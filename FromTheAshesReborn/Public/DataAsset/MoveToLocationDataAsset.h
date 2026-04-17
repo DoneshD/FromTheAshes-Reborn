@@ -48,5 +48,8 @@ public:
 
 	UPROPERTY()
 	FVector EndLocationVector = FVector::ZeroVector;
+
+	UPROPERTY()
+	FVector RelativeOffsetVector = FVector::ZeroVector;
 	
 };

@@ -110,6 +110,8 @@ protected:
 	virtual void OnMoveComplete();
 
 	FVector EndLocationVector = FVector::ZeroVector;
+
+	FVector RelativeOffsetVector = FVector::ZeroVector;
 	
 
 	//Components
