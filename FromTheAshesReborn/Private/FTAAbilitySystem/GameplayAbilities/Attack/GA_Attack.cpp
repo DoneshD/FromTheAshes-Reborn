@@ -397,7 +397,11 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		if(CurrentAttackData->SupplyMovementDataOnHit)
 		{
 			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
-			HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
+			
+			if(CurrentAttackData->FollowEndLocationOnHit)
+			{
+				HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
+			}
 
 			/*DrawDebugSphere(
 				GetWorld(),
@@ -415,6 +419,11 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	if(HitData.MoveToLocationData)
 	{
 		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
+		if(CurrentAttackData->FollowEndLocationOnHit)
+		{
+			HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
+		}
+
 	}
 	
 	
@@ -600,6 +609,13 @@ void UGA_Attack::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData Ev
 
 void UGA_Attack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData)
 {
+	if(CurrentAttackData->FollowEndLocationOnHit)
+	{
+		EndLocationVector = GetFTACharacterFromActorInfo()->GetActorLocation()
+			+ GetFTACharacterFromActorInfo()->GetActorForwardVector() * CurrentMoveToLocationAsset->LocationOffset.X
+				+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * CurrentMoveToLocationAsset->LocationOffset.Y
+					+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * CurrentMoveToLocationAsset->LocationOffset.Z;
+	}
 	Super::EventMontageReceived(EventTag, EventData);
 }
 

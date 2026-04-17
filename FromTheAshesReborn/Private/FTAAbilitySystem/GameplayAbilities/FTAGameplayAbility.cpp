@@ -750,11 +750,6 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 		{
 			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
 			
-			// EndLocationVector = GetFTACharacterFromActorInfo()->GetActorLocation()
-			// + GetFTACharacterFromActorInfo()->GetActorForwardVector() * CurrentMoveToLocationAsset->LocationOffset.X
-			// + GetFTACharacterFromActorInfo()->GetActorRightVector()   * CurrentMoveToLocationAsset->LocationOffset.Y
-			// + GetFTACharacterFromActorInfo()->GetActorUpVector()      * CurrentMoveToLocationAsset->LocationOffset.Z;
-			
 			MoveToLocationAndWaitTask->ReadyForActivation();
 		}
 	}	

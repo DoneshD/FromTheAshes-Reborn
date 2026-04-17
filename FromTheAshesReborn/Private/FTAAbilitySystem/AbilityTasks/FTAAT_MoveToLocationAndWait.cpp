@@ -158,6 +158,8 @@ FString UFTAAT_MoveToLocationAndWait::GetDebugString() const
 void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 {
 	Super::OnDestroy(AbilityEnded);
+
+	MoveToLocationData->EndLocationVector = FVector::ZeroVector;
 }
 void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 {
