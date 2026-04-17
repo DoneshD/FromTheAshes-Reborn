@@ -402,8 +402,6 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 			{
 				HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
 				HitInfoObj->HitData.MoveToLocationData->RelativeOffsetVector = RelativeOffsetVector;
-				UE_LOG(LogTemp, Warning, TEXT("Relative Offset: %s"), *RelativeOffsetVector.ToString());
-				
 			}
 
 			/*DrawDebugSphere(
@@ -426,7 +424,6 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		{
 			HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
 			HitInfoObj->HitData.MoveToLocationData->RelativeOffsetVector = RelativeOffsetVector;
-		UE_LOG(LogTemp, Warning, TEXT("Relative Offset: %s"), *RelativeOffsetVector.ToString());
 			
 		}
 

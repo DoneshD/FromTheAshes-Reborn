@@ -91,6 +91,7 @@ void UAerialCombatComponent::InitializeStateAndVariables(EMovementMode MovementM
 	}
 	
 	IsComponentActive = true;
+	TotalAirTime = 0.0f;
 	CMC->AirControl = 0.10f;
 	CMC->AirControlBoostMultiplier = 0.10f;
 	

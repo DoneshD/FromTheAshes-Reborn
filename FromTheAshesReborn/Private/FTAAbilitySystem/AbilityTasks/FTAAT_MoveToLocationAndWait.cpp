@@ -69,8 +69,6 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	FVector TargetEndLocation;
 	if(!MoveToLocationData->EndLocationVector.IsNearlyZero())
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Move vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->EndLocationVector.ToString());
-		UE_LOG(LogTemp, Warning, TEXT("Actor name: %s - Off vec: %s"), *GetAvatarActor()->GetName(), *MoveToLocationData->RelativeOffsetVector.ToString());
 		TargetEndLocation = MoveToLocationData->EndLocationVector;
 		
 		DrawDebugSphere(
@@ -197,6 +195,7 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 		UAerialCombatComponent* ACC = FTAChar->FindComponentByClass<UAerialCombatComponent>();
 		if(ACC)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("AERIAL START"))
 			ACC->EnableComponent(MoveToLocationData->PostMovementMode);
 		}
 	}
