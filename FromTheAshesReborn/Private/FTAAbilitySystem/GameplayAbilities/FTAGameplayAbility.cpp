@@ -77,18 +77,12 @@ void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbility
 		return;
 	}
 
-	//Might not need
-	//Tag
-	// if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(InAbilityAsset->UniqueIdentifierTag))
-	// {
-	// 	CurrentAbilityAsset->UniqueIdentifierTag = InAbilityAsset->UniqueIdentifierTag;
-	// }
-
 	//Weapon Actor
 	if(InAbilityAsset->WeaponActorClass)
 	{
 		CurrentAbilityAsset->WeaponActorClass = InAbilityAsset->WeaponActorClass;
 	}
+	// CurrentAbilityAsset->EndAbilityOnCompleted = InAbilityAsset->EndAbilityOnCompleted;
 }
 
 void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
@@ -660,10 +654,17 @@ void UFTAGameplayAbility::GetAbilitySource(FGameplayAbilitySpecHandle Handle, co
 
 void UFTAGameplayAbility::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
 {
-	if(InAbilityRuntimeData)
+	if(!InAbilityRuntimeData)
 	{
-		
+		return;
 	}
+
+	// if(InAbilityRuntimeData->WeaponActorClass)
+	// {
+	// 	CurrentAbilityAsset->WeaponActorClass = InAbilityRuntimeData->WeaponActorClass;
+	// }
+	// CurrentAbilityAsset->EndAbilityOnCompleted = InAbilityRuntimeData->EndAbilityOnCompleted;
+	
 }
 
 
