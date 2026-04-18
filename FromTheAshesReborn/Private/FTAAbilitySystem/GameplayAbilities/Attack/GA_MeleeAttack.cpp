@@ -182,6 +182,14 @@ void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsse
 		}
 	}
 
+	CurrentMeleeAttackData->MeleeSource.MeleeType = MeleeAsset->MeleeSource.MeleeType;
+	if(MeleeAsset->MeleeSource.MeleeType == EMeleeType::Limb)
+	{
+		if(CurrentMeleeAttackData)
+		{
+			CurrentMeleeAttackData->MeleeSource.Limb = MeleeAsset->MeleeSource.Limb;
+		}
+	}
 	CurrentMeleeAttackData->MeleeSizeTrace = MeleeAsset->MeleeSizeTrace;
 }
 
@@ -195,11 +203,35 @@ void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRunti
 	{
 		return;
 	}
+	
+	//Trail visual
+	if(!MeleeAsset->TrailVisualCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf TrailVisualCueClass: MeleeAsset->TrailVisualCueClassArray)
+		{
+			if(TrailVisualCueClass && TrailVisualCueClass->IsValidLowLevel())
+			{
+				CurrentMeleeAttackData->TrailVisualCueClassArray = MeleeAsset->TrailVisualCueClassArray;
+			}
+		}
+	}
+
+	if(!MeleeAsset->TrailSoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf TrailSoundCueClass: MeleeAsset->TrailSoundCueClassArray)
+		{
+			if(TrailSoundCueClass && TrailSoundCueClass->IsValidLowLevel())
+			{
+				CurrentMeleeAttackData->TrailSoundCueClassArray.Add(TrailSoundCueClass);
+			}
+		}
+	}
+
+	CurrentMeleeAttackData->MeleeSource.MeleeType = MeleeAsset->MeleeSource.MeleeType;
 	if(MeleeAsset->MeleeSource.MeleeType == EMeleeType::Limb)
 	{
 		if(CurrentMeleeAttackData)
 		{
-			CurrentMeleeAttackData->MeleeSource.MeleeType = MeleeAsset->MeleeSource.MeleeType;
 			CurrentMeleeAttackData->MeleeSource.Limb = MeleeAsset->MeleeSource.Limb;
 		}
 	}
