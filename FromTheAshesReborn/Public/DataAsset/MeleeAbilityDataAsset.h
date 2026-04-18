@@ -52,4 +52,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Trail")
 	TArray<TSubclassOf<UFTASoundCueObject>> TrailSoundCueClassArray;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Trace")
+	FVector MeleeSizeTrace = FVector(50, 50,50);
+
+	
+
 };

@@ -405,7 +405,6 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 				HitInfoObj->HitData.MoveToLocationData->EndLocationVector = EndLocationVector;
 				HitInfoObj->HitData.MoveToLocationData->RelativeOffsetVector = RelativeOffsetVector;
 			}
-
 			/*DrawDebugSphere(
 				GetWorld(),
 				TargetEndLocation,
@@ -415,7 +414,6 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 				false,      
 				2.0f          
 				);*/
-			
 		}	
 	}
 

@@ -14,7 +14,6 @@ class FROMTHEASHESREBORN_API UFTAAbilityDataAsset : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
-
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base Params | Unique Tag")
 	FGameplayTag UniqueIdentifierTag;
