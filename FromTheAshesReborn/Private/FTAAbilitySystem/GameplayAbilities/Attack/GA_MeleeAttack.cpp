@@ -181,6 +181,8 @@ void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsse
 			}
 		}
 	}
+
+	CurrentMeleeAttackData->MeleeSizeTrace = MeleeAsset->MeleeSizeTrace;
 }
 
 void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
@@ -201,11 +203,13 @@ void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRunti
 			CurrentMeleeAttackData->MeleeSource.Limb = MeleeAsset->MeleeSource.Limb;
 		}
 	}
+	CurrentMeleeAttackData->MeleeSizeTrace = MeleeAsset->MeleeSizeTrace;
 }
 
 void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	UMeleeAbilityDataAsset* MeleeAbilityDataAsset = Cast<UMeleeAbilityDataAsset>(InAbilityAsset);
+	
 	Super::PerformAbility(MeleeAbilityDataAsset);
 	
 }
@@ -230,14 +234,11 @@ void UGA_MeleeAttack::StartMeleeTrace()
 
 					WeaponActor->TracingComponent->InclusionStringFilter = TEXT("DIH");
 					
-					WeaponActor->TracingComponent->SetupVariables(GetFTACharacterFromActorInfo()->GetMesh(), nullptr);
+					WeaponActor->TracingComponent->SetupVariables(WeaponActor->SkeletalMesh, nullptr);
 					WeaponActor->TracingComponent->MyActorsToIgnore.AddUnique(GetFTACharacterFromActorInfo());
 					WeaponActor->TracingComponent->ShouldIgnoreSelf = true;
 				
-					WeaponActor->TracingComponent->BoxHalfSize = FVector(
-					75.0f,
-					75.0f,
-					75.0f);
+					WeaponActor->TracingComponent->BoxHalfSize = CurrentMeleeAttackData->MeleeSizeTrace;
 					
 					WeaponActor->TracingComponent->ToggleTraceCheck(true);
 
