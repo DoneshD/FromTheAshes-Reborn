@@ -217,7 +217,6 @@ void UGA_MeleeAttack::OnHitAdded(FHitResult LastItem)
 
 void UGA_MeleeAttack::StartMeleeTrace()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Here"))
 	if(CurrentMeleeAttackData->MeleeSource.MeleeType == EMeleeType::Weapon)
 	{
 		for (AWeaponActorBase* WeaponActor : WeaponActors)
@@ -253,7 +252,6 @@ void UGA_MeleeAttack::StartMeleeTrace()
 	{
 		if(GetFTACharacterFromActorInfo()->LimbTracingComponent)
 		{
-			
 			GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeAttack::OnHitAdded);
 			
 			if(CurrentMeleeAttackData->MeleeSource.Limb == ELimb::LeftLeg)

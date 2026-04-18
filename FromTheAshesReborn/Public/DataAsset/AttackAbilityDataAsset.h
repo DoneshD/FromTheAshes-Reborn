@@ -22,25 +22,26 @@ class FROMTHEASHESREBORN_API UAttackAbilityDataAsset : public UFTAAbilityDataAss
 public:
 	
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Damage")
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit")
 	TArray<FHitDataInfo> PossibleHitReactions;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack Data")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack | Hit | Movement")
 	bool SupplyMovementDataOnHit = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack Data")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack | Hit | Movement")
 	bool FollowEndLocationOnHit = false;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Movement")
+	FVector RelativeOffset = FVector::ZeroVector;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Effects")
 	TArray<TSubclassOf<UFTAVisualCueObject>> HitEnemyVisualCueClassArray;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Effects")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	FVector RelativeOffset = FVector::ZeroVector;
 
 };

@@ -89,8 +89,6 @@ void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbility
 	{
 		CurrentAbilityAsset->WeaponActorClass = InAbilityAsset->WeaponActorClass;
 	}
-
-	
 }
 
 void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)

@@ -43,13 +43,13 @@ class FROMTHEASHESREBORN_API UMeleeAbilityDataAsset : public UAttackAbilityDataA
 
 public:
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Source")
 	FMeleeSource MeleeSource;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Trail")
 	TArray<TSubclassOf<UWeaponCueObject>> TrailVisualCueClassArray;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Melee | Trail")
 	TArray<TSubclassOf<UFTASoundCueObject>> TrailSoundCueClassArray;
 
 };
