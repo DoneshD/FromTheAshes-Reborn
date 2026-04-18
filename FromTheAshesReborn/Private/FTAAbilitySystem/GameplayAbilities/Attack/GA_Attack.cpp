@@ -62,14 +62,14 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		return;
 	}
 	
-	if(WeaponActors[0]->TracingComponent)
+	/*if(WeaponActors[0]->TracingComponent)
 	{
 		WeaponActors[0]->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
 		WeaponActors[0]->TracingComponent->BoxHalfSize = FVector(
 						100,
 						100,
 						100);
-	}
+	}*/
 	
 	// for (AWeaponActorBase* WeaponActor : WeaponActors)
 	// {
@@ -104,23 +104,25 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
-	for (AWeaponActorBase* WeaponActor : WeaponActors)
-	{
-		if(!WeaponActor)
-		{
-			//TODO: Printing incorrectly, fix later
-			//UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
-			return;
-		}
-		
-		WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
-	}
+	// for (AWeaponActorBase* WeaponActor : WeaponActors)
+	// {
+	// 	if(!WeaponActor)
+	// 	{
+	// 		//TODO: Printing incorrectly, fix later
+	// 		//UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
+	// 		return;
+	// 	}
+	// 	
+	// 	WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
+	// }
 	
 	CurrentAttackData = nullptr;
 }
 
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
 {
+
+	UE_LOG(LogTemp, Warning, TEXT("HIT"))
 	AActor* TargetActor = LastItem.GetActor();
 
 	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())

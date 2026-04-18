@@ -48,6 +48,28 @@ void UGA_MeleeAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const 
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	for (AWeaponActorBase* WeaponActor : WeaponActors)
+	{
+		if(WeaponActor)
+		{
+			if(WeaponActor->TracingComponent)
+			{
+				WeaponActor->TracingComponent->ToggleTraceCheck(false);
+				WeaponActor->TracingComponent->ClearHitArray();
+				WeaponActor->TracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
+				WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
+			}
+		}
+	}
+
+	if(GetFTACharacterFromActorInfo()->LimbTracingComponent)
+	{
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(false);
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->ClearHitArray();
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveAll(this);
+	}
 	
 	CurrentMeleeAttackData = nullptr;
 	CurrentVisualCueCDO = nullptr;
@@ -195,6 +217,7 @@ void UGA_MeleeAttack::OnHitAdded(FHitResult LastItem)
 
 void UGA_MeleeAttack::StartMeleeTrace()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Here"))
 	if(CurrentMeleeAttackData->MeleeSource.MeleeType == EMeleeType::Weapon)
 	{
 		for (AWeaponActorBase* WeaponActor : WeaponActors)
@@ -204,14 +227,25 @@ void UGA_MeleeAttack::StartMeleeTrace()
 			{
 				if(WeaponActor->TracingComponent)
 				{
-					WeaponActor->TracingComponent->BoxHalfSize = FVector(
-					50.0f,
-					50.0f,
-					50.0f);
+					WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_MeleeAttack::OnHitAdded);
+
+					WeaponActor->TracingComponent->InclusionStringFilter = TEXT("DIH");
+					
+					WeaponActor->TracingComponent->SetupVariables(GetFTACharacterFromActorInfo()->GetMesh(), nullptr);
+					WeaponActor->TracingComponent->MyActorsToIgnore.AddUnique(GetFTACharacterFromActorInfo());
+					WeaponActor->TracingComponent->ShouldIgnoreSelf = true;
 				
+					WeaponActor->TracingComponent->BoxHalfSize = FVector(
+					75.0f,
+					75.0f,
+					75.0f);
+					
 					WeaponActor->TracingComponent->ToggleTraceCheck(true);
+
+					//TODO: Temp fix - Multiple instances of same weapon actor
+					break;
+					
 				}
-			
 			}
 		}
 	}
@@ -267,6 +301,8 @@ void UGA_MeleeAttack::EndMeleeTrace()
 			{
 				WeaponActor->TracingComponent->ToggleTraceCheck(false);
 				WeaponActor->TracingComponent->ClearHitArray();
+				WeaponActor->TracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
+				WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
 			}
 		}
 	}
@@ -276,6 +312,7 @@ void UGA_MeleeAttack::EndMeleeTrace()
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(false);
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ClearHitArray();
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveAll(this);
 	}
 	CurrentVisualCueCDO = nullptr;
 	CurrentSoundCueCDO = nullptr;
