@@ -204,6 +204,7 @@ void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRunti
 		}
 	}
 	CurrentMeleeAttackData->MeleeSizeTrace = MeleeAsset->MeleeSizeTrace;
+	
 }
 
 void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)

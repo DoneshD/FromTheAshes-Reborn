@@ -534,6 +534,10 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 			}
 		}
 	}
+
+	CurrentAttackData->SupplyMovementDataOnHit = AttackAsset->SupplyMovementDataOnHit;
+	CurrentAttackData->FollowEndLocationOnHit = AttackAsset->FollowEndLocationOnHit;
+	CurrentAttackData->RelativeOffset = AttackAsset->RelativeOffset;
 }
 
 void UGA_Attack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
@@ -566,11 +570,18 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 		return;
 	}
 	
+	//Damage
+	if(AttackAsset->ApplyDamageEffect)
+	{
+		CurrentAttackData->ApplyDamageEffect = AttackAsset->ApplyDamageEffect;
+	}
+
+	// Hit Reactions
 	if (!AttackAsset->PossibleHitReactions.IsEmpty())
 	{
 		if (!CurrentAttackData)
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_Attack::SetRuntimeAbilityData - CurrentAttackData is null"));
+			UE_LOG(LogTemp, Error, TEXT("1 UGA_Attack::ExtractAssetProperties - CurrentAttackData is null"));
 			return;
 		}
 
@@ -583,16 +594,33 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 		}
 	}
 
-	//Sometimes null here
-	if(CurrentAttackData)
+	//Hit visuals
+	if(!AttackAsset->HitEnemyVisualCueClassArray.IsEmpty())
 	{
-		CurrentAttackData->SupplyMovementDataOnHit = AttackAsset->SupplyMovementDataOnHit;
+		for(TSubclassOf VisualCueClass: AttackAsset->HitEnemyVisualCueClassArray)
+		{
+			if(VisualCueClass && VisualCueClass->IsValidLowLevel())
+			{
+				CurrentAttackData->HitEnemyVisualCueClassArray.Add(VisualCueClass);
+			}
+		}
 	}
-	else
+
+	//Hit sounds
+	if(!AttackAsset->HitEnemySoundCueClassArray.IsEmpty())
 	{
-		UE_LOG(LogTemp, Error, TEXT("3 UGA_Attack::SetRuntimeAbilityData - CurrentAttackData is null"));
-		return;
+		for(TSubclassOf SoundCueClass: AttackAsset->HitEnemySoundCueClassArray)
+		{
+			if(SoundCueClass && SoundCueClass->IsValidLowLevel())
+			{
+				CurrentAttackData->HitEnemySoundCueClassArray.Add(SoundCueClass);
+			}
+		}
 	}
+
+	CurrentAttackData->SupplyMovementDataOnHit = AttackAsset->SupplyMovementDataOnHit;
+	CurrentAttackData->FollowEndLocationOnHit = AttackAsset->FollowEndLocationOnHit;
+	CurrentAttackData->RelativeOffset = AttackAsset->RelativeOffset;
 	
 }
 
