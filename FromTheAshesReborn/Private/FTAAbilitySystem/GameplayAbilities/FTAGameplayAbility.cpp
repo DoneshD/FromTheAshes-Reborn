@@ -82,7 +82,7 @@ void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbility
 	{
 		CurrentAbilityAsset->WeaponActorClass = InAbilityAsset->WeaponActorClass;
 	}
-	// CurrentAbilityAsset->EndAbilityOnCompleted = InAbilityAsset->EndAbilityOnCompleted;
+	CurrentAbilityAsset->EndAbilityOnCompleted = InAbilityAsset->EndAbilityOnCompleted;
 }
 
 void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
@@ -666,7 +666,6 @@ void UFTAGameplayAbility::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityR
 	// CurrentAbilityAsset->EndAbilityOnCompleted = InAbilityRuntimeData->EndAbilityOnCompleted;
 	
 }
-
 
 void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
