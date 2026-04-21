@@ -49,8 +49,6 @@ AActor* UCombatTracingComponent::TraceForEnemyActor(FWarpData TraceData)
 	TArray<FHitResult> OutHits;
 	FVector TraceStartLocation = GetOwner()->GetActorLocation() + GetTraceDirection() * TraceData.StartTraceLocationOffset;
 	FVector TraceEndLocation =  GetOwner()->GetActorLocation() + GetTraceDirection() * TraceData.TraceDistance;
-
-	UE_LOG(LogTemp, Warning, TEXT("TraceData.TraceRadius: %f"), TraceData.TraceRadius);
 	
 	TArray<AActor*> ActorArray;
 	ActorArray.Add(GetOwner());
@@ -66,7 +64,7 @@ AActor* UCombatTracingComponent::TraceForEnemyActor(FWarpData TraceData)
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::ForDuration,
+		EDrawDebugTrace::None,
 		OutHits,
 		true,
 		FLinearColor::Red,

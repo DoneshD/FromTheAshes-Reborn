@@ -121,8 +121,6 @@ void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 
 void UGA_Attack::OnHitAdded(FHitResult LastItem)
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("HIT"))
 	AActor* TargetActor = LastItem.GetActor();
 
 	if (TargetActor && TargetActor->Implements<UAbilitySystemInterface>())
