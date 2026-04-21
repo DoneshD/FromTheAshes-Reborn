@@ -2,6 +2,7 @@
 
 #include "MotionWarpingComponent.h"
 #include "CombatComponents/AfterImageComponent.h"
+#include "DataAsset/MotionWarpingDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
@@ -55,7 +56,6 @@ void UFTAMotionWarpingComponent::WarpToTargetActor(FWarpData WarpData)
 	//Actor warp
 	if(WarpData.WarpTargetActor)
 	{
-		
 		AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(WarpData.WarpTargetActor);
 		if (EnemyActor && !EnemyActor->IsDead)
 		{

@@ -63,7 +63,7 @@ AActor* UCombatTracingComponent::TraceForEnemyActor(FCombatTraceData TraceData)
 		ObjectTypes,
 		false,
 		ActorArray,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHits,
 		true,
 		FLinearColor::Red,

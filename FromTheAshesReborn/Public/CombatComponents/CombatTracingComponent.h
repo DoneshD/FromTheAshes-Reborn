@@ -26,7 +26,7 @@ struct FCombatTraceData
 	:
 	StartTraceLocationOffset(100.0f),
 	EndTraceLocationOffset(800.0f),
-	TraceRadius(600.0f)
+	TraceRadius(60.0f)
 	{}
 };
 
