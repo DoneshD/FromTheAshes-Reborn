@@ -3,6 +3,7 @@
 #include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 UGA_MeleeAttack_Aerial_Slam::UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer&)
 {
@@ -121,5 +122,36 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 	
 	ExtractAssetProperties(CurrentAbilityAsset);
 	PerformAbility(CurrentAbilityAsset);
+
+	FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
+	FVector End = Start - FVector(0, 0, 1000.f);
+
+	FHitResult Hit;
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(GetFTACharacterFromActorInfo());
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params))
+	{
+		FVector Forward = GetFTACharacterFromActorInfo()->GetActorForwardVector();
+
+		FRotator DecalRotation = FRotationMatrix::MakeFromXZ(
+			Forward,            
+			Hit.ImpactNormal      
+		).Rotator();
+
+		DecalRotation.Yaw += 115.f;
+
+		FRotator FinalDecalRotation = FRotator(-90.0f, DecalRotation.Yaw, DecalRotation.Roll);
+		FVector FinalDecalLocation = FVector(Hit.ImpactPoint.X - 400.0f, Hit.ImpactPoint.Y - 100.0f, Hit.ImpactPoint.Z);
+
+		UGameplayStatics::SpawnDecalAtLocation(
+			GetWorld(),
+			DecalMaterial,
+			FVector(600.f, 600.f, 600.f),
+			FinalDecalLocation,
+			FinalDecalRotation,
+			5.0f
+		);
+	}
 	
 }

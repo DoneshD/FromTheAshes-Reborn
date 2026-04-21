@@ -13,6 +13,9 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FGameplayTag LoopTag = FGameplayTag::EmptyTag;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UMaterialInterface* DecalMaterial;
+
 public:
 
 	UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer& = FObjectInitializer::Get());
