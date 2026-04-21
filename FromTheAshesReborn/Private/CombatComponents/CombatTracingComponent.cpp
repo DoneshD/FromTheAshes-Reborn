@@ -2,6 +2,7 @@
 
 #include "MotionWarpingComponent.h"
 #include "CombatComponents/AfterImageComponent.h"
+#include "DataAsset/MotionWarpingDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/InputReadingFunctionLibrary.h"
@@ -43,11 +44,13 @@ void UCombatTracingComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 }
 
-AActor* UCombatTracingComponent::TraceForEnemyActor(FCombatTraceData TraceData)
+AActor* UCombatTracingComponent::TraceForEnemyActor(FWarpData TraceData)
 {
 	TArray<FHitResult> OutHits;
 	FVector TraceStartLocation = GetOwner()->GetActorLocation() + GetTraceDirection() * TraceData.StartTraceLocationOffset;
-	FVector TraceEndLocation =  GetOwner()->GetActorLocation() + GetTraceDirection() * TraceData.EndTraceLocationOffset;
+	FVector TraceEndLocation =  GetOwner()->GetActorLocation() + GetTraceDirection() * TraceData.TraceDistance;
+
+	UE_LOG(LogTemp, Warning, TEXT("TraceData.TraceRadius: %f"), TraceData.TraceRadius);
 	
 	TArray<AActor*> ActorArray;
 	ActorArray.Add(GetOwner());

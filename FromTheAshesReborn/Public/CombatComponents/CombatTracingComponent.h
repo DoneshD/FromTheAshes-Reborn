@@ -4,11 +4,12 @@
 #include "Components/ActorComponent.h"
 #include "CombatTracingComponent.generated.h"
 
+struct FWarpData;
 class UMotionWarpingComponent;
 class AFTAPlayerState;
 class AFTACharacter;
 
-USTRUCT(BlueprintType)
+/*USTRUCT(BlueprintType)
 struct FCombatTraceData
 {
 	GENERATED_BODY()
@@ -28,7 +29,7 @@ struct FCombatTraceData
 	EndTraceLocationOffset(800.0f),
 	TraceRadius(60.0f)
 	{}
-};
+};*/
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UCombatTracingComponent : public UActorComponent
@@ -59,7 +60,7 @@ protected:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
-	AActor* TraceForEnemyActor(FCombatTraceData TraceData);
+	AActor* TraceForEnemyActor(FWarpData TraceData);
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveEnemyActor();
