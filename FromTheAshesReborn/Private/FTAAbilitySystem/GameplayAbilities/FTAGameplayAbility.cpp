@@ -677,13 +677,11 @@ void UFTAGameplayAbility::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMo
 	PlayMontageTask = UFTAAT_PlayMontageAndWaitForEvent::PlayMontageAndWaitForEvent(this, NAME_None, AnimMontage, FGameplayTagContainer(),
 	1.0f, NAME_None, false, 1.0f);
 	
-	
 	PlayMontageTask->OnBlendOut.AddDynamic(this, &UFTAGameplayAbility::OnMontageBlendingOut);
 	PlayMontageTask->OnCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCompleted);
 	PlayMontageTask->OnInterrupted.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
 	PlayMontageTask->OnCancelled.AddDynamic(this, &UFTAGameplayAbility::OnMontageCancelled);
 	PlayMontageTask->EventReceived.AddDynamic(this, &UFTAGameplayAbility::EventMontageReceived);
-	
 
 	PlayMontageTask->ReadyForActivation();
 
@@ -696,7 +694,6 @@ void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEve
 
 void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
-	
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
 	ResetCombo();
 
@@ -704,7 +701,6 @@ void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEve
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	}
-	
 }
 
 void UFTAGameplayAbility::OnMoveComplete()
