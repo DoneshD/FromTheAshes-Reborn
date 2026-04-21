@@ -4,14 +4,13 @@
 #include "Engine/DataAsset.h"
 #include "MotionWarpingDataAsset.generated.h"
 
-
-UCLASS()
-class FROMTHEASHESREBORN_API UMotionWarpingDataAsset : public UPrimaryDataAsset
+USTRUCT(BlueprintType)
+struct FWarpData
 {
 	GENERATED_BODY()
 
 public:
-	
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "WarpTarget")
 	FName WarpTargetName = NAME_None;
 	
@@ -31,5 +30,18 @@ public:
 	FVector WarpTargetLocation = FVector(0, 0, 0);
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Location")
-	FVector WarpTargetLocationOffset = FVector(0, 0, 0);
+	float WarpTargetLocationOffset = 0.0f;
+};
+
+
+UCLASS()
+class FROMTHEASHESREBORN_API UMotionWarpingDataAsset : public UPrimaryDataAsset
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "TraceData")
+	FWarpData WarpData;
+	
 };
