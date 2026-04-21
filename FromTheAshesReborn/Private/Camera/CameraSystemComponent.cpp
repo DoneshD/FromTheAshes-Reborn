@@ -137,18 +137,16 @@ void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
 void UCameraSystemComponent::HandleCameraComponentParams(float DeltaTime)
 {
 	float CurrentFOV = CameraComponent->FieldOfView;
-	float FinalTargetFOV = CameraBaseFOV + CameraFOVOffset;
-		
-	FinalTargetFOV = FMath::Clamp(FinalTargetFOV, 80.0, 100.0f);
-	
-	if (!FMath::IsNearlyEqual(CurrentFOV, FinalTargetFOV, 0.1f))
+
+	if (!FMath::IsNearlyEqual(CurrentFOV, CurrentCameraStateParams->CameraComponentParams.FieldOfView.Value, 0.1f))
 	{
-		const float InterpolatedFOV = FMath::InterpEaseOut(CurrentFOV, FinalTargetFOV, DeltaTime * CameraFOVLerpSpeed, 2.0);
+		const float InterpolatedFOV = FMath::InterpEaseOut(CurrentFOV,
+			CurrentCameraStateParams->CameraComponentParams.FieldOfView.Value,
+			DeltaTime,
+			2.0);
 		CameraComponent->SetFieldOfView(InterpolatedFOV);
-	
-		// UE_LOG(LogTemp, Warning, TEXT("FOV Lerp Debug -> Current: %.2f, Base: %.2f, Offset: %.2f, Target: %.2f, Interpolated: %.2f, DeltaTime: %.2f, Speed: %.2f"),
-		// 	CurrentFOV, CameraBaseFOV, CameraFOVOffset, FinalTargetFOV, InterpolatedFOV, DeltaTime, CameraFOVLerpSpeed);
 	}
+
 }
 
 void UCameraSystemComponent::HandleCameraAnchorParams(float DeltaTime)
@@ -361,14 +359,42 @@ void UCameraSystemComponent::ResolveCameraAnchorLocation()
 	);
 }
 
+void UCameraSystemComponent::ResolveCameraFOV()
+{
+	//FOV
+	ResolveCameraParam<float, FCameraFloatParam>(
+		CameraParamsArray,
+		CurrentCameraStateParams->CameraComponentParams.FieldOfView.Value,
+		CurrentCameraStateParams->CameraComponentParams.FieldOfView.MetaData.InLerpSpeedFloat,
+		CurrentCameraStateParams->CameraComponentParams.FieldOfView.MetaData.Priority,
+		FCameraParamAccessors<float, FCameraFloatParam>
+		{
+			[](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->CameraComponentParams.FieldOfView; },
+			[](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
+			[](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
+			[](float& Target, const float& Value) { Target = Value; },
+			[](const float& Target, const float& Value) { return Target + Value; },
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;},
+			[](const FCameraValueData& MetaData) -> float {return MetaData.Priority;}
+			
+        	
+		}
+	);
+}
+
+void UCameraSystemComponent::ResolveCameraComponentParams()
+{
+	if (!CurrentCameraStateParams) return;
+
+	ResolveCameraFOV();
+}
+
 void UCameraSystemComponent::ResolveCameraParams()
 {
 	ResolveSpringArmParams();
 	ResolveCameraAnchorParams();
-	
+	ResolveCameraComponentParams();
 	ResolveControlRotationParams();
-	
-	
 }
 
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)

@@ -173,7 +173,9 @@ public:
 	
 	void ResolveCameraAnchorParams();
 	void ResolveCameraAnchorLocation();
-	
+
+	void ResolveCameraFOV();
+	void ResolveCameraComponentParams();
 	void ResolveCameraParams();
 	
 	UFUNCTION(BlueprintCallable)
