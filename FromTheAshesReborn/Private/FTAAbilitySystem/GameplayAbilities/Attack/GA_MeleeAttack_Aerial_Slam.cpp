@@ -139,15 +139,15 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 			Hit.ImpactNormal      
 		).Rotator();
 
-		DecalRotation.Yaw += 115.f;
+		DecalRotation.Yaw += 285.f;
 
 		FRotator FinalDecalRotation = FRotator(-90.0f, DecalRotation.Yaw, DecalRotation.Roll);
-		FVector FinalDecalLocation = FVector(Hit.ImpactPoint.X - 400.0f, Hit.ImpactPoint.Y - 100.0f, Hit.ImpactPoint.Z);
+		FVector FinalDecalLocation = FVector(Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z + 400.0f);
 
 		UGameplayStatics::SpawnDecalAtLocation(
 			GetWorld(),
 			DecalMaterial,
-			FVector(600.f, 600.f, 600.f),
+			FVector(500.f, 500.f, 500.f),
 			FinalDecalLocation,
 			FinalDecalRotation,
 			5.0f
