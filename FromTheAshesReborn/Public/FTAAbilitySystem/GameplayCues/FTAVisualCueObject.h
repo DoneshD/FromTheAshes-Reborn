@@ -8,7 +8,7 @@
 class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
-struct FVisualCueStruct
+struct FNiagaraCueStruct
 {
 	GENERATED_BODY()
 
@@ -16,6 +16,36 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TObjectPtr<UNiagaraSystem> NiagaraSystem;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FVector Location;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FVector LocationOffset;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FRotator Rotation;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FRotator RotationOffset;
+	
+};
+
+USTRUCT(BlueprintType)
+struct FDecalCueStruct
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UMaterialInterface* DecalMaterial;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FVector Size;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	float Duration = 5.0f;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FVector Location;
@@ -42,7 +72,10 @@ public:
 	FGameplayTag VisualCueTag;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	TArray<FVisualCueStruct> VisualCueArray;
+	TArray<FNiagaraCueStruct> NiagaraCueArray;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TArray<FDecalCueStruct> DecalCueArray;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	bool ActivateAllCues = false;
