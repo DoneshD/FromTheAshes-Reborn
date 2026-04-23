@@ -25,7 +25,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Damage")
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Reactions")
 	TArray<FHitDataInfo> PossibleHitReactions;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack | Hit | Movement")
@@ -36,6 +36,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Movement")
 	FVector RelativeOffset = FVector::ZeroVector;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | HitStop")
+	FGameplayTag HitStopCueTag = FGameplayTag::EmptyTag;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | HitStop")
+	FGameplayTag CameraShakeCueTag = FGameplayTag::EmptyTag;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Effects")
 	TArray<TSubclassOf<UFTAVisualCueObject>> HitEnemyVisualCueClassArray;
