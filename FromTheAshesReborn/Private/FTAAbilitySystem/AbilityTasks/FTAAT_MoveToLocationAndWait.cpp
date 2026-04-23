@@ -195,7 +195,6 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 		UAerialCombatComponent* ACC = FTAChar->FindComponentByClass<UAerialCombatComponent>();
 		if(ACC)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("AERIAL START"))
 			ACC->EnableComponent(MoveToLocationData->PostMovementMode);
 		}
 	}

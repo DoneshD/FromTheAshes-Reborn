@@ -16,6 +16,12 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UMaterialInterface* DecalMaterial;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TSubclassOf<UFTAVisualCueObject> VisualCueLanded;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TSubclassOf<UFTASoundCueObject> SoundCueLanded;
+
 public:
 
 	UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer& = FObjectInitializer::Get());

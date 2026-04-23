@@ -2,7 +2,10 @@
 
 #include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
+#include "FTAAbilitySystem/GameplayCues/FTAVisualCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 UGA_MeleeAttack_Aerial_Slam::UGA_MeleeAttack_Aerial_Slam(const FObjectInitializer&)
@@ -144,14 +147,54 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 		FRotator FinalDecalRotation = FRotator(-90.0f, DecalRotation.Yaw, DecalRotation.Roll);
 		FVector FinalDecalLocation = FVector(Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
 
-		UGameplayStatics::SpawnDecalAtLocation(
-			GetWorld(),
-			DecalMaterial,
-			FVector(500.f, 500.f, 500.f),
-			FinalDecalLocation,
-			FinalDecalRotation,
-			5.0f
-		);
+		// UGameplayStatics::SpawnDecalAtLocation(
+		// 	GetWorld(),
+		// 	DecalMaterial,
+		// 	FVector(500.f, 500.f, 500.f),
+		// 	FinalDecalLocation,
+		// 	FinalDecalRotation,
+		// 	5.0f
+		// );
+		
+		if(VisualCueLanded)
+		{
+			FGameplayCueParameters VisualCueParams;
+				
+			UFTAVisualCueObject* VisualCueCDO = VisualCueLanded->GetDefaultObject<UFTAVisualCueObject>();
+			if(VisualCueCDO)
+			{
+				for(FDecalCueStruct& DecalStruct : VisualCueCDO->DecalCueArray)
+				{
+					DecalStruct.Location = FinalDecalLocation;
+					DecalStruct.Rotation = FinalDecalRotation;
+
+				}
+				VisualCueParams.SourceObject = VisualCueCDO;
+					
+				if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(VisualCueCDO->VisualCueTag))
+				{
+					K2_AddGameplayCueWithParams(VisualCueCDO->VisualCueTag, VisualCueParams);
+				}
+			}
+		}
+
+		FGameplayCueParameters SoundCueParams;
+		
+		if(SoundCueLanded)
+		{
+			UFTASoundCueObject* SoundCueCDO = SoundCueLanded->GetDefaultObject<UFTASoundCueObject>();
+			if(SoundCueCDO)
+			{
+				SoundCueParams.SourceObject = SoundCueCDO;
+			
+				if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(SoundCueCDO->SoundCueTag))
+				{
+					K2_AddGameplayCueWithParams(SoundCueCDO->SoundCueTag, SoundCueParams);
+				}
+			}
+		}
 	}
 	
 }
+	
+

@@ -380,20 +380,13 @@ void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHa
 		FGameplayCueParameters HitStopParams;
 		K2_AddGameplayCueWithParams(CurrentAttackData->HitStopCueTag, HitStopParams);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::HitStopCueTag - HitStopCueTag is invalid"));
-	}
 
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CurrentAttackData->CameraShakeCueTag))
 	{
 		FGameplayCueParameters CameraShakeParams;
 		K2_AddGameplayCueWithParams(CurrentAttackData->CameraShakeCueTag, CameraShakeParams);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::HitStopCueTag - CameraShakeCueTag is invalid"));
-	}
+	
 }
 
 void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData)
