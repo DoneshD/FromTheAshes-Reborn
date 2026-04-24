@@ -165,8 +165,8 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 			{
 				for(FDecalCueStruct& DecalStruct : VisualCueCDO->DecalCueArray)
 				{
-					DecalStruct.Location = FinalDecalLocation;
-					DecalStruct.Rotation = FinalDecalRotation;
+					// DecalStruct.Location = FinalDecalLocation;
+					// DecalStruct.Rotation = FinalDecalRotation;
 
 				}
 				VisualCueParams.SourceObject = VisualCueCDO;

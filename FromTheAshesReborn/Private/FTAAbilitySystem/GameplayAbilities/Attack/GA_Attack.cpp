@@ -277,7 +277,7 @@ void UGA_Attack::GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetD
 void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle,
 	TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
 {
-	if (InHitAbilityClass->IsValidLowLevel())
+	if (InHitAbilityClass && InHitAbilityClass->IsValidLowLevel())
 	{
 		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
