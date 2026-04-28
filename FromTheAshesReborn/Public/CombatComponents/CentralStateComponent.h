@@ -64,6 +64,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCurrentOrientation(FGameplayTag OrientationTag, EMovementMode MovementMode);
 
+	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetCurrentState();
+
+	UFUNCTION(BlueprintCallable)
 	FGameplayTag GetCurrentOrientation();
 };

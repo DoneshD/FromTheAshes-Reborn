@@ -109,7 +109,9 @@ protected:
 	UFUNCTION()
 	virtual void OnMoveComplete();
 
+	UPROPERTY(BlueprintReadWrite, Category = "Movement")
 	FVector EndLocationVector = FVector::ZeroVector;
+	
 	FVector RelativeOffsetVector = FVector::ZeroVector;
 	
 	//Components

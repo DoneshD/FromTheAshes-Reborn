@@ -154,6 +154,10 @@ void UCentralStateComponent::HandleGroundedOrientation()
 	CurrentOrientationTag = GroundedOrientationTag;
 	CMC->SetMovementMode(MOVE_Walking);
 	
+	ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
+	ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
+	ASC->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slammed"));
+	
 	// AFTACharacter* FTAChar = Cast<AFTACharacter>(GetOwner());
 	//
 	// if(FTAChar)
