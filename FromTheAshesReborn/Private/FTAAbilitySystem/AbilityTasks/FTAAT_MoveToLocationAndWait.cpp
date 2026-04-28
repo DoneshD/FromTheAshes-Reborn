@@ -184,12 +184,6 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 	CMC->Velocity.Z = 0.0f;
 	CMC->GravityScale = 1.0f;
 
-	FVector FinalLaunchVelocity = GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LaunchVelocity.X
-	+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LaunchVelocity.Y
-	+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LaunchVelocity.Z;
-	
-	CMC->Launch(FinalLaunchVelocity);
-
 	if(MoveToLocationData->EnableAerialCombat)
 	{
 		UAerialCombatComponent* ACC = FTAChar->FindComponentByClass<UAerialCombatComponent>();
