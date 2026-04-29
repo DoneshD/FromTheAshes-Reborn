@@ -4,6 +4,7 @@
 #include "FTAAbilityDataAsset.h"
 #include "AttackAbilityDataAsset.generated.h"
 
+class UMoveToLocationDataAsset;
 struct FHitDataInfo;
 class UWeaponCueObject;
 class AWeaponActorBase;
@@ -25,9 +26,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Damage")
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack | Movement")
+	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationDataAsset;
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Reactions")
 	TArray<FHitDataInfo> PossibleHitReactions;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Movement")
 	FVector RelativeOffset = FVector::ZeroVector;
 

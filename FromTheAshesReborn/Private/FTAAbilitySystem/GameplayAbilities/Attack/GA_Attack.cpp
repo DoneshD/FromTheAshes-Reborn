@@ -494,6 +494,11 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		CurrentAttackData->ApplyDamageEffect = AttackAsset->ApplyDamageEffect;
 	}
 
+	if(AttackAsset->MoveToLocationDataAsset)
+	{
+		CurrentMoveToLocationAsset = AttackAsset->MoveToLocationDataAsset;
+	}
+
 	// Hit Reactions
 	if (!AttackAsset->PossibleHitReactions.IsEmpty())
 	{
@@ -584,6 +589,11 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 	if(AttackAsset->ApplyDamageEffect)
 	{
 		CurrentAttackData->ApplyDamageEffect = AttackAsset->ApplyDamageEffect;
+	}
+
+	if(AttackAsset->MoveToLocationDataAsset)
+	{
+		CurrentMoveToLocationAsset = AttackAsset->MoveToLocationDataAsset;
 	}
 
 	// Hit Reactions
