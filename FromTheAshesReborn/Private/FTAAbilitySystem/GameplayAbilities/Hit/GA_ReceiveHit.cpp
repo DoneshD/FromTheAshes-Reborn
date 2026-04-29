@@ -65,12 +65,12 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	if(HitInfoObject->HitData.MoveToLocationData)
 	{
 		//Build inverse logic for hits
-		FVector TempVec = FVector(-HitInfoObject->HitData.MoveToLocationData->LocationOffset.X, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Y, HitInfoObject->HitData.MoveToLocationData->LocationOffset.Z);
-		CurrentMoveToLocationAsset->LocationOffset = TempVec;
-		CurrentMoveToLocationAsset->Duration = HitInfoObject->HitData.MoveToLocationData->Duration;
-		CurrentMoveToLocationAsset->EndLocationVector = HitInfoObject->HitData.MoveToLocationData->EndLocationVector;
+		FVector TempVec = FVector(-HitInfoObject->HitData.MoveToLocationData->LocationData.LocationOffset.X, HitInfoObject->HitData.MoveToLocationData->LocationData.LocationOffset.Y, HitInfoObject->HitData.MoveToLocationData->LocationData.LocationOffset.Z);
+		CurrentMoveToLocationAsset->LocationData.LocationOffset = TempVec;
+		CurrentMoveToLocationAsset->LocationData.Duration = HitInfoObject->HitData.MoveToLocationData->LocationData.Duration;
+		CurrentMoveToLocationAsset->LocationData.EndLocationVector = HitInfoObject->HitData.MoveToLocationData->LocationData.EndLocationVector;
 		
-		CurrentMoveToLocationAsset->RelativeOffsetVector = HitInfoObject->HitData.MoveToLocationData->RelativeOffsetVector;
+		CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = HitInfoObject->HitData.MoveToLocationData->LocationData.RelativeOffsetVector;
 	}
 	else
 	{

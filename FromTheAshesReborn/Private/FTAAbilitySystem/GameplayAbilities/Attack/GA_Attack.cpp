@@ -413,8 +413,8 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 			
 			if(CurrentAttackData->FollowEndLocationOnHit)
 			{
-				HitInfoObj->HitData.MoveToLocationData->EndLocationVector = CurrentMoveToLocationAsset->EndLocationVector;
-				HitInfoObj->HitData.MoveToLocationData->RelativeOffsetVector = CurrentMoveToLocationAsset->RelativeOffsetVector;
+				HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->LocationData.TempEndLocationVector;
+				HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
 			}
 			/*DrawDebugSphere(
 				GetWorld(),
@@ -433,8 +433,8 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
 		if(CurrentAttackData->FollowEndLocationOnHit)
 		{
-			HitInfoObj->HitData.MoveToLocationData->EndLocationVector = CurrentMoveToLocationAsset->EndLocationVector;
-			HitInfoObj->HitData.MoveToLocationData->RelativeOffsetVector = CurrentMoveToLocationAsset->RelativeOffsetVector;
+			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->LocationData.TempEndLocationVector;
+			HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
 			
 		}
 
@@ -472,8 +472,9 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	OnHitEventData.OptionalObject = nullptr;
 	if(CurrentMoveToLocationAsset)
 	{
-		CurrentMoveToLocationAsset->EndLocationVector = FVector::ZeroVector;
-		CurrentMoveToLocationAsset->RelativeOffsetVector = FVector::ZeroVector;
+		CurrentMoveToLocationAsset->LocationData.EndLocationVector = FVector::ZeroVector;
+		CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = FVector::ZeroVector;
+		CurrentMoveToLocationAsset->LocationData.TempEndLocationVector = FVector::ZeroVector;
 	}
 }
 
@@ -681,12 +682,12 @@ void UGA_Attack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData 
 	{
 		if(CurrentMoveToLocationAsset)
 		{
-			CurrentMoveToLocationAsset->EndLocationVector = GetFTACharacterFromActorInfo()->GetActorLocation()
-			+ GetFTACharacterFromActorInfo()->GetActorForwardVector() * (CurrentMoveToLocationAsset->LocationOffset.X + CurrentAttackData->RelativeOffset.X)
-			+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * (CurrentMoveToLocationAsset->LocationOffset.Y + CurrentAttackData->RelativeOffset.Y)
-			+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * (CurrentMoveToLocationAsset->LocationOffset.Z + CurrentAttackData->RelativeOffset.Z);
+			CurrentMoveToLocationAsset->LocationData.TempEndLocationVector = GetFTACharacterFromActorInfo()->GetActorLocation()
+			+ GetFTACharacterFromActorInfo()->GetActorForwardVector() * (CurrentMoveToLocationAsset->LocationData.LocationOffset.X)
+			+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * (CurrentMoveToLocationAsset->LocationData.LocationOffset.Y)
+			+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * (CurrentMoveToLocationAsset->LocationData.LocationOffset.Z);
 
-			CurrentMoveToLocationAsset->RelativeOffsetVector = CurrentAttackData->RelativeOffset;
+			CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = CurrentAttackData->RelativeOffset;
 		}
 		
 	}

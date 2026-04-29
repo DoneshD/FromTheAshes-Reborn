@@ -399,7 +399,7 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 				if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
 				{
 					float Duration = Event.GetDuration();
-					CurrentMoveToLocationAsset->Duration = Duration;
+					CurrentMoveToLocationAsset->LocationData.Duration = Duration;
 				}
 			}
 		}
@@ -735,7 +735,7 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 					if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
 					{
 						float Duration = Event.GetDuration();
-						CurrentMoveToLocationAsset->Duration = Duration;
+						CurrentMoveToLocationAsset->LocationData.Duration = Duration;
 					}
 				}
 			}

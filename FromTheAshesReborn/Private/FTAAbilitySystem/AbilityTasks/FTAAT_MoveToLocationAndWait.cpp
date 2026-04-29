@@ -67,9 +67,13 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	StartLocation = GetAvatarActor()->GetActorLocation();
 
 	FVector TargetEndLocation;
-	if(!MoveToLocationData->EndLocationVector.IsNearlyZero())
+	if(!MoveToLocationData->LocationData.EndLocationVector.IsNearlyZero())
 	{
-		TargetEndLocation = MoveToLocationData->EndLocationVector;
+		TargetEndLocation = MoveToLocationData->LocationData.EndLocationVector;
+		UE_LOG(LogTemp, Warning, TEXT("HERE111"));
+		TargetEndLocation.X += MoveToLocationData->LocationData.RelativeOffsetVector.X;
+		TargetEndLocation.Y += MoveToLocationData->LocationData.RelativeOffsetVector.Y;
+		TargetEndLocation.Z += MoveToLocationData->LocationData.RelativeOffsetVector.Z;
 		
 		DrawDebugSphere(
 				GetWorld(),
@@ -84,9 +88,11 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	else
 	{
 		TargetEndLocation = GetAvatarActor()->GetActorLocation()
-		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationOffset.X
-		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationOffset.Y
-		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationOffset.Z;
+		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.LocationOffset.X
+		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.LocationOffset.Y
+		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.LocationOffset.Z;
+		UE_LOG(LogTemp, Warning, TEXT("HERE2222"));
+		
 	}
 	
 	FHitResult Hit;
@@ -119,28 +125,28 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		EndLocation = TargetEndLocation;
 	}
 
-	DrawDebugSphere(
-	GetWorld(),
-	EndLocation,
-	25.0f,        
-	12,           
-	FColor::Green,
-	false,      
-	2.0f          
-	);
+	// DrawDebugSphere(
+	// GetWorld(),
+	// EndLocation,
+	// 25.0f,        
+	// 12,           
+	// FColor::Green,
+	// false,      
+	// 2.0f          
+	// );
 
 	StartLocation = GetAvatarActor()->GetActorLocation();
 
-	float OriginalDistance = MoveToLocationData->LocationOffset.Size();
+	float OriginalDistance = MoveToLocationData->LocationData.LocationOffset.Size();
 	float ActualDistance = FVector::Dist(StartLocation, EndLocation);
 
 	if (OriginalDistance > KINDA_SMALL_NUMBER)
 	{
-		AdjustedDuration = MoveToLocationData->Duration * (ActualDistance / OriginalDistance);
+		AdjustedDuration = MoveToLocationData->LocationData.Duration * (ActualDistance / OriginalDistance);
 	}
 	else
 	{
-		AdjustedDuration = MoveToLocationData->Duration;
+		AdjustedDuration = MoveToLocationData->LocationData.Duration;
 	}
 }
 
@@ -158,8 +164,8 @@ void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 {
 	Super::OnDestroy(AbilityEnded);
 
-	MoveToLocationData->EndLocationVector = FVector::ZeroVector;
-	MoveToLocationData->RelativeOffsetVector = FVector::ZeroVector;
+	MoveToLocationData->LocationData.EndLocationVector = FVector::ZeroVector;
+	MoveToLocationData->LocationData.RelativeOffsetVector = FVector::ZeroVector;
 }
 void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 {

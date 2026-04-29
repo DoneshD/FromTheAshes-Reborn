@@ -36,6 +36,8 @@ struct FLocationData
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	FVector RelativeOffsetVector = FVector::ZeroVector;
+
+	FVector TempEndLocationVector = FVector::ZeroVector;
 	
 };
 
@@ -55,22 +57,25 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
 	bool EndAbilityOnCompleted = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float Duration = 1.0f;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	FVector LocationOffset = FVector::ZeroVector;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Aerial")
 	bool EnableAerialCombat = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Aerial", meta = (EditCondition = "EnableAerialCombat"))
 	TEnumAsByte<EMovementMode> PostMovementMode = MOVE_Falling;
 
-	UPROPERTY()
-	FVector EndLocationVector = FVector::ZeroVector;
-
-	UPROPERTY()
-	FVector RelativeOffsetVector = FVector::ZeroVector;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	FLocationData LocationData;
+	
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	// float Duration = 1.0f;
+	//
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	// FVector LocationOffset = FVector::ZeroVector;
+	//
+	// UPROPERTY()
+	// FVector EndLocationVector = FVector::ZeroVector;
+	//
+	// UPROPERTY()
+	// FVector RelativeOffsetVector = FVector::ZeroVector;
 	
 };
