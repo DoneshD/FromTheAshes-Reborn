@@ -407,30 +407,25 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 
 	if(CurrentMoveToLocationAsset)
 	{
+		if(CurrentMoveToLocationAsset->DataFlowDirection == EDataAssetFlowDirection::Sender)
+		{
 			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
 		
 			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
 			HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
-		
-		/*DrawDebugSphere(
-			GetWorld(),
-			TargetEndLocation,
-			25.0f,        
-			12,           
-			FColor::Yellow,
-			false,      
-			2.0f          
-			);*/
-		
-	}
 
-	if(HitData.MoveToLocationData)
-	{
-		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
+			if(HitData.MoveToLocationData)
+			{
+				HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
+			
+				HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
+				HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
+			}
+			
+		}
 		
-		HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
-		HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
 	}
+	
 	
 	if(WeaponActors.IsEmpty())
 	{
