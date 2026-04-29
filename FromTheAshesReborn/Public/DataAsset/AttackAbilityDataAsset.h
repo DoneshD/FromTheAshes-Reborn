@@ -28,12 +28,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Reactions")
 	TArray<FHitDataInfo> PossibleHitReactions;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack | Hit | Movement")
-	bool SupplyMovementDataOnHit = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack | Hit | Movement")
-	bool FollowEndLocationOnHit = false;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Movement")
 	FVector RelativeOffset = FVector::ZeroVector;
 
