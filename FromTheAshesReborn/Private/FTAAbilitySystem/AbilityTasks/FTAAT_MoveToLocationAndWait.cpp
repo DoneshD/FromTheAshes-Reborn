@@ -69,11 +69,16 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	FVector TargetEndLocation;
 	if(!MoveToLocationData->LocationData.EndLocationVector.IsNearlyZero())
 	{
-		TargetEndLocation = MoveToLocationData->LocationData.EndLocationVector;
-		UE_LOG(LogTemp, Warning, TEXT("HERE111"));
-		TargetEndLocation.X += MoveToLocationData->LocationData.RelativeOffsetVector.X;
-		TargetEndLocation.Y += MoveToLocationData->LocationData.RelativeOffsetVector.Y;
-		TargetEndLocation.Z += MoveToLocationData->LocationData.RelativeOffsetVector.Z;
+		// TargetEndLocation = MoveToLocationData->LocationData.EndLocationVector;
+		// UE_LOG(LogTemp, Warning, TEXT("HERE111"));
+		// TargetEndLocation.X += MoveToLocationData->LocationData.RelativeOffsetVector.X;
+		// TargetEndLocation.Y += MoveToLocationData->LocationData.RelativeOffsetVector.Y;
+		// TargetEndLocation.Z += MoveToLocationData->LocationData.RelativeOffsetVector.Z;
+
+		TargetEndLocation = MoveToLocationData->LocationData.EndLocationVector
+		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.RelativeOffsetVector.X
+		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.RelativeOffsetVector.Y
+		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.RelativeOffsetVector.Z;
 		
 		DrawDebugSphere(
 				GetWorld(),
@@ -125,15 +130,15 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		EndLocation = TargetEndLocation;
 	}
 
-	// DrawDebugSphere(
-	// GetWorld(),
-	// EndLocation,
-	// 25.0f,        
-	// 12,           
-	// FColor::Green,
-	// false,      
-	// 2.0f          
-	// );
+	DrawDebugSphere(
+	GetWorld(),
+	EndLocation,
+	25.0f,        
+	12,           
+	FColor::Green,
+	false,      
+	2.0f          
+	);
 
 	StartLocation = GetAvatarActor()->GetActorLocation();
 
