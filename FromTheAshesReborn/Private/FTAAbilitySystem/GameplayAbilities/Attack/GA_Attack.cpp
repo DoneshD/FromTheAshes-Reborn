@@ -413,7 +413,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 			
 			if(CurrentAttackData->FollowEndLocationOnHit)
 			{
-				HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->LocationData.TempEndLocationVector;
+				HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
 				HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
 			}
 			/*DrawDebugSphere(
@@ -433,7 +433,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
 		if(CurrentAttackData->FollowEndLocationOnHit)
 		{
-			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->LocationData.TempEndLocationVector;
+			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
 			HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
 			
 		}
@@ -474,7 +474,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	{
 		CurrentMoveToLocationAsset->LocationData.EndLocationVector = FVector::ZeroVector;
 		CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = FVector::ZeroVector;
-		CurrentMoveToLocationAsset->LocationData.TempEndLocationVector = FVector::ZeroVector;
+		CurrentMoveToLocationAsset->TempLocationData.EndLocationVector = FVector::ZeroVector;
 	}
 }
 
@@ -682,7 +682,7 @@ void UGA_Attack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData 
 	{
 		if(CurrentMoveToLocationAsset)
 		{
-			CurrentMoveToLocationAsset->LocationData.TempEndLocationVector = GetFTACharacterFromActorInfo()->GetActorLocation()
+			CurrentMoveToLocationAsset->TempLocationData.EndLocationVector = GetFTACharacterFromActorInfo()->GetActorLocation()
 			+ GetFTACharacterFromActorInfo()->GetActorForwardVector() * (CurrentMoveToLocationAsset->LocationData.LocationOffset.X)
 			+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * (CurrentMoveToLocationAsset->LocationData.LocationOffset.Y)
 			+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * (CurrentMoveToLocationAsset->LocationData.LocationOffset.Z);

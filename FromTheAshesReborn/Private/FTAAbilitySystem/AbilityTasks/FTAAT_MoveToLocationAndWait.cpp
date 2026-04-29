@@ -69,12 +69,6 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	FVector TargetEndLocation;
 	if(!MoveToLocationData->LocationData.EndLocationVector.IsNearlyZero())
 	{
-		// TargetEndLocation = MoveToLocationData->LocationData.EndLocationVector;
-		// UE_LOG(LogTemp, Warning, TEXT("HERE111"));
-		// TargetEndLocation.X += MoveToLocationData->LocationData.RelativeOffsetVector.X;
-		// TargetEndLocation.Y += MoveToLocationData->LocationData.RelativeOffsetVector.Y;
-		// TargetEndLocation.Z += MoveToLocationData->LocationData.RelativeOffsetVector.Z;
-
 		TargetEndLocation = MoveToLocationData->LocationData.EndLocationVector
 		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.RelativeOffsetVector.X
 		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.RelativeOffsetVector.Y
