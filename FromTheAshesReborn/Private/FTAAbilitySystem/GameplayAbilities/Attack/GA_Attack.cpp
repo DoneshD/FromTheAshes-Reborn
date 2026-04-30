@@ -403,8 +403,16 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	HitInfoObj->HitData.Direction = HitData.Direction;
-	
 
+	if(!HitData.MoveToLocationData)
+	{
+		
+	}
+	if(HitData.MoveToLocationData)
+	{
+		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
+		HitInfoObj->HitData.MoveToLocationData->LocationData.LocationOffset = HitData.MoveToLocationData->LocationData.LocationOffset;
+	}
 	if(CurrentMoveToLocationAsset)
 	{
 		if(CurrentMoveToLocationAsset->DataFlowDirection == EDataAssetFlowDirection::Sender)
@@ -417,7 +425,8 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 			if(HitData.MoveToLocationData)
 			{
 				HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
-			
+
+				HitInfoObj->HitData.MoveToLocationData->LocationData.LocationOffset = HitData.MoveToLocationData->LocationData.LocationOffset;
 				HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
 				HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
 			}
@@ -425,6 +434,14 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		}
 		
 	}
+	if(HitInfoObj->HitData.MoveToLocationData)
+	{
+	}
+
+	// if(HitData.MoveToLocationData)
+	// {
+	// 	HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
+	// }
 	
 	
 	if(WeaponActors.IsEmpty())

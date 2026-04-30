@@ -66,6 +66,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	
 	StartLocation = GetAvatarActor()->GetActorLocation();
 
+
 	FVector TargetEndLocation;
 	if(!MoveToLocationData->LocationData.EndLocationVector.IsNearlyZero())
 	{
