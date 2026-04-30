@@ -436,9 +436,8 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	
 	if(CurrentMoveToLocationAsset)
 	{
-		if(!CurrentMoveToLocationAsset->TempLocationData.EndLocationVector.IsNearlyZero())
+		if(CurrentAttackData->SupplyEndLocation)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HGERSSD"))
 			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
 		}
 	}
@@ -493,6 +492,8 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		CurrentMoveToLocationAsset = AttackAsset->MoveToLocationDataAsset;
 	}
 
+	CurrentAttackData->SupplyEndLocation = AttackAsset->SupplyEndLocation;
+
 	// Hit Reactions
 	if (!AttackAsset->PossibleHitReactions.IsEmpty())
 	{
@@ -535,7 +536,6 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		}
 	}
 	
-	// CurrentAttackData->RelativeOffset = AttackAsset->RelativeOffset;
 
 	//Move to tag validation library?
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackAsset->HitStopCueTag) && !AttackAsset->HitStopCueTag.MatchesTag(FGameplayTag::EmptyTag))
@@ -589,6 +589,8 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 	{
 		CurrentMoveToLocationAsset = AttackAsset->MoveToLocationDataAsset;
 	}
+
+	CurrentAttackData->SupplyEndLocation = AttackAsset->SupplyEndLocation;
 
 	// Hit Reactions
 	if (!AttackAsset->PossibleHitReactions.IsEmpty())

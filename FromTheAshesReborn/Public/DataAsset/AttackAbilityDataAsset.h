@@ -33,7 +33,7 @@ public:
 	TArray<FHitDataInfo> PossibleHitReactions;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Movement")
-	FVector RelativeOffset = FVector::ZeroVector;
+	bool SupplyEndLocation = false;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | HitStop")
 	FGameplayTag HitStopCueTag = FGameplayTag::EmptyTag;
