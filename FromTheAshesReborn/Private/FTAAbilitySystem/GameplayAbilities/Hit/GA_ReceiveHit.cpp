@@ -108,11 +108,29 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	else
 	{
 		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
+		
 	}
 	
 	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
+
+	FVector ForwardDir = FRotator(0, LookAtRotation.Yaw, 0).Vector();
+
+	float LineLength = 200.f;
+	FVector End = StartLocation + (ForwardDir * LineLength);
+	
+	// DrawDebugDirectionalArrow(
+	// 	GetWorld(),
+	// 	StartLocation,
+	// 	End,
+	// 	50.f,      
+	// 	FColor::Blue,
+	// 	false,
+	// 	2.0f,
+	// 	0,
+	// 	2.0f
+	);
 	
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
 	{

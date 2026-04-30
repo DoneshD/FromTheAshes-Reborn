@@ -60,12 +60,16 @@ void UFTAMotionWarpingComponent::WarpToTargetActor(FWarpData WarpData)
 		if (EnemyActor && !EnemyActor->IsDead)
 		{
 			FVector EnemyLocation = EnemyActor->GetActorLocation();
-			FVector OffsetDirection = (GetOwner()->GetActorLocation() - EnemyActor->GetActorLocation()).GetSafeNormal();
+			FVector OwnerLocation = GetOwner()->GetActorLocation();
+			
+			EnemyLocation.Z = 0.0f;
+			OwnerLocation.Z = 0.0f;
+			FVector OffsetDirection = (OwnerLocation - EnemyLocation).GetSafeNormal();
 			
 			OffsetDirection.Z = 0.0f;
 			
 			FVector WarpTargetLocation = EnemyLocation + OffsetDirection * WarpData.WarpTargetLocationOffset;
-			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetOwner()->GetActorLocation(), EnemyActor->GetActorLocation());
+			FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(OwnerLocation, EnemyLocation);
 			FRotator WarpTargetRotation = FRotator(0.f, LookAtRotation.Yaw, 0.f);
 
 			// DrawDebugSphere(GetWorld(), WarpTargetLocation, 25.0f, 12, FColor::Blue, false, 5.0f);

@@ -90,7 +90,6 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.LocationOffset.X
 		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.LocationOffset.Y
 		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.LocationOffset.Z;
-		UE_LOG(LogTemp, Warning, TEXT("HERE2222"));
 		
 	}
 	
