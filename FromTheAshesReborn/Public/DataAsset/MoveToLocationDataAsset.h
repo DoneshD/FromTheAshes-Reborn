@@ -44,6 +44,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
 	bool EndAbilityOnCompleted = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
+	bool GetLockedOnTargetLocation = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Post Movement | Aerial")
 	bool EnableAerialCombat = false;
 
@@ -55,6 +58,5 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	FLocationData TempLocationData;
-	
 	
 };
