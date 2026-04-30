@@ -436,7 +436,11 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	
 	if(CurrentMoveToLocationAsset)
 	{
-		HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
+		if(!CurrentMoveToLocationAsset->TempLocationData.EndLocationVector.IsNearlyZero())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("HGERSSD"))
+			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
+		}
 	}
 	
 	if(!OnHitEventData.OptionalObject)
