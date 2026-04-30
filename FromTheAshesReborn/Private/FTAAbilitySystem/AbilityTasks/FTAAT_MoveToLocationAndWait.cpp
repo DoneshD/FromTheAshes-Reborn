@@ -66,7 +66,8 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	
 	StartLocation = GetAvatarActor()->GetActorLocation();
 
-
+	UE_LOG(LogTemp, Warning, TEXT("Relative Offset: %s"), *MoveToLocationData->LocationData.RelativeOffsetVector.ToString())
+	
 	FVector TargetEndLocation;
 	if(!MoveToLocationData->LocationData.EndLocationVector.IsNearlyZero())
 	{
@@ -74,6 +75,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.RelativeOffsetVector.X
 		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.RelativeOffsetVector.Y
 		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.RelativeOffsetVector.Z;
+		UE_LOG(LogTemp, Warning, TEXT("1111"))
 		
 		DrawDebugSphere(
 				GetWorld(),
@@ -91,6 +93,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.LocationOffset.X
 		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.LocationOffset.Y
 		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.LocationOffset.Z;
+		UE_LOG(LogTemp, Warning, TEXT("2222"))
 		
 	}
 	

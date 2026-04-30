@@ -97,8 +97,6 @@ protected:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	bool EnableManualMovement = false;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="EnableManualMovement"))
-	TObjectPtr<UMoveToLocationDataAsset> DefaultMoveToLocationDataAsset;
 
 	UPROPERTY()
 	TObjectPtr<UMoveToLocationDataAsset> CurrentMoveToLocationAsset;
@@ -124,6 +122,9 @@ protected:
 	FDelegateHandle AdjustFOVDelegateHandle;
 
 public:
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="EnableManualMovement"))
+	TObjectPtr<UMoveToLocationDataAsset> DefaultMoveToLocationDataAsset;
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (Categories = "InputTag"))
 	FGameplayTag InputTag;

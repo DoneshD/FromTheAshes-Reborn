@@ -12,14 +12,6 @@ enum class ETriggerMovementType : uint8
 	OnTagReceived
 };
 
-UENUM(BlueprintType)
-enum class EDataAssetFlowDirection : uint8
-{
-	None,
-	Sender,
-	Receiver
-};
-
 USTRUCT(BlueprintType)
 struct FLocationData
 {
@@ -48,9 +40,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
 	ETriggerMovementType TriggerType = ETriggerMovementType::None;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
-	EDataAssetFlowDirection DataFlowDirection = EDataAssetFlowDirection::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Params")
 	bool EndAbilityOnCompleted = false;

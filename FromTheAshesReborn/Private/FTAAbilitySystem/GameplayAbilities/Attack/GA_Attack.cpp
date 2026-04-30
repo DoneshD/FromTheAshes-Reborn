@@ -404,57 +404,8 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	
 	HitInfoObj->HitData.Direction = HitData.Direction;
 
-	if(!HitData.MoveToLocationData)
-	{
-		
-	}
-	if(HitData.MoveToLocationData)
-	{
-		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
-		HitInfoObj->HitData.MoveToLocationData->LocationData.LocationOffset = HitData.MoveToLocationData->LocationData.LocationOffset;
-	}
-	if(CurrentMoveToLocationAsset)
-	{
-		if(CurrentMoveToLocationAsset->DataFlowDirection == EDataAssetFlowDirection::Sender)
-		{
-			HitInfoObj->HitData.MoveToLocationData = CurrentMoveToLocationAsset;
-		
-			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
-			HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
+	
 
-			if(HitData.MoveToLocationData)
-			{
-				HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
-
-				HitInfoObj->HitData.MoveToLocationData->LocationData.LocationOffset = HitData.MoveToLocationData->LocationData.LocationOffset;
-				HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
-				HitInfoObj->HitData.MoveToLocationData->LocationData.RelativeOffsetVector = CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector;
-			}
-			
-		}
-		
-	}
-	if(HitInfoObj->HitData.MoveToLocationData)
-	{
-	}
-
-	// if(HitData.MoveToLocationData)
-	// {
-	// 	HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
-	// }
-	
-	
-	if(WeaponActors.IsEmpty())
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
-		return;
-	}
-	
-	if(!OnHitEventData.OptionalObject)
-	{
-		OnHitEventData.OptionalObject = HitInfoObj;
-	}
-	
 	if (HitData.HitAbilityClass)
 	{
 		const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
@@ -462,6 +413,13 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		{
 			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
 			{
+				if(!HitInfoObj->HitData.MoveToLocationData)
+				{
+					if(CDO->DefaultMoveToLocationDataAsset)
+					{
+						HitInfoObj->HitData.MoveToLocationData = DuplicateObject<UMoveToLocationDataAsset>(CDO->DefaultMoveToLocationDataAsset,this);
+					}
+				}
 				OnHitEventData.EventTag = CDO->ReceiveHitTag;
 			}
 			else
@@ -471,12 +429,27 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		}
 	}
 
+	if(HitData.MoveToLocationData)
+	{
+		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
+	}
+	
+	if(CurrentMoveToLocationAsset)
+	{
+		HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
+	}
+	
+	if(!OnHitEventData.OptionalObject)
+	{
+		OnHitEventData.OptionalObject = HitInfoObj;
+	}
+	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, OnHitEventData.EventTag, OnHitEventData);
 	OnHitEventData.OptionalObject = nullptr;
 	if(CurrentMoveToLocationAsset)
 	{
 		CurrentMoveToLocationAsset->LocationData.EndLocationVector = FVector::ZeroVector;
-		CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = FVector::ZeroVector;
+		// CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = FVector::ZeroVector;
 		CurrentMoveToLocationAsset->TempLocationData.EndLocationVector = FVector::ZeroVector;
 	}
 }
@@ -558,7 +531,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		}
 	}
 	
-	CurrentAttackData->RelativeOffset = AttackAsset->RelativeOffset;
+	// CurrentAttackData->RelativeOffset = AttackAsset->RelativeOffset;
 
 	//Move to tag validation library?
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackAsset->HitStopCueTag) && !AttackAsset->HitStopCueTag.MatchesTag(FGameplayTag::EmptyTag))
@@ -655,7 +628,6 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 		}
 	}
 
-	CurrentAttackData->RelativeOffset = AttackAsset->RelativeOffset;
 
 	//Move to tag validation library?
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackAsset->HitStopCueTag) && !AttackAsset->HitStopCueTag.MatchesTag(FGameplayTag::EmptyTag))
@@ -694,7 +666,7 @@ void UGA_Attack::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData 
 		+ GetFTACharacterFromActorInfo()->GetActorRightVector()   * (CurrentMoveToLocationAsset->LocationData.LocationOffset.Y)
 		+ GetFTACharacterFromActorInfo()->GetActorUpVector()      * (CurrentMoveToLocationAsset->LocationData.LocationOffset.Z);
 
-		CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = CurrentAttackData->RelativeOffset;
+		// CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = CurrentAttackData->RelativeOffset;
 	}
 	
 	Super::EventMontageReceived(EventTag, EventData);
