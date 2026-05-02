@@ -146,6 +146,7 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
 			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 			{
+				
 				ExecuteHitLogic(TargetHitDataHandle);
 			}
 		}

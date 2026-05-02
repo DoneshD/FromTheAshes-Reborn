@@ -250,6 +250,7 @@ void UGA_MeleeAttack::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 void UGA_MeleeAttack::OnHitAdded(FHitResult LastItem)
 {
 	Super::OnHitAdded(LastItem);
+
 }
 
 void UGA_MeleeAttack::StartMeleeTrace()
@@ -333,8 +334,8 @@ void UGA_MeleeAttack::EndMeleeTrace()
 			{
 				WeaponActor->TracingComponent->ToggleTraceCheck(false);
 				WeaponActor->TracingComponent->ClearHitArray();
-				WeaponActor->TracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
 				WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
+				WeaponActor->TracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
 			}
 		}
 	}
@@ -343,8 +344,8 @@ void UGA_MeleeAttack::EndMeleeTrace()
 	{
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ToggleTraceCheck(false);
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->ClearHitArray();
-		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
 		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveAll(this);
+		GetFTACharacterFromActorInfo()->LimbTracingComponent->OnItemAdded.RemoveDynamic(this, &UGA_MeleeAttack::OnHitAdded);
 	}
 	CurrentVisualCueCDO = nullptr;
 	CurrentSoundCueCDO = nullptr;
