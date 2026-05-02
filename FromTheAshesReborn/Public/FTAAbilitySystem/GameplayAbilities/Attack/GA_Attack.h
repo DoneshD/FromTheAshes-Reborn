@@ -56,7 +56,6 @@ protected:
 	
 public:
 	
-	UFUNCTION(BlueprintCallable, Category = "FTAAbility")
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
 
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;

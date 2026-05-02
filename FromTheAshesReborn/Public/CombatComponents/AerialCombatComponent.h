@@ -48,6 +48,9 @@ public:
 	int TestAttackCounter = 0;
 	float TotalAirTime = 0.0f;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool DisableGravity = false;
+
 public:
 
 	void ClearStateAndVariables();

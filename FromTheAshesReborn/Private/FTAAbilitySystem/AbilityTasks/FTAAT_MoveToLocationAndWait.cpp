@@ -82,7 +82,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 				12,           
 				FColor::Red,
 				false,      
-				2.0f          
+				2.0f
 				);
 	}
 	else
@@ -91,7 +91,6 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.LocationOffset.X
 		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.LocationOffset.Y
 		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.LocationOffset.Z;
-		
 	}
 
 	//Temp solution: NOT scalabe

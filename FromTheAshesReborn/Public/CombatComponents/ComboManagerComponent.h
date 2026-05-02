@@ -49,7 +49,11 @@ protected:
 public:
 	
 	FGameplayTagContainer& GetCurrentComboContainer();
+
+	UFUNCTION(BlueprintCallable)
 	int GetCurrentComboIndex() const;
+	
+	UFUNCTION(BlueprintCallable)
 	void SetCurrentComboIndex(int Index);
 	
 	TObjectPtr<UFTAAbilityDataAsset> GetMeleeAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets);

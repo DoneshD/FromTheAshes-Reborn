@@ -205,10 +205,16 @@ public:
 	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
-	
-	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset);
+
+
+	UFUNCTION(BlueprintCallable)
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets);
+
+	UFUNCTION(BlueprintCallable)
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset);
+
+	UFUNCTION(BlueprintCallable)
+	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset);
 	
 	UFUNCTION()
 	virtual void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData);

@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack_Aerial_Slam.h"
 
+#include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
@@ -80,6 +81,21 @@ void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FG
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("MovementTag.Event.ActivateTask")))
 	{
 		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(LoopTag);
+	}
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LoopTag.Event.Activate")))
+	{
+		ComboManagerComponent->SetCurrentComboIndex(1);
+
+		CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
+	
+		if(!CurrentAbilityAsset)
+		{
+			UE_LOG(LogTemp, Error, TEXT("SLAM::OnMoveComplete - CurrentAbilityAsset is Null"))
+			return;
+		}
+	
+		ExtractAssetProperties(CurrentAbilityAsset);
+		PerformAbility(CurrentAbilityAsset);
 	}	
 }
 
@@ -112,8 +128,10 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 {
 	Super::OnMoveComplete();
 
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
+
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LoopTag);
-	ComboManagerComponent->SetCurrentComboIndex(1);
+	ComboManagerComponent->SetCurrentComboIndex(AbilityAssets.Num() - 1);
 
 	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
 	

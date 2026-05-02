@@ -22,9 +22,6 @@ struct FHitDataInfo
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	ESpatialDirection Direction;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	float Distance;
-
 	UPROPERTY()
 	TObjectPtr<AActor> Instigator;
 	
