@@ -33,7 +33,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee")
 	TObjectPtr<UMeleeAbilityDataAsset> DefaultMeleeAttackData;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Melee")
 	TObjectPtr<UMeleeAbilityDataAsset> CurrentMeleeAttackData;
 
 	UPROPERTY()

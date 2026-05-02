@@ -62,35 +62,6 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		return;
 	}
 	
-	/*if(WeaponActors[0]->TracingComponent)
-	{
-		WeaponActors[0]->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
-		WeaponActors[0]->TracingComponent->BoxHalfSize = FVector(
-						100,
-						100,
-						100);
-	}*/
-	
-	// for (AWeaponActorBase* WeaponActor : WeaponActors)
-	// {
-	// 	if(WeaponActor)
-	// 	{
-	// 		if(WeaponActor->TracingComponent)
-	// 		{
-	// 			WeaponActor->TracingComponent->OnItemAdded.AddDynamic(this, &UGA_Attack::OnHitAdded);
-	// 			UE_LOG(LogTemp, Warning, TEXT("Hit binded"))
-	//
-	// 			//Refactor for ranged
-	// 			WeaponActor->TracingComponent->BoxHalfSize = FVector(
-	// 				100,
-	// 				100,
-	// 				100);
-	// 			
-	// 		}
-	// 	}
-	// }
-	
-	
 	
 }
 
@@ -103,18 +74,6 @@ void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FG
 void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	// for (AWeaponActorBase* WeaponActor : WeaponActors)
-	// {
-	// 	if(!WeaponActor)
-	// 	{
-	// 		//TODO: Printing incorrectly, fix later
-	// 		//UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::EndAbility - GetFTACharacterFromActorInfo()->CurrentWeapon is invalid"))
-	// 		return;
-	// 	}
-	// 	
-	// 	WeaponActor->TracingComponent->OnItemAdded.RemoveAll(this);
-	// }
 	
 	CurrentAttackData = nullptr;
 }
