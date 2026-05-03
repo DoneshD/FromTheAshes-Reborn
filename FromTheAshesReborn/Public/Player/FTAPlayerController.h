@@ -41,10 +41,6 @@ protected:
 	
 	bool IsTimeSlowed = false;
 
-	UPROPERTY(BlueprintReadOnly)
-	FVector2D LookAxisVector;
-
-
 
 protected:
 	
@@ -78,4 +74,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	float InputMagnitude;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector2D LookAxisVector;
 };

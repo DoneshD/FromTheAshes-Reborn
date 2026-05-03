@@ -18,6 +18,7 @@
 #include "HelperFunctionLibraries/ViewportUtilityFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/FTAPlayerCameraManger.h"
+#include "Player/FTAPlayerController.h"
 #include "Player/PlayerCharacter.h"
 
 UTargetingSystemComponent::UTargetingSystemComponent()
@@ -62,6 +63,8 @@ void UTargetingSystemComponent::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("FTAASC not found"));
 	}
+
+	FTAPlayerController = Cast<AFTAPlayerController>(OwnerPlayerController);
 }
 
 void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -362,10 +365,13 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 	Yaw = Yaw + DesiredYaw;
 	
 	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
+	UE_LOG(LogTemp, Warning, TEXT("Before: %s"), *TargetRotation.ToString())
 	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
 	{
 		TargetRotation += CalculateControlRotationBasedOnInput(DeltaTime, CameraParams);
 	}
+	UE_LOG(LogTemp, Warning, TEXT("After: %s"), *TargetRotation.ToString())
+	
 	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
 }
 
@@ -384,25 +390,28 @@ FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float D
 {
 	FRotator ControlRotation = FRotator::ZeroRotator;
 	
-	float YawInput = 0.0f;
-	float PitchInput = 0.0f;
+	float YawInput = OwnerPlayerController->GetControlRotation().Yaw;
+	float PitchInput = OwnerPlayerController->GetControlRotation().Pitch;
 
-	OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
+	// OwnerPlayerController->GetInputMouseDelta(YawInput, PitchInput);
+
+	// UE_LOG(LogTemp, Warning, TEXT("X: %f"), FTAPlayerController->LookAxisVector.X * 10)
+	// UE_LOG(LogTemp, Warning, TEXT("Y: %f"), FTAPlayerController->LookAxisVector.Y * 10)
 		
 	const float InputScale = CameraParams->InputOffsetInfo.InputOffsetScale;
-
-	YawInput *= InputScale;
-	PitchInput *= InputScale;
+	YawInput *= FTAPlayerController->LookAxisVector.X;
+	PitchInput *= FTAPlayerController->LookAxisVector.Y;
 		
 	ControlRotation.Yaw += YawInput;
 	ControlRotation.Pitch += PitchInput;
 		
-	ControlRotation.Yaw = FMath::Clamp(ControlRotation.Yaw, -CameraParams->InputOffsetInfo.InputBasedMaxYawOffset, CameraParams->InputOffsetInfo.InputBasedMaxYawOffset);
-	ControlRotation.Pitch = FMath::Clamp(ControlRotation.Pitch, -CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset, CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset);
+	// ControlRotation.Yaw = FMath::Clamp(ControlRotation.Yaw, -CameraParams->InputOffsetInfo.InputBasedMaxYawOffset, CameraParams->InputOffsetInfo.InputBasedMaxYawOffset);
+	// ControlRotation.Pitch = FMath::Clamp(ControlRotation.Pitch, -CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset, CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset);
 
 	const float DecayRate = CameraParams->InputOffsetInfo.InputOffsetDecayRate * DeltaTime;
 
-	ControlRotation = FMath::RInterpTo(ControlRotation, FRotator::ZeroRotator, DeltaTime, DecayRate);
+	// ControlRotation = FMath::RInterpTo(ControlRotation, FRotator::ZeroRotator, DeltaTime, DecayRate);
+	UE_LOG(LogTemp, Warning, TEXT("Final: %s"), *ControlRotation.ToString())
 	return ControlRotation;
 	
 }

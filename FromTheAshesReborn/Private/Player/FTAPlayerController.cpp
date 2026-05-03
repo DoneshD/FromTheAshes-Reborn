@@ -126,9 +126,7 @@ void AFTAPlayerController::HandleMoveActionReleased(const FInputActionValue& Inp
 void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputActionValue)
 {
 	LookAxisVector = InputActionValue.Get<FVector2D>();
-
-	AddYawInput(LookAxisVector.X);
-	AddPitchInput(LookAxisVector.Y);
+	
 
 	//This is costly, refactor later
 	UTargetingSystemComponent* TargetingSystemComponent = GetPawn()->FindComponentByClass<UTargetingSystemComponent>();
@@ -139,6 +137,8 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 	}
 	if(!TargetingSystemComponent->GetLockedOnTargetActor())
 	{
+		AddYawInput(LookAxisVector.X);
+		AddPitchInput(LookAxisVector.Y);
 		return;
 	}
 	// TargetingSystemComponent->TargetActorWithAxisInput(LookAxisVector.X);

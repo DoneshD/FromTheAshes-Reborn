@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
+class AFTAPlayerController;
 class UFTAAbilitySystemComponent;
 class UCameraParamsDataAsset;
 class UCameraSystemComponent;
@@ -100,6 +101,9 @@ private:
 
 	UPROPERTY()
 	APlayerController* OwnerPlayerController;
+
+	UPROPERTY()
+	TObjectPtr<AFTAPlayerController> FTAPlayerController;
 
 	UPROPERTY()
 	TObjectPtr<APlayerCharacter> PlayerCharacter;
