@@ -297,9 +297,8 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 	
 	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
 	const FVector TargetLocation = TargetActor->GetActorLocation();
-	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, 0.5f);
+	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, MidpointAnchorLocationAlpha);
 	
-
 	if (bIsLockingOn)
 	{
 		CurrentAnchorLocation = PlayerOwner->CameraAnchorComponent->GetComponentLocation();
@@ -324,7 +323,7 @@ float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* 
 
 	float Distance = FVector::Dist(PlayerOwner->GetActorLocation(), TargetActor->GetActorLocation());
 	float DesiredRadius = Distance / 2.0f;
-	float TargetArmLength = DesiredRadius + 300.0f;
+	float TargetArmLength = DesiredRadius + ArmLengthOffset;
 	
 	return TargetArmLength;
 }

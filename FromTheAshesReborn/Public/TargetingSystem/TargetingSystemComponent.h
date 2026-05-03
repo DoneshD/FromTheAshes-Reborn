@@ -52,6 +52,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Control Rotation")
 	bool ShouldUpdateControllerRotation = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Control Rotation")
+	float MidpointAnchorLocationAlpha = 0.25f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Control Rotation")
+	float ArmLengthOffset = 150.0f;
 	
 protected:
 

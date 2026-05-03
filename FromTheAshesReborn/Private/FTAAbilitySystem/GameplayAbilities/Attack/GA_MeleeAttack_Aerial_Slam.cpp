@@ -102,7 +102,7 @@ void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FG
 	
 		ExtractAssetProperties(CurrentAbilityAsset);
 		PerformAbility(CurrentAbilityAsset);
-	}	
+	}
 }
 
 UFTAAbilityDataAsset* UGA_MeleeAttack_Aerial_Slam::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
