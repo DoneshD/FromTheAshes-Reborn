@@ -5,6 +5,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/FTAVisualCueObject.h"
+#include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
@@ -81,6 +82,11 @@ void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FG
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("MovementTag.Event.ActivateTask")))
 	{
 		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(LoopTag);
+
+		StartMeleeTrace();
+		CurrentVisualCueCDO = AddMeleeTrailVisualCue();
+		CurrentSoundCueCDO = AddMeleeTrailSoundCue();
+		
 	}
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("LoopTag.Event.Activate")))
 	{
@@ -143,6 +149,20 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 	
 	ExtractAssetProperties(CurrentAbilityAsset);
 	PerformAbility(CurrentAbilityAsset);
+
+	if(CurrentVisualCueCDO)
+	{
+		K2_RemoveGameplayCue(CurrentVisualCueCDO->VisualCueTag);
+		CurrentVisualCueCDO = nullptr;
+	}
+		
+	if(CurrentSoundCueCDO)
+	{
+		K2_RemoveGameplayCue(CurrentSoundCueCDO->SoundCueTag);
+		CurrentSoundCueCDO = nullptr;
+	}
+	
+	EndMeleeTrace();
 
 	FVector Start = GetFTACharacterFromActorInfo()->GetActorLocation();
 	FVector End = Start - FVector(0, 0, 1000.f);
