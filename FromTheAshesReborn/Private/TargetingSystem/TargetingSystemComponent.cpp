@@ -300,7 +300,7 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 	
 	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
 	const FVector TargetLocation = TargetActor->GetActorLocation();
-	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, MidpointAnchorLocationAlpha);
+	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, CameraParams->TargetingLockOnParams.MidpointAnchorLocationAlpha);
 	
 	if (bIsLockingOn)
 	{
@@ -308,7 +308,7 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 		bIsLockingOn = false; 
 	}
 	
-	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, CatchupInterpSpeed, CameraParams);
+	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, CameraParams->TargetingLockOnParams.CatchupInterpSpeed, CameraParams);
 	CurrentAnchorLocation = FMath::VInterpTo(CurrentAnchorLocation, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
 	
 	// return CurrentAnchorLocation;
@@ -326,7 +326,7 @@ float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* 
 
 	float Distance = FVector::Dist(PlayerOwner->GetActorLocation(), TargetActor->GetActorLocation());
 	float DesiredRadius = Distance / 2.0f;
-	float TargetArmLength = DesiredRadius + ArmLengthOffset;
+	float TargetArmLength = DesiredRadius + CameraParameters->TargetingLockOnParams.ArmLengthOffset;
 	
 	return TargetArmLength;
 }
@@ -349,23 +349,22 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 
 	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
 	
-	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, DistanceBasedMaxPitchOffset);
+	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->TargetingLockOnParams.DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
 	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
 	{
-		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, DistanceBasedMaxYawOffset);
+		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->TargetingLockOnParams.DistanceBasedMaxYawOffset);
 	}
 	else
 	{
-		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, DistanceBasedMaxYawOffset);
+		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->TargetingLockOnParams.DistanceBasedMaxYawOffset);
 	}
 	
 	Pitch = Pitch + DesiredPitch;
 	Yaw = Yaw + DesiredYaw;
 
-	//Make pitch offset and yaw parameter
-	FRotator TargetRotation = FRotator(Pitch + 15, Yaw, ControlRotation.Roll);
+	FRotator TargetRotation = FRotator(Pitch + CameraParams->TargetingLockOnParams.PitchOffset, Yaw + CameraParams->TargetingLockOnParams.YawOffset, ControlRotation.Roll);
 	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
 	{
 		TargetRotation += CalculateControlRotationBasedOnInput(DeltaTime, CameraParams);
@@ -391,13 +390,13 @@ FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float D
 	FRotator ModifiedRotation = OriginalRotation;
 
 	//Make parameter scale
-	float YawInput = FTAPlayerController->LookAxisVector.X * 40;
-	float PitchInput = FTAPlayerController->LookAxisVector.Y * 40;
+	float YawInput = FTAPlayerController->LookAxisVector.X * CameraParams->TargetingLockOnParams.InputOffsetYawScale;
+	float PitchInput = FTAPlayerController->LookAxisVector.Y * CameraParams->TargetingLockOnParams.InputOffsetPitchScale;
 
 	ModifiedRotation.Yaw += -YawInput;
 	ModifiedRotation.Pitch += -PitchInput;
 
-	const float DecayRate = CameraParams->InputOffsetInfo.InputOffsetDecayRate * DeltaTime;
+	const float DecayRate = CameraParams->TargetingLockOnParams.InputOffsetDecayRate * DeltaTime;
 	ModifiedRotation = FMath::RInterpTo(ModifiedRotation, FRotator::ZeroRotator, DeltaTime, DecayRate);
 	
 	return (ModifiedRotation - OriginalRotation);

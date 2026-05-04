@@ -160,6 +160,7 @@ public:
 	void HandleCameraComponentParams(float DeltaTime);
 	void HandleCameraAnchorParams(float DeltaTime);
 	void HandleControlRotationParams(float DeltaTime);
+	void HandleTargetLockOnParams();
 	
 	void SetupLocalPlayerController();
 	

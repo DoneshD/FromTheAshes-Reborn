@@ -24,6 +24,9 @@ struct FTargetingLockOnParams
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Priority = 50.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float InputOffsetPitchScale = 40.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -40,6 +43,18 @@ struct FTargetingLockOnParams
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float MidpointAnchorLocationAlpha = 0.25f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InputOffsetDecayRate = 0.75f;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float CatchupInterpSpeed = 8.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float DistanceBasedMaxPitchOffset = -20.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float DistanceBasedMaxYawOffset = -35.0f;
 	
 };
 
@@ -231,6 +246,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Input Offset")
 	float InputOffsetDecayRate = 0.75f;
+
+	
 	
 };
 
@@ -256,7 +273,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	FInputOffsetStruct InputOffsetInfo;
 
-	UPROPERTY(EditAnywhere, Category = "Targeting")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Targeting")
 	FTargetingLockOnParams TargetingLockOnParams;
 
 	

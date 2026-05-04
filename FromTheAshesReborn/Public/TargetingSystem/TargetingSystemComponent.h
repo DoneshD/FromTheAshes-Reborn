@@ -42,23 +42,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	TObjectPtr<UCameraParamsDataAsset> CameraParameters;
 
-	UPROPERTY(EditAnywhere, Category = "Catch up")
-	float CatchupInterpSpeed = 8.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Based Offset")
-	float DistanceBasedMaxPitchOffset = -20.0f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Distance Based Offset")
-	float DistanceBasedMaxYawOffset = -35.0f;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Control Rotation")
 	bool ShouldUpdateControllerRotation = false;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Control Rotation")
-	float MidpointAnchorLocationAlpha = 0.25f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Control Rotation")
-	float ArmLengthOffset = 150.0f;
 	
 protected:
 

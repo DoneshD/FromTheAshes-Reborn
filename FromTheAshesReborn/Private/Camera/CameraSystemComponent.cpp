@@ -100,6 +100,7 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		HandleControlRotationParams(DeltaTime);
 	}
+	
 }
 
 void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
@@ -218,6 +219,19 @@ void UCameraSystemComponent::HandleControlRotationParams(float DeltaTime)
 		FinalRotation = OwnerPlayerController->GetControlRotation();
 	}
 	OwnerPlayerController->SetControlRotation(FinalRotation);
+}
+
+void UCameraSystemComponent::HandleTargetLockOnParams()
+{
+	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
+
+	Sorted.Sort([&](const TObjectPtr<UCameraParamsDataAsset>& A,
+					const TObjectPtr<UCameraParamsDataAsset>& B)
+	{
+		return A->TargetingLockOnParams.Priority < B->TargetingLockOnParams.Priority;
+	});
+
+	CurrentCameraStateParams->TargetingLockOnParams = Sorted.Last()->TargetingLockOnParams;
 }
 
 void UCameraSystemComponent::ResolveSpringArmParams()
@@ -400,6 +414,7 @@ void UCameraSystemComponent::ResolveCameraParams()
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.AddUnique(CameraParams);
+	HandleTargetLockOnParams();
 	ResolveCameraParams();
 }
 
