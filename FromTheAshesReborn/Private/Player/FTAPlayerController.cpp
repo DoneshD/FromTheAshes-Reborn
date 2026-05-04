@@ -127,7 +127,6 @@ void AFTAPlayerController::HandleInputLookMouse(const FInputActionValue& InputAc
 {
 	LookAxisVector = InputActionValue.Get<FVector2D>();
 	
-
 	//This is costly, refactor later
 	UTargetingSystemComponent* TargetingSystemComponent = GetPawn()->FindComponentByClass<UTargetingSystemComponent>();
 	if(!TargetingSystemComponent)
