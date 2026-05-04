@@ -27,6 +27,9 @@ struct FTargetingLockOnParams
 	float Priority = 50.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool EnableInputBasedOffset = true;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float InputOffsetPitchScale = 40.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -225,32 +228,6 @@ struct FControlRotation : public FBaseCameraParams
 	
 };
 
-USTRUCT(BlueprintType)
-struct FInputOffsetStruct
-{
-	GENERATED_BODY()
-
-public:
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	bool EnableInputBasedOffset = true;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputOffsetScale = 1.5f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputBasedMaxYawOffset = 25.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputBasedMaxPitchOffset = 10.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Input Offset")
-	float InputOffsetDecayRate = 0.75f;
-
-	
-	
-};
-
 UCLASS()
 class FROMTHEASHESREBORN_API UCameraParamsDataAsset : public UPrimaryDataAsset
 {
@@ -269,12 +246,8 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Core Component")
 	FControlRotation ControlRotationParams;
-	
-	UPROPERTY(EditAnywhere, Category = "Input")
-	FInputOffsetStruct InputOffsetInfo;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Targeting")
 	FTargetingLockOnParams TargetingLockOnParams;
-
 	
 };

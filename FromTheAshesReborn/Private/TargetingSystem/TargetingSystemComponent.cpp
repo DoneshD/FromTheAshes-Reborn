@@ -77,9 +77,9 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		CameraParameters->CameraAnchorParams.TargetLocation.Value = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraParameters);
-		CameraParameters->SpringArmParams.ArmLength.Value = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor);
-		CameraParameters->ControlRotationParams.TargetControlRotation.Value = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraParameters, DeltaTime);
+		CameraParameters->CameraAnchorParams.TargetLocation.Value = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
+		CameraParameters->SpringArmParams.ArmLength.Value = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
+		CameraParameters->ControlRotationParams.TargetControlRotation.Value = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams, DeltaTime);
 
 		CameraSystemComponent->ResolveSpringArmParams();
 		CameraSystemComponent->ResolveCameraAnchorParams();
@@ -290,7 +290,7 @@ void UTargetingSystemComponent::EnableControlRotation(const bool InShouldControl
 	}
 }
 
-FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
+FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, FTargetingLockOnParams TargetingParams)
 {
 	if (!IsValid(PlayerOwner) || !IsValid(TargetActor) || !IsValid(OwnerPlayerController))
 	{
@@ -300,7 +300,7 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 	
 	const FVector PlayerLocation = PlayerOwner->GetActorLocation();
 	const FVector TargetLocation = TargetActor->GetActorLocation();
-	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, CameraParams->TargetingLockOnParams.MidpointAnchorLocationAlpha);
+	FVector MidpointAnchorLocation = FMath::Lerp(PlayerLocation, TargetLocation, TargetingParams.MidpointAnchorLocationAlpha);
 	
 	if (bIsLockingOn)
 	{
@@ -308,7 +308,7 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 		bIsLockingOn = false; 
 	}
 	
-	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, CameraParams->TargetingLockOnParams.CatchupInterpSpeed, CameraParams);
+	float OffScreenInterpSpeed = CameraSystemComponent->CatchupToOffScreen(PlayerLocation, TargetingParams.CatchupInterpSpeed);
 	CurrentAnchorLocation = FMath::VInterpTo(CurrentAnchorLocation, MidpointAnchorLocation, DeltaTime, OffScreenInterpSpeed);
 	
 	// return CurrentAnchorLocation;
@@ -316,7 +316,7 @@ FVector UTargetingSystemComponent::CalculateAnchorLocation(APlayerCharacter* Pla
 
 }
 
-float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor)
+float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor, FTargetingLockOnParams TargetingParams)
 {
 	if (!IsValid(PlayerOwner) || !IsValid(TargetActor))
 	{
@@ -326,12 +326,12 @@ float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* 
 
 	float Distance = FVector::Dist(PlayerOwner->GetActorLocation(), TargetActor->GetActorLocation());
 	float DesiredRadius = Distance / 2.0f;
-	float TargetArmLength = DesiredRadius + CameraParameters->TargetingLockOnParams.ArmLengthOffset;
+	float TargetArmLength = DesiredRadius + TargetingParams.ArmLengthOffset;
 	
 	return TargetArmLength;
 }
 
-FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime)
+FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Location, FTargetingLockOnParams TargetingParams, float DeltaTime)
 {
 	if (!IsValid(OwnerPlayerController))
 	{
@@ -349,25 +349,26 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 
 	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
 	
-	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->TargetingLockOnParams.DistanceBasedMaxPitchOffset);
+	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxPitchOffset);
 	float DesiredYaw = 0.0;
 	
+	UE_LOG(LogTemp, Warning, TEXT("Dist Yaw: %f"), CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxYawOffset))
 	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
 	{
-		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->TargetingLockOnParams.DistanceBasedMaxYawOffset);
+		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxYawOffset);
 	}
 	else
 	{
-		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, CameraParams->TargetingLockOnParams.DistanceBasedMaxYawOffset);
+		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxYawOffset);
 	}
 	
-	Pitch = Pitch + DesiredPitch;
+	// Pitch = Pitch + DesiredPitch;
 	Yaw = Yaw + DesiredYaw;
-
-	FRotator TargetRotation = FRotator(Pitch + CameraParams->TargetingLockOnParams.PitchOffset, Yaw + CameraParams->TargetingLockOnParams.YawOffset, ControlRotation.Roll);
-	if (CameraParams->InputOffsetInfo.EnableInputBasedOffset)
+	
+	FRotator TargetRotation = FRotator(Pitch + TargetingParams.PitchOffset, Yaw + TargetingParams.YawOffset, ControlRotation.Roll);
+	if (TargetingParams.EnableInputBasedOffset)
 	{
-		TargetRotation += CalculateControlRotationBasedOnInput(DeltaTime, CameraParams);
+		TargetRotation += CalculateControlRotationBasedOnInput(DeltaTime, TargetingParams);
 	}
 	
 	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
@@ -384,19 +385,19 @@ float UTargetingSystemComponent::CalculateControlRotationBasedOnDistance(float D
 	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
 }
 
-FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams)
+FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float DeltaTime, FTargetingLockOnParams TargetingParams)
 {
 	FRotator OriginalRotation = OwnerPlayerController->GetControlRotation();
 	FRotator ModifiedRotation = OriginalRotation;
 
 	//Make parameter scale
-	float YawInput = FTAPlayerController->LookAxisVector.X * CameraParams->TargetingLockOnParams.InputOffsetYawScale;
-	float PitchInput = FTAPlayerController->LookAxisVector.Y * CameraParams->TargetingLockOnParams.InputOffsetPitchScale;
+	float YawInput = FTAPlayerController->LookAxisVector.X * TargetingParams.InputOffsetYawScale;
+	float PitchInput = FTAPlayerController->LookAxisVector.Y * TargetingParams.InputOffsetPitchScale;
 
 	ModifiedRotation.Yaw += -YawInput;
 	ModifiedRotation.Pitch += -PitchInput;
 
-	const float DecayRate = CameraParams->TargetingLockOnParams.InputOffsetDecayRate * DeltaTime;
+	const float DecayRate = TargetingParams.InputOffsetDecayRate * DeltaTime;
 	ModifiedRotation = FMath::RInterpTo(ModifiedRotation, FRotator::ZeroRotator, DeltaTime, DecayRate);
 	
 	return (ModifiedRotation - OriginalRotation);

@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "TargetingSystemComponent.generated.h"
 
+struct FTargetingLockOnParams;
 class AFTAPlayerController;
 class UFTAAbilitySystemComponent;
 class UCameraParamsDataAsset;
@@ -131,11 +132,11 @@ protected:
 	void SetOwnerActorRotation();
 	void EnableControlRotation(bool ShouldControlRotation) const;
 
-	FVector CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
-	float CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor);
-	FRotator CalculateControlRotation(FVector Location, TObjectPtr<UCameraParamsDataAsset> CameraParams, float DeltaTime);
+	FVector CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, FTargetingLockOnParams CameraParams);
+	float CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor,  FTargetingLockOnParams TargetingParams);
+	FRotator CalculateControlRotation(FVector Location, FTargetingLockOnParams TargetingParams, float DeltaTime);
 	float CalculateControlRotationBasedOnDistance(float Distance, float MaxOffset);
-	FRotator CalculateControlRotationBasedOnInput(float DeltaTime, TObjectPtr<UCameraParamsDataAsset> CameraParams);
+	FRotator CalculateControlRotationBasedOnInput(float DeltaTime, FTargetingLockOnParams TargetingParams);
 	
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
 	AActor* FindNearestTargetToCenterViewport(TArray<AActor*> Actors) const;

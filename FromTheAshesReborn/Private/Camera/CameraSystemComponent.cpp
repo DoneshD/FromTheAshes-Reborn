@@ -327,7 +327,16 @@ void UCameraSystemComponent::ResolveTargetControlRotation()
 			{
 				return;
 			}
-			CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = CameraParamsAsset->ControlRotationParams.UseControllerRotation;
+			
+			if(TargetingSystemComponent->GetLockedOnTargetActor())
+			{
+				CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = false;
+			}
+			else
+			{
+				CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = true;
+			}
+			// CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = CameraParamsAsset->ControlRotationParams.UseControllerRotation;
 			
 		}
 	);
@@ -421,6 +430,7 @@ void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraP
 void UCameraSystemComponent::RemoveCameraParameters(UCameraParamsDataAsset* CameraParams)
 {
 	CameraParamsArray.Remove(CameraParams);
+	HandleTargetLockOnParams();
 	ResolveCameraParams();
 }
 
@@ -465,7 +475,7 @@ void UCameraSystemComponent::SetupLocalPlayerController()
 
 
 
-float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams)
+float UCameraSystemComponent::CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed)
 {
 	float InterpSpeed = InInterpSpeed;
 	const float ScreenEdgeCatchupThreshold = .35f;

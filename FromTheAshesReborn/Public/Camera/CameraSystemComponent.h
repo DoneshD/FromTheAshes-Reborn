@@ -185,7 +185,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void RemoveCameraParameters(UCameraParamsDataAsset* CameraParams);
 	
-	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed, TObjectPtr<UCameraParamsDataAsset> CameraParams);
+	float CatchupToOffScreen(const FVector& PlayerLocation, float& InInterpSpeed);
 	float CompareDistanceToScreenAndGetInterpSpeed(APlayerCharacter* PlayerOwner, const AActor* TargetActor, bool& InShouldUpdateControlRotation);
 	float GetWorldDistanceFromCamera(APlayerController* PlayerController, const AActor* TargetActor);
 	
