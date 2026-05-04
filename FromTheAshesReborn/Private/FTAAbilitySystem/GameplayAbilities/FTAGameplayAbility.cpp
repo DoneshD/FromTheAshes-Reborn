@@ -83,6 +83,11 @@ void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbility
 		CurrentAbilityAsset->WeaponActorClass = InAbilityAsset->WeaponActorClass;
 	}
 	CurrentAbilityAsset->EndAbilityOnCompleted = InAbilityAsset->EndAbilityOnCompleted;
+
+	if(InAbilityAsset->CameraParamsDataAsset)
+	{
+		CurrentAbilityAsset->CameraParamsDataAsset = InAbilityAsset->CameraParamsDataAsset;
+	}
 }
 
 void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
@@ -426,6 +431,21 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		
 		ExtractAssetProperties(CurrentAbilityAsset);
 		PerformAbility(CurrentAbilityAsset);
+
+		UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+
+		if(CSC)
+		{
+			if(CurrentAbilityAsset)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Here 1"));
+				if(CurrentAbilityAsset->CameraParamsDataAsset)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Here 2"));
+					CSC->AddCameraParameters(CurrentAbilityAsset->CameraParamsDataAsset);
+				}
+			}
+		}
 		// if(CurrentMontage)
 		// {
 		// 	for (const FAnimNotifyEvent& Event : CurrentMontage->Notifies)
@@ -457,6 +477,19 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
+	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
+
+	if(CSC)
+	{
+		if(CurrentAbilityAsset)
+		{
+			if(CurrentAbilityAsset->CameraParamsDataAsset)
+			{
+				CSC->RemoveCameraParameters(CurrentAbilityAsset->CameraParamsDataAsset);
+			}
+		}
+	}
+	
 	if (TickTask)
 	{
 		TickTask->EndTask();
@@ -471,6 +504,7 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 	
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("QueueTag.InputQueue.Open"));
 	GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.RemoveDynamic(this, &UFTAGameplayAbility::SetRuntimeAbilityData);
+
 	CurrentAbilityAsset = nullptr;
 	CurrentMoveToLocationAsset = nullptr;
 }

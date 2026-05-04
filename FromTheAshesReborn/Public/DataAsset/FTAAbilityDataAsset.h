@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "FTAAbilityDataAsset.generated.h"
 
+class UCameraParamsDataAsset;
 class AWeaponActorBase;
 
 UCLASS()
@@ -20,6 +21,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Weapon")
 	TSubclassOf<AWeaponActorBase> WeaponActorClass;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Camera")
+	TObjectPtr<UCameraParamsDataAsset> CameraParamsDataAsset;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
 	TObjectPtr<UAnimMontage> MontageToPlay;

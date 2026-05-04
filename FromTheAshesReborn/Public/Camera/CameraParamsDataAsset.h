@@ -36,10 +36,10 @@ struct FTargetingLockOnParams
 	float InputOffsetYawScale = 40.0f;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float PitchOffset = 15.0f;
+	float PitchOffset = -5.0f;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float YawOffset = 15.0f;
+	float YawOffset = -15.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float ArmLengthOffset = 150.0f;
@@ -57,7 +57,7 @@ struct FTargetingLockOnParams
 	float DistanceBasedMaxPitchOffset = -20.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float DistanceBasedMaxYawOffset = -35.0f;
+	float DistanceBasedMaxYawOffset = -25.0;
 	
 };
 
