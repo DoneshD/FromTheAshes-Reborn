@@ -19,6 +19,31 @@ enum class ETransformType : uint8
 };
 
 USTRUCT(BlueprintType)
+struct FTargetingLockOnParams
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InputOffsetPitchScale = 40.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InputOffsetYawScale = 40.0f;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float PitchOffset = 15.0f;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float YawOffset = 15.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float ArmLengthOffset = 150.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MidpointAnchorLocationAlpha = 0.25f;
+	
+};
+
+USTRUCT(BlueprintType)
 struct FCameraValueData
 {
 	GENERATED_BODY()
@@ -230,6 +255,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Input")
 	FInputOffsetStruct InputOffsetInfo;
+
+	UPROPERTY(EditAnywhere, Category = "Targeting")
+	FTargetingLockOnParams TargetingLockOnParams;
 
 	
 };

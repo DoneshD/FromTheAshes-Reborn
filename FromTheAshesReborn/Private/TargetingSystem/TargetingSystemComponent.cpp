@@ -402,9 +402,6 @@ FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float D
 	
 	return (ModifiedRotation - OriginalRotation);
 	
-	// ControlRotation.Yaw = FMath::Clamp(ControlRotation.Yaw, -CameraParams->InputOffsetInfo.InputBasedMaxYawOffset, CameraParams->InputOffsetInfo.InputBasedMaxYawOffset);
-	// ControlRotation.Pitch = FMath::Clamp(ControlRotation.Pitch, -CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset, CameraParams->InputOffsetInfo.InputBasedMaxPitchOffset);
-	
 }
 
 TArray<AActor*> UTargetingSystemComponent::GetAllActorsOfClass(const TSubclassOf<AActor> ActorClass) const
