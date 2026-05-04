@@ -438,33 +438,13 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		{
 			if(CurrentAbilityAsset)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Here 1"));
 				if(CurrentAbilityAsset->CameraParamsDataAsset)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Here 2"));
 					CSC->AddCameraParameters(CurrentAbilityAsset->CameraParamsDataAsset);
 				}
 			}
 		}
-		// if(CurrentMontage)
-		// {
-		// 	for (const FAnimNotifyEvent& Event : CurrentMontage->Notifies)
-		// 	{
-		// 		if (Event.NotifyStateClass)
-		// 		{
-		// 			if (Event.NotifyStateClass && Event.NotifyStateClass->IsA(UFTAAnimNotifyState::StaticClass()))
-		// 			{
-		// 				float Duration = Event.GetDuration();
-		// 				MoveToLocationDataAsset->Duration = Duration;
-		// 				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Name: %s"), *Event.NotifyStateClass->GetName());
-		// 					
-		// 				UE_LOG(LogTemp, Warning, TEXT("Found Notify State Duration: %f"), Duration);
-		// 			}
-		// 		}
-		// 	}
-		// }
 	}
-	
 }
 
 void UFTAGameplayAbility::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
