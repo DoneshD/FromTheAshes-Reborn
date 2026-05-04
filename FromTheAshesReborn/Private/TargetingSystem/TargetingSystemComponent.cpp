@@ -349,21 +349,22 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 
 	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
 	
-	float DesiredPitch = CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxPitchOffset);
+	float DistanceFactor = CalculateControlRotationBasedOnDistance(DistanceToTarget);
 	float DesiredYaw = 0.0;
 	
-	UE_LOG(LogTemp, Warning, TEXT("Dist Yaw: %f"), CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxYawOffset))
+	float DistanceOffsetYaw = FMath::Lerp(0, TargetingParams.DistanceBasedMaxYawOffset, DistanceFactor);
+	UE_LOG(LogTemp, Warning, TEXT("DistanceOffsetYaw: %f"), DistanceOffsetYaw)
 	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
 	{
-		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxYawOffset);
+		DesiredYaw = CalculateControlRotationBasedOnDistance(DistanceToTarget);
 	}
 	else
 	{
-		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget, TargetingParams.DistanceBasedMaxYawOffset);
+		DesiredYaw = -CalculateControlRotationBasedOnDistance(DistanceToTarget);
 	}
 	
-	// Pitch = Pitch + DesiredPitch;
-	Yaw = Yaw + DesiredYaw;
+	Pitch = Pitch + 0;
+	Yaw = Yaw + DistanceOffsetYaw;
 	
 	FRotator TargetRotation = FRotator(Pitch + TargetingParams.PitchOffset, Yaw + TargetingParams.YawOffset, ControlRotation.Roll);
 	if (TargetingParams.EnableInputBasedOffset)
@@ -374,15 +375,15 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 	return FMath::RInterpTo(ControlRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 9.0f);
 }
 
-float UTargetingSystemComponent::CalculateControlRotationBasedOnDistance(float Distance, float MaxOffset)
+float UTargetingSystemComponent::CalculateControlRotationBasedOnDistance(float Distance)
 {
 	if (Distance > MaxDistance)
 	{
 		return 0.0f;
 	}
  
-	float DistanceFactor = 1.0f - FMath::Clamp((Distance - MinDistance) / (MaxDistance - MinDistance), 0.0f, 1.0f);
-	return FMath::Lerp(0.0f, MaxOffset, DistanceFactor);
+	float DistanceFactor = 1.0f - FMath::Clamp((Distance - MinDistance) / (350.0f - MinDistance), 0.0f, 1.0f);
+	return DistanceFactor;
 }
 
 FRotator UTargetingSystemComponent::CalculateControlRotationBasedOnInput(float DeltaTime, FTargetingLockOnParams TargetingParams)

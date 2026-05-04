@@ -135,7 +135,7 @@ protected:
 	FVector CalculateAnchorLocation(APlayerCharacter* PlayerOwner, const AActor* TargetActor, float DeltaTime, FTargetingLockOnParams CameraParams);
 	float CalculateBaseSpringArmLength(APlayerCharacter* PlayerOwner, const AActor* TargetActor,  FTargetingLockOnParams TargetingParams);
 	FRotator CalculateControlRotation(FVector Location, FTargetingLockOnParams TargetingParams, float DeltaTime);
-	float CalculateControlRotationBasedOnDistance(float Distance, float MaxOffset);
+	float CalculateControlRotationBasedOnDistance(float Distance);
 	FRotator CalculateControlRotationBasedOnInput(float DeltaTime, FTargetingLockOnParams TargetingParams);
 	
 	TArray<AActor*> FindTargetsInRange(TArray<AActor*> ActorsToLook, float RangeMin, float RangeMax) const;
