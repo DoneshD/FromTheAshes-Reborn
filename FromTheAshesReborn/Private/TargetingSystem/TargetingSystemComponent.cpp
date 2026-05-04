@@ -347,12 +347,14 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 	float Yaw = LookRotation.Yaw;
 	float Pitch = LookRotation.Pitch;
 
+	Pitch += TargetingParams.PitchOffset;
+	Yaw += TargetingParams.YawOffset;
+
 	const float DistanceToTarget = FVector::Distance(OwnerLocation, Location);
 	
 	float DistanceFactor = CalculateControlRotationBasedOnDistance(DistanceToTarget);
 	
 	float DistanceOffsetYaw = FMath::Lerp(0, TargetingParams.DistanceBasedMaxYawOffset, DistanceFactor);
-	UE_LOG(LogTemp, Warning, TEXT("DistanceOffsetYaw: %f"), DistanceOffsetYaw)
 	if(UViewportUtilityFunctionLibrary::PlayerSideRelativeToLocationOnScreen(GetWorld(), Location, PlayerCharacter, OwnerPlayerController))
 	{
 		
@@ -362,11 +364,10 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 		DistanceOffsetYaw *= -1;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("DistanceOffsetYaw: %f"), DistanceOffsetYaw)
 	Pitch = Pitch + 0;
-	Yaw = Yaw + DistanceOffsetYaw;
+	Yaw += DistanceOffsetYaw;
 	
-	FRotator TargetRotation = FRotator(Pitch + TargetingParams.PitchOffset, Yaw + TargetingParams.YawOffset, ControlRotation.Roll);
+	FRotator TargetRotation = FRotator(Pitch, Yaw, ControlRotation.Roll);
 	if (TargetingParams.EnableInputBasedOffset)
 	{
 		TargetRotation += CalculateControlRotationBasedOnInput(DeltaTime, TargetingParams);
