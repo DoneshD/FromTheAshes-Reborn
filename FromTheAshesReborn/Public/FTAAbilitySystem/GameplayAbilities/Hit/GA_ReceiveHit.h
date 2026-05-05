@@ -24,11 +24,12 @@ public:
 	
 	FGameplayTag ReceiveHitTag = FGameplayTag::EmptyTag;
 
-	UPROPERTY(EditDefaultsOnly, Category="Hit")
+	UPROPERTY(EditDefaultsOnly, Category = "Hit")
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> ReceiveHitEffectMap;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
+
 public:
 
 	UGA_ReceiveHit();

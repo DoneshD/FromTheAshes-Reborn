@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
@@ -7,6 +8,7 @@
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -158,6 +160,69 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
 	}
 	HitInfoObject = nullptr;
+
+	FGameplayEventData FollowupEventData;
+	
+	FollowupEventData.Instigator = GetAvatarActorFromActorInfo();
+	FollowupEventData.Target = GetAvatarActorFromActorInfo();
+	
+	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
+	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
+	
+	FollowupEventData.OptionalObject = HitInfoObj;
+
+	if(PossibleFollowupReactions.IsEmpty())
+	{
+		return;
+	}
+	
+	if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
+	{
+		const UGA_ReceiveHit* const CDO = PossibleFollowupReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			{
+				const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
+
+				if(GrantAbilityEffect)
+				{
+					FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
+
+					FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
+						CurrentSpecHandle,
+						CurrentActorInfo,
+						CurrentActivationInfo,
+						GrantAbilityEffectHandle
+					);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
+					return;
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+				return;
+			}
+			
+			
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			{
+				FollowupEventData.EventTag = CDO->ReceiveHitTag;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - FollowupEventData is NULL"));
+			}
+
+			
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
+		}
+		
+	}
 
 }
 

@@ -22,6 +22,9 @@ struct FHitDataInfo
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	ESpatialDirection Direction;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TSubclassOf<UGA_ReceiveHit>> ChainReactions;
+
 	UPROPERTY()
 	TObjectPtr<AActor> Instigator;
 	

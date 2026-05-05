@@ -46,66 +46,6 @@ void UGA_Slammed::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 	
 	GetFTACharacterFromActorInfo()->RemoveAerialEffects();
 	
-	FGameplayEventData FollowupEventData;
-	
-	FollowupEventData.Instigator = GetAvatarActorFromActorInfo();
-	FollowupEventData.Target = GetAvatarActorFromActorInfo();
-	
-	UHitEventObject* HitInfoObj = NewObject<UHitEventObject>(this);
-	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
-	
-	FollowupEventData.OptionalObject = HitInfoObj;
-	
-	
-	if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
-	{
-		const UGA_ReceiveHit* const CDO = PossibleFollowupReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
-		if (CDO)
-		{
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
-			{
-				const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
-
-				if(GrantAbilityEffect)
-				{
-					FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
-
-					FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
-						CurrentSpecHandle,
-						CurrentActorInfo,
-						CurrentActivationInfo,
-						GrantAbilityEffectHandle
-					);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
-					EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-					return;
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-				return;
-			}
-			
-			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
-			{
-				FollowupEventData.EventTag = CDO->ReceiveHitTag;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - FollowupEventData is NULL"));
-			}
-
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
-		}
-		
-	}
 	
 }
 
