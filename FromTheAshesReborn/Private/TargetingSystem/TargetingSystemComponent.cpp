@@ -343,6 +343,27 @@ FRotator UTargetingSystemComponent::CalculateControlRotation(const FVector Locat
 
 	const FVector OwnerLocation = OwnerActor->GetActorLocation();
 	const FRotator LookRotation = FindLookAtRotation(OwnerLocation,Location);
+
+	// Convert rotation to forward direction
+	const FVector Direction = LookRotation.Vector();
+
+	// Arrow length (optional: use actual distance)
+	const float Length = 150.0f;
+	// const float Length = FVector::Dist(OwnerLocation, Location);
+
+	const FVector End = OwnerLocation + Direction * Length;
+
+	DrawDebugDirectionalArrow(
+		GetWorld(),
+		OwnerLocation,
+		End,
+		25.0f,        // Arrow head size
+		FColor::Red,
+		false,
+		0.0f,
+		0,
+		2.0f
+	);
 	
 	float Yaw = LookRotation.Yaw;
 	float Pitch = LookRotation.Pitch;
