@@ -363,9 +363,10 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	HitInfoObj->HitData.Instigator = GetAvatarActorFromActorInfo();
 	
 	HitInfoObj->HitData.Direction = HitData.Direction;
+	HitInfoObj->HitData.ChainReactions = HitData.ChainReactions;
 
+	ComboManagerComponent->CurrentChainReaction = HitData.ChainReactions;
 	
-
 	if (HitData.HitAbilityClass)
 	{
 		const UGA_ReceiveHit* const CDO = HitData.HitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();

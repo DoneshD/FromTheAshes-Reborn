@@ -159,7 +159,6 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 	{
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
 	}
-	HitInfoObject = nullptr;
 
 	FGameplayEventData FollowupEventData;
 	
@@ -175,6 +174,28 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 	{
 		return;
 	}
+
+	// HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
+	
+	if(!HitInfoObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::EndAbility - HitInfoObject is Null"));
+		
+	}
+	for(TSubclassOf<UGA_ReceiveHit> Class : HitInfoObject->HitData.ChainReactions)
+	{
+		if(Class)
+		{
+			const UGA_ReceiveHit* const CDO = Class->GetDefaultObject<UGA_ReceiveHit>();
+			if (CDO)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CDO->GetName())
+			}
+			
+		}
+	}
+
+
 	
 	if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
 	{
@@ -223,7 +244,7 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 		}
 		
 	}
-
+	HitInfoObject = nullptr;
 }
 
 void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

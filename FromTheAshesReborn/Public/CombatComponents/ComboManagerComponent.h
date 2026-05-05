@@ -26,6 +26,9 @@ public:
 	
 	bool PauseCurrentAttack = false;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TSubclassOf<UGA_ReceiveHit>> CurrentChainReaction;
+
 protected:
 	
 	TObjectPtr<UFTAAbilitySystemComponent> FTAASC;
