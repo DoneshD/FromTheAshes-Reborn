@@ -27,9 +27,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category="Hit")
 	TMap<FGameplayTag, TSubclassOf<UGameplayEffect>> ReceiveHitEffectMap;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
-	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleHitReactions;
-
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
 public:
 
 	UGA_ReceiveHit();

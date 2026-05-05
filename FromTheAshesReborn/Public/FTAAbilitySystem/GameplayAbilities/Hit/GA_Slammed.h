@@ -13,14 +13,6 @@ class FROMTHEASHESREBORN_API UGA_Slammed : public UGA_ReceiveHit
 {
 	GENERATED_BODY()
 
-protected:
-
-	FVector HitLocation;
-	
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<TSubclassOf<UGA_ReceiveHit>> PossibleFollowupReactions;
-
 public:
 
 	UGA_Slammed();
@@ -34,6 +26,4 @@ public:
 
 	UFUNCTION()
 	void OnSlamComplete();
-
-	FVector TempDiagonalLocation();
 };
