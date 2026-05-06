@@ -177,122 +177,69 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::EndAbility - HitInfoObject is Null"));
 		
 	}
-	
-	if(PossibleFollowupReactions.IsEmpty())
+
+	if(HitInfoObject->HitData.ChainReactions.IsEmpty())
 	{
-		return;
-	}
-	
-	
-	/*if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
-	{
-		const UGA_ReceiveHit* const CDO = PossibleFollowupReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
-		if (CDO)
-		{
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
-			{
-				const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
-
-				if(GrantAbilityEffect)
-				{
-					FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
-
-					FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
-						CurrentSpecHandle,
-						CurrentActorInfo,
-						CurrentActivationInfo,
-						GrantAbilityEffectHandle
-					);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
-					return;
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
-				return;
-			}
-			
-			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
-			{
-				FollowupEventData.EventTag = CDO->ReceiveHitTag;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - FollowupEventData is NULL"));
-			}
-
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
-		}
-		
-	}*/
-
-	if(ComboManagerComponent->CurrentChainReaction.IsEmpty())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Empty CurrentChainReaction"))
+		UE_LOG(LogTemp, Warning, TEXT("Empty"))
 		return;
 	}
 
-	if(ComboManagerComponent->CurrentChainReaction[0] && ComboManagerComponent->CurrentChainReaction[0]->IsValidLowLevel() && ComboManagerComponent->CurrentChainReaction.Num() > 0 && !ComboManagerComponent->CurrentChainReaction.IsEmpty())
+	if (!HitInfoObject->HitData.ChainReactions.IsValidIndex(0))
 	{
-		const UGA_ReceiveHit* const CDO = ComboManagerComponent->CurrentChainReaction[0]->GetDefaultObject<UGA_ReceiveHit>();
-		if (CDO)
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Index"))
+		return;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("NUM: %d"), HitInfoObject->HitData.ChainReactions.Num())
+	
+	const UGA_ReceiveHit* const CDO = HitInfoObject->HitData.ChainReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
+	
+	if (CDO)
+	{
+		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
 		{
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
+
+			if(GrantAbilityEffect)
 			{
-				const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
+				FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
 
-				if(GrantAbilityEffect)
-				{
-					FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
-
-					FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
-						CurrentSpecHandle,
-						CurrentActorInfo,
-						CurrentActivationInfo,
-						GrantAbilityEffectHandle
-					);
-				}
-				else
-				{
-					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
-					return;
-				}
+				FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
+					CurrentSpecHandle,
+					CurrentActorInfo,
+					CurrentActivationInfo,
+					GrantAbilityEffectHandle
+				);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
 				return;
 			}
-			
-			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
-			{
-				FollowupEventData.EventTag = CDO->ReceiveHitTag;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - FollowupEventData is NULL"));
-			}
-
-			
-			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+			return;
 		}
 		
+		
+		if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+		{
+			FollowupEventData.EventTag = CDO->ReceiveHitTag;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - FollowupEventData is NULL"));
+		}
+		
+		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
 	}
-	
-	HitInfoObject = nullptr;
+	// ComboManagerComponent->CurrentChainReaction.Empty();
 }
 
 void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCancelled(EventTag, EventData);
-	
 }
 
 void UGA_ReceiveHit::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -309,7 +256,6 @@ void UGA_ReceiveHit::EventMontageReceived(FGameplayTag EventTag, FGameplayEventD
 void UGA_ReceiveHit::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
 {
 	Super::PerformAbility(InAbilityAsset);
-
 	
 }
 
@@ -341,7 +287,5 @@ UFTAAbilityDataAsset* UGA_ReceiveHit::SelectAbilityAsset(TArray<UFTAAbilityDataA
 		return AbilityDataAsset;
 	}
 	return nullptr;
-
-	
 	
 }

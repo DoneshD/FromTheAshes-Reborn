@@ -13,11 +13,6 @@ class FROMTHEASHESREBORN_API UGA_KnockDown : public UGA_ReceiveHit
 
 protected:
 
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<UGameplayEffect> GetUpAbilityEffect;
-
-	UPROPERTY(EditAnywhere)
-	FGameplayTag RecoveryTag;
 
 protected:
 
