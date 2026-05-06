@@ -170,11 +170,6 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 	
 	FollowupEventData.OptionalObject = HitInfoObj;
 
-	if(PossibleFollowupReactions.IsEmpty())
-	{
-		return;
-	}
-
 	// HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
 	
 	if(!HitInfoObject)
@@ -182,22 +177,14 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::EndAbility - HitInfoObject is Null"));
 		
 	}
-	for(TSubclassOf<UGA_ReceiveHit> Class : HitInfoObject->HitData.ChainReactions)
-	{
-		if(Class)
-		{
-			const UGA_ReceiveHit* const CDO = Class->GetDefaultObject<UGA_ReceiveHit>();
-			if (CDO)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CDO->GetName())
-			}
-			
-		}
-	}
-
-
 	
-	if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
+	if(PossibleFollowupReactions.IsEmpty())
+	{
+		return;
+	}
+	
+	
+	/*if(PossibleFollowupReactions[0] && PossibleFollowupReactions[0]->IsValidLowLevel() && PossibleFollowupReactions.Num() > 0 && !PossibleFollowupReactions.IsEmpty())
 	{
 		const UGA_ReceiveHit* const CDO = PossibleFollowupReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
 		if (CDO)
@@ -243,7 +230,62 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
 		}
 		
+	}*/
+
+	if(ComboManagerComponent->CurrentChainReaction.IsEmpty())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Empty CurrentChainReaction"))
+		return;
 	}
+
+	if(ComboManagerComponent->CurrentChainReaction[0] && ComboManagerComponent->CurrentChainReaction[0]->IsValidLowLevel() && ComboManagerComponent->CurrentChainReaction.Num() > 0 && !ComboManagerComponent->CurrentChainReaction.IsEmpty())
+	{
+		const UGA_ReceiveHit* const CDO = ComboManagerComponent->CurrentChainReaction[0]->GetDefaultObject<UGA_ReceiveHit>();
+		if (CDO)
+		{
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			{
+				const TSubclassOf<UGameplayEffect>* GrantAbilityEffect = CDO->ReceiveHitEffectMap.Find(CDO->ReceiveHitTag);
+
+				if(GrantAbilityEffect)
+				{
+					FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
+
+					FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
+						CurrentSpecHandle,
+						CurrentActorInfo,
+						CurrentActivationInfo,
+						GrantAbilityEffectHandle
+					);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
+					return;
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+				return;
+			}
+			
+			
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CDO->ReceiveHitTag))
+			{
+				FollowupEventData.EventTag = CDO->ReceiveHitTag;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_Slammed::EndAbility - FollowupEventData is NULL"));
+			}
+
+			
+			UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
+		}
+		
+	}
+	
 	HitInfoObject = nullptr;
 }
 

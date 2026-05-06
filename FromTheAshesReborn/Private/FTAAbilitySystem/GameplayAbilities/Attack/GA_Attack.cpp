@@ -353,6 +353,8 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 {
 
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+
+	AFTACharacter* TargetCharacter = Cast<AFTACharacter>(TargetActor);
 	
 	UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(TargetActor);
 	OnHitEventData.Instigator = GetAvatarActorFromActorInfo();
@@ -365,7 +367,11 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 	HitInfoObj->HitData.Direction = HitData.Direction;
 	HitInfoObj->HitData.ChainReactions = HitData.ChainReactions;
 
-	ComboManagerComponent->CurrentChainReaction = HitData.ChainReactions;
+	
+	TargetCharacter->ComboManagerComponent->CurrentChainReaction = HitData.ChainReactions;
+
+	UE_LOG(LogTemp, Warning, TEXT("Num 1: %d"), TargetCharacter->ComboManagerComponent->CurrentChainReaction.Num())
+	
 	
 	if (HitData.HitAbilityClass)
 	{
