@@ -170,7 +170,6 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 	
 	FollowupEventData.OptionalObject = HitInfoObj;
 
-	// HitInfoObject = Cast<UHitEventObject>(CurrentEventData.OptionalObject);
 	
 	if(!HitInfoObject)
 	{
@@ -180,16 +179,13 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 
 	if(HitInfoObject->HitData.ChainReactions.IsEmpty())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Empty"))
 		return;
 	}
 
 	if (!HitInfoObject->HitData.ChainReactions.IsValidIndex(0))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid Index"))
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("NUM: %d"), HitInfoObject->HitData.ChainReactions.Num())
 	
 	const UGA_ReceiveHit* const CDO = HitInfoObject->HitData.ChainReactions[0]->GetDefaultObject<UGA_ReceiveHit>();
 	
@@ -234,7 +230,6 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 		
 		UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetAvatarActorFromActorInfo(), FollowupEventData.EventTag, FollowupEventData);
 	}
-	// ComboManagerComponent->CurrentChainReaction.Empty();
 }
 
 void UGA_ReceiveHit::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)

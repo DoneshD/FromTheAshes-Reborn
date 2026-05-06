@@ -366,14 +366,15 @@ FTransform AFTACharacter::GetLHIKTransform()
 void AFTACharacter::RemoveAerialEffects()
 {
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail"));
-	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
+	// FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Launched.Vertical"));
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slammed"));
 	
 	
-	if(AirCombatComponent && AirCombatComponent->IsValidLowLevel())
-	{
-		AirCombatComponent->ClearStateAndVariables();
-	}
+	// if(AirCombatComponent && AirCombatComponent->IsValidLowLevel())
+	// {
+	// 	AirCombatComponent->ClearStateAndVariables();
+	// }
+	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 	
 }
 

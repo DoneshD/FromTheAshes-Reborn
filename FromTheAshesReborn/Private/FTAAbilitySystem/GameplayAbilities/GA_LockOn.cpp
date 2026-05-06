@@ -45,17 +45,24 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 
 	if(!TargetingSystemComponent)
 	{
-		// UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
+		UE_LOG(LogTemp, Error, TEXT("TargetSystemComponent is NULL"));
 		EndAbility(Handle, ActorInfo, ActivationInfo, true, false);
 	}
 	
 	LockedOnTarget = TargetingSystemComponent->TargetActor(IsTargeting);
+	if(!LockedOnTarget)
+	{
+		UE_LOG(LogTemp, Error, TEXT("LockedOnTarget is NULL"));
+	}
+	if(!IsTargeting)
+	{
+		UE_LOG(LogTemp, Error, TEXT("IsTargeting is false"));
+	}
 	
 	if(LockedOnTarget && IsTargeting)
 	{
 		PS->HardLockedTargetActor = LockedOnTarget;
 		TargetCharacter = Cast<AFTACharacter>(LockedOnTarget);
-		
 		CameraSystemComponent->AddCameraParameters(TargetingSystemComponent->CameraParameters);
 	}
 

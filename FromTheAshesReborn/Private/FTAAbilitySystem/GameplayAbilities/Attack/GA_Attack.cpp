@@ -406,6 +406,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		if(CurrentAttackData->SupplyEndLocation)
 		{
 			HitInfoObj->HitData.MoveToLocationData->LocationData.EndLocationVector = CurrentMoveToLocationAsset->TempLocationData.EndLocationVector;
+			HitInfoObj->HitData.MoveToLocationData->LocationData.Duration = CurrentMoveToLocationAsset->LocationData.Duration;
 		}
 	}
 	
