@@ -57,7 +57,7 @@ void UDownedCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(IsComponentActive)
 	{
 		TotalDownedTime += DeltaTime;
-		if(TotalDownedTime >= 2.0f)
+		if(TotalDownedTime >= 1.0f)
 		{
 			DisableComponent();
 		}
@@ -70,7 +70,8 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 	if (NewCount > 0)
 	{
 		IsComponentActive = true;
-		FTACharacter->CentralStateComponent->SetCurrentState(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
+		FTACharacter->CentralStateComponent->SetCurrentState(FTACharacter->CentralStateComponent->DownedStateTag);
+		FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 
 		AEnemyBaseCharacter* EnemyChar = Cast<AEnemyBaseCharacter>(GetOwner());
 		if(EnemyChar)
@@ -114,10 +115,9 @@ void UDownedCombatComponent::DisableComponent()
 	{
 		EnemyChar->ShouldRotate = true;
 	}
-	
 
-	//TODO: Native approach, fix later
-	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
+	FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
+	FTACharacter->CentralStateComponent->SetCurrentState(FTACharacter->CentralStateComponent->NeutralStateTag);
 
 	if(PossibleRecoveries[0] && PossibleRecoveries[0]->IsValidLowLevel() && PossibleRecoveries.Num() > 0 && !PossibleRecoveries.IsEmpty())
 	{

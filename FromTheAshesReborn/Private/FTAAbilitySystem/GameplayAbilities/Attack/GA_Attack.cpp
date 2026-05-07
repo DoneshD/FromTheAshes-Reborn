@@ -461,6 +461,7 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 	}
 
 	CurrentAttackData->SupplyEndLocation = AttackAsset->SupplyEndLocation;
+	
 
 	// Hit Reactions
 	if (!AttackAsset->PossibleHitReactions.IsEmpty())

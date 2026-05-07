@@ -22,8 +22,10 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GE")
 	TSubclassOf<UGameplayEffect> EnableDownedCombatEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Data")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Recover")
 	TArray<TSubclassOf<UGA_Recover>> PossibleRecoveries;
+
+	
 	
 	float TotalDownedTime = 0.0f;
 
