@@ -61,7 +61,7 @@ public:
 	
 };
 
-UCLASS(BlueprintType, Blueprintable)
+UCLASS(Blueprintable, EditInlineNew, DefaultToInstanced)
 class FROMTHEASHESREBORN_API UFTAVisualCueObject : public UObject
 {
 	GENERATED_BODY()

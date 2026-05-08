@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
 	bool EndAbilityOnCompleted = true;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Base Params | Animation")
+	bool IncrementComboIndexOnCompleted = false;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
 	int RequiredIndex;
 

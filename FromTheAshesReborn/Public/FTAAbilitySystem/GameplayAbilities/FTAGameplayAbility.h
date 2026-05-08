@@ -146,6 +146,10 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Instanced, Category = "Aerial", meta=(EditCondition="IsAerialAbility"))
 	TObjectPtr<UAerialAbilityModifier> AerialModifer;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Time")
+	float TotalAbilityTime = 0.0f;
+	
 	
 public:
 	

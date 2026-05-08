@@ -88,11 +88,12 @@ void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbility
 	{
 		CurrentAbilityAsset->CameraParamsDataAsset = InAbilityAsset->CameraParamsDataAsset;
 	}
+	CurrentAbilityAsset->IncrementComboIndexOnCompleted = InAbilityAsset->IncrementComboIndexOnCompleted;
 }
 
 void UFTAGameplayAbility::OnAbilityTick(float DeltaTime)
 {
-	
+	TotalAbilityTime += DeltaTime;
 }
 
 UFTAAbilitySystemComponent* UFTAGameplayAbility::GetFTAAbilitySystemComponentFromActorInfo() const
@@ -457,6 +458,10 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 
+	UE_LOG(LogTemp, Warning, TEXT("Time spent: %f"), TotalAbilityTime);
+	TotalAbilityTime = 0.0f;
+
+	
 	UCameraSystemComponent* CSC = GetFTACharacterFromActorInfo()->FindComponentByClass<UCameraSystemComponent>();
 
 	if(CSC)
@@ -472,6 +477,7 @@ void UFTAGameplayAbility::EndAbility(const FGameplayAbilitySpecHandle Handle, co
 	
 	if (TickTask)
 	{
+		
 		TickTask->EndTask();
 		TickTask = nullptr;
 	}
@@ -710,12 +716,31 @@ void UFTAGameplayAbility::OnMontageCancelled(FGameplayTag EventTag, FGameplayEve
 void UFTAGameplayAbility::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	GetFTACharacterFromActorInfo()->MotionWarpingComponent->RemoveWarpTarget(WarpTargetName);
-	ResetCombo();
 
 	if(CurrentAbilityAsset->EndAbilityOnCompleted)
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	}
+	ResetCombo();
+
+	// if(CurrentAbilityAsset->IncrementComboIndexOnCompleted)
+	// {
+	// 	ComboManagerComponent->SetCurrentComboIndex(1);
+	// 	CurrentAbilityAsset = SelectAbilityAsset(AbilityAssets);
+	//
+	// 	if(!CurrentAbilityAsset)
+	// 	{
+	// 		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::OnMontageCompleted - CurrentAbilityAsset is Null"))
+	// 		return;
+	// 	}
+	//
+	// 	ExtractAssetProperties(CurrentAbilityAsset);
+	// 	PerformAbility(CurrentAbilityAsset);
+	// }
+	// else
+	// {
+	// 	ResetCombo();
+	// }
 }
 
 void UFTAGameplayAbility::OnMoveComplete()
