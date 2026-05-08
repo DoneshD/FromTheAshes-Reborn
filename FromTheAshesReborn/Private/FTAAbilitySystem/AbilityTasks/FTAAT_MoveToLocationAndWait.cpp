@@ -75,15 +75,15 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.RelativeOffsetVector.Y
 		+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.RelativeOffsetVector.Z;
 		
-		DrawDebugSphere(
-				GetWorld(),
-				TargetEndLocation,
-				25.0f,        
-				12,           
-				FColor::Red,
-				false,      
-				2.0f
-				);
+		// DrawDebugSphere(
+		// 		GetWorld(),
+		// 		TargetEndLocation,
+		// 		25.0f,        
+		// 		12,           
+		// 		FColor::Red,
+		// 		false,      
+		// 		2.0f
+		// 		);
 	}
 	else
 	{
@@ -133,7 +133,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		Params
 	);
 	
-	DrawDebugLine(GetWorld(), StartLocation, TargetEndLocation, FColor::Green, false, 2.f);
+	// DrawDebugLine(GetWorld(), StartLocation, TargetEndLocation, FColor::Green, false, 2.f);
 	
 	if (bHit)
 	{
@@ -144,15 +144,15 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		EndLocation = TargetEndLocation;
 	}
 
-	DrawDebugSphere(
-	GetWorld(),
-	EndLocation,
-	25.0f,        
-	12,           
-	FColor::Green,
-	false,      
-	2.0f          
-	);
+	// DrawDebugSphere(
+	// GetWorld(),
+	// EndLocation,
+	// 25.0f,        
+	// 12,           
+	// FColor::Green,
+	// false,      
+	// 2.0f          
+	// );
 
 	StartLocation = GetAvatarActor()->GetActorLocation();
 
