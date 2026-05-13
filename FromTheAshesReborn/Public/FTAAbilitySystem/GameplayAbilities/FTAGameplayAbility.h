@@ -84,6 +84,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input")
 	bool bActivateOnInput;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Assets")
+	bool UseAbilityAsset = true;
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Assets")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
