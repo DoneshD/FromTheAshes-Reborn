@@ -28,6 +28,12 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	FRotator RotationOffset;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	FName BoneSocketName;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	bool AttachToOwner = false;
 	
 };
 
