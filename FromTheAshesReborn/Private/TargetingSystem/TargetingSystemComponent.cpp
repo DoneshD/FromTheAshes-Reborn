@@ -445,11 +445,19 @@ AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Acto
 
 	for (AActor* Actor : Actors)
 	{
-		TArray<AActor*> ActorsToIgnore;
-		const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
-		if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor->GetActorLocation(), OwnerPlayerController))
+		if(Actor)
 		{
-			ActorsHit.Add(Actor);
+			if(Actor == GetOwner())
+			{
+				continue;
+			}
+			TArray<AActor*> ActorsToIgnore;
+			ActorsToIgnore.Add(GetOwner());
+			const bool bHit = LineTraceForActor(Actor, ActorsToIgnore);
+			if (bHit && UViewportUtilityFunctionLibrary::IsInViewport(GetWorld(), Actor->GetActorLocation(), OwnerPlayerController))
+			{
+				ActorsHit.Add(Actor);
+			}
 		}
 	}
 
@@ -459,8 +467,7 @@ AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Acto
 	}
 	
 	float ClosestDistance = ClosestTargetDistance;
-	AActor* Target = nullptr;
-	
+
 	for (AActor* HitActor : ActorsHit)
 	{
 		const float Distance = OwnerActor->GetDistanceTo(HitActor);
@@ -469,10 +476,11 @@ AActor* UTargetingSystemComponent::FindNearestTargetToActor(TArray<AActor*> Acto
 		{
 			ClosestDistance = Distance;
 			// Target = Actor;
+			
 			ActorsWithInRange.Add(HitActor);
 		}
 	}
-	Target = FindNearestTargetToCenterViewport(ActorsWithInRange);
+	AActor* Target = FindNearestTargetToCenterViewport(ActorsWithInRange);
 	
 	return Target;
 }
@@ -535,6 +543,17 @@ bool UTargetingSystemComponent::LineTrace(FHitResult& OutHitResult, const AActor
 	
 	if (const UWorld* World = GetWorld(); IsValid(World))
 	{
+		// DrawDebugLine(
+		// 	World,
+		// 	OwnerActor->GetActorLocation(),
+		// 	OtherActor->GetActorLocation(),
+		// 	FColor::Red, 
+		// 	false,       
+		// 	2.0f,        
+		// 	0,
+		// 	2.0f        
+		// );
+		
 		return World->LineTraceSingleByChannel(
 			OutHitResult,
 			OwnerActor->GetActorLocation(),
@@ -550,7 +569,9 @@ bool UTargetingSystemComponent::LineTrace(FHitResult& OutHitResult, const AActor
 
 bool UTargetingSystemComponent::LineTraceForActor(const AActor* OtherActor, const TArray<AActor*>& ActorsToIgnore) const
 {
-	FHitResult HitResult;
+	//TODO: Bug here, temp fix
+	
+	/*FHitResult HitResult;
 	const bool bHit = LineTrace(HitResult, OtherActor, ActorsToIgnore);
 	if (bHit)
 	{
@@ -560,8 +581,8 @@ bool UTargetingSystemComponent::LineTraceForActor(const AActor* OtherActor, cons
 			return true;
 		}
 	}
-
-	return false;
+	return false;*/
+	return true;
 }
 
 bool UTargetingSystemComponent::ShouldBreakLineOfSight() const
@@ -671,6 +692,10 @@ AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
 		IsSuccess = true;
 		FTAPlayerCameraManger->ViewPitchMax = 10;
 		return LockedOnTargetActor;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Actor is NULL"));
 	}
 	TargetLockOff();
 	IsSuccess = false;

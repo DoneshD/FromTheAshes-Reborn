@@ -50,14 +50,6 @@ void UGA_LockOn::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 	}
 	
 	LockedOnTarget = TargetingSystemComponent->TargetActor(IsTargeting);
-	if(!LockedOnTarget)
-	{
-		UE_LOG(LogTemp, Error, TEXT("LockedOnTarget is NULL"));
-	}
-	if(!IsTargeting)
-	{
-		UE_LOG(LogTemp, Error, TEXT("IsTargeting is false"));
-	}
 	
 	if(LockedOnTarget && IsTargeting)
 	{
