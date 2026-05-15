@@ -100,11 +100,20 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		HandleControlRotationParams(DeltaTime);
 	}
+
+	for(TObjectPtr<UCameraParamsDataAsset> CameraAsset : CameraParamsArray)
+	{
+		if(CameraAsset)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CameraAsset->GetName())
+		}
+	}
 	
 }
 
 void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
 {
+	//Arm length
 	float CurrentArmLength = SpringArmComponent->TargetArmLength;
 	
 	if (!FMath::IsNearlyEqual(CurrentArmLength, CurrentCameraStateParams->SpringArmParams.ArmLength.Value, 0.1f))
@@ -118,6 +127,7 @@ void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
 		SpringArmComponent->TargetArmLength = InterpolatedArmLength;
 	}
 
+	//Socket Offset
 	FVector CurrentSocketOffset = SpringArmComponent->SocketOffset;
 	
 	if (!CurrentSocketOffset.Equals(CurrentCameraStateParams->SpringArmParams.SocketOffset.Value, 0.1f))
@@ -130,8 +140,36 @@ void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
 				CurrentCameraStateParams->SpringArmParams.SocketOffset.MetaData.InLerpSpeedFloat);
 			
 		SpringArmComponent->SocketOffset = InterpolatedSocketOffset;
-			
-			
+	}
+
+	//Location Lag Speed
+	float CurrentLocationLagSpeed = SpringArmComponent->CameraLagSpeed;
+	if (!FMath::IsNearlyEqual(CurrentLocationLagSpeed, CurrentCameraStateParams->SpringArmParams.CameraLocationLagSpeed.Value, 0.1f))
+	{
+		float InterpolatedLocationLagSpeed = FMath::FInterpTo(
+			CurrentLocationLagSpeed,
+			CurrentCameraStateParams->SpringArmParams.CameraLocationLagSpeed.Value,
+			DeltaTime,
+			CurrentCameraStateParams->SpringArmParams.CameraLocationLagSpeed.MetaData.InLerpSpeedFloat);
+		
+		SpringArmComponent->CameraLagSpeed = InterpolatedLocationLagSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Lag speed: %f"), InterpolatedLocationLagSpeed)
+	}
+
+	//Rotation Lag Speed
+
+	float CurrentRotationLagSpeed = SpringArmComponent->CameraRotationLagSpeed;
+	if (!FMath::IsNearlyEqual(CurrentRotationLagSpeed, CurrentCameraStateParams->SpringArmParams.CameraRotationLagSpeed.Value, 0.1f))
+	{
+		float InterpolatedRotationLagSpeed = FMath::FInterpTo(
+			CurrentRotationLagSpeed,
+			CurrentCameraStateParams->SpringArmParams.CameraRotationLagSpeed.Value,
+			DeltaTime,
+			CurrentCameraStateParams->SpringArmParams.CameraRotationLagSpeed.MetaData.InLerpSpeedFloat);
+		
+		SpringArmComponent->CameraRotationLagSpeed = InterpolatedRotationLagSpeed;
+		UE_LOG(LogTemp, Warning, TEXT("Lag rotation speed: %f"), InterpolatedRotationLagSpeed)
+		
 	}
 }
 
@@ -240,7 +278,7 @@ void UCameraSystemComponent::ResolveSpringArmParams()
 
 	ResolveSpringArmLength();
 	ResolveSpringArmSocketOffset();
-	
+	ResolveSpringArmLagSpeed();
 }
 
 void UCameraSystemComponent::ResolveSpringArmLength()
@@ -285,6 +323,49 @@ void UCameraSystemComponent::ResolveSpringArmSocketOffset()
 			[](const FCameraValueData& MetaData) -> float {return MetaData.Priority;}
 		}
 
+	);
+}
+
+void UCameraSystemComponent::ResolveSpringArmLagSpeed()
+{
+	//Location lag speed
+	ResolveCameraParam<float, FCameraFloatParam>(
+		CameraParamsArray,
+		CurrentCameraStateParams->SpringArmParams.CameraLocationLagSpeed.Value,
+		CurrentCameraStateParams->SpringArmParams.CameraLocationLagSpeed.MetaData.InLerpSpeedFloat,
+		CurrentCameraStateParams->SpringArmParams.CameraLocationLagSpeed.MetaData.Priority,
+		FCameraParamAccessors<float, FCameraFloatParam>
+		{
+			[](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->SpringArmParams.CameraLocationLagSpeed; },
+			[](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
+			[](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
+			[](float& Target, const float& Value) { Target = Value; },
+			[](const float& Target, const float& Value) { return Target + Value; },
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;},
+			[](const FCameraValueData& MetaData) -> float {return MetaData.Priority;}
+			
+        	
+		}
+	);
+
+	//Rotation lag speed
+	ResolveCameraParam<float, FCameraFloatParam>(
+		CameraParamsArray,
+		CurrentCameraStateParams->SpringArmParams.CameraRotationLagSpeed.Value,
+		CurrentCameraStateParams->SpringArmParams.CameraRotationLagSpeed.MetaData.InLerpSpeedFloat,
+		CurrentCameraStateParams->SpringArmParams.CameraRotationLagSpeed.MetaData.Priority,
+		FCameraParamAccessors<float, FCameraFloatParam>
+		{
+			[](const UCameraParamsDataAsset* CameraParamAsset) -> const FCameraFloatParam& { return CameraParamAsset->SpringArmParams.CameraRotationLagSpeed; },
+			[](const FCameraFloatParam& FloatParam) -> const FCameraValueData& { return FloatParam.MetaData; },
+			[](const FCameraFloatParam& FloatParam) -> const float& { return FloatParam.Value; },
+			[](float& Target, const float& Value) { Target = Value; },
+			[](const float& Target, const float& Value) { return Target + Value; },
+			[](const FCameraValueData& MetaData) -> float {return MetaData.InLerpSpeedFloat;},
+			[](const FCameraValueData& MetaData) -> float {return MetaData.Priority;}
+			
+        	
+		}
 	);
 }
 

@@ -163,11 +163,12 @@ public:
 	void HandleTargetLockOnParams();
 	
 	void SetupLocalPlayerController();
-	
+
 	void ResolveSpringArmParams();
 	
 	void ResolveSpringArmLength();
 	void ResolveSpringArmSocketOffset();
+	void ResolveSpringArmLagSpeed();
 	
 	void ResolveControlRotationParams();
 	void ResolveTargetControlRotation();
