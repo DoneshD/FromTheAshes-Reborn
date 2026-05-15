@@ -370,10 +370,10 @@ void AFTACharacter::RemoveAerialEffects()
 	FTAAbilitySystemComponent->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Slammed"));
 	
 	
-	// if(AirCombatComponent && AirCombatComponent->IsValidLowLevel())
-	// {
-	// 	AirCombatComponent->ClearStateAndVariables();
-	// }
+	if(AirCombatComponent)
+	{
+		AirCombatComponent->DisableComponent(MOVE_Walking);
+	}
 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 	
 }

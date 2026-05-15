@@ -101,13 +101,13 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		HandleControlRotationParams(DeltaTime);
 	}
 
-	for(TObjectPtr<UCameraParamsDataAsset> CameraAsset : CameraParamsArray)
-	{
-		if(CameraAsset)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CameraAsset->GetName())
-		}
-	}
+	// for(TObjectPtr<UCameraParamsDataAsset> CameraAsset : CameraParamsArray)
+	// {
+	// 	if(CameraAsset)
+	// 	{
+	// 		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CameraAsset->GetName())
+	// 	}
+	// }
 	
 }
 
@@ -153,7 +153,6 @@ void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
 			CurrentCameraStateParams->SpringArmParams.CameraLocationLagSpeed.MetaData.InLerpSpeedFloat);
 		
 		SpringArmComponent->CameraLagSpeed = InterpolatedLocationLagSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Lag speed: %f"), InterpolatedLocationLagSpeed)
 	}
 
 	//Rotation Lag Speed
@@ -168,7 +167,6 @@ void UCameraSystemComponent::HandleSpringArmParams(float DeltaTime)
 			CurrentCameraStateParams->SpringArmParams.CameraRotationLagSpeed.MetaData.InLerpSpeedFloat);
 		
 		SpringArmComponent->CameraRotationLagSpeed = InterpolatedRotationLagSpeed;
-		UE_LOG(LogTemp, Warning, TEXT("Lag rotation speed: %f"), InterpolatedRotationLagSpeed)
 		
 	}
 }

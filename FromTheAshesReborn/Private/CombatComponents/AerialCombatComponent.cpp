@@ -1,5 +1,6 @@
 #include "CombatComponents/AerialCombatComponent.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Camera/CameraSystemComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
@@ -66,6 +67,8 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Clear"))
+	
 	UCentralStateComponent* CSC = GetOwner()->FindComponentByClass<UCentralStateComponent>();
 	if(CSC)
 	{
@@ -77,6 +80,16 @@ void UAerialCombatComponent::ClearStateAndVariables()
 	TotalAirTime = 0.0f;
 	LastGravityCurveValue = 0.0f;
 	TestAttackCounter = 0.0f;
+
+	if(CameraParams)
+	{
+		UCameraSystemComponent* CameraSystemComponent = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
+		if(CameraSystemComponent)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Removing"))
+			CameraSystemComponent->RemoveCameraParameters(CameraParams);
+		}
+	}
 
 	EnableCollision();
 	
@@ -94,14 +107,38 @@ void UAerialCombatComponent::InitializeStateAndVariables(EMovementMode MovementM
 	TotalAirTime = 0.0f;
 	CMC->AirControl = 0.10f;
 	CMC->AirControlBoostMultiplier = 0.10f;
-	
 	DisableCollision();
+
+	//TODO: TempSolution
+	if(CameraParams)
+	{
+		UCameraSystemComponent* CameraSystemComponent = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
+		if(CameraSystemComponent)
+		{
+			for(auto Element : CameraSystemComponent->CameraParamsArray)
+			{
+				if(Element)
+				{
+					if(Element == CameraParams)
+					{
+						return;
+					}
+				}
+			}
+			CameraSystemComponent->AddCameraParameters(CameraParams);
+		}
+	}
 	
 }
 
 void UAerialCombatComponent::EnableComponent(TEnumAsByte<EMovementMode> MovementMode)
 {
 	InitializeStateAndVariables(MovementMode);
+}
+
+void UAerialCombatComponent::DisableComponent(TEnumAsByte<EMovementMode> MovementMode)
+{
+	ClearStateAndVariables();
 }
 
 void UAerialCombatComponent::PrintGravity()

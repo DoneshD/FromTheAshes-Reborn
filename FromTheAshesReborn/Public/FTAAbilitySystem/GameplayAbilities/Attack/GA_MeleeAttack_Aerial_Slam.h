@@ -44,5 +44,8 @@ public:
 
 	virtual void OnMoveComplete() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_OnAttackSlamComplete();
+
 	
 };

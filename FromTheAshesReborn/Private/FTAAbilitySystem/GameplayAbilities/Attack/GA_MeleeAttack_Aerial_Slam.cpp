@@ -134,7 +134,11 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 {
 	Super::OnMoveComplete();
 
+	K2_OnAttackSlamComplete();
+
 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
+
+	GetFTACharacterFromActorInfo()->RemoveAerialEffects();
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(LoopTag);
 	ComboManagerComponent->SetCurrentComboIndex(AbilityAssets.Num() - 1);

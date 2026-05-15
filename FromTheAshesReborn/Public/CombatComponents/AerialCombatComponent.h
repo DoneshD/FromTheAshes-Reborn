@@ -6,6 +6,7 @@
 #include "AerialCombatComponent.generated.h"
 
 
+class UCameraParamsDataAsset;
 class UDownedCombatComponent;
 class UGameplayEffect;
 class UCharacterMovementComponent;
@@ -23,6 +24,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Gravity")
 	TObjectPtr<UCurveFloat> GravityCurve;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Camera")
+	TObjectPtr<UCameraParamsDataAsset> CameraParams;
 	
 
 private:
@@ -58,6 +62,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EnableComponent(TEnumAsByte<EMovementMode> MovementMode);
+
+	UFUNCTION(BlueprintCallable)
+	void DisableComponent(TEnumAsByte<EMovementMode> MovementMode);
 	
 	void DisableCollision();
 	void EnableCollision();

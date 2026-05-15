@@ -26,4 +26,7 @@ public:
 
 	UFUNCTION()
 	void OnSlamComplete();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_OnSlamComplete();
 };
