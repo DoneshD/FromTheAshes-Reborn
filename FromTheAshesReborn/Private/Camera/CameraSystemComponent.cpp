@@ -101,13 +101,13 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		HandleControlRotationParams(DeltaTime);
 	}
 
-	// for(TObjectPtr<UCameraParamsDataAsset> CameraAsset : CameraParamsArray)
-	// {
-	// 	if(CameraAsset)
-	// 	{
-	// 		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CameraAsset->GetName())
-	// 	}
-	// }
+	for(TObjectPtr<UCameraParamsDataAsset> CameraAsset : CameraParamsArray)
+	{
+		if(CameraAsset)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CameraAsset->GetName())
+		}
+	}
 	
 }
 
