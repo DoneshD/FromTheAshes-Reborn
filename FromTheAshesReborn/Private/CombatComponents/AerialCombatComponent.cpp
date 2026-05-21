@@ -67,7 +67,6 @@ void UAerialCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UAerialCombatComponent::ClearStateAndVariables()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Clear"))
 	
 	UCentralStateComponent* CSC = GetOwner()->FindComponentByClass<UCentralStateComponent>();
 	if(CSC)
@@ -86,7 +85,6 @@ void UAerialCombatComponent::ClearStateAndVariables()
 		UCameraSystemComponent* CameraSystemComponent = GetOwner()->FindComponentByClass<UCameraSystemComponent>();
 		if(CameraSystemComponent)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Removing"))
 			CameraSystemComponent->RemoveCameraParameters(CameraParams);
 		}
 	}

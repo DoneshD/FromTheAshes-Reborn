@@ -1,5 +1,6 @@
 #include "FTACustomBase/FTACharacter.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "ContextualAnimSceneActorComponent.h"
 #include "FTAMotionWarpingComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
@@ -296,6 +297,12 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 		return;
 	}
 
+	//TODO: Temp solution
+	if(FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.Effect.Flail")))
+	{
+		PlayAnimMontage(TumbleMontage);
+	}
+	
 	RemoveAerialEffects();
 }
 

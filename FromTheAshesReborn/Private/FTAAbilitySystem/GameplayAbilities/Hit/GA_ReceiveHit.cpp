@@ -174,6 +174,7 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 	if(!HitInfoObject)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::EndAbility - HitInfoObject is Null"));
+		return;
 		
 	}
 

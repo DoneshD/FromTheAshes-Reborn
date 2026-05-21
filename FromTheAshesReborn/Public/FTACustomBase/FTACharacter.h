@@ -49,6 +49,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "TempTag")
 	FGameplayTag TempRushdownLoopTag;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "TempTag")
+	TObjectPtr<UAnimMontage> TumbleMontage;
+
 	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<UFTAAbilitySystemComponent> FTAAbilitySystemComponent;
 
