@@ -398,6 +398,7 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 
 	if(HitData.MoveToLocationData)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Here1"))
 		HitInfoObj->HitData.MoveToLocationData = HitData.MoveToLocationData;
 	}
 	
@@ -472,13 +473,15 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 			return;
 		}
 
-		for (const FHitDataInfo& HitData : AttackAsset->PossibleHitReactions)
+		/*for (const FHitDataInfo& HitData : AttackAsset->PossibleHitReactions)
 		{
 			if (HitData.HitAbilityClass)
 			{
 				CurrentAttackData->PossibleHitReactions.Insert(HitData, 0);
 			}
-		}
+		}*/
+
+		CurrentAttackData->PossibleHitReactions = AttackAsset->PossibleHitReactions;
 	}
 
 	//Hit visuals

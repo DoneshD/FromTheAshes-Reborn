@@ -62,5 +62,4 @@ protected:
 
 	virtual void OnHitAdded(FHitResult LastItem) override;
 
-	void AddRangedOriginCues();
 };

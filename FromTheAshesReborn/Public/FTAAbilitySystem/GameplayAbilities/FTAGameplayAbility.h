@@ -135,6 +135,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (Categories = "QueueTag"))
 	FGameplayTag QueueWindowTag;
 
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input", Meta = (Categories = "QueueTag"))
+	bool IsInputQueueable = true;
+
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input")
 	bool IsLockOnDirectionalInput = false;
 

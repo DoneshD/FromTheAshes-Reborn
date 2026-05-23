@@ -61,7 +61,10 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 
 void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputTag)
 {
-	QueuedInputData.InputTag = InputTag;
+	if(!InputTag.MatchesTag(FGameplayTag::RequestGameplayTag("InputTag.Pressed.Hold.Special")))
+	{
+		QueuedInputData.InputTag = InputTag;
+	}
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(Ability->GetActorInfo().OwnerActor);
 	if (!PS)
 	{
@@ -89,6 +92,11 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 
 			for (UFTAGameplayAbility* FTAAbility : *AbilitiesPtr)
 			{
+				if(!FTAAbility->IsInputQueueable)
+				{
+					continue;
+				}
+				
 				if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))
 				{
 					FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
@@ -165,6 +173,10 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 		{
 			if (FTAAbility)
 			{
+				if(!FTAAbility->IsInputQueueable)
+				{
+					continue;
+				}
 				FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
 
 				if (FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))

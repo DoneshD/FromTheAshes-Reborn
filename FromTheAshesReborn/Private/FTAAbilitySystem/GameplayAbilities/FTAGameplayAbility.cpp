@@ -327,7 +327,7 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		}
 	}
 
-	if(QueueWindowTag.IsValid())
+	if(QueueWindowTag.IsValid() && IsInputQueueable)
 	{
 		WaitInputTagAndQueueWindowEventTask = UAT_WaitInputTagAndQueueWindowEvent::WaitInputTagAndQueueWindowEvent(this);
 		if (WaitInputTagAndQueueWindowEventTask)

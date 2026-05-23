@@ -67,21 +67,36 @@ void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)
 		if(Enemy)
 		{
 			AEnemyBaseCharacter* TargetEnemy = Cast<AEnemyBaseCharacter>(Target);
-			if(TargetEnemy)
+			if(!TargetEnemy)
 			{
 				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 				return;
 			}
+			
 		}
 
 		if (TargetASC)
 		{
-			//Voodoo magic here
+			//Voodoo magic here??
 			LastItem.HitObjectHandle = Target;
 			
 			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
 			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 			{
+				
+				// FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(GetFTACharacterFromActorInfo()->GetActorLocation(),
+				// Target->GetActorLocation());
+				//
+				//
+				// FRotator NewRotation = FMath::RInterpTo(
+				// 	GetFTACharacterFromActorInfo()->GetActorRotation(),
+				// 	LookAtRotation,
+				// 	GetWorld()->GetDeltaSeconds(),
+				// 	5.0
+				// );
+				//
+				// GetFTACharacterFromActorInfo()->SetActorRotation(LookAtRotation);
+				
 				ExecuteHitLogic(TargetHitDataHandle);
 			}
 		}
@@ -90,7 +105,6 @@ void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)
 
 void UGA_RangedAttack::FireShot()
 {
-	AddRangedOriginCues();
 	
 	TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
 	
@@ -179,13 +193,6 @@ void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAss
 		return;
 	}
 	
-	// if(RangedAttackAsset->OriginCueClass && RangedAttackAsset->OriginCueClass->IsValidLowLevel())
-	// {
-	// 	CurrentRangedAttackData->OriginCueClass = RangedAttackAsset->OriginCueClass;
-	// }
-	
-	//Left or right weapon
-	// CurrentRangedAttackData->Hand = RangedAttackAsset->Hand;
 	
 	
 }
@@ -210,27 +217,3 @@ void UGA_RangedAttack::OnHitAdded(FHitResult LastItem)
 	Super::OnHitAdded(LastItem);
 }
 
-void UGA_RangedAttack::AddRangedOriginCues()
-{
-	/*FGameplayCueParameters OriginCueParams;
-	if(CurrentRangedAttackData->OriginCueClass)
-	{
-		URangedOriginCueObject* CueCDO = CurrentRangedAttackData->OriginCueClass->GetDefaultObject<URangedOriginCueObject>();
-		CueCDO->RangedOriginCueInfo.Hand = CurrentRangedAttackData->Hand;
-
-		if(CueCDO)
-		{
-			OriginCueParams.SourceObject = CueCDO;
-			OriginCueParams.EffectCauser = TargetActor;
-			
-			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(CueCDO->RangedOriginCueInfo.OriginCueTag))
-			{
-				K2_AddGameplayCueWithParams(CueCDO->RangedOriginCueInfo.OriginCueTag, OriginCueParams);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - HitCueTag is invalid"));
-			}
-		}
-	}*/
-}
