@@ -23,7 +23,21 @@ void UGA_Recover::OnAbilityTick(float DeltaTime)
 
 bool UGA_Recover::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
-	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
+	if (!Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags))
+	{
+		return false;
+	}
+
+	FGameplayTagContainer RecoverBlockers;
+	RecoverBlockers.AddTag(FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne"));
+	RecoverBlockers.AddTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+
+	if(ActorInfo->AbilitySystemComponent->HasAnyMatchingGameplayTags(RecoverBlockers))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)

@@ -115,10 +115,22 @@ void UDownedCombatComponent::DisableComponent()
 	{
 		EnemyChar->ShouldRotate = true;
 	}
+	
+
+	FGameplayTagContainer RecoverBlockers;
+	RecoverBlockers.AddTag(FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne"));
+	RecoverBlockers.AddTag(FGameplayTag::RequestGameplayTag("AerialCombatTag.EnableComponent"));
+
+	if(FTAAbilitySystemComponent->HasAnyMatchingGameplayTags(RecoverBlockers))
+	{
+		FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
+		FTACharacter->CentralStateComponent->SetCurrentState(FTACharacter->CentralStateComponent->NeutralStateTag);
+		return;
+	}
 
 	FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 	FTACharacter->CentralStateComponent->SetCurrentState(FTACharacter->CentralStateComponent->NeutralStateTag);
-
+	
 	if(PossibleRecoveries[0] && PossibleRecoveries[0]->IsValidLowLevel() && PossibleRecoveries.Num() > 0 && !PossibleRecoveries.IsEmpty())
 	{
 		const UGA_Recover* const CDO = PossibleRecoveries[0]->GetDefaultObject<UGA_Recover>();

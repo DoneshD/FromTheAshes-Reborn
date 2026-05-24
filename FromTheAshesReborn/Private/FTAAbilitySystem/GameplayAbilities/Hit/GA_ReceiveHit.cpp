@@ -180,11 +180,13 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 
 	if(HitInfoObject->HitData.ChainReactions.IsEmpty())
 	{
+		// UE_LOG(LogTemp, Error, TEXT("Empty chain reactions"))
 		return;
 	}
 
 	if (!HitInfoObject->HitData.ChainReactions.IsValidIndex(0))
 	{
+		// UE_LOG(LogTemp, Error, TEXT("Invalid index chain reactions"))
 		return;
 	}
 	
@@ -199,6 +201,7 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 			if(GrantAbilityEffect)
 			{
 				FGameplayEffectSpecHandle GrantAbilityEffectHandle = MakeOutgoingGameplayEffectSpec(*GrantAbilityEffect, 1.0f);
+
 
 				FActiveGameplayEffectHandle AppliedEffects = ApplyGameplayEffectSpecToOwner(
 					CurrentSpecHandle,
