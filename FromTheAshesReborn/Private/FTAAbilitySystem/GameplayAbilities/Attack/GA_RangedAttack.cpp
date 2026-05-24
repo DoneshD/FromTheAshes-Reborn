@@ -23,7 +23,16 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo,
 	const FGameplayEventData* TriggerEventData)
 {
-	CurrentAttackData = DefaultRangedAttackData;
+
+	if(!DefaultRangedAttackData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Default Melee Attack Data must be set"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
+	
+	DefaultRangedAttackData = DuplicateObject<URangedAbilityDataAsset>(DefaultRangedAttackData,this);
+	CurrentAttackData = DuplicateObject<URangedAbilityDataAsset>(DefaultRangedAttackData,this);
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
