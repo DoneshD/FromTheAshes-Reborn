@@ -144,7 +144,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		EndLocation = TargetEndLocation;
 	}
 
-	DrawDebugSphere(
+	/*DrawDebugSphere(b
 	GetWorld(),
 	EndLocation,
 	25.0f,        
@@ -152,7 +152,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	FColor::Green,
 	false,      
 	2.0f          
-	);
+	);*/
 
 	StartLocation = GetAvatarActor()->GetActorLocation();
 

@@ -57,7 +57,7 @@ void UDownedCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	if(IsComponentActive)
 	{
 		TotalDownedTime += DeltaTime;
-		if(TotalDownedTime >= 1.0f)
+		if(TotalDownedTime >= 1.5f)
 		{
 			DisableComponent();
 		}
@@ -151,7 +151,6 @@ void UDownedCombatComponent::DisableComponent()
 			}
 		}
 	}
-			
 	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(GetOwner(), OnRecoverEventData.EventTag, OnRecoverEventData);
 }
