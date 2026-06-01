@@ -91,7 +91,6 @@ void UGA_MeleeAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEvent
 {
 	Super::EventMontageReceived(EventTag, EventData);
 	
-	
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("Event.BeginSlash")))
 	{
 		StartMeleeTrace();

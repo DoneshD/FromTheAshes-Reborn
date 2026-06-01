@@ -23,5 +23,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Ranged")
 	EHand Hand;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	TArray<TSubclassOf<UWeaponCueObject>> MuzzleVisualCueArray;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Fire")
+	TArray<TSubclassOf<UFTASoundCueObject>> MuzzleSoundCueClassArray;
 	
 };

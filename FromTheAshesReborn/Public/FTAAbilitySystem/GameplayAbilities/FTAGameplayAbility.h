@@ -196,8 +196,7 @@ public:
 
 	virtual void InputPressed(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
 	virtual void InputReleased(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) override;
-
-
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void K2_OnInputPressed();
 
@@ -215,8 +214,7 @@ public:
 	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
-
-
+	
 	UFUNCTION(BlueprintCallable)
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets);
 
@@ -242,6 +240,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_EventMontageReceived(FGameplayTag EventTag, FGameplayEventData EventData);
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetCombo();

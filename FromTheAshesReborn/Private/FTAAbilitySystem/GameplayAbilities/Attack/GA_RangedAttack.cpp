@@ -3,7 +3,9 @@
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/RangedAbilityDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
@@ -31,7 +33,7 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 	
-	DefaultRangedAttackData = DuplicateObject<URangedAbilityDataAsset>(DefaultRangedAttackData,this);
+	CurrentRangedAttackData = DuplicateObject<URangedAbilityDataAsset>(DefaultRangedAttackData,this);
 	CurrentAttackData = DuplicateObject<URangedAbilityDataAsset>(DefaultRangedAttackData,this);
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
@@ -59,6 +61,18 @@ void UGA_RangedAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+
+	if(CurrentMuzzleVisualCueCDO)
+	{
+		K2_RemoveGameplayCue(CurrentMuzzleVisualCueCDO->VisualCueTag);
+		CurrentMuzzleVisualCueCDO = nullptr;
+	}
+		
+	if(CurrentMuzzleSoundCueCDO)
+	{
+		K2_RemoveGameplayCue(CurrentMuzzleSoundCueCDO->SoundCueTag);
+		CurrentMuzzleSoundCueCDO = nullptr;
+	}
 }
 
 void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)
@@ -124,6 +138,9 @@ void UGA_RangedAttack::FireShot()
 		UE_LOG(LogTemp, Error, TEXT("Actors are null"));
 		return;
 	}
+
+	CurrentMuzzleVisualCueCDO = AddMuzzleVisualCue();
+	CurrentMuzzleSoundCueCDO = AddMeleeTrailSoundCue();
 	
 	TargetActor = FindNearestTargetToActor(Actors);
 
@@ -131,6 +148,76 @@ void UGA_RangedAttack::FireShot()
 	{
 		RangedTargetFound(TargetActor);
 	}
+}
+
+UWeaponCueObject* UGA_RangedAttack::AddMuzzleVisualCue()
+{
+	FGameplayCueParameters VisualMuzzleCueParams;
+
+	if(!CurrentRangedAttackData->MuzzleVisualCueArray.IsEmpty())
+	{
+		for(TSubclassOf MuzzleVisualCueClass : CurrentRangedAttackData->MuzzleVisualCueArray)
+		{
+			if(MuzzleVisualCueClass)
+			{
+				UWeaponCueObject* MuzzleVisualCueCDO = MuzzleVisualCueClass->GetDefaultObject<UWeaponCueObject>();
+				if(MuzzleVisualCueCDO)
+				{
+					VisualMuzzleCueParams.SourceObject = MuzzleVisualCueCDO;
+					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MuzzleVisualCueCDO->VisualCueTag))
+					{
+						K2_AddGameplayCueWithParams(MuzzleVisualCueCDO->VisualCueTag, VisualMuzzleCueParams);
+						return MuzzleVisualCueCDO;
+					}
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("MuzzleCueCDO visual null"));
+					return nullptr;
+				}
+			}
+		}
+	}
+	else
+	{
+		// UE_LOG(LogTemp, Error, TEXT("Empty null"));
+	}
+	return nullptr;
+}
+
+UFTASoundCueObject* UGA_RangedAttack::AddMeleeTrailSoundCue()
+{
+	FGameplayCueParameters SoundMuzzleCueParams;
+
+	if(!CurrentRangedAttackData->MuzzleSoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf MuzzleSoundCueClass : CurrentRangedAttackData->MuzzleSoundCueClassArray)
+		{
+			if(MuzzleSoundCueClass)
+			{
+				UFTASoundCueObject* MuzzleSoundCueCDO = MuzzleSoundCueClass->GetDefaultObject<UFTASoundCueObject>();
+				if(MuzzleSoundCueCDO)
+				{
+					SoundMuzzleCueParams.SourceObject = MuzzleSoundCueCDO;
+					if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(MuzzleSoundCueCDO->SoundCueTag))
+					{
+						K2_AddGameplayCueWithParams(MuzzleSoundCueCDO->SoundCueTag, SoundMuzzleCueParams);
+						return MuzzleSoundCueCDO;
+					}
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("MuzzleCueCDO sound null"));
+					return nullptr;
+				}
+			}
+		}
+	}
+	else
+	{
+		// UE_LOG(LogTemp, Error, TEXT("Empty null"));
+	}
+	return nullptr;
 }
 
 void UGA_RangedAttack::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
@@ -155,6 +242,7 @@ void UGA_RangedAttack::EventMontageReceived(FGameplayTag EventTag, FGameplayEven
 	if (EventTag == FGameplayTag::RequestGameplayTag(FName("EventTag.FireShot")))
 	{
 		FireShot();
+		
 	}
 }
 
@@ -202,7 +290,63 @@ void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAss
 		return;
 	}
 	
+	if(!RangedAttackAsset->MuzzleVisualCueArray.IsEmpty())
+	{
+		for(TSubclassOf MuzzleVisualCueClass: RangedAttackAsset->MuzzleVisualCueArray)
+		{
+			if(MuzzleVisualCueClass && MuzzleVisualCueClass->IsValidLowLevel())
+			{
+				CurrentRangedAttackData->MuzzleVisualCueArray = RangedAttackAsset->MuzzleVisualCueArray;
+			}
+		}
+	}
+
+	if(!RangedAttackAsset->MuzzleSoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf MuzzleSoundCueClass: RangedAttackAsset->MuzzleSoundCueClassArray)
+		{
+			if(MuzzleSoundCueClass && MuzzleSoundCueClass->IsValidLowLevel())
+			{
+				CurrentRangedAttackData->MuzzleSoundCueClassArray.Add(MuzzleSoundCueClass);
+			}
+		}
+	}
 	
+}
+
+void UGA_RangedAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
+{
+	Super::SetRuntimeAbilityData(InAbilityRuntimeData);
+
+	URangedAbilityDataAsset* RangedAttackAsset = Cast<URangedAbilityDataAsset>(InAbilityRuntimeData);
+
+	if(!RangedAttackAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AttackAsset is null"));
+		return;
+	}
+	
+	if(!RangedAttackAsset->MuzzleVisualCueArray.IsEmpty())
+	{
+		for(TSubclassOf MuzzleVisualCueClass: RangedAttackAsset->MuzzleVisualCueArray)
+		{
+			if(MuzzleVisualCueClass && MuzzleVisualCueClass->IsValidLowLevel())
+			{
+				CurrentRangedAttackData->MuzzleVisualCueArray = RangedAttackAsset->MuzzleVisualCueArray;
+			}
+		}
+	}
+
+	if(!RangedAttackAsset->MuzzleSoundCueClassArray.IsEmpty())
+	{
+		for(TSubclassOf MuzzleSoundCueClass: RangedAttackAsset->MuzzleSoundCueClassArray)
+		{
+			if(MuzzleSoundCueClass && MuzzleSoundCueClass->IsValidLowLevel())
+			{
+				CurrentRangedAttackData->MuzzleSoundCueClassArray.Add(MuzzleSoundCueClass);
+			}
+		}
+	}
 	
 }
 

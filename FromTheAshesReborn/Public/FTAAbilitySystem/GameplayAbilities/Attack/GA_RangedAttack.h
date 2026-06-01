@@ -29,6 +29,12 @@ protected:
 	UPROPERTY()
 	TObjectPtr<URangedAbilityDataAsset> CurrentRangedAttackData;
 
+	UPROPERTY()
+	UWeaponCueObject* CurrentMuzzleVisualCueCDO = nullptr;
+
+	UPROPERTY()
+	UFTASoundCueObject* CurrentMuzzleSoundCueCDO = nullptr;
+
 	
 
 protected:
@@ -43,6 +49,8 @@ protected:
 	void RangedTargetFound(TObjectPtr<AActor> Target);
 
 	void FireShot();
+	UWeaponCueObject* AddMuzzleVisualCue();
+	UFTASoundCueObject* AddMeleeTrailSoundCue();
 
 	virtual void PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage) override;
 	
@@ -55,6 +63,8 @@ protected:
 
 	virtual UFTAAbilityDataAsset* SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets) override;
 	virtual void ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset) override;
+	virtual void SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData) override;
+	
 	virtual void PerformAbility(UFTAAbilityDataAsset* InAbilityAsset) override;
 
 	TArray<AActor*> GetAllActorsOfClass(TSubclassOf<AActor> ActorClass) const;

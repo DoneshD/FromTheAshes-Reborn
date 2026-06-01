@@ -784,7 +784,9 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 			
 			MoveToLocationAndWaitTask->ReadyForActivation();
 		}
-	}	
+	}
+
+	K2_EventMontageReceived(EventTag, EventData);
 }
 
 
