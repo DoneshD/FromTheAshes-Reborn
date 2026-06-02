@@ -171,6 +171,10 @@ public:
 	void AddCharacterBaseAbilities() const;
 
 	virtual void Landed(const FHitResult& Hit) override;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_Landed();
+	
 	virtual void Falling() override;
 	
 	void RemoveAerialEffects();

@@ -304,6 +304,8 @@ void AFTACharacter::Landed(const FHitResult& Hit)
 	}
 	
 	RemoveAerialEffects();
+
+	K2_Landed();
 }
 
 void AFTACharacter::Falling()
