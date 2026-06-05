@@ -3,6 +3,7 @@
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/RangedAbilityDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
@@ -12,6 +13,7 @@
 
 UGA_RangedAttack::UGA_RangedAttack(const FObjectInitializer&)
 {
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("TestTag.Tag5"));
 }
 
 bool UGA_RangedAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -73,6 +75,7 @@ void UGA_RangedAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, const
 		K2_RemoveGameplayCue(CurrentMuzzleSoundCueCDO->SoundCueTag);
 		CurrentMuzzleSoundCueCDO = nullptr;
 	}
+	
 }
 
 void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)

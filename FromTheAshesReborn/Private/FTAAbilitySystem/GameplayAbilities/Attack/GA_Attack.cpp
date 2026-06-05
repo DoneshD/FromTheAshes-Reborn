@@ -19,6 +19,8 @@
 
 UGA_Attack::UGA_Attack(const FObjectInitializer&)
 {
+	ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("TempTag.Attacking"));
+	
 }
 
 void UGA_Attack::OnAbilityTick(float DeltaTime)
@@ -41,6 +43,7 @@ void UGA_Attack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const 
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}
+
 	
 	WeaponActors = GetFTACharacterFromActorInfo()->EquipmentManagerComponent->GetEquippedWeaponActors();
 	

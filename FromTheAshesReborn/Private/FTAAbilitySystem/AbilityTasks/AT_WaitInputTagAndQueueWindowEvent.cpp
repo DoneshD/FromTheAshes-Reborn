@@ -46,13 +46,16 @@ void UAT_WaitInputTagAndQueueWindowEvent::Activate()
 			{
 				if (UTagValidationFunctionLibrary::IsRegisteredGameplayTag(FTAAbility->QueueWindowTag))
 				{
-					TArray<UFTAGameplayAbility*>& Abilities = QueueableAbilities.FindOrAdd(FTAAbility->QueueWindowTag);
-
-					if (!Abilities.Contains(FTAAbility))
+					if(FTAAbility->IsInputQueueable)
 					{
-						Abilities.Add(FTAAbility);
+						TArray<UFTAGameplayAbility*>& Abilities = QueueableAbilities.FindOrAdd(FTAAbility->QueueWindowTag);
+
+						if (!Abilities.Contains(FTAAbility))
+						{
+							Abilities.Add(FTAAbility);
+						}
+						RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
 					}
-					RegisterQueueWindowTagEvent(FTAAbility->QueueWindowTag);
 				}
 			}
 		}
@@ -65,6 +68,7 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 	{
 		QueuedInputData.InputTag = InputTag;
 	}
+	
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(Ability->GetActorInfo().OwnerActor);
 	if (!PS)
 	{

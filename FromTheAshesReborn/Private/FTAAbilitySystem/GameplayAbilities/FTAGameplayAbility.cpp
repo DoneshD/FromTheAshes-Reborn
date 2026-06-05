@@ -786,6 +786,13 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 		}
 	}
 
+	if (EventTag == FGameplayTag::RequestGameplayTag(FName("TempTag.ElegyRequiem.DeactivateState")))
+	{
+		FGameplayTagContainer CancelTags;
+		CancelTags.AddTag(FGameplayTag::RequestGameplayTag("GameplayAbilityTag.Weapon.ElegyRequiem.ActivateState"));
+		GetFTAAbilitySystemComponentFromActorInfo()->CancelAbilities(&CancelTags);
+	}
+
 	K2_EventMontageReceived(EventTag, EventData);
 }
 

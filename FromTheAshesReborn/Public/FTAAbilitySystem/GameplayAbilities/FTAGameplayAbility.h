@@ -78,6 +78,12 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
 	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
+	FGameplayTagContainer RequiredTags;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
+	FGameplayTagContainer BlockingTags;
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Input")
 	bool bActivateAbilityOnGranted;
