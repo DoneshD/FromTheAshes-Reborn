@@ -195,6 +195,16 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 
 	UFTAAbilitySystemComponent* FTAASC = CastChecked<UFTAAbilitySystemComponent>(ActorInfo->AbilitySystemComponent.Get());
 
+	if(FTAASC->HasAnyMatchingGameplayTags(BlockingTags))
+	{
+		return false;
+	}
+
+	if(!FTAASC->HasAllMatchingGameplayTags(RequiredTags))
+	{
+		return false;
+	}
+
 	bool bHasActiveAbilities = false;
 
 	for (const FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
@@ -261,7 +271,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		{
 			FLockOnAngleResult AngleResult = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
 			ELockOnInputOrientationDirection InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleResult);
-
+			
 			if(InputDirection != LockOnInputDirection)
 			{
 				return false;
@@ -272,6 +282,7 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 			return false;
 		}
 	}
+
 	return true;
 }
 

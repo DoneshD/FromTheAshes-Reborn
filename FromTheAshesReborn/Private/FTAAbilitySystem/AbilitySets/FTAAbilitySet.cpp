@@ -70,31 +70,46 @@ UFTAAbilitySet::UFTAAbilitySet(const FObjectInitializer& ObjectInitializer)
 
 void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFTAAbilitySet_GrantedHandles* OutGrantedHandles, UObject* SourceObject) const
 {
-	if(!FTAASC)
+	if (!FTAASC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AFTACharacter::InitAbilitySystemComponent - FTAASC is invalid"))
+		UE_LOG(LogTemp, Error, TEXT("AFTACharacter::InitAbilitySystemComponent - FTAASC is invalid"));
 		return;
 	}
-	
-	for (int32 AbilityIndex = 0; AbilityIndex < GrantedGameplayAbilities.Num(); ++AbilityIndex)
+
+	TArray<FFTAAbilitySet_GameplayAbility> SortedAbilities = GrantedGameplayAbilities;
+
+	SortedAbilities.StableSort([](const FFTAAbilitySet_GameplayAbility& A, const FFTAAbilitySet_GameplayAbility& B)
 	{
-		const FFTAAbilitySet_GameplayAbility& AbilityToGrant = GrantedGameplayAbilities[AbilityIndex];
-	
+		return A.Priority > B.Priority;
+	});
+
+	for (int32 AbilityIndex = 0; AbilityIndex < SortedAbilities.Num(); ++AbilityIndex)
+	{
+		const FFTAAbilitySet_GameplayAbility& AbilityToGrant = SortedAbilities[AbilityIndex];
+
 		if (!IsValid(AbilityToGrant.Ability))
 		{
-			UE_LOG(LogTemp, Error, TEXT("GrantedGameplayAbilities[%d] on ability set [%s] is not valid."), AbilityIndex, *GetNameSafe(this));
+			UE_LOG(LogTemp, Error,
+				TEXT("GrantedGameplayAbilities[%d] on ability set [%s] is not valid."),
+				AbilityIndex,
+				*GetNameSafe(this));
 			continue;
 		}
-	
+
 		UFTAGameplayAbility* AbilityCDO = AbilityToGrant.Ability->GetDefaultObject<UFTAGameplayAbility>();
-	
+
+		UE_LOG(LogTemp, Warning,
+			TEXT("Ability name: %s | Priority: %d"),
+			*AbilityCDO->GetName(),
+			AbilityToGrant.Priority);
+
 		FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilityToGrant.AbilityLevel);
 		AbilitySpec.SourceObject = SourceObject;
 		AbilitySpec.GetDynamicSpecSourceTags().AddTag(AbilityToGrant.InputTag);
 		AbilitySpec.GetDynamicSpecSourceTags().AddTag(AbilityToGrant.DefaultActivationGroupTag);
-	
+
 		const FGameplayAbilitySpecHandle AbilitySpecHandle = FTAASC->GiveAbility(AbilitySpec);
-	
+
 		if (OutGrantedHandles)
 		{
 			OutGrantedHandles->AddAbilitySpecHandle(AbilitySpecHandle);

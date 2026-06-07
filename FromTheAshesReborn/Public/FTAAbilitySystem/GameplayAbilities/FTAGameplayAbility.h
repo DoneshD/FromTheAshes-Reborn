@@ -66,6 +66,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General", Meta = (Categories = "GameplayAbilityTag"))
 	FGameplayTag UniqueIdentifierTag;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
+	int Priority = 0;
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
 	bool NonMontageAbility = false;

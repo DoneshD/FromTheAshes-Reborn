@@ -6,6 +6,7 @@
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
+#include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 
 UFTAAbilitySystemComponent::UFTAAbilitySystemComponent(const FObjectInitializer& ObjectInitializer) :
 	Super(ObjectInitializer)
@@ -70,6 +71,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 {
 	const bool BlockingAbilityActive = CurrentlyActiveAbilityOfActivationGroup(ActivationBlockingTag);
 	const bool ReplaceableAbilityActive = CurrentlyActiveAbilityOfActivationGroup(ActivationReplaceableTag);
+
 	
 	if(BlockingAbilityActive || ReplaceableAbilityActive)
 	{
@@ -87,12 +89,41 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		{
 			if (AbilitySpec.Ability && (AbilitySpec.GetDynamicSpecSourceTags().HasTagExact(InputTag)))
 			{
+				
 				InputPressedSpecHandles.AddUnique(AbilitySpec.Handle);
 				InputHeldSpecHandles.AddUnique(AbilitySpec.Handle);
 			}
 		}
 	}
-	
+
+	for (const FGameplayAbilitySpecHandle& Handle : InputPressedSpecHandles)
+	{
+		if (const FGameplayAbilitySpec* Spec = FindAbilitySpecFromHandle(Handle))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *Spec->Ability->GetName());
+		}
+	}
+
+	InputPressedSpecHandles.Sort([this](const FGameplayAbilitySpecHandle& A, const FGameplayAbilitySpecHandle& B)
+		{
+			const FGameplayAbilitySpec* SpecA = FindAbilitySpecFromHandle(A);
+			const FGameplayAbilitySpec* SpecB = FindAbilitySpecFromHandle(B);
+
+			if (!SpecA || !SpecB)
+			{
+				return false;
+			}
+
+			const UFTAGameplayAbility* AbilityA = Cast<UFTAGameplayAbility>(SpecA->Ability);
+			const UFTAGameplayAbility* AbilityB = Cast<UFTAGameplayAbility>(SpecB->Ability);
+
+			if (!AbilityA || !AbilityB)
+			{
+				return false;
+			}
+
+			return AbilityA->Priority > AbilityB->Priority;
+		});
 }
 
 void UFTAAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& InputTag)
@@ -150,7 +181,7 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 			}
 		}
 	}
-	
+
 	for (const FGameplayAbilitySpecHandle& SpecHandle : InputPressedSpecHandles)
 	{
 		if(FGameplayAbilitySpec* AbilitySpec = FindAbilitySpecFromHandle(SpecHandle))
@@ -175,7 +206,11 @@ void UFTAAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGame
 			}
 		}
 	}
+	
+	// UE_LOG(LogTemp, Warning, TEXT("Num: %d"), AbilitiesToActivate.Num());
 
+	
+	
 	for (const FGameplayAbilitySpecHandle& AbilitySpecHandle : AbilitiesToActivate)
 	{
 		TryActivateAbility(AbilitySpecHandle);

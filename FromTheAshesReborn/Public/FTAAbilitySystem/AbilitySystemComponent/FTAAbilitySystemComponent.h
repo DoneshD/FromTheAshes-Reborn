@@ -54,6 +54,8 @@ protected:
 	TArray<FGameplayAbilitySpecHandle> InputReleasedSpecHandles;
 	TArray<FGameplayAbilitySpecHandle> InputHeldSpecHandles;
 
+	TArray<FGameplayAbilitySpecHandle> SortedInputPressedSpecHandles;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Queue")
 	FGameplayTag QueuedInputTag;
 
