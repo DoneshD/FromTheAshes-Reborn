@@ -5,6 +5,21 @@
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 #include "AT_WaitInputTagAndQueueWindowEvent.generated.h"
 
+class UFTAGameplayAbility;
+
+USTRUCT()
+struct FAbilityCandidate
+{
+	GENERATED_BODY()
+
+public:
+	
+	UPROPERTY()
+	UFTAGameplayAbility* Ability = nullptr;
+
+	UPROPERTY()
+	int32 Priority = 0;
+};
 
 USTRUCT()
 struct FQueuedInputData
@@ -59,5 +74,7 @@ protected:
 	void RegisterQueueWindowTagEvent(FGameplayTag QueueWindowTag);
 	void RemoveQueueWindowTagEvent(FGameplayTag QueueWindowTag);
 	void OnQueueWindowTagChanged(const FGameplayTag QueueWindowTag, int32 NewCount);
+
+	bool TryActivateBestCandidate(TArray<FAbilityCandidate>& Candidates);
 	
 };

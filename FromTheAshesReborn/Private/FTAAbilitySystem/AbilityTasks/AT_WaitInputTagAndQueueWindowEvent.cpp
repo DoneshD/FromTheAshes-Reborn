@@ -83,7 +83,8 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 		QueuedInputData.Direction = InputDirection;
 	}
 	
-
+	TArray<FAbilityCandidate> Candidates;
+	
 	for (const auto& Pair : QueueableAbilities)
 	{
 		const FGameplayTag& WindowTag = Pair.Key;
@@ -96,47 +97,43 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnInputTagReceived(FGameplayTag InputT
 
 			for (UFTAGameplayAbility* FTAAbility : *AbilitiesPtr)
 			{
+				if(!FTAAbility)
+				{
+					continue;
+				}
+				
 				if(!FTAAbility->IsInputQueueable)
 				{
 					continue;
 				}
 				
-				if (FTAAbility && FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))
+				if (!FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))
 				{
-					FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
+					continue;
+				}
 
-					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
+				if(FTAAbility->IsLockOnDirectionalInput)
+				{
+					if(FTAAbility->LockOnInputDirection != QueuedInputData.Direction)
 					{
-						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
-					}
-
-					/*UE_LOG(LogTemp, Warning, TEXT("FTAAbility->LockOnInputDirection: %s"),
-					*StaticEnum<ELockOnInputOrientationDirection>()->GetNameStringByValue((int64)FTAAbility->LockOnInputDirection));
-					
-					UE_LOG(LogTemp, Warning, TEXT("QueuedInputData.Direction: %s"),
-					*StaticEnum<ELockOnInputOrientationDirection>()->GetNameStringByValue((int64)QueuedInputData.Direction));*/
-					if(FTAAbility->IsLockOnDirectionalInput)
-					{
-						if(FTAAbility->LockOnInputDirection != QueuedInputData.Direction)
-						{
-							continue;
-						}
-					}
-
-					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
-					if (bIsActivated)
-					{
-						
-						QueuedInputData.InputTag = FGameplayTag::EmptyTag;
-						EndTask();
-					}
-					else
-					{
+						continue;
 					}
 				}
+				
+				// if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
+				// {
+				// 	FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
+				// }
+
+				FAbilityCandidate Candidate;
+				Candidate.Ability = FTAAbility;
+				Candidate.Priority = FTAAbility->ActivationPriority;
+
+				Candidates.Add(Candidate);
 			}
 		}
 	}
+	TryActivateBestCandidate(Candidates);
 }
 
 
@@ -173,43 +170,48 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 
 	if (NewCount > 0 && FTAASC->HasMatchingGameplayTag(QueueWindowTag))
 	{
+		TArray<FAbilityCandidate> Candidates;
+		
 		for (UFTAGameplayAbility* FTAAbility : *AbilitiesPtr)
 		{
-			if (FTAAbility)
+			if(!FTAAbility)
 			{
-				if(!FTAAbility->IsInputQueueable)
+				continue;
+			}
+				
+			if(!FTAAbility->IsInputQueueable)
+			{
+				continue;
+			}
+				
+			if (!FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))
+			{
+				continue;
+			}
+
+			if(FTAAbility->IsLockOnDirectionalInput)
+			{
+				if(FTAAbility->LockOnInputDirection != QueuedInputData.Direction)
 				{
 					continue;
 				}
-				FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
-
-				if (FTAAbility->InputTag.MatchesTag(QueuedInputData.InputTag))
-				{
-					if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
-					{
-						FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
-					}
-
-					if(FTAAbility->IsLockOnDirectionalInput)
-					{
-						if(FTAAbility->LockOnInputDirection != QueuedInputData.Direction)
-						{
-							continue;
-						}
-					}
-					
-					bool bIsActivated = FTAASC->TryActivateAbilityByClass(FTAAbility->GetClass());
-					if (bIsActivated)
-					{
-						QueuedInputData.InputTag = FGameplayTag::EmptyTag;
-						EndTask();
-					}
-					else
-					{
-					}
-				}
 			}
+				
+			// if (FTAASC->IsAbilityActive(FTAAbility->GetClass()))
+			// {
+			// 	FTAASC->CancelAbilityByClass(FTAAbility->GetClass());
+			// }
+			
+			// FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), FTAAbility);
+
+			FAbilityCandidate Candidate;
+			Candidate.Ability = FTAAbility;
+			Candidate.Priority = FTAAbility->ActivationPriority;
+
+			Candidates.Add(Candidate);
 		}
+		TryActivateBestCandidate(Candidates);
+		
 	}
 	else
 	{
@@ -221,6 +223,45 @@ void UAT_WaitInputTagAndQueueWindowEvent::OnQueueWindowTagChanged(const FGamepla
 			}
 		}
 	}
+}
+
+bool UAT_WaitInputTagAndQueueWindowEvent::TryActivateBestCandidate(TArray<FAbilityCandidate>& Candidates)
+{
+	if (Candidates.Num() == 0)
+	{
+		return false;
+	}
+
+	Candidates.Sort([](const FAbilityCandidate& A, const FAbilityCandidate& B)
+	{
+		return A.Priority > B.Priority;
+	});
+
+	for(auto Element : Candidates)
+	{
+		if(Element.Ability)
+		{
+			FTAASC->ChangeToActivationGroup(FGameplayTag::RequestGameplayTag("ActivationGroupTag.Exclusive.Replaceable"), Element.Ability);
+
+			if (FTAASC->IsAbilityActive(Element.Ability->GetClass()))
+			{
+				FTAASC->CancelAbilityByClass(Element.Ability->GetClass());
+			}
+
+			bool bActivated = FTAASC->TryActivateAbilityByClass(Element.Ability->GetClass());
+
+			if (bActivated)
+			{
+				QueuedInputData.InputTag = FGameplayTag::EmptyTag;
+				EndTask();
+				return true;
+			}
+		}
+		
+	}
+	
+
+	return false;
 }
 
 void UAT_WaitInputTagAndQueueWindowEvent::ExternalCancel()

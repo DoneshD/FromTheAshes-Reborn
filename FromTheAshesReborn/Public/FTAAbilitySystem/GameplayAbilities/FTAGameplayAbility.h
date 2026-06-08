@@ -67,8 +67,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General", Meta = (Categories = "GameplayAbilityTag"))
 	FGameplayTag UniqueIdentifierTag;
 
-	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
-	int Priority = 0;
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "General")
 	bool NonMontageAbility = false;
@@ -81,7 +79,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
 	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
-
+	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
 	FGameplayTagContainer RequiredTags;
 
@@ -134,6 +132,9 @@ protected:
 	FDelegateHandle AdjustFOVDelegateHandle;
 
 public:
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
+	int ActivationPriority = 0;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement", meta=(EditCondition="EnableManualMovement"))
 	TObjectPtr<UMoveToLocationDataAsset> DefaultMoveToLocationDataAsset;

@@ -97,11 +97,7 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 		}
 
 		UFTAGameplayAbility* AbilityCDO = AbilityToGrant.Ability->GetDefaultObject<UFTAGameplayAbility>();
-
-		UE_LOG(LogTemp, Warning,
-			TEXT("Ability name: %s | Priority: %d"),
-			*AbilityCDO->GetName(),
-			AbilityToGrant.Priority);
+		
 
 		FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilityToGrant.AbilityLevel);
 		AbilitySpec.SourceObject = SourceObject;

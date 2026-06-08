@@ -96,14 +96,6 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 		}
 	}
 
-	for (const FGameplayAbilitySpecHandle& Handle : InputPressedSpecHandles)
-	{
-		if (const FGameplayAbilitySpec* Spec = FindAbilitySpecFromHandle(Handle))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Spec->Ability->GetName());
-		}
-	}
-
 	InputPressedSpecHandles.Sort([this](const FGameplayAbilitySpecHandle& A, const FGameplayAbilitySpecHandle& B)
 		{
 			const FGameplayAbilitySpec* SpecA = FindAbilitySpecFromHandle(A);
@@ -122,7 +114,7 @@ void UFTAAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& Inpu
 				return false;
 			}
 
-			return AbilityA->Priority > AbilityB->Priority;
+			return AbilityA->ActivationPriority > AbilityB->ActivationPriority;
 		});
 }
 
