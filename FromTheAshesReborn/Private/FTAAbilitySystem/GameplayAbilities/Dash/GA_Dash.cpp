@@ -59,7 +59,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	}
 
 	TObjectPtr<UDashAbilityDataAsset> MatchingDataAsset;
-	bool DataAssetFound = FindMatchingDashAssetToInputDirection(DashAbilityAssets, MatchingDataAsset, InputDirection);
+	bool DataAssetFound = FindMatchingDashAssetToInputDirection(AbilityAssets, MatchingDataAsset, InputDirection);
 
 	if(!DataAssetFound)
 	{

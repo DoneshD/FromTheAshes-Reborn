@@ -406,14 +406,17 @@ void UCameraSystemComponent::ResolveTargetControlRotation()
 			{
 				return;
 			}
-			
-			if(TargetingSystemComponent->GetLockedOnTargetActor())
+
+			if(TargetingSystemComponent)
 			{
-				CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = false;
-			}
-			else
-			{
-				CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = true;
+				if(TargetingSystemComponent->GetLockedOnTargetActor())
+				{
+					CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = false;
+				}
+				else
+				{
+					CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = true;
+				}
 			}
 			// CurrentCameraStateParams->ControlRotationParams.UseControllerRotation = CameraParamsAsset->ControlRotationParams.UseControllerRotation;
 			
