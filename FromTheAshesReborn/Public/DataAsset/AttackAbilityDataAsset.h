@@ -46,6 +46,5 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Hit | Effects")
 	TArray<TSubclassOf<UFTASoundCueObject>> HitEnemySoundCueClassArray;
-
-
+	
 };

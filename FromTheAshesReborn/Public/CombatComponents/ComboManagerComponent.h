@@ -8,6 +8,7 @@
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 #include "ComboManagerComponent.generated.h"
 
+class UDashAbilityDataAsset;
 class URangedAbilityDataAsset;
 class UHitReactionDataAsset;
 struct FMeleeAttackForms;
@@ -60,6 +61,7 @@ public:
 	void SetCurrentComboIndex(int Index);
 	
 	TObjectPtr<UFTAAbilityDataAsset> GetMeleeAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets);
+	TObjectPtr<UDashAbilityDataAsset> GetDashAssetByRequirements(TArray<UDashAbilityDataAsset*> DashAssets, ELockOnInputOrientationDirection InputDirection);
 	TObjectPtr<UHitReactionDataAsset> GetHitAssetByRequirements(TArray<UHitReactionDataAsset*> InHitAssets, const UHitEventObject* InHitObject);
 	TObjectPtr<UFTAAbilityDataAsset> GetRangedAssetByRequirements(TArray<UFTAAbilityDataAsset*> AbilityAssets);
 	

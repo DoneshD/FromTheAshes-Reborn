@@ -1,6 +1,7 @@
 ﻿#include "CombatComponents/ComboManagerComponent.h"
 
 #include "DataAsset/AttackAbilityDataAsset.h"
+#include "DataAsset/DashAbilityDataAsset.h"
 #include "DataAsset/FTAAbilityDataAsset.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
@@ -114,6 +115,23 @@ TObjectPtr<UFTAAbilityDataAsset> UComboManagerComponent::GetMeleeAssetByRequirem
 	GetCurrentComboContainer().Reset();
 	SetCurrentComboIndex(0);
 	return AbilityAssets[0];
+}
+
+TObjectPtr<UDashAbilityDataAsset> UComboManagerComponent::GetDashAssetByRequirements(
+	TArray<UDashAbilityDataAsset*> DashAssets, ELockOnInputOrientationDirection InputDirection)
+{
+	for (UDashAbilityDataAsset* CurrentAsset : DashAssets)
+	{
+		if (CurrentAsset)
+		{
+			if (CurrentAsset->DashDirection == InputDirection)
+			{
+				return CurrentAsset;
+			}
+		}
+	}
+	return nullptr;
+
 }
 
 TObjectPtr<UHitReactionDataAsset> UComboManagerComponent::GetHitAssetByRequirements(TArray<UHitReactionDataAsset*> InHitAssets, const UHitEventObject* InHitObject)

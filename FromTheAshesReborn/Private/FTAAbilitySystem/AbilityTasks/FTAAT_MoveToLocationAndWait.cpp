@@ -103,7 +103,6 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 			if(PlayerController)
 			{
 				AFTAPlayerState* FTAPlayerState = PlayerController->GetFTAPlayerState();
-				TargetEndLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation();
 
 				TargetEndLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation()
 				+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.RelativeOffsetVector.X
@@ -167,6 +166,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	{
 		AdjustedDuration = MoveToLocationData->LocationData.Duration;
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Name:%s"), *MoveToLocationData->GetName())
 }
 
 void UFTAAT_MoveToLocationAndWait::ExternalCancel()

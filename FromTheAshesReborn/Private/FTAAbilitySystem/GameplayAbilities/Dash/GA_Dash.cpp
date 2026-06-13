@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Dash/GA_Dash.h"
 
 #include "CombatComponents/ComboManagerComponent.h"
+
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -17,13 +18,6 @@ UGA_Dash::UGA_Dash()
 void UGA_Dash::OnAbilityTick(float DeltaTime)
 {
 	Super::OnAbilityTick(DeltaTime);
-
-	if(IsDashing)
-	{
-		UpdateDashMovement(DeltaTime);
-	}
-
-	TempDashTick(DeltaTime);
 	
 }
 
@@ -46,49 +40,24 @@ bool UGA_Dash::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 
 void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-
-	ELockOnInputOrientationDirection InputDirection = ELockOnInputOrientationDirection::Forward;
-
 	AFTAPlayerState* PS = Cast<AFTAPlayerState>(ActorInfo->OwnerActor.Get());
 
-	if(PS->HardLockedTargetActor)
+	if(PS)
 	{
-		FLockOnAngleResult AngleResult = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
-		InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleResult);
+		if(PS->HardLockedTargetActor)
+		{
+			FLockOnAngleResult AngleResult = ULockOnFunctionLibrary::AngleFromInputVectorToLockedTarget(ActorInfo->AvatarActor.Get(), PS->HardLockedTargetActor);
+			InputDirection = ULockOnFunctionLibrary::GetOrientationOfInput(AngleResult);
+		}	
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UGA_Dash::ActivateAbility - Player state null"))
 	}
 
-	TObjectPtr<UDashAbilityDataAsset> MatchingDataAsset;
-	bool DataAssetFound = FindMatchingDashAssetToInputDirection(AbilityAssets, MatchingDataAsset, InputDirection);
-
-	if(!DataAssetFound)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Dash Asset not found"))
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
+	CurrentDashData = DuplicateObject<UDashAbilityDataAsset>(DefaultDashData,this);
 	
-	
-	DashElapsedTime = 0.0f;
-	DashStartTime = GetWorld()->GetTimeSeconds();
-
-	FVector InputDir = UInputReadingFunctionLibrary::CheckInputVector(GetFTACharacterFromActorInfo()->GetCharacterMovement());
-
-	DashStartLocation = ActorInfo->AvatarActor->GetActorLocation();
-	DashEndLocation = ActorInfo->AvatarActor->GetActorLocation() + (InputDir * DashDistance);
-
-	// IsDashing = true;
-
-	DashTag = MatchingDataAsset->UniqueIdentifierTag;
-
-	if(!GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashTag))
-	{
-		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(DashTag);
-	}
-
-	PlayAbilityAnimMontage(MatchingDataAsset->MontageToPlay);
-
-	GetFTACharacterFromActorInfo()->SetActorRotation(InputDir.Rotation());
+	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
 }
 
@@ -101,49 +70,13 @@ void UGA_Dash::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGam
 void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-
-	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(DashTag))
-	{
-		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(DashTag);
-	}
+	
 	
 }
 
-void UGA_Dash::UpdateDashMovement(float DeltaTime)
+void UGA_Dash::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 {
-	DashElapsedTime += DeltaTime;
-
-	const float Alpha = FMath::Clamp(DashElapsedTime / DashDuration, 0.0f, 1.0f);
-	const FVector NewLocation = FMath::Lerp(DashStartLocation, DashEndLocation, Alpha);
-
-	FHitResult Hit;
-	CurrentActorInfo->AvatarActor->SetActorLocation(NewLocation, true, &Hit);
-
-	if (Alpha >= 1.0f || Hit.bBlockingHit)
-	{
-		DashLocationReached();
-	}
-}
-
-void UGA_Dash::DashLocationReached()
-{
-	IsDashing = false;
-}
-
-bool UGA_Dash::FindMatchingDashAssetToInputDirection(const TArray<UDashAbilityDataAsset*>& DashAbilityDataAssets, TObjectPtr<UDashAbilityDataAsset>& OutMatchingAbilityDataAsset, ELockOnInputOrientationDirection InputDirection)
-{
-	for (UDashAbilityDataAsset* CurrentAsset : DashAbilityDataAssets)
-	{
-		if (CurrentAsset)
-		{
-			if (CurrentAsset->DashDirection == InputDirection)
-			{
-				OutMatchingAbilityDataAsset = CurrentAsset;
-				return true;
-			}
-		}
-	}
-	return false;
+	Super::PlayAbilityAnimMontage(AnimMontage);
 }
 
 void UGA_Dash::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
@@ -168,4 +101,58 @@ void UGA_Dash::EventMontageReceived(FGameplayTag EventTag, FGameplayEventData Ev
 {
 	Super::EventMontageReceived(EventTag, EventData);
 	
+}
+
+UFTAAbilityDataAsset* UGA_Dash::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
+{
+	Super::SelectAbilityAsset(InAbilityAssets);
+
+	TArray<UDashAbilityDataAsset*> DashDataAssets;
+
+	for (UFTAAbilityDataAsset* Asset : InAbilityAssets)
+	{
+		if (UDashAbilityDataAsset* DashAsset = Cast<UDashAbilityDataAsset>(Asset))
+		{
+			DashDataAssets.Add(DashAsset);
+		}
+	}
+
+	if(TObjectPtr<UDashAbilityDataAsset> AbilityDataAsset = ComboManagerComponent->GetDashAssetByRequirements(DashDataAssets, InputDirection))
+	{
+		return AbilityDataAsset;
+	}
+	return nullptr;
+}
+
+void UGA_Dash::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
+{
+	Super::ExtractAssetProperties(InAbilityAsset);
+
+	UDashAbilityDataAsset* DashAsset = Cast<UDashAbilityDataAsset>(InAbilityAsset);
+
+	if(DashAsset)
+	{
+		if(DashAsset->DashMoveToLocationDataAsset)
+		{
+			CurrentMoveToLocationAsset = DashAsset->DashMoveToLocationDataAsset;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Here 2"))
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Here 1"))
+	}
+}
+
+void UGA_Dash::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeData)
+{
+	Super::SetRuntimeAbilityData(InAbilityRuntimeData);
+}
+
+void UGA_Dash::PerformAbility(UFTAAbilityDataAsset* InAbilityAsset)
+{
+	Super::PerformAbility(InAbilityAsset);
 }

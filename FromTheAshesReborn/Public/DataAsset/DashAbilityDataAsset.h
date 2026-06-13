@@ -5,6 +5,7 @@
 #include "DashAbilityDataAsset.generated.h"
 
 
+class UMoveToLocationDataAsset;
 enum class ELockOnInputOrientationDirection : uint8;
 
 UCLASS()
@@ -16,4 +17,7 @@ public:
 	//TODO: Change later
 	UPROPERTY(EditDefaultsOnly)
 	ELockOnInputOrientationDirection DashDirection;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Dash | Movement")
+	TObjectPtr<UMoveToLocationDataAsset> DashMoveToLocationDataAsset;
 };
