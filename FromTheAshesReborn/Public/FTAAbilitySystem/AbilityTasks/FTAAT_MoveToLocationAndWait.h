@@ -64,8 +64,8 @@ protected:
 	virtual void OnDestroy(bool AbilityEnded) override;
 
 	void UpdateLocation(float DeltaTime);
-	void UpdateQuarterLocation(float DeltaTime);
-	
 	void LocationReached();
+	
+	void UpdateQuarterLocation(float DeltaTime);
 	void QuarterMovement();
 };

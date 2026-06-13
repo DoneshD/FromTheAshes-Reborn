@@ -64,7 +64,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		return;
 	}
 
-	
+	IsMoving = true;
 
 	ElapsedTime = 0.0f;
 	StartTime = GetWorld()->GetTimeSeconds();
@@ -107,6 +107,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 			if(PlayerController)
 			{
 				AFTAPlayerState* FTAPlayerState = PlayerController->GetFTAPlayerState();
+				TargetEndLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation();
 
 				TargetEndLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation()
 				+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.RelativeOffsetVector.X
@@ -171,15 +172,10 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		AdjustedDuration = MoveToLocationData->LocationData.Duration;
 	}
 
-	
 	if(MoveToLocationData->QuarterCircle)
 	{
 		QuarterMovement();
 	}
-	
-	IsMoving = true;
-	
-	
 }
 
 void UFTAAT_MoveToLocationAndWait::ExternalCancel()
@@ -198,15 +194,11 @@ void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 
 	MoveToLocationData->LocationData.EndLocationVector = FVector::ZeroVector;
 	MoveToLocationData->LocationData.RelativeOffsetVector = FVector::ZeroVector;
-	QuarterLocationArray.Empty();
-	EndIndex = 0;
-	
 }
 void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 {
 	ElapsedTime += DeltaTime;
 
-	EndLocation = GetAvatarActor()->GetActorLocation();
 	const float Alpha = FMath::Clamp(ElapsedTime / AdjustedDuration, 0.0f, 1.0f);
 	const FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
 
@@ -219,6 +211,24 @@ void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 	{
 		LocationReached();
 	}
+}
+
+void UFTAAT_MoveToLocationAndWait::LocationReached()
+{
+	CMC->Velocity.Z = 0.0f;
+	CMC->GravityScale = 1.0f;
+
+	if(MoveToLocationData->EnableAerialCombat)
+	{
+		UAerialCombatComponent* ACC = FTAChar->FindComponentByClass<UAerialCombatComponent>();
+		if(ACC)
+		{
+			ACC->EnableComponent(MoveToLocationData->PostMovementMode);
+		}
+	}
+	
+	OnMoveCompleted.Broadcast();
+	EndTask();
 }
 
 void UFTAAT_MoveToLocationAndWait::UpdateQuarterLocation(float DeltaTime)
@@ -256,25 +266,6 @@ void UFTAAT_MoveToLocationAndWait::UpdateQuarterLocation(float DeltaTime)
 		}
 	}
 	
-}
-
-void UFTAAT_MoveToLocationAndWait::LocationReached()
-{
-	IsMoving = false;
-	CMC->Velocity.Z = 0.0f;
-	CMC->GravityScale = 1.0f;
-
-	if(MoveToLocationData->EnableAerialCombat)
-	{
-		UAerialCombatComponent* ACC = FTAChar->FindComponentByClass<UAerialCombatComponent>();
-		if(ACC)
-		{
-			ACC->EnableComponent(MoveToLocationData->PostMovementMode);
-		}
-	}
-	
-	OnMoveCompleted.Broadcast();
-	EndTask();
 }
 
 void UFTAAT_MoveToLocationAndWait::QuarterMovement()
@@ -316,5 +307,4 @@ void UFTAAT_MoveToLocationAndWait::QuarterMovement()
 			}
 		}
 	}
-	
 }
