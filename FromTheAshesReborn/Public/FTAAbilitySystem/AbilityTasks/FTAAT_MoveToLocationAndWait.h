@@ -38,6 +38,12 @@ protected:
 
 	float AdjustedDuration;
 
+	int NumberOfPartitions = 5;
+	float Angle = 90.0f;
+
+	TArray<FVector> QuarterLocationArray;
+	int EndIndex = 0;
+
 	UPROPERTY()
 	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationData;
 
@@ -58,5 +64,8 @@ protected:
 	virtual void OnDestroy(bool AbilityEnded) override;
 
 	void UpdateLocation(float DeltaTime);
+	void UpdateQuarterLocation(float DeltaTime);
+	
 	void LocationReached();
+	void QuarterMovement();
 };

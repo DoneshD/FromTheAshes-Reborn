@@ -28,6 +28,10 @@ void UFTAAT_MoveToLocationAndWait::TickTask(float DeltaTime)
 	{
 		UpdateLocation(DeltaTime);
 	}
+	if(MoveToLocationData->QuarterCircle)
+	{
+		UpdateQuarterLocation(DeltaTime);
+	}
 }
 
 void UFTAAT_MoveToLocationAndWait::Activate()
@@ -60,7 +64,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 		return;
 	}
 
-	IsMoving = true;
+	
 
 	ElapsedTime = 0.0f;
 	StartTime = GetWorld()->GetTimeSeconds();
@@ -166,7 +170,16 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	{
 		AdjustedDuration = MoveToLocationData->LocationData.Duration;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Name:%s"), *MoveToLocationData->GetName())
+
+	
+	if(MoveToLocationData->QuarterCircle)
+	{
+		QuarterMovement();
+	}
+	
+	IsMoving = true;
+	
+	
 }
 
 void UFTAAT_MoveToLocationAndWait::ExternalCancel()
@@ -185,11 +198,15 @@ void UFTAAT_MoveToLocationAndWait::OnDestroy(bool AbilityEnded)
 
 	MoveToLocationData->LocationData.EndLocationVector = FVector::ZeroVector;
 	MoveToLocationData->LocationData.RelativeOffsetVector = FVector::ZeroVector;
+	QuarterLocationArray.Empty();
+	EndIndex = 0;
+	
 }
 void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 {
 	ElapsedTime += DeltaTime;
 
+	EndLocation = GetAvatarActor()->GetActorLocation();
 	const float Alpha = FMath::Clamp(ElapsedTime / AdjustedDuration, 0.0f, 1.0f);
 	const FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
 
@@ -204,8 +221,46 @@ void UFTAAT_MoveToLocationAndWait::UpdateLocation(float DeltaTime)
 	}
 }
 
+void UFTAAT_MoveToLocationAndWait::UpdateQuarterLocation(float DeltaTime)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Size: %d"), QuarterLocationArray.Num());
+	UE_LOG(LogTemp, Warning, TEXT("Index: %d"), EndIndex);
+	// if(EndIndex == QuarterLocationArray.Num() - 1)
+	// {
+	// 	LocationReached();
+	// }
+	ElapsedTime += DeltaTime;
+
+	if(QuarterLocationArray.IsValidIndex(QuarterLocationArray.Num() - 1))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hereeee"))
+		EndLocation = QuarterLocationArray[QuarterLocationArray.Num() - 1];
+		DrawDebugSphere(
+		GetWorld(),
+		EndLocation,
+		25.0f,        
+		12,           
+		FColor::Green,
+		false,      
+		2.0f          
+		);
+		const float Alpha = FMath::Clamp(ElapsedTime / AdjustedDuration, 0.0f, 1.0f);
+		const FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
+
+		FHitResult Hit;
+		GetAvatarActor()->SetActorLocation(NewLocation, true, &Hit);
+
+		if (Alpha >= 1.0f || Hit.bBlockingHit)
+		{
+			LocationReached();
+		}
+	}
+	
+}
+
 void UFTAAT_MoveToLocationAndWait::LocationReached()
 {
+	IsMoving = false;
 	CMC->Velocity.Z = 0.0f;
 	CMC->GravityScale = 1.0f;
 
@@ -220,4 +275,46 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 	
 	OnMoveCompleted.Broadcast();
 	EndTask();
+}
+
+void UFTAAT_MoveToLocationAndWait::QuarterMovement()
+{
+	AController* Controller = GetAvatarActor()->GetInstigatorController();
+	if(Controller)
+	{
+		AFTAPlayerController* PlayerController = Cast<AFTAPlayerController>(Controller);
+		if(PlayerController)
+		{
+			AFTAPlayerState* FTAPlayerState = PlayerController->GetFTAPlayerState();
+			if(FTAPlayerState)
+			{
+				FVector TargetLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation();
+				FVector PlayerLocation = GetAvatarActor()->GetActorLocation();
+
+				FVector Offset = PlayerLocation - TargetLocation;
+				for (int32 i = 0; i < NumberOfPartitions; i++)
+				{
+					float StartAlpha = (float)i / NumberOfPartitions;
+					float EndAlpha = (float)(i + 1) / NumberOfPartitions;
+
+					FVector Start = TargetLocation + Offset.RotateAngleAxis(Angle * StartAlpha, FVector::UpVector);
+					FVector End = TargetLocation + Offset.RotateAngleAxis(Angle * EndAlpha, FVector::UpVector);
+
+					QuarterLocationArray.Add(End);
+
+					DrawDebugLine(
+						GetWorld(),
+						Start,
+						End,
+						FColor::Green,
+						false,
+						 5.0f,
+						0,
+						5.f
+					);
+				}
+			}
+		}
+	}
+	
 }
