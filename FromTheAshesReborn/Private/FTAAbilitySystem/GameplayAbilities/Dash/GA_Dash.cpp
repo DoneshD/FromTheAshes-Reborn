@@ -1,6 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Dash/GA_Dash.h"
 
 #include "CombatComponents/ComboManagerComponent.h"
+#include "DataAsset/MoveToLocationDataAsset.h"
 
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
@@ -121,7 +122,9 @@ UFTAAbilityDataAsset* UGA_Dash::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*>
 	{
 		return AbilityDataAsset;
 	}
+	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 	return nullptr;
+
 }
 
 void UGA_Dash::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)

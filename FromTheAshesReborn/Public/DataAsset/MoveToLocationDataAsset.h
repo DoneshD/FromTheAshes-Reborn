@@ -12,6 +12,14 @@ enum class ETriggerMovementType : uint8
 	OnTagReceived
 };
 
+UENUM(BlueprintType)
+enum class ETempDashDirection : uint8
+{
+	None,
+	Left,
+	Right
+};
+
 USTRUCT(BlueprintType)
 struct FLocationData
 {
@@ -61,5 +69,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	bool QuarterCircle = false;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement", meta = (EditCondition = "QuarterCircle"))
+	ETempDashDirection Direction = ETempDashDirection::Left;
 };

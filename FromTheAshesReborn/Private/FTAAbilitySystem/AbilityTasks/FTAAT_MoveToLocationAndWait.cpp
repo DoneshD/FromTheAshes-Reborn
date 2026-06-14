@@ -176,6 +176,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	{
 		QuarterMovement();
 	}
+
 }
 
 void UFTAAT_MoveToLocationAndWait::ExternalCancel()
@@ -233,8 +234,6 @@ void UFTAAT_MoveToLocationAndWait::LocationReached()
 
 void UFTAAT_MoveToLocationAndWait::UpdateQuarterLocation(float DeltaTime)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Size: %d"), QuarterLocationArray.Num());
-	UE_LOG(LogTemp, Warning, TEXT("Index: %d"), EndIndex);
 	// if(EndIndex == QuarterLocationArray.Num() - 1)
 	// {
 	// 	LocationReached();
@@ -243,17 +242,8 @@ void UFTAAT_MoveToLocationAndWait::UpdateQuarterLocation(float DeltaTime)
 
 	if(QuarterLocationArray.IsValidIndex(QuarterLocationArray.Num() - 1))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hereeee"))
 		EndLocation = QuarterLocationArray[QuarterLocationArray.Num() - 1];
-		DrawDebugSphere(
-		GetWorld(),
-		EndLocation,
-		25.0f,        
-		12,           
-		FColor::Green,
-		false,      
-		2.0f          
-		);
+		
 		const float Alpha = FMath::Clamp(ElapsedTime / AdjustedDuration, 0.0f, 1.0f);
 		const FVector NewLocation = FMath::Lerp(StartLocation, EndLocation, Alpha);
 
@@ -283,26 +273,29 @@ void UFTAAT_MoveToLocationAndWait::QuarterMovement()
 				FVector PlayerLocation = GetAvatarActor()->GetActorLocation();
 
 				FVector Offset = PlayerLocation - TargetLocation;
+				
+				float ClampedLength = FMath::Clamp(Offset.Length(), 300.0f, 800.0f);
+				Offset = Offset.GetSafeNormal() * ClampedLength;
+			
 				for (int32 i = 0; i < NumberOfPartitions; i++)
 				{
-					float StartAlpha = (float)i / NumberOfPartitions;
-					float EndAlpha = (float)(i + 1) / NumberOfPartitions;
+					const float StartAlpha = static_cast<float>(i) / NumberOfPartitions;
+					const float EndAlpha = static_cast<float>(i + 1) / NumberOfPartitions;
 
+					if(MoveToLocationData->Direction == ETempDashDirection::Right)
+					{
+						Angle = -90.0f;
+					}
+					else
+					{
+						Angle = 90.0f;
+					}
+					
 					FVector Start = TargetLocation + Offset.RotateAngleAxis(Angle * StartAlpha, FVector::UpVector);
 					FVector End = TargetLocation + Offset.RotateAngleAxis(Angle * EndAlpha, FVector::UpVector);
 
 					QuarterLocationArray.Add(End);
-
-					DrawDebugLine(
-						GetWorld(),
-						Start,
-						End,
-						FColor::Green,
-						false,
-						 5.0f,
-						0,
-						5.f
-					);
+					
 				}
 			}
 		}

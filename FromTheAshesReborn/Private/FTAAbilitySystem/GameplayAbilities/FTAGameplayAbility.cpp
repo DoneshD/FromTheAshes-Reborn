@@ -423,6 +423,7 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 	}
 	if(EnableManualMovement)
 	{
+		
 		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, CurrentMoveToLocationAsset);
 		if(MoveToLocationAndWaitTask && CurrentMoveToLocationAsset->TriggerType == ETriggerMovementType::OnAbilityActivation)
 		{
@@ -789,10 +790,10 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 				}
 			}
 		}
+		MoveToLocationAndWaitTask = UFTAAT_MoveToLocationAndWait::FTAAT_MoveToLocationAndWait(this, CurrentMoveToLocationAsset);
 		if(MoveToLocationAndWaitTask && CurrentMoveToLocationAsset->TriggerType == ETriggerMovementType::OnTagReceived)
 		{
 			MoveToLocationAndWaitTask->OnMoveCompleted.AddDynamic(this, &UFTAGameplayAbility::OnMoveComplete);
-			
 			MoveToLocationAndWaitTask->ReadyForActivation();
 		}
 	}
