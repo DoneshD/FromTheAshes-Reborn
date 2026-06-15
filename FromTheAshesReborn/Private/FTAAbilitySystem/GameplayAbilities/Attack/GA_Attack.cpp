@@ -463,6 +463,12 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		CurrentMoveToLocationAsset = AttackAsset->MoveToLocationDataAsset;
 	}
 
+	if(!CurrentAttackData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExtractAssetProperties - Current Attack invalid"))
+		return;
+	}
+
 	CurrentAttackData->SupplyEndLocation = AttackAsset->SupplyEndLocation;
 	
 

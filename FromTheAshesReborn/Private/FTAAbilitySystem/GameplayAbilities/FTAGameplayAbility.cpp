@@ -77,6 +77,11 @@ void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbility
 		return;
 	}
 
+	if(!CurrentAbilityAsset)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::ExtractAssetProperties - Current Attack invalid"))
+		return;
+	}
 	//Weapon Actor
 	if(InAbilityAsset->WeaponActorClass)
 	{
