@@ -6,12 +6,14 @@
 #include "CombatComponents/GroupCombatComponent.h"
 #include "CombatComponents/RangedCombatComponent.h"
 #include "Components/WidgetComponent.h"
+#include "DataAsset/MoveToLocationDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Player/FTAPlayerState.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
+#include "Player/FTAPlayerController.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
 #include "Weapon/EquipmentManagerComponent.h"
 
@@ -138,4 +140,40 @@ void APlayerCharacter::OnTargetLockedOff(AActor* Target)
 void APlayerCharacter::SetMaxWalkSpeed(float X)
 {
 	GetCharacterMovement()->MaxWalkSpeed = X;
+}
+
+FVector APlayerCharacter::TempFindQuarterLocations()
+{
+	TArray<FVector> QuarterLocations;
+	FVector EndLocation;
+	if(Controller)
+	{
+		AFTAPlayerController* PlayerController = Cast<AFTAPlayerController>(Controller);
+		if(PlayerController)
+		{
+			AFTAPlayerState* FTAPlayerState = PlayerController->GetFTAPlayerState();
+			if(FTAPlayerState)
+			{
+				FVector TargetLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation();
+				FVector PlayerLocation = GetActorLocation();
+
+				FVector Offset = PlayerLocation - TargetLocation;
+				
+				float ClampedLength = FMath::Clamp(Offset.Length(), 300.0f, 800.0f);
+				Offset = Offset.GetSafeNormal() * ClampedLength;
+			
+				for (int32 i = 0; i < 5; i++)
+				{
+					const float StartAlpha = static_cast<float>(i) / 5;
+					const float EndAlpha = static_cast<float>(i + 1) / 5;
+
+					float Angle = 90.0f;
+					
+					FVector Start = TargetLocation + Offset.RotateAngleAxis(Angle * StartAlpha, FVector::UpVector);
+					EndLocation = TargetLocation + Offset.RotateAngleAxis(Angle * EndAlpha, FVector::UpVector);
+				}
+			}
+		}
+	}
+	return EndLocation;
 }

@@ -76,16 +76,10 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 		return;
 	}
 
-	TArray<FFTAAbilitySet_GameplayAbility> SortedAbilities = GrantedGameplayAbilities;
-
-	SortedAbilities.StableSort([](const FFTAAbilitySet_GameplayAbility& A, const FFTAAbilitySet_GameplayAbility& B)
+	
+	for (int32 AbilityIndex = 0; AbilityIndex < GrantedGameplayAbilities.Num(); ++AbilityIndex)
 	{
-		return A.Priority > B.Priority;
-	});
-
-	for (int32 AbilityIndex = 0; AbilityIndex < SortedAbilities.Num(); ++AbilityIndex)
-	{
-		const FFTAAbilitySet_GameplayAbility& AbilityToGrant = SortedAbilities[AbilityIndex];
+		const FFTAAbilitySet_GameplayAbility& AbilityToGrant = GrantedGameplayAbilities[AbilityIndex];
 
 		if (!IsValid(AbilityToGrant.Ability))
 		{
@@ -98,7 +92,6 @@ void UFTAAbilitySet::GiveToAbilitySystem(UFTAAbilitySystemComponent* FTAASC, FFT
 
 		UFTAGameplayAbility* AbilityCDO = AbilityToGrant.Ability->GetDefaultObject<UFTAGameplayAbility>();
 		
-
 		FGameplayAbilitySpec AbilitySpec(AbilityCDO, AbilityToGrant.AbilityLevel);
 		AbilitySpec.SourceObject = SourceObject;
 		AbilitySpec.GetDynamicSpecSourceTags().AddTag(AbilityToGrant.InputTag);

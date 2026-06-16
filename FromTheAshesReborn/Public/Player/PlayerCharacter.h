@@ -82,4 +82,7 @@ public:
 	UFUNCTION()
 	void OnTargetLockedOff(AActor* Target);
 	void SetMaxWalkSpeed(float X);
+
+	UFUNCTION(BlueprintCallable)
+	FVector TempFindQuarterLocations();
 };

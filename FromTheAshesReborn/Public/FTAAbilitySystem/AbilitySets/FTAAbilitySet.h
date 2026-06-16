@@ -30,9 +30,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Meta = (Categories = "ActivationGroupTag"))
 	FGameplayTag DefaultActivationGroupTag;
-
-	UPROPERTY(EditDefaultsOnly, Category = "AbilityLevel")
-	int32 Priority = 1;
+	
 };
 
 USTRUCT(BlueprintType)
