@@ -77,9 +77,14 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		CameraParameters->CameraAnchorParams.TargetLocation.Value = CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
-		CameraParameters->SpringArmParams.ArmLength.Value = CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
-		CameraParameters->ControlRotationParams.TargetControlRotation.Value = CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams, DeltaTime);
+		CameraParameters->CameraAnchorParams.TargetLocation.Value =
+			CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
+		
+		CameraParameters->SpringArmParams.ArmLength.Value =
+			CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
+		
+		CameraParameters->ControlRotationParams.TargetControlRotation.Value =
+			CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams, DeltaTime);
 
 		CameraSystemComponent->ResolveSpringArmParams();
 		CameraSystemComponent->ResolveCameraAnchorParams();
@@ -327,6 +332,11 @@ float UTargetingSystemComponent::CalculateBaseSpringArmLength(APlayerCharacter* 
 	float Distance = FVector::Dist(PlayerOwner->GetActorLocation(), TargetActor->GetActorLocation());
 	float DesiredRadius = Distance / 2.0f;
 	float TargetArmLength = DesiredRadius + TargetingParams.ArmLengthOffset;
+
+	if(TargetingParams.ShouldClampArmLengthOffset)
+	{
+		TargetArmLength = FMath::Clamp(TargetArmLength, TargetingParams.ArmLengthOffsetClampMin, TargetingParams.ArmLengthOffsetClampMax);
+	}
 	
 	return TargetArmLength;
 }

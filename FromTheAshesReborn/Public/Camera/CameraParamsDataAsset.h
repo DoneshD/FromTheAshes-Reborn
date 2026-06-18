@@ -45,6 +45,15 @@ struct FTargetingLockOnParams
 	float ArmLengthOffset = 150.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool ShouldClampArmLengthOffset = false;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float ArmLengthOffsetClampMin = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float ArmLengthOffsetClampMax = 1000;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float MidpointAnchorLocationAlpha = 0.25f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

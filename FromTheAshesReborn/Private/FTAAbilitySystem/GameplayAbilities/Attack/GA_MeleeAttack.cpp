@@ -176,7 +176,8 @@ void UGA_MeleeAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsse
 		{
 			if(TrailSoundCueClass && TrailSoundCueClass->IsValidLowLevel())
 			{
-				CurrentMeleeAttackData->TrailSoundCueClassArray.Add(TrailSoundCueClass);
+				CurrentMeleeAttackData->TrailSoundCueClassArray = MeleeAsset->TrailSoundCueClassArray;
+				
 			}
 		}
 	}
@@ -221,7 +222,8 @@ void UGA_MeleeAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRunti
 		{
 			if(TrailSoundCueClass && TrailSoundCueClass->IsValidLowLevel())
 			{
-				CurrentMeleeAttackData->TrailSoundCueClassArray.Add(TrailSoundCueClass);
+				CurrentMeleeAttackData->TrailSoundCueClassArray = MeleeAsset->TrailSoundCueClassArray;
+				
 			}
 		}
 	}
