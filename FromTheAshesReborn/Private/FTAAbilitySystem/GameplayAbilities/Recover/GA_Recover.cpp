@@ -65,6 +65,7 @@ void UGA_Recover::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const
 	
 
 	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("DownedCombatTag.EnableComponent")));
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 	
 	if(RecoverAbilityAsset)
 	{

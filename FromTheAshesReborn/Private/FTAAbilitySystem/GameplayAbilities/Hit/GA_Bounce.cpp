@@ -1,12 +1,14 @@
 ﻿
 #include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Bounce.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
@@ -67,9 +69,15 @@ void UGA_Bounce::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGame
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	
-}
 
+	UDownedCombatComponent* DCC = GetFTACharacterFromActorInfo()->FindComponentByClass<UDownedCombatComponent>();
+	if(!DCC || !DCC->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Error, TEXT("DCC invalid"))
+	}
+	
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("DownedCombatTag.EnableComponent")));
+}
 
 void UGA_Bounce::CheckGroundBelow()
 {
@@ -112,6 +120,7 @@ void UGA_Bounce::CheckGroundBelow()
 		{
 			FGameplayEffectSpecHandle GEHandle = MakeOutgoingGameplayEffectSpec(DCC->EnableDownedCombatEffect, 1.0f);
 			GetAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(*GEHandle.Data.Get());
+			GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Downed"));
 		}
 		
 	}

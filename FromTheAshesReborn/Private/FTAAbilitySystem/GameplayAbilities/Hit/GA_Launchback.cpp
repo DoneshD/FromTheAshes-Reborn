@@ -1,5 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Launchback.h"
 
+#include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+
 UGA_Launchback::UGA_Launchback()
 {
 	ReceiveHitTag = FGameplayTag::RequestGameplayTag("HitTag.Effect.GrantAbility.Launchback");
@@ -23,6 +25,7 @@ void UGA_Launchback::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	const FGameplayEventData* TriggerEventData)
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+	GetFTAAbilitySystemComponentFromActorInfo()->RemoveActiveEffectsWithGrantedTags(FGameplayTagContainer(FGameplayTag::RequestGameplayTag("DownedCombatTag.EnableComponent")));
 }
 
 void UGA_Launchback::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
