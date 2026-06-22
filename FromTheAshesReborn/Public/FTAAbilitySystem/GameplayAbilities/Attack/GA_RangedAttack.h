@@ -12,6 +12,17 @@ class FROMTHEASHESREBORN_API UGA_RangedAttack : public UGA_Attack
 {
 	GENERATED_BODY()
 
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Temp Cue")
+	bool UseTempCueObjects = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Temp Cue", meta=(EditCondition = "UseTempCueObjects"))
+	TObjectPtr<UFTAVisualCueObject> TempVisualCueObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Temp Cue")
+	TObjectPtr<UFTASoundCueObject> TempRangedSoundCueObject;
+
 protected:
 
 	UPROPERTY()

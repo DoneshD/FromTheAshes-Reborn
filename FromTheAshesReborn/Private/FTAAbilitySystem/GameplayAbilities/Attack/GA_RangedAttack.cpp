@@ -256,7 +256,32 @@ FGameplayAbilityTargetDataHandle UGA_RangedAttack::AddHitResultToTargetData(cons
 
 void UGA_RangedAttack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
+
+	if(UseTempCueObjects)
+	{
+		AActor* TargetActorCue = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
+
+		FGameplayCueParameters VisualCueParams;
+
+		if(TempVisualCueObject)
+		{
+			VisualCueParams.SourceObject = TempVisualCueObject;
+			VisualCueParams.EffectCauser = TargetActorCue;
+			VisualCueParams.Location = TargetDataHandle.Get(0)->GetHitResult()->Location;
+				
+			if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(TempVisualCueObject->VisualCueTag))
+			{
+				K2_AddGameplayCueWithParams(TempVisualCueObject->VisualCueTag, VisualCueParams);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::AddMeleeHitCues - VisualCueTag is invalid"));
+			}
+		}
+	}
+
 	Super::ExecuteHitLogic(TargetDataHandle);
+	
 }
 
 UFTAAbilityDataAsset* UGA_RangedAttack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)
