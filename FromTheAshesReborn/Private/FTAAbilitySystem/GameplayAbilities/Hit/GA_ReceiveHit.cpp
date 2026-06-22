@@ -38,6 +38,13 @@ bool UGA_ReceiveHit::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
 
 void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+	FVector TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+	
+	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
+	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
+	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
+
+	
 	if(!CurrentEventData.OptionalObject)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
@@ -100,22 +107,18 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
 	}
-
-	FVector TargetLocation;
 	
-	if(!HitInfoObject->HitData.Instigator)
+	
+	/*if(!HitInfoObject->HitData.Instigator)
 	{
 		TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
 	}
 	else
 	{
+		//Bug?
 		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
 		
-	}
-	
-	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
-	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
+	}*/
 	
 	
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
