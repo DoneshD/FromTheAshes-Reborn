@@ -494,28 +494,27 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 	//Hit visuals
 	if(!AttackAsset->HitEnemyVisualCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf VisualCueClass: AttackAsset->HitEnemyVisualCueClassArray)
+		for(TSubclassOf HitVisualCueClass: AttackAsset->HitEnemyVisualCueClassArray)
 		{
-			if(VisualCueClass && VisualCueClass->IsValidLowLevel())
+			if(HitVisualCueClass && HitVisualCueClass->IsValidLowLevel())
 			{
-				CurrentAttackData->HitEnemyVisualCueClassArray.Add(VisualCueClass);
+				CurrentAttackData->HitEnemyVisualCueClassArray = AttackAsset->HitEnemyVisualCueClassArray;
 			}
 		}
 	}
 
-	//Hit sounds
 	if(!AttackAsset->HitEnemySoundCueClassArray.IsEmpty())
 	{
-		for(TSubclassOf SoundCueClass: AttackAsset->HitEnemySoundCueClassArray)
+		for(TSubclassOf HitSoundCueClass: AttackAsset->HitEnemySoundCueClassArray)
 		{
-			if(SoundCueClass && SoundCueClass->IsValidLowLevel())
+			if(HitSoundCueClass && HitSoundCueClass->IsValidLowLevel())
 			{
-				CurrentAttackData->HitEnemySoundCueClassArray.Add(SoundCueClass);
+				CurrentAttackData->HitEnemySoundCueClassArray = AttackAsset->HitEnemySoundCueClassArray;
+				
 			}
 		}
 	}
 	
-
 	//Move to tag validation library?
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackAsset->HitStopCueTag) && !AttackAsset->HitStopCueTag.MatchesTag(FGameplayTag::EmptyTag))
 	{
