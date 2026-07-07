@@ -515,7 +515,6 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		}
 	}
 	
-	//Move to tag validation library?
 	if(UTagValidationFunctionLibrary::IsRegisteredGameplayTag(AttackAsset->HitStopCueTag) && !AttackAsset->HitStopCueTag.MatchesTag(FGameplayTag::EmptyTag))
 	{
 		CurrentAttackData->HitStopCueTag = AttackAsset->HitStopCueTag;

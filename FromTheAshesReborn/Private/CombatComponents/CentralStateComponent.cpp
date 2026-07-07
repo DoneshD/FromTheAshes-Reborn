@@ -2,6 +2,7 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
+#include "Components/CapsuleComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -180,6 +181,7 @@ void UCentralStateComponent::HandeAirborneOrientation(EMovementMode MovementMode
 	{
 		ASC->RemoveLooseGameplayTag(DownedStateTag);
 	}
+	
 	
 	CurrentOrientationTag = AirborneOrientationTag;
 

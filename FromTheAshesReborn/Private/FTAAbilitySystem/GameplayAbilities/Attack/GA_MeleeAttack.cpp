@@ -1,5 +1,7 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_MeleeAttack.h"
 
+#include "AbilitySystemComponent.h"
+#include "AbilitySystemGlobals.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MeleeAbilityDataAsset.h"
 #include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
@@ -260,7 +262,6 @@ void UGA_MeleeAttack::StartMeleeTrace()
 	{
 		for (AWeaponActorBase* WeaponActor : WeaponActors)
 		{
-			//Another instance of crashing here
 			if(WeaponActor)
 			{
 				if(WeaponActor->TracingComponent)
@@ -272,12 +273,22 @@ void UGA_MeleeAttack::StartMeleeTrace()
 					WeaponActor->TracingComponent->SetupVariables(WeaponActor->SkeletalMesh, nullptr);
 					WeaponActor->TracingComponent->MyActorsToIgnore.AddUnique(GetFTACharacterFromActorInfo());
 					WeaponActor->TracingComponent->ShouldIgnoreSelf = true;
-				
+
+					if(GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor)
+					{
+						UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor);
+						if(TargetASC)
+						{
+							if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne")))
+							{
+								CurrentMeleeAttackData->MeleeSizeTrace += FVector(30, 30, 30);
+							}
+						}
+					}
 					WeaponActor->TracingComponent->BoxHalfSize = CurrentMeleeAttackData->MeleeSizeTrace;
 					
 					WeaponActor->TracingComponent->ToggleTraceCheck(true);
 
-					//TODO: Temp fix - Multiple instances of same weapon actor
 					break;
 					
 				}
