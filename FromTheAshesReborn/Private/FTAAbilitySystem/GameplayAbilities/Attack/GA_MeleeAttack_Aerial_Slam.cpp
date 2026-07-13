@@ -83,6 +83,7 @@ void UGA_MeleeAttack_Aerial_Slam::EventMontageReceived(FGameplayTag EventTag, FG
 	{
 		GetFTAAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(LoopTag);
 
+		UE_LOG(LogTemp, Warning, TEXT("Here"))
 		StartMeleeTrace();
 		CurrentVisualCueCDO = AddMeleeTrailVisualCue();
 		CurrentSoundCueCDO = AddMeleeTrailSoundCue();
