@@ -84,6 +84,9 @@ void AEnemyBaseCharacter::BeginPlay()
 
 		DissolveTimeline.SetLooping(false);
 	}
+
+	// Dissolve();
+	// PlayAnimMontage(DeathMontage);
 	
 }
 
@@ -117,15 +120,15 @@ void AEnemyBaseCharacter::TimelineProgress(float Value)
 	{
 		CodeDynamicDissolveMaterial1->SetScalarParameterValue(TEXT("DissolveAmount"), ReturnVal);
 	}
-	if(CodeDynamicDissolveMaterial2)
-	{
-		CodeDynamicDissolveMaterial2->SetScalarParameterValue(TEXT("DissolveAmount"), ReturnVal);
-		
-	}
-	if(CodeDynamicDissolveMaterial3)
-	{
-		CodeDynamicDissolveMaterial3->SetScalarParameterValue(TEXT("DissolveAmount"), ReturnVal);
-	}
+	// if(CodeDynamicDissolveMaterial2)
+	// {
+	// 	CodeDynamicDissolveMaterial2->SetScalarParameterValue(TEXT("DissolveAmount"), ReturnVal);
+	// 	
+	// }
+	// if(CodeDynamicDissolveMaterial3)
+	// {
+	// 	CodeDynamicDissolveMaterial3->SetScalarParameterValue(TEXT("DissolveAmount"), ReturnVal);
+	// }
 }
 
 void AEnemyBaseCharacter::TimelineFinished()
@@ -219,31 +222,31 @@ void AEnemyBaseCharacter::Death()
 void AEnemyBaseCharacter::SetDissolveParams()
 {
 	CodeDynamicDissolveMaterial1 = GetMesh()->CreateDynamicMaterialInstance(0, CodeDissolveMaterial1);
-	CodeDynamicDissolveMaterial2 = GetMesh()->CreateDynamicMaterialInstance(1, CodeDissolveMaterial2);
-	CodeDynamicDissolveMaterial3 = GetMesh()->CreateDynamicMaterialInstance(2, CodeDissolveMaterial2);
+	// CodeDynamicDissolveMaterial2 = GetMesh()->CreateDynamicMaterialInstance(1, CodeDissolveMaterial2);
+	// CodeDynamicDissolveMaterial3 = GetMesh()->CreateDynamicMaterialInstance(2, CodeDissolveMaterial2);
 	
 	DissolveNiagaraComponent->SetAsset(CodeSetDissolveNiagara, true);
 	DissolveNiagaraComponent->SetVariableFloat(TEXT("DissolveAmount"), CodeDissolveAmount);
 
 	CodeDynamicDissolveMaterial1->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
-	CodeDynamicDissolveMaterial2->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
-	CodeDynamicDissolveMaterial3->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
+	// CodeDynamicDissolveMaterial2->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
+	// CodeDynamicDissolveMaterial3->SetScalarParameterValue(TEXT("DissolveAmount"), CodeDissolveAmount);
 
 	CodeDynamicDissolveMaterial1->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
-	CodeDynamicDissolveMaterial2->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
-	CodeDynamicDissolveMaterial3->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
+	// CodeDynamicDissolveMaterial2->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
+	// CodeDynamicDissolveMaterial3->SetVectorParameterValue(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
 
 	DissolveNiagaraComponent->SetVariableVec3(TEXT("Position"), DissolveMeshComponent->GetComponentLocation());
 	DissolveNiagaraComponent->SetVariableTexture(TEXT("DissolveTexture"), CodeDissolveTexture);
 
 	CodeDynamicDissolveMaterial1->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
-	CodeDynamicDissolveMaterial2->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
-	CodeDynamicDissolveMaterial3->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
+	// CodeDynamicDissolveMaterial2->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
+	// CodeDynamicDissolveMaterial3->SetTextureParameterValue(TEXT("DissolveTexture"), CodeDissolveTexture);
 
 
 	CodeDynamicDissolveMaterial1->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
-	CodeDynamicDissolveMaterial2->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
-	CodeDynamicDissolveMaterial3->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
+	// CodeDynamicDissolveMaterial2->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
+	// CodeDynamicDissolveMaterial3->SetVectorParameterValue(TEXT("DissolveTextureUV"), FVector(CodeDissolveTextureUV.X, CodeDissolveTextureUV.Y, 0.0f));
 	
 	DissolveNiagaraComponent->SetVariableVec2(TEXT("DissolveTextureUV"), CodeDissolveTextureUV);
 	
@@ -256,6 +259,8 @@ void AEnemyBaseCharacter::Dissolve()
 {
 	ShouldDissolveTimelineTick = true;
 	DissolveTimeline.Play();
+
+	UE_LOG(LogTemp, Warning, TEXT("Dissolve Timeline Tick"));
 }
 
 

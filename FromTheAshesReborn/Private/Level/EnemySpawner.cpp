@@ -1,9 +1,7 @@
 ﻿#include "Level/EnemySpawner.h"
 
 #include "NavigationSystem.h"
-#include "CombatComponents/GroupCombatComponent.h"
 #include "Enemy/AIControllerEnemyGrunt.h"
-#include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/EnemyGruntCharacter.h"
 #include "Enemy/GroupCombatSubsystem.h"
 #include "GameModes/FTAGameModeBase.h"
@@ -35,7 +33,7 @@ void AEnemySpawner::BeginPlay()
 		return;
 	}
 	
-	for(int32 i = 0; i < FTAGameMode->InitialEnemyCount; i++)
+	for(int32 i = 0; i < 3; i++)
 	{
 		FNavLocation ResultLocation;
 		bool bSuccess = NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1000, ResultLocation);
@@ -53,7 +51,8 @@ void AEnemySpawner::BeginPlay()
 					if(GruntController && GruntController->IsValidLowLevel())
 					{
 						GruntController->Possess(Grunt);
-						GruntController->StateTreeComponent->StartLogic();
+						UE_LOG(LogTemp, Warning, TEXT("HERE"))
+						// GruntController->StateTreeComponent->StartLogic();
 					}
 					else
 					{
