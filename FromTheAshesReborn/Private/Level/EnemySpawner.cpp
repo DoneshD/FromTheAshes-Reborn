@@ -17,6 +17,11 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+}
+
+void AEnemySpawner::SpawnEnemies()
+{
 	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	if(!FTAGameMode)
@@ -40,6 +45,8 @@ void AEnemySpawner::BeginPlay()
 
 		if(bSuccess)
 		{
+			ResultLocation.Location = ResultLocation.Location + ResultLocation.Location.UpVector.GetSafeNormal() * VerticalLocationOffset;
+			DrawDebugSphere(GetWorld(), ResultLocation.Location, 20, 10, FColor::Red, true);
 			AEnemyGruntCharacter* Grunt = GetWorld()->SpawnActor<AEnemyGruntCharacter>(GruntClass, ResultLocation.Location, FRotator(0, 0, 0));
 
 			if(Grunt)
@@ -51,7 +58,6 @@ void AEnemySpawner::BeginPlay()
 					if(GruntController && GruntController->IsValidLowLevel())
 					{
 						GruntController->Possess(Grunt);
-						UE_LOG(LogTemp, Warning, TEXT("HERE"))
 						// GruntController->StateTreeComponent->StartLogic();
 					}
 					else
@@ -66,7 +72,7 @@ void AEnemySpawner::BeginPlay()
 			}
 			else
 			{
-			UE_LOG(LogTemp, Error, TEXT("Invalid grunt actor"))
+				UE_LOG(LogTemp, Error, TEXT("Invalid grunt actor"))
 				
 			}
 		}
