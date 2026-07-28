@@ -8,6 +8,8 @@
 class UWeaponDefinition;
 class UWidgetComponent;
 
+DECLARE_MULTICAST_DELEGATE(FOnEnemyDeathSignature);
+
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
 {
@@ -17,6 +19,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UWidgetComponent> HealthWidget;
+
+	FOnEnemyDeathSignature OnDeath;
 
 
 public:

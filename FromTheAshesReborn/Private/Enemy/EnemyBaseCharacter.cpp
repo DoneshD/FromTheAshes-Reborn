@@ -181,6 +181,10 @@ void AEnemyBaseCharacter::Death()
 		GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+
+		Destroy();
+
+		OnDeath.Broadcast();
 	
 	}
 }
