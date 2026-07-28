@@ -4,10 +4,17 @@
 #include "GameFramework/Actor.h"
 #include "WaveManager.generated.h"
 
+class AFTAGameModeBase;
+
 UCLASS()
 class FROMTHEASHESREBORN_API AWaveManager : public AActor
 {
 	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AFTAGameModeBase> GameModeClass;
 
 
 protected:

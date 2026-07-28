@@ -4,6 +4,7 @@
 #include "Engine/TriggerBox.h"
 #include "EnemySpawner.generated.h"
 
+struct FWaveData;
 class AAIControllerEnemyGrunt;
 class AEnemyGruntCharacter;
 
@@ -35,6 +36,6 @@ protected:
 public:
 
 	UFUNCTION(BlueprintCallable)
-	void SpawnEnemies();
+	void SpawnEnemies(FWaveData InWaveData);
 
 };

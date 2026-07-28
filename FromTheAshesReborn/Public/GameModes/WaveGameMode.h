@@ -9,6 +9,8 @@ class FROMTHEASHESREBORN_API AWaveGameMode : public AFTAGameModeBase
 {
 	GENERATED_BODY()
 
+
+
 public:
 	
 	AWaveGameMode();

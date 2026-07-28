@@ -16,20 +16,17 @@ AEnemySpawner::AEnemySpawner()
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
-
 	
 }
 
-void AEnemySpawner::SpawnEnemies()
+void AEnemySpawner::Tick(float DeltaTime)
 {
-	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	Super::Tick(DeltaTime);
+}
 
-	if(!FTAGameMode)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Game mode is Null"));
-		return;
-	}
-
+void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
+{
+	
 	UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 		
 	if(!NavSystem || !NavSystem->IsValidLowLevel())
@@ -37,62 +34,58 @@ void AEnemySpawner::SpawnEnemies()
 		UE_LOG(LogTemp, Error, TEXT("NavSystem is Null"));
 		return;
 	}
-	
-	for(int32 i = 0; i < 3; i++)
+
+	for (const TPair<TSubclassOf<AEnemyBaseCharacter>, int32>& Element : InWaveData.EnemySpawnCount)
 	{
-		FNavLocation ResultLocation;
-		bool bSuccess = NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1000, ResultLocation);
+		TSubclassOf<AEnemyBaseCharacter> EnemyClass = Element.Key;
+		int32 AmountToSpawn = Element.Value;
 
-		if(bSuccess)
+		for (int32 i = 0; i < AmountToSpawn; i++)
 		{
-			ResultLocation.Location = ResultLocation.Location + ResultLocation.Location.UpVector.GetSafeNormal() * VerticalLocationOffset;
-			DrawDebugSphere(GetWorld(), ResultLocation.Location, 20, 10, FColor::Red, true);
-			AEnemyGruntCharacter* Grunt = GetWorld()->SpawnActor<AEnemyGruntCharacter>(GruntClass, ResultLocation.Location, FRotator(0, 0, 0));
 
-			if(Grunt)
+			FNavLocation ResultLocation;
+			bool bSuccess = NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1000, ResultLocation);
+
+			if(bSuccess)
 			{
-				if(!Grunt->GetController())
-				{
-					AAIControllerEnemyGrunt* GruntController = GetWorld()->SpawnActor<AAIControllerEnemyGrunt>(GruntControllerClass);
+				ResultLocation.Location = ResultLocation.Location + ResultLocation.Location.UpVector.GetSafeNormal() * VerticalLocationOffset;
+				DrawDebugSphere(GetWorld(), ResultLocation.Location, 20, 10, FColor::Red, true);
+				AEnemyGruntCharacter* Grunt = GetWorld()->SpawnActor<AEnemyGruntCharacter>(GruntClass, ResultLocation.Location, FRotator(0, 0, 0));
 
-					if(GruntController && GruntController->IsValidLowLevel())
+				if(Grunt)
+				{
+					if(!Grunt->GetController())
 					{
-						GruntController->Possess(Grunt);
-						// GruntController->StateTreeComponent->StartLogic();
+						AAIControllerEnemyGrunt* GruntController = GetWorld()->SpawnActor<AAIControllerEnemyGrunt>(GruntControllerClass);
+
+						if(GruntController && GruntController->IsValidLowLevel())
+						{
+							GruntController->Possess(Grunt);
+							// GruntController->StateTreeComponent->StartLogic();
+						}
+						else
+						{
+							UE_LOG(LogTemp, Error, TEXT("Invalid grunt AI controller"))
+						}
 					}
 					else
 					{
-						UE_LOG(LogTemp, Error, TEXT("Invalid grunt AI controller"))
+						UE_LOG(LogTemp, Error, TEXT("Invalid grunt controller"))
 					}
 				}
 				else
 				{
-					UE_LOG(LogTemp, Error, TEXT("Invalid grunt controller"))
+					UE_LOG(LogTemp, Error, TEXT("Invalid grunt actor"))
+				
 				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("Invalid grunt actor"))
-				
+				UE_LOG(LogTemp, Error, TEXT("Invalid location"))
 			}
-		}
-		else
-		{
-			UE_LOG(LogTemp, Error, TEXT("Invalid location"))
+			
 		}
 	}
 	
-	UGroupCombatSubsystem* GCC = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
-
-	if(!GCC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("AEnemySpawner::BeginPlay() - Invalid group combat subsystem"))
-		return;
-	}
-}
-
-void AEnemySpawner::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
 }
 

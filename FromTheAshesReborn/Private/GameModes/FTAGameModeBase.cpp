@@ -10,5 +10,7 @@ AFTAGameModeBase::AFTAGameModeBase()
 void AFTAGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CurrentEncounter = 0;
 	
 }

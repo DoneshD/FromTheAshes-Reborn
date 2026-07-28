@@ -2,6 +2,7 @@
 
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/EnemyGruntCharacter.h"
+#include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Level/EnemySpawner.h"
 
@@ -23,46 +24,57 @@ void AWaveManager::Tick(float DeltaTime)
 
 void AWaveManager::SpawnWave()
 {
+	//only works with one spawner per level right now
+	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("AWaveManager::SpawnWave() - Invalid gamemode"));
+		return;
+	}
+	
 	AEnemySpawner* EnemySpawner = Cast<AEnemySpawner>(UGameplayStatics::GetActorOfClass(GetWorld(), AEnemySpawner::StaticClass()));
 
-	if(EnemySpawner)
+	if(!EnemySpawner)
 	{
-		EnemySpawner->SpawnEnemies();
+		UE_LOG(LogTemp, Error, TEXT("AWaveManager::SpawnWave() - Invalid EnemySpawner"));
+		return;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid actor"))
-	}
-
+	FWaveData WaveData= FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+	EnemySpawner->SpawnEnemies(WaveData);
 	TArray<AActor*> FoundActors;
-	TArray<AEnemyGruntCharacter*> Enemies;
 
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyGruntCharacter::StaticClass(), FoundActors);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyBaseCharacter::StaticClass(), FoundActors);
 
 	for (AActor* Actor : FoundActors)
 	{
-		if (AEnemyGruntCharacter* Grunt = Cast<AEnemyGruntCharacter>(Actor))
+		if (AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Actor))
 		{
-			Enemies.Add(Grunt);
-			Grunt->OnDeath.AddUObject(this, &AWaveManager::HandleEnemyDeath);
+			Enemy->OnDeath.AddUObject(this, &AWaveManager::HandleEnemyDeath);
 			NumOfEnemiesInWave += 1;
-			
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Size: %d"), FoundActors.Num());
-	UE_LOG(LogTemp, Warning, TEXT("Death"));
 	
 }
 
 void AWaveManager::HandleEnemyDeath()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Death"));
-	// UE_LOG(LogTemp, Warning, TEXT("Num of enem: %d"), NumOfEnemiesInWave.Num());
-	
 	NumOfEnemiesInWave -= 1;
 	if(NumOfEnemiesInWave == 0)
 	{
 		NumOfEnemiesInWave = 0;
+		AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+		if(!FTAGameMode)
+		{
+			UE_LOG(LogTemp, Error, TEXT("AWaveManager::HandleEnemyDeath() - Invalid gamemode"));
+			return;
+		}
+
+		FTAGameMode->CurrentEncounter += 1;
+		if(FTAGameMode->CurrentEncounter >= FTAGameMode->EnemyEncounterArray.Num())
+		{
+			FTAGameMode->CurrentEncounter = FTAGameMode->EnemyEncounterArray.Num() - 1;
+		}
+		
 		SpawnWave();
 	}
 }
