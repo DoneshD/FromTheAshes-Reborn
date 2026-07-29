@@ -49,7 +49,6 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 			if(bSuccess)
 			{
 				ResultLocation.Location = ResultLocation.Location + ResultLocation.Location.UpVector.GetSafeNormal() * VerticalLocationOffset;
-				DrawDebugSphere(GetWorld(), ResultLocation.Location, 20, 10, FColor::Red, true);
 				AEnemyGruntCharacter* Grunt = GetWorld()->SpawnActor<AEnemyGruntCharacter>(GruntClass, ResultLocation.Location, FRotator(0, 0, 0));
 
 				if(Grunt)
@@ -61,7 +60,7 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 						if(GruntController && GruntController->IsValidLowLevel())
 						{
 							GruntController->Possess(Grunt);
-							// GruntController->StateTreeComponent->StartLogic();
+							GruntController->StateTreeComponent->StartLogic();
 						}
 						else
 						{

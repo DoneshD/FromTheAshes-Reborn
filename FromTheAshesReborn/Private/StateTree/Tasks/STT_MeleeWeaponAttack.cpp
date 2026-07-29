@@ -47,6 +47,7 @@ EStateTreeRunStatus FStateTreeTask_MeleeWeaponAttack::ActivateMeleeAttack(const 
 	EventData.Instigator = InstanceData.InputActor;
 	EventData.EventTag = FGameplayTag::RequestGameplayTag("StateTreeEvent.Attack.Light");
 
+	UE_LOG(LogTemp, Warning, TEXT("HERE"));
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(InstanceData.InputActor, EventData.EventTag, EventData);
 
 	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor))

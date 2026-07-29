@@ -182,6 +182,14 @@ void AEnemyBaseCharacter::Death()
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 
+		for(auto Element : EquipmentManagerComponent->CurrentEquippedWeaponActors)
+		{
+			if(Element)
+			{
+				Element->Destroy();
+			}
+		}
+		
 		Destroy();
 
 		OnDeath.Broadcast();

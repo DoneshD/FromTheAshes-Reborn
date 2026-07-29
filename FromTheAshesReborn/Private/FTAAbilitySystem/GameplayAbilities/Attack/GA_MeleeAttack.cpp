@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/RootMotionSource.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Player/PlayerCharacter.h"
 #include "TracingComponent/TracingComponent.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -274,14 +275,17 @@ void UGA_MeleeAttack::StartMeleeTrace()
 					WeaponActor->TracingComponent->MyActorsToIgnore.AddUnique(GetFTACharacterFromActorInfo());
 					WeaponActor->TracingComponent->ShouldIgnoreSelf = true;
 
-					if(GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor)
+					if(APlayerCharacter* PC = Cast<APlayerCharacter>(GetFTACharacterFromActorInfo()))
 					{
-						UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor);
-						if(TargetASC)
+						if(GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor)
 						{
-							if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne")))
+							UAbilitySystemComponent* TargetASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(GetFTAPlayerStateFromOwnerInfo()->HardLockedTargetActor);
+							if(TargetASC)
 							{
-								CurrentMeleeAttackData->MeleeSizeTrace += FVector(30, 30, 30);
+								if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.Orientation.Airborne")))
+								{
+									CurrentMeleeAttackData->MeleeSizeTrace += FVector(30, 30, 30);
+								}
 							}
 						}
 					}
