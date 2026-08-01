@@ -137,7 +137,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
+		// UE_LOG(LogTemp, Error, TEXT("No enemy controller"));
 	}
 	
 }

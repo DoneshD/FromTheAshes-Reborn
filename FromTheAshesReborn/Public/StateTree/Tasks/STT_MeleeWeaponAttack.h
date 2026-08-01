@@ -5,6 +5,8 @@
 #include "StateTreeExecutionTypes.h"
 #include "STT_MeleeWeaponAttack.generated.h"
 
+class UAbilitySystemComponent;
+
 USTRUCT()
 struct FROMTHEASHESREBORN_API FStateTreeTask_MeleeWeaponAttack_InstanceData
 {
@@ -44,6 +46,8 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_MeleeWeaponAttack : public FStateTr
 
 private:
 
+	mutable UAbilitySystemComponent* ASC;
+	
 	mutable FGameplayTag FinishedTag;
 	
 	mutable FDelegateHandle TagDelegateHandle;

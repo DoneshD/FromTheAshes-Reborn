@@ -22,8 +22,8 @@ EStateTreeRunStatus FStateTreeTask_MeleeWeaponAttack::Tick(FStateTreeExecutionCo
 void FStateTreeTask_MeleeWeaponAttack::ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
-	AActor* OwnerActor = Cast<AActor>(Context.GetOwner());
-	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerActor);
+	// AActor* OwnerActor = Cast<AActor>(Context.GetOwner());
+	// UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerActor);
 
 	if (ASC && TagDelegateHandle.IsValid())
 	{
@@ -47,10 +47,10 @@ EStateTreeRunStatus FStateTreeTask_MeleeWeaponAttack::ActivateMeleeAttack(const 
 	EventData.Instigator = InstanceData.InputActor;
 	EventData.EventTag = FGameplayTag::RequestGameplayTag("StateTreeEvent.Attack.Light");
 
-	UE_LOG(LogTemp, Warning, TEXT("HERE"));
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(InstanceData.InputActor, EventData.EventTag, EventData);
-
-	if (UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor))
+	ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor);
+	
+	if (ASC)
 	{
 		FinishedTag = InstanceData.StateTreeFinishedTag;
 		TagDelegateHandle = ASC->RegisterGameplayTagEvent(InstanceData.StateTreeFinishedTag, EGameplayTagEventType::NewOrRemoved).AddRaw(this, &FStateTreeTask_MeleeWeaponAttack::FinishTask);
@@ -63,6 +63,11 @@ void FStateTreeTask_MeleeWeaponAttack::FinishTask(FGameplayTag Tag, int32 NewCou
 {
 	if (Tag == FinishedTag && NewCount > 0)
 	{
+		ASC->RemoveLooseGameplayTag(FinishedTag);
 		IsTaskFinished = true;
+	}
+	else
+	{
+		
 	}
 }
