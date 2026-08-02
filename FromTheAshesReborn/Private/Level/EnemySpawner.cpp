@@ -1,8 +1,9 @@
 ﻿#include "Level/EnemySpawner.h"
 
 #include "NavigationSystem.h"
-#include "Enemy/AIControllerEnemyGrunt.h"
-#include "Enemy/EnemyGruntCharacter.h"
+#include "Enemy/AIControllerEnemyBase.h"
+#include "Enemy/EnemyBaseCharacter.h"
+#include "Enemy/EnemyCharacterDataAsset.h"
 #include "Enemy/GroupCombatSubsystem.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -35,9 +36,9 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 		return;
 	}
 
-	for (const TPair<TSubclassOf<AEnemyBaseCharacter>, int32>& Element : InWaveData.EnemySpawnCount)
+	for (const TPair<UEnemyCharacterDataAsset*, int32>& Element : InWaveData.EnemySpawnCount)
 	{
-		TSubclassOf<AEnemyBaseCharacter> EnemyClass = Element.Key;
+		UEnemyCharacterDataAsset* EnemyData = Element.Key;
 		int32 AmountToSpawn = Element.Value;
 
 		for (int32 i = 0; i < AmountToSpawn; i++)
@@ -49,18 +50,39 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 			if(bSuccess)
 			{
 				ResultLocation.Location = ResultLocation.Location + ResultLocation.Location.UpVector.GetSafeNormal() * VerticalLocationOffset;
-				AEnemyGruntCharacter* Grunt = GetWorld()->SpawnActor<AEnemyGruntCharacter>(GruntClass, ResultLocation.Location, FRotator(0, 0, 0));
 
-				if(Grunt)
+				if (!EnemyData)
 				{
-					if(!Grunt->GetController())
-					{
-						AAIControllerEnemyGrunt* GruntController = GetWorld()->SpawnActor<AAIControllerEnemyGrunt>(GruntControllerClass);
+					UE_LOG(LogTemp, Error, TEXT("EnemyData is null"));
+					continue;
+				}
 
-						if(GruntController && GruntController->IsValidLowLevel())
+				if (!EnemyData->EnemyCharacterClass)
+				{
+					UE_LOG(LogTemp, Error, TEXT("%s has a null EnemyCharacterClass"), *GetNameSafe(EnemyData));
+					continue;
+				}
+				
+				AEnemyBaseCharacter* Enemy = GetWorld()->SpawnActor<AEnemyBaseCharacter>(EnemyData->EnemyCharacterClass, ResultLocation.Location, FRotator(0, 0, 0));
+				
+				if(!Enemy)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Enemy null"))
+					return;
+				}
+				
+				
+				if(Enemy)
+				{
+					if(!Enemy->GetController())
+					{
+						AAIControllerEnemyBase* EnemyController = GetWorld()->SpawnActor<AAIControllerEnemyBase>(EnemyData->EnemyControllerClass);
+				
+						if(EnemyController && EnemyController->IsValidLowLevel())
 						{
-							GruntController->Possess(Grunt);
-							GruntController->StateTreeComponent->StartLogic();
+							EnemyController->Possess(Enemy);
+							EnemyController->StateTreeComponent->StartLogic();
+							UE_LOG(LogTemp, Warning, TEXT("Starting..."))
 						}
 						else
 						{

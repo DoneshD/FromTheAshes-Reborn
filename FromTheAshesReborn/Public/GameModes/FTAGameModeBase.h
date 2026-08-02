@@ -4,6 +4,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "FTAGameModeBase.generated.h"
 
+class UEnemyCharacterDataAsset;
 class AEnemyBaseCharacter;
 struct FWaveData;
 
@@ -13,7 +14,8 @@ struct FWaveData
 	GENERATED_BODY()
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	TMap<TSubclassOf<AEnemyBaseCharacter>, int32> EnemySpawnCount;
+	TMap<UEnemyCharacterDataAsset*, int32> EnemySpawnCount;
+	
 };
 
 UCLASS()

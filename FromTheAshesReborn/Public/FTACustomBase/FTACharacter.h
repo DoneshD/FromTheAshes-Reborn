@@ -75,7 +75,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool bUseLeftHandIK = false;
-	
 
 protected:
 

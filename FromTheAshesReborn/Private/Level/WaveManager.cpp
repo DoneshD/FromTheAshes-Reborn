@@ -1,7 +1,6 @@
 ﻿#include "Level/WaveManager.h"
 
 #include "Enemy/EnemyBaseCharacter.h"
-#include "Enemy/EnemyGruntCharacter.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Level/EnemySpawner.h"

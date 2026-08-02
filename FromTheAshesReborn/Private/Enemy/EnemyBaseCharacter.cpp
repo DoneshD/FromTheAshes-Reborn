@@ -79,6 +79,17 @@ void AEnemyBaseCharacter::BeginPlay()
 	//
 	// 	DissolveTimeline.SetLooping(false);
 	// }
+
+	// if(GetController())
+	// {
+	// 	AAIControllerEnemyGrunt* GruntController = Cast<AAIControllerEnemyGrunt>(GetController());
+	//
+	// 	if(GruntController && GruntController->IsValidLowLevel())
+	// 	{
+	// 		GruntController->Possess(this);
+	// 		GruntController->StateTreeComponent->StartLogic();
+	// 	}
+	// }
 	
 	
 }
