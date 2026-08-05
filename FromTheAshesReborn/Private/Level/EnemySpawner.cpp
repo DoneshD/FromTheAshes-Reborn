@@ -81,8 +81,14 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 						if(EnemyController && EnemyController->IsValidLowLevel())
 						{
 							EnemyController->Possess(Enemy);
-							EnemyController->StateTreeComponent->StartLogic();
-							UE_LOG(LogTemp, Warning, TEXT("Starting..."))
+							AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+							if(FTAGameMode)
+							{
+								if(FTAGameMode->ActivateAIBehavior)
+								{
+									EnemyController->StateTreeComponent->StartLogic();
+								}
+							}
 						}
 						else
 						{

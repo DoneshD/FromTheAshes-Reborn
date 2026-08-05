@@ -1,5 +1,6 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_RangedAttack.h"
 
+#include "FTAProjectile.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/RangedAbilityDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
@@ -7,9 +8,14 @@
 #include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/PlayerCharacter.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
+#include "Weapon/EquipmentManagerComponent.h"
+#include "Weapon/WeaponActorBase.h"
 
 UGA_RangedAttack::UGA_RangedAttack(const FObjectInitializer&)
 {
@@ -42,12 +48,12 @@ void UGA_RangedAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 
 	TargetingSystemComponent = GetFTACharacterFromActorInfo()->FindComponentByClass<UTargetingSystemComponent>();
 
-	if(!TargetingSystemComponent)
-	{
-		UE_LOG(LogTemp, Error, TEXT("TargetingComponent is null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
+	// if(!TargetingSystemComponent)
+	// {
+	// 	UE_LOG(LogTemp, Error, TEXT("TargetingComponent is null"));
+	// 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+	// 	return;
+	// }
 
 	
 }
@@ -129,30 +135,6 @@ void UGA_RangedAttack::RangedTargetFound(TObjectPtr<AActor> Target)
 	}
 }
 
-void UGA_RangedAttack::FireShot()
-{
-	
-	TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
-	
-	const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
-
-	if(Actors.IsEmpty())
-	{
-		UE_LOG(LogTemp, Error, TEXT("Actors are null"));
-		return;
-	}
-
-	CurrentMuzzleVisualCueCDO = AddMuzzleVisualCue();
-	CurrentMuzzleSoundCueCDO = AddMeleeTrailSoundCue();
-	
-	TargetActor = FindNearestTargetToActor(Actors);
-
-	if(TargetActor)
-	{
-		RangedTargetFound(TargetActor);
-	}
-}
-
 UWeaponCueObject* UGA_RangedAttack::AddMuzzleVisualCue()
 {
 	FGameplayCueParameters VisualMuzzleCueParams;
@@ -186,6 +168,77 @@ UWeaponCueObject* UGA_RangedAttack::AddMuzzleVisualCue()
 		// UE_LOG(LogTemp, Error, TEXT("Empty null"));
 	}
 	return nullptr;
+}
+
+void UGA_RangedAttack::FireShot()
+{
+	if(CurrentRangedAttackData->ProjectileClass)
+{
+    UE_LOG(LogTemp, Warning, TEXT("Class valid"));
+
+    if(CurrentRangedAttackData->TrajectoryRoute == ETrajectoryRoute::Target)
+    {
+        //Check to see if its owner is enemy
+        FActorSpawnParameters SpawnParams;
+        UE_LOG(LogTemp, Warning, TEXT("Correct route"));
+
+        FVector SpawnLocation;
+        FVector ShootDirection;
+
+        UEquipmentManagerComponent* EMC = GetFTACharacterFromActorInfo()->FindComponentByClass<UEquipmentManagerComponent>();
+        if(EMC)
+        {
+            for(AWeaponActorBase* WeaponActor : EMC->GetEquippedWeaponActors())
+            {
+                SpawnLocation = WeaponActor->SkeletalMesh->GetSocketLocation("muzzle");
+            }
+        }
+
+        APlayerCharacter* PC = Cast<APlayerCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), APlayerCharacter::StaticClass()));
+        if(PC)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("PC valid"));
+        	ShootDirection = (PC->GetActorLocation() - SpawnLocation).GetSafeNormal();
+        }
+
+        AFTAProjectile* Projectile = GetWorld()->SpawnActor<AFTAProjectile>(
+            CurrentRangedAttackData->ProjectileClass,
+            SpawnLocation,
+            GetFTACharacterFromActorInfo()->GetActorRotation(),
+            SpawnParams);
+
+        if (Projectile)
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Projectile spawned"));
+
+            Projectile->ProjectileMovementComponent->Velocity =
+                ShootDirection * Projectile->ProjectileMovementComponent->InitialSpeed;
+        }
+    }
+}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Class invalid"))
+		// TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
+		//
+		// const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
+		//
+		// if(Actors.IsEmpty())
+		// {
+		// 	UE_LOG(LogTemp, Error, TEXT("Actors are null"));
+		// 	return;
+		// }
+		//
+		// CurrentMuzzleVisualCueCDO = AddMuzzleVisualCue();
+		// CurrentMuzzleSoundCueCDO = AddMeleeTrailSoundCue();
+		//
+		// TargetActor = FindNearestTargetToActor(Actors);
+		//
+		// if(TargetActor)
+		// {
+		// 	RangedTargetFound(TargetActor);
+		// }
+	}
 }
 
 UFTASoundCueObject* UGA_RangedAttack::AddMeleeTrailSoundCue()
@@ -339,6 +392,11 @@ void UGA_RangedAttack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAss
 			}
 		}
 	}
+
+	if(!RangedAttackAsset->ProjectileClass)
+	{
+		CurrentRangedAttackData->ProjectileClass = RangedAttackAsset->ProjectileClass;
+	}
 	
 }
 
@@ -375,6 +433,12 @@ void UGA_RangedAttack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRunt
 			}
 		}
 	}
+
+	if(!RangedAttackAsset->ProjectileClass)
+	{
+		CurrentRangedAttackData->ProjectileClass = RangedAttackAsset->ProjectileClass;
+	}
+	
 	
 }
 

@@ -31,6 +31,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	TArray<FWaveData> EnemyEncounterArray;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	bool ActivateAIBehavior = true;
+
 public:
 	AFTAGameModeBase();
 	
