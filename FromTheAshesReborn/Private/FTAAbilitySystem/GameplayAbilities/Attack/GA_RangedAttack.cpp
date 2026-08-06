@@ -173,71 +173,64 @@ UWeaponCueObject* UGA_RangedAttack::AddMuzzleVisualCue()
 void UGA_RangedAttack::FireShot()
 {
 	if(CurrentRangedAttackData->ProjectileClass)
-{
-    UE_LOG(LogTemp, Warning, TEXT("Class valid"));
+	{
+	    if(CurrentRangedAttackData->TrajectoryRoute == ETrajectoryRoute::Target)
+	    {
+	        //Check to see if its owner is enemy
+	        FActorSpawnParameters SpawnParams;
 
-    if(CurrentRangedAttackData->TrajectoryRoute == ETrajectoryRoute::Target)
-    {
-        //Check to see if its owner is enemy
-        FActorSpawnParameters SpawnParams;
-        UE_LOG(LogTemp, Warning, TEXT("Correct route"));
+	        FVector SpawnLocation;
+	        FVector ShootDirection;
 
-        FVector SpawnLocation;
-        FVector ShootDirection;
+	        UEquipmentManagerComponent* EMC = GetFTACharacterFromActorInfo()->FindComponentByClass<UEquipmentManagerComponent>();
+	        if(EMC)
+	        {
+	            for(AWeaponActorBase* WeaponActor : EMC->GetEquippedWeaponActors())
+	            {
+	                SpawnLocation = WeaponActor->SkeletalMesh->GetSocketLocation("muzzle");
+	            }
+	        }
 
-        UEquipmentManagerComponent* EMC = GetFTACharacterFromActorInfo()->FindComponentByClass<UEquipmentManagerComponent>();
-        if(EMC)
-        {
-            for(AWeaponActorBase* WeaponActor : EMC->GetEquippedWeaponActors())
-            {
-                SpawnLocation = WeaponActor->SkeletalMesh->GetSocketLocation("muzzle");
-            }
-        }
+	        APlayerCharacter* PC = Cast<APlayerCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), APlayerCharacter::StaticClass()));
+	        if(PC)
+	        {
+        		ShootDirection = (PC->GetActorLocation() - SpawnLocation).GetSafeNormal();
+        		ShootDirection.Z = 0.0f;
+	        }
 
-        APlayerCharacter* PC = Cast<APlayerCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), APlayerCharacter::StaticClass()));
-        if(PC)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("PC valid"));
-        	ShootDirection = (PC->GetActorLocation() - SpawnLocation).GetSafeNormal();
-        }
+	        AFTAProjectile* Projectile = GetWorld()->SpawnActor<AFTAProjectile>(
+	            CurrentRangedAttackData->ProjectileClass,
+	            SpawnLocation,
+	            GetFTACharacterFromActorInfo()->GetActorRotation(),
+	            SpawnParams);
 
-        AFTAProjectile* Projectile = GetWorld()->SpawnActor<AFTAProjectile>(
-            CurrentRangedAttackData->ProjectileClass,
-            SpawnLocation,
-            GetFTACharacterFromActorInfo()->GetActorRotation(),
-            SpawnParams);
-
-        if (Projectile)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("Projectile spawned"));
-
-            Projectile->ProjectileMovementComponent->Velocity =
-                ShootDirection * Projectile->ProjectileMovementComponent->InitialSpeed;
-        }
-    }
-}
+	        if (Projectile)
+	        {
+	            Projectile->ProjectileMovementComponent->Velocity = ShootDirection * Projectile->ProjectileMovementComponent->InitialSpeed;
+	        }
+	    }
+	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Class invalid"))
-		// TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
-		//
-		// const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
-		//
-		// if(Actors.IsEmpty())
-		// {
-		// 	UE_LOG(LogTemp, Error, TEXT("Actors are null"));
-		// 	return;
-		// }
-		//
-		// CurrentMuzzleVisualCueCDO = AddMuzzleVisualCue();
-		// CurrentMuzzleSoundCueCDO = AddMeleeTrailSoundCue();
-		//
-		// TargetActor = FindNearestTargetToActor(Actors);
-		//
-		// if(TargetActor)
-		// {
-		// 	RangedTargetFound(TargetActor);
-		// }
+		TargetingSystemComponent->ClosestTargetDistance = TargetingSystemComponent->MinimumDistanceToEnable;
+		
+		const TArray<AActor*> Actors = GetAllActorsOfClass(TargetableActors);
+		
+		if(Actors.IsEmpty())
+		{
+			UE_LOG(LogTemp, Error, TEXT("Actors are null"));
+			return;
+		}
+		
+		CurrentMuzzleVisualCueCDO = AddMuzzleVisualCue();
+		CurrentMuzzleSoundCueCDO = AddMeleeTrailSoundCue();
+		
+		TargetActor = FindNearestTargetToActor(Actors);
+		
+		if(TargetActor)
+		{
+			RangedTargetFound(TargetActor);
+		}
 	}
 }
 
