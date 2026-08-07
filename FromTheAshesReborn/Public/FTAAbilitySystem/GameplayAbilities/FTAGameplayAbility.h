@@ -132,6 +132,9 @@ protected:
 
 public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
+	TObjectPtr<UFTAAbilityDataAsset> DefaultAbilityDataAsset;
+	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
 	int ActivationPriority = 0;
 	

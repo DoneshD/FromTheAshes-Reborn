@@ -16,7 +16,7 @@ struct FAIAbilityData
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float AcceptableRadiusTestFloat = 250.0f;
+	float AcceptableRadiusRange = 250.0f;
 	
 };
 

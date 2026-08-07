@@ -14,7 +14,7 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 
 	UE_LOG(LogTemp, Warning, TEXT("HERE 2"));
 
-	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 	if(!InstanceData.OwningActor)
 	{
 		UE_LOG(LogTemp, Error, TEXT("OwningActor is null"))
@@ -36,7 +36,7 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 					if (UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec->Ability))
 					{
 						UE_LOG(LogTemp, Warning, TEXT("Ability name: %s"), *FTAAbility->GetName());
-						// InstanceData.AbilityAsset = FTAAbility->datass;
+						InstanceData.AbilityAsset = FTAAbility->DefaultAbilityDataAsset;
 					}
 				}
 			}
