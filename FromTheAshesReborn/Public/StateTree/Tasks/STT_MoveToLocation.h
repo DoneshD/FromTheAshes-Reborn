@@ -6,6 +6,7 @@
 #include "STT_MoveToLocation.generated.h"
 
 
+class UAICombatParameters;
 class AAIController;
 
 USTRUCT()
@@ -30,7 +31,6 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_MoveToLocation_InstanceData
 
 	UPROPERTY(EditAnywhere)
 	float AcceptableRadius = 300.0f;
-	
 	
 };
 

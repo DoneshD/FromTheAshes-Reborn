@@ -1,13 +1,14 @@
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "Enemy/FTAStateTreeAIComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 
 AAIControllerEnemyBase::AAIControllerEnemyBase(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
-	StateTreeComponent = CreateDefaultSubobject<UStateTreeAIComponent>("StateTreeAIComponent");
+	StateTreeComponent = CreateDefaultSubobject<UFTAStateTreeAIComponent>("StateTreeAIComponent");
 	
 }
 

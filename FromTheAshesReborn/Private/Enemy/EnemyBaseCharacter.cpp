@@ -1,6 +1,7 @@
 ﻿#include "Enemy/EnemyBaseCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "BrainComponent.h"
 #include "NiagaraComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "Components/CapsuleComponent.h"

@@ -1,13 +1,24 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "EnumHelpers.h"
 #include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
+#include "EnumHelpers.h"
 #include "FTAAbilityDataAsset.generated.h"
 
 class UCameraParamsDataAsset;
 class AWeaponActorBase;
+
+USTRUCT(BlueprintType)
+struct FAIAbilityData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float AcceptableRadiusTestFloat = 250.0f;
+	
+};
 
 UCLASS()
 class FROMTHEASHESREBORN_API UFTAAbilityDataAsset : public UPrimaryDataAsset
@@ -45,5 +56,11 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Base Params | Combo Requirements")
 	bool RequiredPause = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Base Params | AI")
+	bool UseAIAbilityData = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Base Params | AI", meta = (EditCondition = "UseAIAbilityData"))
+	FAIAbilityData AIAbilityData;
 	
 };

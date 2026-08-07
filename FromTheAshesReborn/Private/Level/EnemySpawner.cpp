@@ -4,6 +4,7 @@
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/EnemyCharacterDataAsset.h"
+#include "Enemy/FTAStateTreeAIComponent.h"
 #include "Enemy/GroupCombatSubsystem.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -86,6 +87,8 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 							{
 								if(FTAGameMode->ActivateAIBehavior)
 								{
+									
+									EnemyController->StateTreeComponent->SetStateTree(EnemyData->StateTree);
 									EnemyController->StateTreeComponent->StartLogic();
 								}
 							}

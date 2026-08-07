@@ -2,9 +2,11 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "GameplayTagContainer.h"
+#include "StateTreeEvents.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "Enemy/FTAStateTreeAIComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Recover/GA_Recover.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -83,7 +85,7 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 		{
 			FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Downed");
 		
-			const UStateTreeComponent* STComp = EnemyController->StateTreeComponent;
+			const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
 
 			if (STComp)
 			{

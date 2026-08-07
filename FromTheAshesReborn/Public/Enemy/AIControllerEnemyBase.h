@@ -2,8 +2,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "Components/StateTreeAIComponent.h"
 #include "AIControllerEnemyBase.generated.h"
+
+class UFTAStateTreeAIComponent;
 
 UCLASS()
 class FROMTHEASHESREBORN_API AAIControllerEnemyBase : public AAIController
@@ -19,7 +20,7 @@ public:
 	TObjectPtr<APawn> OwnerPawn;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
-	TObjectPtr<UStateTreeAIComponent> StateTreeComponent;
+	TObjectPtr<UFTAStateTreeAIComponent> StateTreeComponent;
 
 protected:
 	

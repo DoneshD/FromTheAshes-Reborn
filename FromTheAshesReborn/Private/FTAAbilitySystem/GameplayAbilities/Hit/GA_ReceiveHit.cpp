@@ -1,10 +1,12 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_ReceiveHit.h"
 
 #include "AbilitySystemBlueprintLibrary.h"
+#include "StateTreeEvents.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
 #include "Enemy/AIControllerEnemyBase.h"
+#include "Enemy/FTAStateTreeAIComponent.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
@@ -125,7 +127,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Hit");
 		
-		const UStateTreeComponent* STComp = EnemyController->StateTreeComponent;
+		const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
 
 		if (STComp)
 		{

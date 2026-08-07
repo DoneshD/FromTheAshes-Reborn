@@ -1,5 +1,4 @@
 ﻿#include "StateTree/Evaluators/STE_GetDistanceToTarget.h"
-
 #include "StateTreeExecutionContext.h"
 
 void FStateTreeEvaluator_GetDistanceToTarget::TreeStart(FStateTreeExecutionContext& Context) const
