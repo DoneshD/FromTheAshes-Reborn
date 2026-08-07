@@ -4,6 +4,8 @@
 #include "StateTreeEvaluatorBase.h"
 #include "STE_SelectBestAbility.generated.h"
 
+class UFTAAbilityDataAsset;
+
 USTRUCT()
 struct FROMTHEASHESREBORN_API FStateTreeEvaluator_SelectBestAbility_InstanceData
 {
@@ -12,11 +14,8 @@ struct FROMTHEASHESREBORN_API FStateTreeEvaluator_SelectBestAbility_InstanceData
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<AActor> OwningActor = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<AActor> TargetActor = nullptr;
-
 	UPROPERTY(EditAnywhere, Category = Output)
-	FGameplayTag AbilityEventTag = FGameplayTag::EmptyTag;
+	TObjectPtr<UFTAAbilityDataAsset> AbilityAsset = nullptr;
 	
 };
 
