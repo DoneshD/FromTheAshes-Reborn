@@ -86,6 +86,10 @@ void APlayerCharacter::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	// UE_LOG(LogTemp, Warning, TEXT("[%s] Movement Mode: %s"), *GetActorNameOrLabel(), *UEnum::GetValueAsString(GetCharacterMovement()->MovementMode));
+	if(GroupCombatComponent)
+	{
+		// UE_LOG(LogTemp, Warning, TEXT("GroupCombatComponent->AttackTokensCount: %d"), GroupCombatComponent->AttackTokensCount);
+	}
 
 }
 

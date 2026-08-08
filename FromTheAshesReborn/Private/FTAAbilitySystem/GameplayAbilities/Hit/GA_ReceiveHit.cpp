@@ -3,16 +3,23 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "StateTreeEvents.h"
 #include "CombatComponents/ComboManagerComponent.h"
+#include "CombatComponents/GroupCombatComponent.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
 #include "Enemy/AIControllerEnemyBase.h"
+#include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/FTAStateTreeAIComponent.h"
+#include "Enemy/GroupCombatSubsystem.h"
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/PlayerCharacter.h"
+
+class UGroupCombatSubsystem;
+class AEnemyBaseCharacter;
 
 UGA_ReceiveHit::UGA_ReceiveHit()
 {
@@ -46,6 +53,32 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(StartLocation, TargetLocation);
 	GetFTACharacterFromActorInfo()->SetActorRotation(FRotator(0, LookAtRotation.Yaw, 0));
 
+	
+	AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo());
+
+	APlayerCharacter* PC = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UGroupCombatComponent* TargetGCC = PC->FindComponentByClass<UGroupCombatComponent>();
+
+	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+	if(GCS)
+	{
+		if(GCS->EnemiesAttackTokensMap.Find(Enemy))
+		{
+			const int32 TokensTransferred = GCS->EnemiesAttackTokensMap[Enemy];
+			const int32 PreviousAttackTokens = TargetGCC->AttackTokensCount;
+
+			TargetGCC->AttackTokensCount += TokensTransferred;
+			GCS->EnemiesAttackTokensMap.Remove(Enemy);
+
+			// UE_LOG(LogTemp, Warning,
+			// 	TEXT("Attack Tokens Transferred | Enemy: %s | Transferred: %d | Target Tokens: %d -> %d"),
+			// 	*Enemy->GetName(),
+			// 	TokensTransferred,
+			// 	PreviousAttackTokens,
+			// 	TargetGCC->AttackTokensCount
+			// );
+		}
+	}
 	
 	if(!CurrentEventData.OptionalObject)
 	{
@@ -105,22 +138,8 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	}
 	
 
-	if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit")))
-	{
-		GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
-	}
 	
 	
-	/*if(!HitInfoObject->HitData.Instigator)
-	{
-		TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
-	}
-	else
-	{
-		//Bug?
-		TargetLocation = HitInfoObject->HitData.Instigator->GetActorLocation();
-		
-	}*/
 	
 	
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
@@ -134,6 +153,11 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 			FStateTreeEvent HitEvent;
 			HitEvent.Tag = HitTag;
 			EnemyController->StateTreeComponent->SendStateTreeEvent(HitEvent);
+
+			if(!GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit")))
+			{
+				GetAbilitySystemComponentFromActorInfo()->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
+			}
 		}
 	}
 

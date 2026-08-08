@@ -87,9 +87,8 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 							{
 								if(FTAGameMode->ActivateAIBehavior)
 								{
-									
 									EnemyController->StateTreeComponent->SetStateTree(EnemyData->StateTree);
-									EnemyController->StateTreeComponent->StartLogic();
+									// EnemyController->StateTreeComponent->StartLogic();
 								}
 							}
 						}
@@ -116,6 +115,9 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 			
 		}
 	}
+	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+	GCS->ActivateAllStateTrees();
+
 	
 }
 

@@ -2,6 +2,7 @@
 #include "StateTreeExecutionContext.h"
 #include "CombatComponents/GroupCombatComponent.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "Kismet/GameplayStatics.h"
 
 bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecutionContext& Context) const
 {
@@ -23,6 +24,7 @@ bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecut
 	}
 	
 	AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.Target);
+	// APlayerCharacter* PC = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
 	if(!FTACharTarget && !FTACharTarget->IsValidLowLevel())
 	{
@@ -38,12 +40,35 @@ bool FStateTreeCondition_CheckTargetAttackTokens::TestCondition(FStateTreeExecut
 		return false;
 	}
 
-	if(TargetGCC->AttackTokensCount < InstanceData.AmountToCheck)
+	// 	UE_LOG(LogTemp, Error,
+	// 	TEXT("Owner: %s | AmountToCheck: %d | Target: %s | AttackTokensCount: %d"),
+	// 	*InstanceData.Owner->GetName(),
+	// 	InstanceData.AmountToCheck,
+	// 	*InstanceData.Target->GetName(),
+	// 	TargetGCC->AttackTokensCount
+	// );
+	
+	// TargetGCC->AttackTokensCount = 1;
+	if (TargetGCC->AttackTokensCount < InstanceData.AmountToCheck)
 	{
-		// UE_LOG(LogTemp, Error, TEXT("Not enough tokens"));
-		
+		// UE_LOG(
+		// 	LogTemp,
+		// 	Warning,
+		// 	TEXT("Attack token check FAILED: AttackTokensCount (%d) < AmountToCheck (%d)"),
+		// 	TargetGCC->AttackTokensCount,
+		// 	InstanceData.AmountToCheck
+		// );
+
 		return false;
 	}
-	
+
+	// UE_LOG(
+	// 	LogTemp,
+	// 	Warning,
+	// 	TEXT("Attack token check SUCCEEDED: AttackTokensCount (%d) >= AmountToCheck (%d)"),
+	// 	TargetGCC->AttackTokensCount,
+	// 	InstanceData.AmountToCheck
+	// );
+
 	return true;
 }

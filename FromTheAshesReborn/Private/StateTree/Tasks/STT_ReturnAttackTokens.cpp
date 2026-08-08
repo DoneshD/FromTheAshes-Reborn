@@ -4,9 +4,11 @@
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/GroupCombatSubsystem.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "Player/PlayerCharacter.h"
 
 EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExecutionContext& Context,const FStateTreeTransitionResult& Transition) const
 {
+	// UE_LOG(LogTemp, Warning, TEXT("Return token"))
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 	
 	if(!InstanceData.TargetActor && !InstanceData.TargetActor->IsValidLowLevel())
@@ -15,7 +17,7 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 		return EStateTreeRunStatus::Failed;
 	}
 	
-	AFTACharacter* FTACharTarget = Cast<AFTACharacter>(InstanceData.TargetActor);
+	APlayerCharacter* FTACharTarget = Cast<APlayerCharacter>(InstanceData.TargetActor);
 
 	if(!FTACharTarget && !FTACharTarget->IsValidLowLevel())
 	{
@@ -38,11 +40,22 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 	{
 		if(GCS->EnemiesAttackTokensMap.Find(Enemy))
 		{
-			TargetGCC->AttackTokensCount += GCS->EnemiesAttackTokensMap[Enemy];
+			const int32 TokensTransferred = GCS->EnemiesAttackTokensMap[Enemy];
+			const int32 PreviousAttackTokens = TargetGCC->AttackTokensCount;
+
+			TargetGCC->AttackTokensCount += TokensTransferred;
 			GCS->EnemiesAttackTokensMap.Remove(Enemy);
-			
+
+			// UE_LOG(LogTemp, Warning,
+			// 	TEXT("Attack Tokens Transferred | Enemy: %s | Transferred: %d | Target Tokens: %d -> %d"),
+			// 	*Enemy->GetName(),
+			// 	TokensTransferred,
+			// 	PreviousAttackTokens,
+			// 	TargetGCC->AttackTokensCount
+			// );
 			return EStateTreeRunStatus::Succeeded;
 		}
+	
 		return EStateTreeRunStatus::Failed;
 	}
 	return EStateTreeRunStatus::Failed;

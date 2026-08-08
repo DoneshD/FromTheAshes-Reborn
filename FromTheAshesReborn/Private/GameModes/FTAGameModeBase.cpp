@@ -14,3 +14,8 @@ void AFTAGameModeBase::BeginPlay()
 	CurrentEncounter = 0;
 	
 }
+
+void AFTAGameModeBase::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}

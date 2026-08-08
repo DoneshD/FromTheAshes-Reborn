@@ -2,7 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Enemy/GroupCombatSubsystem.h"
 #include "GroupCombatComponent.generated.h"
+
+enum class EEnemyEngagementRole : uint8;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UGroupCombatComponent : public UActorComponent
@@ -16,6 +19,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	int32 TokensUsedInCurrentAttack = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	EEnemyEngagementRole EngagementRole = EEnemyEngagementRole::None;
 	
 protected:
 	

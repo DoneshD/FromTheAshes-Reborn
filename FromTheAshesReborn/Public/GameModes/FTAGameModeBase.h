@@ -34,9 +34,11 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	bool ActivateAIBehavior = true;
 
-public:
-	AFTAGameModeBase();
+protected:
 	
+	AFTAGameModeBase();
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+
 	
 };

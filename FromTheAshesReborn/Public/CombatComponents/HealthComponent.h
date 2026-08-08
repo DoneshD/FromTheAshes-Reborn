@@ -13,8 +13,6 @@ struct FOnAttributeChangeData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FHealth_AttributeChanged, UHealthComponent*, HealthComponent, float, OldValue, float, NewValue, AActor*, Instigator);
 
-
-
 UCLASS(Blueprintable, Meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UHealthComponent : public UActorComponent
 {

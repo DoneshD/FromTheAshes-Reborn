@@ -17,6 +17,7 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::Tick(FStateTreeExecutionConte
 	if (IsTaskFinished)
 	{
 		IsTaskFinished = false;
+		// UE_LOG(LogTemp, Warning, TEXT("Ability done"));
 		return EStateTreeRunStatus::Succeeded;
 	}
 	return EStateTreeRunStatus::Running;
@@ -51,7 +52,6 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::PerformAbility(const FStateTr
 	// EventData.EventTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Event.Ability.One");
 	EventData.EventTag = InstanceData.EventTag;
 	
-
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(InstanceData.InputActor, EventData.EventTag, EventData);
 	ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor);
 	
