@@ -14,6 +14,9 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_PerformAbility_InstanceData
 
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<AActor> InputActor = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	FGameplayTag EventTag = FGameplayTag::EmptyTag;
 	
 };
 

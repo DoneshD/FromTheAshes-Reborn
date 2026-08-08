@@ -16,8 +16,8 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_ExtractStateTreeParams_InstanceData
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<UAICombatParameters> CombatParameters;
 	
-	UPROPERTY(EditAnywhere, Category = Output)
-	float TestAcceptableRadius;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UAICombatParameters> OutCombatParameters;
 	
 };
 

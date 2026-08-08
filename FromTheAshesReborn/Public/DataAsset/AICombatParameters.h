@@ -5,6 +5,8 @@
 #include "Engine/DataAsset.h"
 #include "AICombatParameters.generated.h"
 
+class UEnvQuery;
+
 USTRUCT(BlueprintType)
 struct FStrafeData
 {
@@ -12,11 +14,50 @@ struct FStrafeData
 	
 public:
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Strafe")
 	float AcceptableRadius = 100.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Strafe")
 	float MovementSpeed = 150.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Strafe")
+	TObjectPtr<UEnvQuery> StrafeQuery;
+};
+
+USTRUCT(BlueprintType)
+struct FGroupCombatData
+{
+	GENERATED_BODY()
+	
+public:
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int TokenAmount = 1;
+};
+
+USTRUCT(BlueprintType)
+struct FChaseData
+{
+	GENERATED_BODY()
+	
+public:
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MinimumCombatRangeDistance = 100.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Strafe")
+	float AcceptableRadius = 100.0f;
+};
+
+USTRUCT(BlueprintType)
+struct FAttackData
+{
+	GENERATED_BODY()
+	
+public:
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float MinimumDistanceForAttack = 250.0f;
 };
 
 UCLASS()
@@ -29,30 +70,18 @@ public:
 	FStrafeData StrafeData;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag AbilityStarted = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Started");
+	FGroupCombatData GroupCombatData;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag AbilityRunning = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Active");
-
+	FChaseData ChaseData;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag AbilityFinished = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.MeleeAttack.Finished");
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int TokenAmount = 1;
+	FAttackData AttackData;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag AirStunFinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished");
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag DownedFinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.Downed.Finished");
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float MinimumCombatRangeDistance = 900.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float MinimumDistanceForAttack = 250.0f;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float TestDistFloat = 250.0f;
 	
 };

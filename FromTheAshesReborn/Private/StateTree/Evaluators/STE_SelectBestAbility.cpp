@@ -5,14 +5,11 @@
 #include "StateTreeExecutionContext.h"
 #include "StateTreeExecutionTypes.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 
 void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext& Context) const
 {
-	UE_LOG(LogTemp, Warning, TEXT("HERE 1"));
-	
 	FStateTreeEvaluatorCommonBase::TreeStart(Context);
-
-	UE_LOG(LogTemp, Warning, TEXT("HERE 2"));
 
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 	if(!InstanceData.OwningActor)
@@ -21,6 +18,8 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 		return;
 	}
 
+	TArray<TObjectPtr<UFTAGameplayAbility>> PossibleAbilities;
+	
 	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.OwningActor);
 	if (ASC)
 	{
@@ -35,12 +34,22 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 				{
 					if (UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec->Ability))
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Ability name: %s"), *FTAAbility->GetName());
-						InstanceData.AbilityAsset = FTAAbility->DefaultAbilityDataAsset;
+						if (FTAAbility->IsA(InstanceData.AbilityClass))
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Ability added: %s"), *FTAAbility->GetName());
+							PossibleAbilities.Add(FTAAbility);
+						}
 					}
 				}
 			}
 		}
+	}
+	UE_LOG(LogTemp, Warning, TEXT("Num: %d"), PossibleAbilities.Num());
+	if (PossibleAbilities.Num() > 0)
+	{
+		auto RandomItem = PossibleAbilities[FMath::RandRange(0, PossibleAbilities.Num() - 1)];
+		UE_LOG(LogTemp, Warning, TEXT("Ability Chosen: %s"), *RandomItem->GetName());
+		InstanceData.AbilityAsset = RandomItem->DefaultAbilityDataAsset;
 	}
 }
 

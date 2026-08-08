@@ -17,6 +17,9 @@ struct FAIAbilityData
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float AcceptableRadiusRange = 250.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FGameplayTag StateTreeEventTag = FGameplayTag::EmptyTag;
 	
 };
 

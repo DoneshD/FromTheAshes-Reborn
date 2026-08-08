@@ -5,6 +5,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "EnemyBaseCharacter.generated.h"
 
+class UAICombatParameters;
 class UWeaponDefinition;
 class UWidgetComponent;
 
@@ -18,24 +19,23 @@ class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
 public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UAICombatParameters> AICombatParams;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UWidgetComponent> HealthWidget;
 
 	FOnEnemyDeathSignature OnDeath;
 
 
 public:
-
-
-
+	
 	UFUNCTION()
 	void TimelineProgress(float Value);
 
 	UFUNCTION()
 	void TimelineFinished();
-
 	
 	bool ShouldRotate = true;
-	
 
 protected:
 	

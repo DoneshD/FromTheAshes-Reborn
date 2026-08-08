@@ -15,7 +15,7 @@ EStateTreeRunStatus FStateTreeTask_ExtractStateTreeParams::EnterState(FStateTree
 
 	}
 
-	InstanceData->TestAcceptableRadius = InstanceData->CombatParameters->TestDistFloat;
+	InstanceData->OutCombatParameters = InstanceData->CombatParameters;
 	
 	return EStateTreeRunStatus::Succeeded;
 	

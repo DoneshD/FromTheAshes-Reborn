@@ -15,8 +15,8 @@ struct FROMTHEASHESREBORN_API FStateTreeEvaluator_GetMinimumCombatRangeLocation_
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<AActor> TargetActor = nullptr;
 
-	UPROPERTY(EditAnywhere)
-	float DistanceToTarget = 0.0f;
+	UPROPERTY(EditAnywhere, Category = Input)
+	float MinimumCombatRangeDistance = 0.0f;
 
 	UPROPERTY(EditAnywhere, Category = Output)
 	FVector MinimumLocation;
