@@ -36,7 +36,6 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 					{
 						if (FTAAbility->IsA(InstanceData.AbilityClass))
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Ability added: %s"), *FTAAbility->GetName());
 							PossibleAbilities.Add(FTAAbility);
 						}
 					}
@@ -44,11 +43,9 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 			}
 		}
 	}
-	UE_LOG(LogTemp, Warning, TEXT("Num: %d"), PossibleAbilities.Num());
 	if (PossibleAbilities.Num() > 0)
 	{
 		auto RandomItem = PossibleAbilities[FMath::RandRange(0, PossibleAbilities.Num() - 1)];
-		UE_LOG(LogTemp, Warning, TEXT("Ability Chosen: %s"), *RandomItem->GetName());
 		InstanceData.AbilityAsset = RandomItem->DefaultAbilityDataAsset;
 	}
 }
