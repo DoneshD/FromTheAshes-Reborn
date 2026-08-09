@@ -93,19 +93,15 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 
 	if (CoverEnemies.Num() > 0)
 	{
-		const int32 RandomIndex =
-			FMath::RandRange(0, CoverEnemies.Num() - 1);
+		const int32 RandomIndex = FMath::RandRange(0, CoverEnemies.Num() - 1);
 
-		AEnemyBaseCharacter* NewAggressor =
-			CoverEnemies[RandomIndex];
+		AEnemyBaseCharacter* NewAggressor = CoverEnemies[RandomIndex];
 
-		UGroupCombatComponent* NewAggressorGCC =
-			NewAggressor->FindComponentByClass<UGroupCombatComponent>();
+		UGroupCombatComponent* NewAggressorGCC = NewAggressor->FindComponentByClass<UGroupCombatComponent>();
 
 		if (NewAggressorGCC)
 		{
-			NewAggressorGCC->EngagementRole =
-				EEnemyEngagementRole::Aggressor;
+			NewAggressorGCC->EngagementRole = EEnemyEngagementRole::Aggressor;
 
 			UE_LOG(
 				LogTemp,
@@ -115,21 +111,31 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 				*NewAggressor->GetName()
 			);
 
-			if (AAIControllerEnemyBase* EnemyController =
-				Cast<AAIControllerEnemyBase>(NewAggressor->GetController()))
+			if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(NewAggressor->GetController()))
 			{
-				const UFTAStateTreeAIComponent* STComp =
-					EnemyController->StateTreeComponent;
+				const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
 
 				if (STComp)
 				{
 					FStateTreeEvent AttackEvent;
-					AttackEvent.Tag =
-						FGameplayTag::RequestGameplayTag(
-							"StateTreeTag.State.Attacking");
+					AttackEvent.Tag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Attacking");
 
-					EnemyController->StateTreeComponent
-						->SendStateTreeEvent(AttackEvent);
+					EnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
+				}
+			}
+		}
+
+		for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+		{
+			if(Enemy)
+			{
+				if(Enemy != NewAggressor)
+				{
+					UGroupCombatComponent* GCCEnemy = Enemy->FindComponentByClass<UGroupCombatComponent>();
+					if(GCCEnemy)
+					{
+						GCCEnemy->EngagementRole = EEnemyEngagementRole::Cover;
+					}
 				}
 			}
 		}

@@ -5,7 +5,7 @@ bool FStateTreeCondition_IsTargetInIdeaRange::TestCondition(FStateTreeExecutionC
 {
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 
-	if(InstanceData.DistanceBetweenActors >= InstanceData.AcceptableRadius - 100.0f)
+	if(InstanceData.DistanceBetweenActors >= InstanceData.AcceptableRange - 100.0f)
 	{
 		return true;
 	}

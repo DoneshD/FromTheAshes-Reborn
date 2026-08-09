@@ -62,6 +62,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
 	if(GCS)
 	{
+		TargetGCC->EngagementRole = EEnemyEngagementRole::Cover;
 		if(GCS->EnemiesAttackTokensMap.Find(Enemy))
 		{
 			const int32 TokensTransferred = GCS->EnemiesAttackTokensMap[Enemy];

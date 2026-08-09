@@ -13,7 +13,7 @@ struct FROMTHEASHESREBORN_API FStateTreeCondition_IsTargetInIdeaRange_InstanceDa
 	float DistanceBetweenActors;
 
 	UPROPERTY(EditAnywhere)
-	float AcceptableRadius = 300.0f;
+	float AcceptableRange = 300.0f;
 	
 };
 
