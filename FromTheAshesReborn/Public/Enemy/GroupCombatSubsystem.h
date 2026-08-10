@@ -1,9 +1,11 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "DataAsset/EnemyEncounterDataAsset.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "GroupCombatSubsystem.generated.h"
 
+class AWaveManager;
 class AEnemyBaseCharacter;
 
 UENUM(BlueprintType)
@@ -20,10 +22,18 @@ class FROMTHEASHESREBORN_API UGroupCombatSubsystem : public UWorldSubsystem
 {
 	GENERATED_BODY()
 
+protected:
+
+	UPROPERTY()
+	TObjectPtr<AWaveManager> WaveManager;
+
 public:
 	
 	UPROPERTY()
 	TArray<AEnemyBaseCharacter*> AllEnemiesArray;
+
+	// UPROPERTY()
+	// TArray<AActor*> AllEnemiesArray;
 
 	UPROPERTY()
 	TMap<TObjectPtr<AEnemyBaseCharacter>, int32> EnemiesAttackTokensMap;
@@ -35,13 +45,12 @@ protected:
 
 public:
 	
-	void RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseCharacter> Actor);
-
-	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);
+	// void RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseCharacter> Actor);
 	
-	int32 GetAggressorCount() const;
-
+	void RegisterAllEnemiesToGroupCombat();
+	void AssignEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
+	
+	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);
 	void ActivateAllStateTrees();
-
-	void PrintAllAttackTokens();
+	
 };

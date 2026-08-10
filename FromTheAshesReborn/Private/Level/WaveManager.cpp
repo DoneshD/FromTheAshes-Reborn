@@ -2,6 +2,7 @@
 
 #include "DataAsset/EnemyEncounterDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
+#include "Enemy/GroupCombatSubsystem.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Level/EnemySpawner.h"
@@ -39,10 +40,19 @@ void AWaveManager::SpawnWave()
 		UE_LOG(LogTemp, Error, TEXT("AWaveManager::SpawnWave() - Invalid EnemySpawner"));
 		return;
 	}
-	// FWaveData WaveData= FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+	
 	FWaveData WaveData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter]->WaveData;
 	
 	EnemySpawner->SpawnEnemies(WaveData);
+	
+	UGroupCombatSubsystem* GCC = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+	if(!GCC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("GCC is invalid"))
+	}
+
+	GCC->RegisterAllEnemiesToGroupCombat();
+	
 	TArray<AActor*> FoundActors;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyBaseCharacter::StaticClass(), FoundActors);
@@ -55,7 +65,7 @@ void AWaveManager::SpawnWave()
 			NumOfEnemiesInWave += 1;
 		}
 	}
-	
+	GCC->ActivateAllStateTrees();
 }
 
 void AWaveManager::HandleEnemyDeath()

@@ -29,7 +29,6 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 {
-	
 	UNavigationSystemV1* NavSystem = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
 		
 	if(!NavSystem || !NavSystem->IsValidLowLevel())
@@ -45,7 +44,6 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 
 		for (int32 i = 0; i < AmountToSpawn; i++)
 		{
-
 			FNavLocation ResultLocation;
 			bool bSuccess = NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1000, ResultLocation);
 
@@ -116,9 +114,5 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 			
 		}
 	}
-	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
-	GCS->ActivateAllStateTrees();
-
-	
 }
 

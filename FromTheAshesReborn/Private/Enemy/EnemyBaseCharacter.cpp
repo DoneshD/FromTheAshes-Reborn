@@ -40,7 +40,7 @@ void AEnemyBaseCharacter::BeginPlay()
 		return;
 	}
 
-	GCS->RegisterEnemyToGroupCombat(this);
+	// GCS->RegisterEnemyToGroupCombat(this);
 
 	if(HealthWidget && HealthWidget->IsValidLowLevel())
 	{

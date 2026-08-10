@@ -4,6 +4,7 @@
 #include "Engine/TriggerBox.h"
 #include "EnemySpawner.generated.h"
 
+
 class AAIControllerEnemyBase;
 class AEnemyBaseCharacter;
 struct FWaveData;

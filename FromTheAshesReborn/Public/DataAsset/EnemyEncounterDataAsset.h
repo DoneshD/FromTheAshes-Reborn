@@ -49,7 +49,7 @@ public:
 	FRoleData CoverRoles;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	FRoleData SpectatorRoles;
+	FRoleData ObserverRoles;
 	
 	
 };

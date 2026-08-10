@@ -3,16 +3,27 @@
 #include "AbilitySystemComponent.h"
 #include "StateTreeEvents.h"
 #include "CombatComponents/GroupCombatComponent.h"
+#include "DataAsset/EnemyEncounterDataAsset.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/FTAStateTreeAIComponent.h"
+#include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Level/WaveManager.h"
 #include "Player/PlayerCharacter.h"
 
 void UGroupCombatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
+
+	/*WaveManager = Cast<AWaveManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AWaveManager::StaticClass()));
+	if(!WaveManager)
+	{
+		UE_LOG(LogTemp, Error, TEXT("WaveManager is NULL"));
+		return;
+	}
+	WaveManager->OnAllEnemiesSpawnedInWave.AddUObject(this, &UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat);*/
 }
 
 void UGroupCombatSubsystem::Deinitialize()
@@ -21,7 +32,7 @@ void UGroupCombatSubsystem::Deinitialize()
 	
 }
 
-void UGroupCombatSubsystem::RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseCharacter> Enemy)
+/*void UGroupCombatSubsystem::RegisterEnemyToGroupCombat()
 {
 	AllEnemiesArray.Add(Enemy);
 	
@@ -35,8 +46,6 @@ void UGroupCombatSubsystem::RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseChar
 	{
 		GCC->EngagementRole = EEnemyEngagementRole::Cover;
 	}
-
-	
 	
 	UAbilitySystemComponent* ASC = Enemy->FindComponentByClass<UAbilitySystemComponent>();
 	UE_LOG(LogTemp, Warning, TEXT("Enemy listening: %s"), *Enemy->GetName());
@@ -51,6 +60,107 @@ void UGroupCombatSubsystem::RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseChar
 			}
 		);
 	
+}*/
+
+void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
+{
+
+	TArray<AActor*> Enemies;
+	
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemyBaseCharacter::StaticClass(),Enemies);
+	
+	for (AActor* Actor : Enemies)
+	{
+		AEnemyBaseCharacter* Enemy = Cast<AEnemyBaseCharacter>(Actor);
+		{
+			AllEnemiesArray.Add(Enemy);
+		}
+	}
+
+	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
+		return;
+	}
+	
+	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+
+	AssignEngagementRole(EncounterData, EEnemyEngagementRole::Aggressor);
+	AssignEngagementRole(EncounterData, EEnemyEngagementRole::Cover);
+	AssignEngagementRole(EncounterData, EEnemyEngagementRole::Observer);
+	
+	for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+	{
+		if (Enemy)
+		{
+			UAbilitySystemComponent* ASC = Enemy->FindComponentByClass<UAbilitySystemComponent>();
+	
+			ASC->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"), EGameplayTagEventType::NewOrRemoved).AddLambda(
+					[this, Enemy](const FGameplayTag Tag, int32 NewCount)
+					{
+						if (NewCount > 0)
+						{
+							SwapOutAggressor(Enemy);
+						}
+					}
+				);
+		}
+	}
+}
+
+void UGroupCombatSubsystem::AssignEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole)
+{
+	int32 RoleCount;
+
+	if(InRole == EEnemyEngagementRole::Aggressor)
+	{
+		RoleCount = InEncounterData->AggressorRoles.CurrentRoleCount;
+	}
+	else if(InRole == EEnemyEngagementRole::Cover)
+	{
+		RoleCount = InEncounterData->CoverRoles.CurrentRoleCount;
+	}
+	else if(InRole == EEnemyEngagementRole::Observer)
+	{
+		RoleCount = InEncounterData->ObserverRoles.CurrentRoleCount;
+	}
+	else
+	{
+		RoleCount = 0;
+		UE_LOG(LogTemp, Error, TEXT("UGroupCombatSubsystem::AssignEngagementRole - Invalid Role"))
+		return;
+	}
+	
+	for (int32 i = 0; i < RoleCount; i++)
+	{
+		TArray<AEnemyBaseCharacter*> AvailableEnemies;
+
+		for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+		{
+			if (!Enemy)
+			{
+				continue;
+			}
+
+			UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
+
+			if (GCC && GCC->EngagementRole == EEnemyEngagementRole::None)
+			{
+				AvailableEnemies.Add(Enemy);
+			}
+		}
+
+		if (AvailableEnemies.Num() == 0)
+		{
+			break;
+		}
+
+		AEnemyBaseCharacter* RandomEnemy = AvailableEnemies[FMath::RandRange(0, AvailableEnemies.Num() - 1)];
+		UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
+
+		GCC->EngagementRole = InRole;
+	}
 }
 
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
@@ -142,27 +252,6 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 	}
 }
 
-int32 UGroupCombatSubsystem::GetAggressorCount() const
-{
-	int32 Count = 0;
-
-	for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
-	{
-		if (!Enemy)
-		{
-			continue;
-		}
-
-		const UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-
-		if (GCC && GCC->EngagementRole == EEnemyEngagementRole::Aggressor)
-		{
-			Count += 1;
-		}
-	}
-
-	return Count;
-}
 
 void UGroupCombatSubsystem::ActivateAllStateTrees()
 {
@@ -174,33 +263,6 @@ void UGroupCombatSubsystem::ActivateAllStateTrees()
 			{
 				AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(Enemy->GetController());
 				EnemyController->StateTreeComponent->StartLogic();
-			}
-		}
-	}
-}
-
-void UGroupCombatSubsystem::PrintAllAttackTokens()
-{
-	APlayerCharacter* PC = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-	
-	if (PC)
-	{
-		UGroupCombatComponent* PlayerGCC = PC->FindComponentByClass<UGroupCombatComponent>();
-		if(PlayerGCC)
-		{
-			// PlayerGCC->AttackTokensCount = 1;
-			// UE_LOG(LogTemp, Warning, TEXT("Player: %s - Count: %d"), *PC->GetName(), PlayerGCC->AttackTokensCount);
-		}
-	}
-	
-	for(auto Enemy : AllEnemiesArray)
-	{
-		if(Enemy)
-		{
-			UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-			if(GCC)
-			{
-				// UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - Count: %d"), *Enemy->GetName(), GCC->AttackTokensCount);
 			}
 		}
 	}

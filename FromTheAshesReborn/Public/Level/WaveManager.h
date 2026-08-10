@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "WaveManager.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnAllEnemiesSpawnedInWave);
+
 class AFTAGameModeBase;
 
 UCLASS()
@@ -15,8 +17,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AFTAGameModeBase> GameModeClass;
-
-
+	
+	FOnAllEnemiesSpawnedInWave OnAllEnemiesSpawnedInWave;
+	
 protected:
 	
 	AWaveManager();
