@@ -1,5 +1,6 @@
 ﻿#include "Level/WaveManager.h"
 
+#include "DataAsset/EnemyEncounterDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -38,7 +39,9 @@ void AWaveManager::SpawnWave()
 		UE_LOG(LogTemp, Error, TEXT("AWaveManager::SpawnWave() - Invalid EnemySpawner"));
 		return;
 	}
-	FWaveData WaveData= FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+	// FWaveData WaveData= FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+	FWaveData WaveData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter]->WaveData;
+	
 	EnemySpawner->SpawnEnemies(WaveData);
 	TArray<AActor*> FoundActors;
 

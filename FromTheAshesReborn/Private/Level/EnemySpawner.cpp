@@ -1,6 +1,7 @@
 ﻿#include "Level/EnemySpawner.h"
 
 #include "NavigationSystem.h"
+#include "DataAsset/EnemyEncounterDataAsset.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Enemy/EnemyCharacterDataAsset.h"

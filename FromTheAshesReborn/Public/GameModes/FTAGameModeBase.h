@@ -4,19 +4,10 @@
 #include "GameFramework/GameModeBase.h"
 #include "FTAGameModeBase.generated.h"
 
+class UEnemyEncounterDataAsset;
 class UEnemyCharacterDataAsset;
 class AEnemyBaseCharacter;
-struct FWaveData;
 
-USTRUCT(BlueprintType)
-struct FWaveData
-{
-	GENERATED_BODY()
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	TMap<UEnemyCharacterDataAsset*, int32> EnemySpawnCount;
-	
-};
 
 UCLASS()
 class FROMTHEASHESREBORN_API AFTAGameModeBase : public AGameModeBase
@@ -26,10 +17,8 @@ class FROMTHEASHESREBORN_API AFTAGameModeBase : public AGameModeBase
 public:
 	int32 CurrentEncounter = 0;
 
-public:
-
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	TArray<FWaveData> EnemyEncounterArray;
+	TArray<TObjectPtr<UEnemyEncounterDataAsset>> EnemyEncounterArray;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	bool ActivateAIBehavior = true;
