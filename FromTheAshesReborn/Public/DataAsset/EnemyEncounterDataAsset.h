@@ -15,7 +15,7 @@ struct FRoleData
 	int32 MinimumRoleCount = 0;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	int32 CurrentRoleCount = 0;
+	int32 StartingRoleCount = 0;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	int32 MaximumRoleCount = 0;

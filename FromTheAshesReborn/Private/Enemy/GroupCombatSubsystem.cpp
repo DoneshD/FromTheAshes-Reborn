@@ -85,15 +85,15 @@ void UGroupCombatSubsystem::AssignEngagementRole(UEnemyEncounterDataAsset* InEnc
 
 	if(InRole == EEnemyEngagementRole::Aggressor)
 	{
-		RoleCount = InEncounterData->AggressorRoles.CurrentRoleCount;
+		RoleCount = InEncounterData->AggressorRoles.StartingRoleCount;
 	}
 	else if(InRole == EEnemyEngagementRole::Cover)
 	{
-		RoleCount = InEncounterData->CoverRoles.CurrentRoleCount;
+		RoleCount = InEncounterData->CoverRoles.StartingRoleCount;
 	}
 	else if(InRole == EEnemyEngagementRole::Observer)
 	{
-		RoleCount = InEncounterData->ObserverRoles.CurrentRoleCount;
+		RoleCount = InEncounterData->ObserverRoles.StartingRoleCount;
 	}
 	else
 	{
@@ -131,6 +131,95 @@ void UGroupCombatSubsystem::AssignEngagementRole(UEnemyEncounterDataAsset* InEnc
 
 		GCC->EngagementRole = InRole;
 	}
+}
+
+void UGroupCombatSubsystem::EnforceEngagementRoleCount(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole)
+{
+	int32 MinCount;
+	int32 CurrentCount = 0;
+	int32 MaxCount;
+	
+	if(InRole == EEnemyEngagementRole::Aggressor)
+	{
+		MinCount = InEncounterData->AggressorRoles.MinimumRoleCount;
+		MaxCount = InEncounterData->AggressorRoles.MaximumRoleCount;
+	}
+	else if(InRole == EEnemyEngagementRole::Cover)
+	{
+		MinCount = InEncounterData->CoverRoles.MinimumRoleCount;
+		MaxCount = InEncounterData->CoverRoles.MaximumRoleCount;
+	}
+	else if(InRole == EEnemyEngagementRole::Observer)
+	{
+		MinCount = InEncounterData->ObserverRoles.MinimumRoleCount;
+		MaxCount = InEncounterData->ObserverRoles.MaximumRoleCount;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGroupCombatSubsystem::AssignEngagementRole - Invalid Role"))
+		return;
+	}
+
+	TArray<AEnemyBaseCharacter*> MatchingEnemies;
+	TArray<AEnemyBaseCharacter*> OtherEnemies;
+
+	for(auto Enemy : AllEnemiesArray)
+	{
+		if(!Enemy)
+		{
+			continue;
+		}
+
+		if(UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>())
+		{
+			if(GCC->EngagementRole == InRole)
+			{
+				MatchingEnemies.Add(Enemy);
+				CurrentCount++;
+			}
+			else
+			{
+				OtherEnemies.Add(Enemy);
+			}
+		}
+	}
+
+	if(CurrentCount < MinCount)
+	{
+		int32 RoleAdditionsNeeded = MinCount - CurrentCount;
+
+		for(int32 i = 0; i < RoleAdditionsNeeded; i++)
+		{
+			AEnemyBaseCharacter* RandomEnemy = OtherEnemies[FMath::RandRange(0, OtherEnemies.Num() - 1)];
+			
+			UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
+			
+			GCC->EngagementRole = InRole;
+			OtherEnemies.Remove(RandomEnemy);
+		}
+	}
+	else if(CurrentCount > MaxCount)
+	{
+		int32 RoleRemovalsNeeded = CurrentCount - MaxCount;
+		for(int32 i = 0; i < RoleRemovalsNeeded; i++)
+		{
+			AEnemyBaseCharacter* RandomEnemy = MatchingEnemies[FMath::RandRange(0, MatchingEnemies.Num() - 1)];
+			
+			UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
+			
+			GCC->EngagementRole = EEnemyEngagementRole::Observer;
+			MatchingEnemies.Remove(RandomEnemy);
+		}
+	}
+	else if(CurrentCount == MaxCount)
+	{
+		return;
+	}
+	else
+	{
+		return;
+	}
+	
 }
 
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
@@ -180,6 +269,25 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 			EnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
 		}
 	}
+
+	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
+		return;
+	}
+
+	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+
+	EnforceEngagementRoleCount(EncounterData, EEnemyEngagementRole::Aggressor);
+	EnforceEngagementRoleCount(EncounterData, EEnemyEngagementRole::Cover);
+	EnforceEngagementRoleCount(EncounterData, EEnemyEngagementRole::Observer);
+
+	/*UE_LOG(LogTemp, Warning, TEXT("Aggressor Count: %d"), PrintNumOfRoles(EEnemyEngagementRole::Aggressor))
+	UE_LOG(LogTemp, Warning, TEXT("Cover Count: %d"), PrintNumOfRoles(EEnemyEngagementRole::Cover))
+	UE_LOG(LogTemp, Warning, TEXT("Observer Count: %d"), PrintNumOfRoles(EEnemyEngagementRole::Observer))
+	UE_LOG(LogTemp, Warning, TEXT("None Count: %d"), PrintNumOfRoles(EEnemyEngagementRole::None))*/
+
 }
 
 

@@ -49,6 +49,8 @@ public:
 	
 	void RegisterAllEnemiesToGroupCombat();
 	void AssignEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
+
+	void EnforceEngagementRoleCount(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
 	
 	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);
 	void ActivateAllStateTrees();
