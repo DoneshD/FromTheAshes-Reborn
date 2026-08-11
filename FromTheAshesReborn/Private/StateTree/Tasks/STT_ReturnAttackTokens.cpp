@@ -43,6 +43,7 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 			const int32 TokensTransferred = GCS->EnemiesAttackTokensMap[Enemy];
 			const int32 PreviousAttackTokens = TargetGCC->AttackTokensCount;
 
+			UE_LOG(LogTemp, Warning, TEXT("Returning token"))
 			TargetGCC->AttackTokensCount += TokensTransferred;
 			GCS->EnemiesAttackTokensMap.Remove(Enemy);
 
@@ -54,6 +55,10 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 			// 	TargetGCC->AttackTokensCount
 			// );
 			return EStateTreeRunStatus::Succeeded;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Enemy not found"));
 		}
 	
 		return EStateTreeRunStatus::Failed;

@@ -14,25 +14,40 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::EnterState(FStateTreeExecutio
 EStateTreeRunStatus FStateTreeTask_PerformAbility::Tick(FStateTreeExecutionContext& Context,
 	const float DeltaTime) const
 {
-	if (IsTaskFinished)
+	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	if(!InstanceData.InputActor)
 	{
-		IsTaskFinished = false;
-		// UE_LOG(LogTemp, Warning, TEXT("Ability done"));
+		UE_LOG(LogTemp, Error, TEXT("FStateTreeTask_PerformAbility::PerformAbility - Input Actor is null"))
+		return EStateTreeRunStatus::Failed;
+	}
+	
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor);
+
+	if(!ASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("FStateTreeTask_PerformAbility::PerformAbility - ASC is null"))
+		return EStateTreeRunStatus::Failed;
+	}
+	if(ASC->GetTagCount(InstanceData.TaskFinishedTag) > 0)
+	{
+		ASC->RemoveLooseGameplayTag(InstanceData.TaskFinishedTag);
 		return EStateTreeRunStatus::Succeeded;
 	}
+	
 	return EStateTreeRunStatus::Running;
 }
 
 void FStateTreeTask_PerformAbility::ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
-	// AActor* OwnerActor = Cast<AActor>(Context.GetOwner());
-	// UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(OwnerActor);
 
-	if (ASC && TagDelegateHandle.IsValid())
+	if (InstanceData.InputActor)
 	{
-		ASC->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("StateTreeTag.Task.Ability.Finished"), EGameplayTagEventType::NewOrRemoved)
-			.Remove(TagDelegateHandle);
+		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor);
+		if(ASC->GetTagCount(InstanceData.TaskFinishedTag))
+		{
+			ASC->RemoveLooseGameplayTag(InstanceData.TaskFinishedTag);
+		}
 	}
 
 	FStateTreeTaskCommonBase::ExitState(Context, Transition);
@@ -43,36 +58,26 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::PerformAbility(const FStateTr
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 	if(!InstanceData.InputActor)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Input Actor is null"))
+		UE_LOG(LogTemp, Error, TEXT("FStateTreeTask_PerformAbility::PerformAbility - Input Actor is null"))
 		return EStateTreeRunStatus::Failed;
+	}
+	
+	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor);
+
+	if(!ASC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("FStateTreeTask_PerformAbility::PerformAbility - ASC is null"))
+		return EStateTreeRunStatus::Failed;
+	}
+	if(ASC->GetTagCount(InstanceData.TaskFinishedTag) > 0)
+	{
+		ASC->RemoveLooseGameplayTag(InstanceData.TaskFinishedTag);
 	}
 	
 	FGameplayEventData EventData;
 	EventData.Instigator = InstanceData.InputActor;
-	// EventData.EventTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Event.Ability.One");
 	EventData.EventTag = InstanceData.EventTag;
-	
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(InstanceData.InputActor, EventData.EventTag, EventData);
-	ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor);
-	
-	if (ASC)
-	{
-		FinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Task.Ability.Finished");
-		TagDelegateHandle = ASC->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("StateTreeTag.Task.Ability.Finished"), EGameplayTagEventType::NewOrRemoved).AddRaw(this, &FStateTreeTask_PerformAbility::FinishTask);
-	}
 	
 	return EStateTreeRunStatus::Running;
-}
-
-void FStateTreeTask_PerformAbility::FinishTask(FGameplayTag Tag, int32 NewCount) const
-{
-	if (Tag == FinishedTag && NewCount > 0)
-	{
-		ASC->RemoveLooseGameplayTag(FinishedTag);
-		IsTaskFinished = true;
-	}
-	else
-	{
-		
-	}
 }

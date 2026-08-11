@@ -32,36 +32,6 @@ void UGroupCombatSubsystem::Deinitialize()
 	
 }
 
-/*void UGroupCombatSubsystem::RegisterEnemyToGroupCombat()
-{
-	AllEnemiesArray.Add(Enemy);
-	
-	UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-	
-	if(GetAggressorCount() < 1)
-	{
-		GCC->EngagementRole = EEnemyEngagementRole::Aggressor;
-	}
-	else
-	{
-		GCC->EngagementRole = EEnemyEngagementRole::Cover;
-	}
-	
-	UAbilitySystemComponent* ASC = Enemy->FindComponentByClass<UAbilitySystemComponent>();
-	UE_LOG(LogTemp, Warning, TEXT("Enemy listening: %s"), *Enemy->GetName());
-
-	ASC->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"), EGameplayTagEventType::NewOrRemoved).AddLambda(
-			[this, Enemy](const FGameplayTag Tag, int32 NewCount)
-			{
-				if (NewCount > 0)
-				{
-					SwapOutAggressor(Enemy);
-				}
-			}
-		);
-	
-}*/
-
 void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 {
 
@@ -165,6 +135,7 @@ void UGroupCombatSubsystem::AssignEngagementRole(UEnemyEncounterDataAsset* InEnc
 
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Here"))
 	if (!InEnemy)
 	{
 		return;
@@ -178,7 +149,7 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 		InGCC->EngagementRole = EEnemyEngagementRole::Cover;
 	}
 
-	TArray<AEnemyBaseCharacter*> CoverEnemies;
+	TArray<AEnemyBaseCharacter*> OtherEnemies;
 
 	for (AEnemyBaseCharacter* CurrentEnemy : AllEnemiesArray)
 	{
@@ -187,67 +158,26 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 			continue;
 		}
 
-		UGroupCombatComponent* CurrentGCC =
-			CurrentEnemy->FindComponentByClass<UGroupCombatComponent>();
-
-		if (!CurrentGCC)
-		{
-			continue;
-		}
-
-		if (CurrentGCC->EngagementRole == EEnemyEngagementRole::Cover)
-		{
-			CoverEnemies.Add(CurrentEnemy);
-		}
+		OtherEnemies.Add(CurrentEnemy);
 	}
 
-	if (CoverEnemies.Num() > 0)
+	AEnemyBaseCharacter* RandomEnemy = OtherEnemies[FMath::RandRange(0, OtherEnemies.Num() - 1)];
+	UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
+
+	GCC->EngagementRole = EEnemyEngagementRole::Aggressor;
+
+	UE_LOG(LogTemp, Warning, TEXT("Num: %d"), PrintNumOfRoles(EEnemyEngagementRole::Aggressor));
+	
+	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(RandomEnemy->GetController()))
 	{
-		const int32 RandomIndex = FMath::RandRange(0, CoverEnemies.Num() - 1);
+		const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
 
-		AEnemyBaseCharacter* NewAggressor = CoverEnemies[RandomIndex];
-
-		UGroupCombatComponent* NewAggressorGCC = NewAggressor->FindComponentByClass<UGroupCombatComponent>();
-
-		if (NewAggressorGCC)
+		if (STComp)
 		{
-			NewAggressorGCC->EngagementRole = EEnemyEngagementRole::Aggressor;
+			FStateTreeEvent AttackEvent;
+			AttackEvent.Tag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Attacking");
 
-			UE_LOG(
-				LogTemp,
-				Warning,
-				TEXT("Swapped aggressor: %s -> %s"),
-				*InEnemy->GetName(),
-				*NewAggressor->GetName()
-			);
-
-			if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(NewAggressor->GetController()))
-			{
-				const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
-
-				if (STComp)
-				{
-					FStateTreeEvent AttackEvent;
-					AttackEvent.Tag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Attacking");
-
-					EnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
-				}
-			}
-		}
-
-		for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
-		{
-			if(Enemy)
-			{
-				if(Enemy != NewAggressor)
-				{
-					UGroupCombatComponent* GCCEnemy = Enemy->FindComponentByClass<UGroupCombatComponent>();
-					if(GCCEnemy)
-					{
-						GCCEnemy->EngagementRole = EEnemyEngagementRole::Cover;
-					}
-				}
-			}
+			EnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
 		}
 	}
 }
@@ -266,4 +196,23 @@ void UGroupCombatSubsystem::ActivateAllStateTrees()
 			}
 		}
 	}
+}
+
+int32 UGroupCombatSubsystem::PrintNumOfRoles(EEnemyEngagementRole InRole)
+{
+	int32 Count = 0;
+	for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+	{
+		UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
+		{
+			if(GCC)
+			{
+				if(GCC->EngagementRole == InRole)
+				{
+					Count++;
+				}
+			}
+		}
+	}
+	return Count;
 }

@@ -34,13 +34,6 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_ReceiveHit : public FStateTreeTaskC
 	virtual EStateTreeRunStatus Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const override;
 	virtual void ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const override;
 
-private:
 
-	mutable FGameplayTag FinishedTag;
-	
-	mutable FDelegateHandle TagDelegateHandle;
-	mutable bool IsTaskFinished = false;
-
-	void FinishTask(FGameplayTag Tag, int32 NewCount) const;
 
 };

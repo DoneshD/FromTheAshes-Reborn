@@ -87,23 +87,22 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 								if(FTAGameMode->ActivateAIBehavior)
 								{
 									EnemyController->StateTreeComponent->SetStateTree(EnemyData->StateTree);
-									// EnemyController->StateTreeComponent->StartLogic();
 								}
 							}
 						}
 						else
 						{
-							UE_LOG(LogTemp, Error, TEXT("Invalid grunt AI controller"))
+							UE_LOG(LogTemp, Error, TEXT("Invalid AI controller"))
 						}
 					}
 					else
 					{
-						UE_LOG(LogTemp, Error, TEXT("Invalid grunt controller"))
+						UE_LOG(LogTemp, Error, TEXT("Already has controller"))
 					}
 				}
 				else
 				{
-					UE_LOG(LogTemp, Error, TEXT("Invalid grunt actor"))
+					UE_LOG(LogTemp, Error, TEXT("Invalid enemy"))
 				
 				}
 			}
