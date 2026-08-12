@@ -7,6 +7,22 @@
 class UEnemyCharacterDataAsset;
 
 USTRUCT(BlueprintType)
+struct FPlayerTokenData
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	int32 MinimumCount = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	int32 StartingCount = 0;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	int32 MaximumCount = 0;
+	
+};
+
+USTRUCT(BlueprintType)
 struct FRoleData
 {
 	GENERATED_BODY()
@@ -39,17 +55,19 @@ class FROMTHEASHESREBORN_API UEnemyEncounterDataAsset : public UPrimaryDataAsset
 
 public:
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Wave")
 	FWaveData WaveData;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
 	FRoleData AggressorRoles;
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
 	FRoleData CoverRoles;
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
 	FRoleData ObserverRoles;
-	
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Player")
+	FPlayerTokenData PlayerTokenData;
 	
 };

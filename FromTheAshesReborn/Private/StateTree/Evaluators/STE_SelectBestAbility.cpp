@@ -19,9 +19,12 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 		UGA_Attack* AbilityCDO = RandomItem->GetDefaultObject<UGA_Attack>();
 		if(AbilityCDO)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Asset found: %s"), *AbilityCDO->DefaultAbilityDataAsset->GetName());
 			InstanceData.AbilityAsset = AbilityCDO->DefaultAbilityDataAsset;
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("FStateTreeEvaluator_SelectBestAbility::TreeStart - No Attacks to choose from"))
 	}
 }
 

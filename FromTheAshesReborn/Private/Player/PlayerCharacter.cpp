@@ -10,6 +10,8 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
+#include "GameModes/FTAGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "ParkourSystem/ParkourSystemComponent.h"
 #include "Player/FTAPlayerController.h"
 #include "TargetingSystem/TargetingSystemComponent.h"
@@ -79,6 +81,17 @@ void APlayerCharacter::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = 1000.0f;
 	TargetSystemComponent->OnTargetLockedOn.AddDynamic(this, &APlayerCharacter::OnTargetLockedOn);
 	TargetSystemComponent->OnTargetLockedOff.AddDynamic(this, &APlayerCharacter::OnTargetLockedOff);
+
+	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
+		return;
+	}
+
+	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+
+	GroupCombatComponent->AttackTokensCount = EncounterData->PlayerTokenData.StartingCount;
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)

@@ -31,7 +31,6 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::Tick(FStateTreeExecutionConte
 	if(ASC->GetTagCount(InstanceData.TaskFinishedTag) > 0)
 	{
 		ASC->RemoveLooseGameplayTag(InstanceData.TaskFinishedTag);
-		UE_LOG(LogTemp, Warning, TEXT("Success!"))
 		return EStateTreeRunStatus::Succeeded;
 	}
 	

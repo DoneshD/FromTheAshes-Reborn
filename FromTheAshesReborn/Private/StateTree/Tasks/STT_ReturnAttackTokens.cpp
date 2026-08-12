@@ -8,7 +8,6 @@
 
 EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExecutionContext& Context,const FStateTreeTransitionResult& Transition) const
 {
-	// UE_LOG(LogTemp, Warning, TEXT("Return token"))
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 	
 	if(!InstanceData.TargetActor && !InstanceData.TargetActor->IsValidLowLevel())
@@ -43,7 +42,6 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 			const int32 TokensTransferred = GCS->EnemiesAttackTokensMap[Enemy];
 			const int32 PreviousAttackTokens = TargetGCC->AttackTokensCount;
 
-			UE_LOG(LogTemp, Warning, TEXT("Returning token"))
 			TargetGCC->AttackTokensCount += TokensTransferred;
 			GCS->EnemiesAttackTokensMap.Remove(Enemy);
 			
