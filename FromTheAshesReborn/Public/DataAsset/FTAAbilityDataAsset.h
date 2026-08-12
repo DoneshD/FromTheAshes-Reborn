@@ -20,6 +20,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag StateTreeEventTag = FGameplayTag::EmptyTag;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 TokensNeeded = 1;
 	
 };
 

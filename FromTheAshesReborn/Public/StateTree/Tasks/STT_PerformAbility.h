@@ -5,6 +5,7 @@
 #include "StateTreeExecutionTypes.h"
 #include "STT_PerformAbility.generated.h"
 
+class UFTAAbilityDataAsset;
 class UAbilitySystemComponent;
 
 USTRUCT()
@@ -20,6 +21,9 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_PerformAbility_InstanceData
 
 	UPROPERTY(EditAnywhere)
 	FGameplayTag TaskFinishedTag = FGameplayTag::EmptyTag;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UFTAAbilityDataAsset> AbilityAsset;
 	
 };
 

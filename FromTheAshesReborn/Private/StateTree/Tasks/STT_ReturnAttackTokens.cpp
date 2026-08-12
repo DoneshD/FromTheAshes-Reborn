@@ -46,14 +46,7 @@ EStateTreeRunStatus FStateTreeTask_ReturnAttackTokens::EnterState(FStateTreeExec
 			UE_LOG(LogTemp, Warning, TEXT("Returning token"))
 			TargetGCC->AttackTokensCount += TokensTransferred;
 			GCS->EnemiesAttackTokensMap.Remove(Enemy);
-
-			// UE_LOG(LogTemp, Warning,
-			// 	TEXT("Attack Tokens Transferred | Enemy: %s | Transferred: %d | Target Tokens: %d -> %d"),
-			// 	*Enemy->GetName(),
-			// 	TokensTransferred,
-			// 	PreviousAttackTokens,
-			// 	TargetGCC->AttackTokensCount
-			// );
+			
 			return EStateTreeRunStatus::Succeeded;
 		}
 		else

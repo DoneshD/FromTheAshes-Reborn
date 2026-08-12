@@ -2,8 +2,10 @@
 
 #include "CoreMinimal.h"
 #include "StateTreeEvaluatorBase.h"
+#include "DataAsset/AICombatParameters.h"
 #include "STE_SelectBestAbility.generated.h"
 
+struct FAttackData;
 class UFTAGameplayAbility;
 class UFTAAbilityDataAsset;
 
@@ -12,11 +14,8 @@ struct FROMTHEASHESREBORN_API FStateTreeEvaluator_SelectBestAbility_InstanceData
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category = Input)
-	TObjectPtr<AActor> OwningActor = nullptr;
-
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UFTAGameplayAbility> AbilityClass = nullptr;
+	TObjectPtr<UAICombatParameters> AICombatParams;
 
 	UPROPERTY(EditAnywhere, Category = Output)
 	TObjectPtr<UFTAAbilityDataAsset> AbilityAsset = nullptr;

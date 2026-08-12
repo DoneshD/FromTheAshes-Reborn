@@ -230,6 +230,11 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 		return;
 	}
 
+	if(AllEnemiesArray.Num() < 2)
+	{
+		return;
+	}
+
 	UGroupCombatComponent* InGCC =
 		InEnemy->FindComponentByClass<UGroupCombatComponent>();
 

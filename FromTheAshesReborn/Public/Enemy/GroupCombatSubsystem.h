@@ -32,9 +32,6 @@ public:
 	UPROPERTY()
 	TArray<AEnemyBaseCharacter*> AllEnemiesArray;
 
-	// UPROPERTY()
-	// TArray<AActor*> AllEnemiesArray;
-
 	UPROPERTY()
 	TMap<TObjectPtr<AEnemyBaseCharacter>, int32> EnemiesAttackTokensMap;
 
@@ -44,8 +41,6 @@ protected:
 	virtual void Deinitialize() override;
 
 public:
-	
-	// void RegisterEnemyToGroupCombat(TObjectPtr<AEnemyBaseCharacter> Actor);
 	
 	void RegisterAllEnemiesToGroupCombat();
 	void AssignEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);

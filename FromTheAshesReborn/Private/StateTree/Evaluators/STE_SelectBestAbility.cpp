@@ -12,41 +12,16 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 	FStateTreeEvaluatorCommonBase::TreeStart(Context);
 
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
-	if(!InstanceData.OwningActor)
-	{
-		UE_LOG(LogTemp, Error, TEXT("OwningActor is null"))
-		return;
-	}
 
-	TArray<TObjectPtr<UFTAGameplayAbility>> PossibleAbilities;
-	
-	UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.OwningActor);
-	if (ASC)
+	if (InstanceData.AICombatParams->PossibleAttacks.Num() > 0)
 	{
-		if (UFTAAbilitySystemComponent* FTAASC = Cast<UFTAAbilitySystemComponent>(ASC))
+		auto RandomItem = InstanceData.AICombatParams->PossibleAttacks[FMath::RandRange(0, InstanceData.AICombatParams->PossibleAttacks.Num() - 1)];
+		UGA_Attack* AbilityCDO = RandomItem->GetDefaultObject<UGA_Attack>();
+		if(AbilityCDO)
 		{
-			TArray<FGameplayAbilitySpecHandle> SpecArray;
-			FTAASC->GetAllAbilities(SpecArray);
-
-			for (FGameplayAbilitySpecHandle& Handle : SpecArray)
-			{
-				if (FGameplayAbilitySpec* Spec = FTAASC->FindAbilitySpecFromHandle(Handle))
-				{
-					if (UFTAGameplayAbility* FTAAbility = Cast<UFTAGameplayAbility>(Spec->Ability))
-					{
-						if (FTAAbility->IsA(InstanceData.AbilityClass))
-						{
-							PossibleAbilities.Add(FTAAbility);
-						}
-					}
-				}
-			}
+			UE_LOG(LogTemp, Warning, TEXT("Asset found: %s"), *AbilityCDO->DefaultAbilityDataAsset->GetName());
+			InstanceData.AbilityAsset = AbilityCDO->DefaultAbilityDataAsset;
 		}
-	}
-	if (PossibleAbilities.Num() > 0)
-	{
-		auto RandomItem = PossibleAbilities[FMath::RandRange(0, PossibleAbilities.Num() - 1)];
-		InstanceData.AbilityAsset = RandomItem->DefaultAbilityDataAsset;
 	}
 }
 

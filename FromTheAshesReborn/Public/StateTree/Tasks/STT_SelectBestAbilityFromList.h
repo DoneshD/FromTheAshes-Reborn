@@ -4,6 +4,7 @@
 #include "StateTreeTaskBase.h"
 #include "STT_SelectBestAbilityFromList.generated.h"
 
+class UFTAAbilityDataAsset;
 class UFTAGameplayAbility;
 class UAICombatParameters;
 class AAIController;
@@ -12,18 +13,12 @@ USTRUCT()
 struct FROMTHEASHESREBORN_API FStateTreeTask_SelectBestAbilityFromList_InstanceData
 {
 	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere)
-	FGameplayTagContainer AbilityTagList;
-
-	UPROPERTY(EditAnywhere)
-	TArray<TSubclassOf<UFTAGameplayAbility>> AbilityClassList;
 	
-	UPROPERTY(EditAnywhere, Category = Output)
-	FGameplayTag SelectedAbilityTag;
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf<UFTAGameplayAbility>> PossibleAbilities;
 
 	UPROPERTY(EditAnywhere, Category = Output)
-	TSubclassOf<UFTAGameplayAbility> SelectedAbilityClass;
+	TObjectPtr<UFTAAbilityDataAsset> SelectedAbilityAsset;
 	
 };
 

@@ -15,8 +15,8 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_ReserveAttackTokens_InstanceData
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<AActor> Target = nullptr;
 
-	UPROPERTY(EditAnywhere)
-	int32 TokenAmount = 1;
+	UPROPERTY(EditAnywhere, Category = Input)
+	int32 TokenAmount;
 	
 };
 

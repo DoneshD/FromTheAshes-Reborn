@@ -5,6 +5,7 @@
 #include "Engine/DataAsset.h"
 #include "AICombatParameters.generated.h"
 
+class UGA_Attack;
 class UEnvQuery;
 
 USTRUCT(BlueprintType)
@@ -58,6 +59,13 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float MinimumDistanceForAttack = 250.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<UGA_Attack> PossibleAttack;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FGameplayTag AssociatedEventTag = FGameplayTag::EmptyTag;
+	
 };
 
 UCLASS()
@@ -66,6 +74,13 @@ class FROMTHEASHESREBORN_API UAICombatParameters : public UPrimaryDataAsset
 	GENERATED_BODY()
 
 public:
+	
+	// UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	// TArray<FAttackData> AttackData;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TSubclassOf<UGA_Attack>> PossibleAttacks;
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FStrafeData StrafeData;
 
@@ -75,8 +90,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FChaseData ChaseData;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FAttackData AttackData;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag AirStunFinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished");
