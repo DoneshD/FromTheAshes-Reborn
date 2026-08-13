@@ -734,7 +734,6 @@ void UParkourSystemComponent::FindVaultOrMantleType()
 	}
 	else if (WallDepth >= 60 && WallDepth <= 200)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Here4"));
 		CurrentVaultDepthTag = FGameplayTag::RequestGameplayTag("Parkour.Vault.Depth.Average");
 	}
 	else if (WallDepth < 60)

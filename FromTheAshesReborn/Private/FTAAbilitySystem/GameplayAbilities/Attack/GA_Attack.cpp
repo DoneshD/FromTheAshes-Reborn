@@ -147,7 +147,7 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 
 	if(!TargetASC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("TargetASC null"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::ExecuteHitLogic - TargetASC null"));
 		return;
 	}
 

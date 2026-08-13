@@ -81,19 +81,19 @@ void UDownedCombatComponent::EnableComponent(const FGameplayTag InEnableTag, int
 			EnemyChar->ShouldRotate = false;
 		}
 
-		if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(FTACharacter->GetController()))
-		{
-			FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Downed");
-		
-			const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
-
-			if (STComp)
-			{
-				FStateTreeEvent HitEvent;
-				HitEvent.Tag = HitTag;
-				EnemyController->StateTreeComponent->SendStateTreeEvent(HitEvent);
-			}
-		}
+		// if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(FTACharacter->GetController()))
+		// {
+		// 	FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Downed");
+		//
+		// 	const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
+		//
+		// 	if (STComp)
+		// 	{
+		// 		FStateTreeEvent HitEvent;
+		// 		HitEvent.Tag = HitTag;
+		// 		EnemyController->StateTreeComponent->SendStateTreeEvent(HitEvent);
+		// 	}
+		// }
 	}
 	else
 	{

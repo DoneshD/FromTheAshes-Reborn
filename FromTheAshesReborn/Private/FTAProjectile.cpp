@@ -100,7 +100,7 @@ void AFTAProjectile::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& Tar
 
 	if(!TargetASC)
 	{
-		UE_LOG(LogTemp, Error, TEXT("TargetASC null"));
+		UE_LOG(LogTemp, Error, TEXT("AFTAProjectile::ExecuteHitLogic - TargetASC null"));
 		return;
 	}
 

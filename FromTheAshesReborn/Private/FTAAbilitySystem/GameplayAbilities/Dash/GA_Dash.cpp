@@ -141,12 +141,10 @@ void UGA_Dash::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Here 2"))
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Here 1"))
 	}
 }
 

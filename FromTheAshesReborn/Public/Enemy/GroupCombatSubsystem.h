@@ -50,6 +50,6 @@ public:
 	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);
 	void ActivateAllStateTrees();
 
-	int32 PrintNumOfRoles(EEnemyEngagementRole InRole);
+	int32 GetNumOfRoles(EEnemyEngagementRole InRole);
 	
 };

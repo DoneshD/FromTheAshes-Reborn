@@ -47,6 +47,12 @@ bool UGA_ReceiveHit::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
 
 void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
+
+	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.Hit.Finished")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.Hit.Finished"));
+	}
+	
 	FVector TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
 	
 	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
@@ -59,7 +65,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	APlayerCharacter* PC = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	UGroupCombatComponent* TargetGCC = PC->FindComponentByClass<UGroupCombatComponent>();
 
-	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+	/*UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
 	if(GCS)
 	{
 		TargetGCC->EngagementRole = EEnemyEngagementRole::Cover;
@@ -79,7 +85,7 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 			// 	TargetGCC->AttackTokensCount
 			// );
 		}
-	}
+	}*/
 	
 	if(!CurrentEventData.OptionalObject)
 	{
