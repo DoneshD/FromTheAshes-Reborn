@@ -210,28 +210,28 @@ void UGA_Attack::GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetD
 				}
 				else
 				{
-					UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
+					UE_LOG(LogTemp, Error, TEXT("UGA_Attack::GrantHitAbility - GrantAbilityEffect is null"))
 					EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 					return;
 				}
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+				UE_LOG(LogTemp, Error, TEXT("UGA_Attack::GrantHitAbility - Invalid tag"))
 				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 				return;
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid CDO"))
+			UE_LOG(LogTemp, Error, TEXT("UGA_Attack::GrantHitAbility - Invalid CDO"))
 			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 			return;
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - InHitAbilityClass is invalid"));
+		UE_LOG(LogTemp, Error, TEXT("UGA_Attack::GrantHitAbility - InHitAbilityClass is invalid"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 		return;
 	}

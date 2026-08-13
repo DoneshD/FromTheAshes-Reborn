@@ -138,11 +138,6 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 		return;
 	}
 	
-
-	
-	
-	
-	
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetControllerFromActorInfo()))
 	{
 		FGameplayTag HitTag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Hit");
@@ -241,13 +236,13 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 			}
 			else
 			{
-				UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - GrantAbilityEffect is null"))
+				UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::EndAbilityGrantHitAbility - GrantAbilityEffect is null"))
 				return;
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::GrantHitAbility - Invalid tag"))
+			UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::EndAbilityGrantHitAbility - Invalid tag"))
 			return;
 		}
 		

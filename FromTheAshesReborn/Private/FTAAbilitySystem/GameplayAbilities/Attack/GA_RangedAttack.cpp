@@ -195,6 +195,7 @@ void UGA_RangedAttack::FireShot()
 	        if(PC)
 	        {
         		ShootDirection = (PC->GetActorLocation() - SpawnLocation).GetSafeNormal();
+	        	//change later
         		ShootDirection.Z = 0.0f;
 	        }
 
@@ -203,6 +204,17 @@ void UGA_RangedAttack::FireShot()
 	            SpawnLocation,
 	            GetFTACharacterFromActorInfo()->GetActorRotation(),
 	            SpawnParams);
+
+	    	if(CurrentRangedAttackData)
+	    	{
+	    		Projectile->RangedAbilityDataAsset = CurrentRangedAttackData;
+	    	}
+		    else
+		    {
+			    UE_LOG(LogTemp, Error, TEXT("UGA_RangedAttack::FireShot() - CurrentRangedAttackData null"));
+		    }
+	    	Projectile->SourceActor = GetFTACharacterFromActorInfo();
+	    	Projectile->OnHitEventData = OnHitEventData;
 
 	        if (Projectile)
 	        {

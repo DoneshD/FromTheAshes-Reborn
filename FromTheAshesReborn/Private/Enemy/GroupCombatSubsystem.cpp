@@ -71,7 +71,7 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 					{
 						if (NewCount > 0)
 						{
-							SwapOutAggressor(Enemy);
+							// SwapOutAggressor(Enemy);
 						}
 					}
 				);
