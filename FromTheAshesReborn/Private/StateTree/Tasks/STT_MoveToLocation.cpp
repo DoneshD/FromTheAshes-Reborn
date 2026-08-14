@@ -1,6 +1,7 @@
 ﻿#include "StateTree/Tasks/STT_MoveToLocation.h"
 #include "AIController.h"
 #include "StateTreeExecutionContext.h"
+#include "Components/StateTreeComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -27,6 +28,7 @@ EStateTreeRunStatus FStateTreeTask_MoveToLocation::Tick(FStateTreeExecutionConte
 		UE_LOG(LogTemp, Error, TEXT("Input InputActor is null"))
 		return EStateTreeRunStatus::Failed;
 	}
+	
 
 	FAIMoveRequest MoveRequest;
 	

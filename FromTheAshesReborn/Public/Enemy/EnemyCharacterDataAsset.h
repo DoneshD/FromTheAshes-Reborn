@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Engine/DataAsset.h"
 #include "EnemyCharacterDataAsset.generated.h"
 
@@ -29,10 +30,16 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UWeaponDefinition> WeaponDefinitionClass;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	TObjectPtr<UAICombatParameters> CombatParameters;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
 	TObjectPtr<UStateTree> StateTree;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<UAICombatParameters> CombatParameters;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	TObjectPtr<UStateTree> LinkedPassive_StateTree;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	FGameplayTag TestTreeTag = FGameplayTag::EmptyTag;
 	
 };

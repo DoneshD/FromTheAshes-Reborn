@@ -1,5 +1,7 @@
 ﻿#include "Enemy/FTAStateTreeAIComponent.h"
-
+#include "Components/StateTreeComponent.h"
+#include "StateTree.h"
+#include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 
 
 UFTAStateTreeAIComponent::UFTAStateTreeAIComponent()
@@ -27,5 +29,49 @@ void UFTAStateTreeAIComponent::SetStateTree(UStateTree* InStateTree)
 		Cleanup();
 	}
 	StateTreeRef.SetStateTree(InStateTree);
+	
+}
+
+void UFTAStateTreeAIComponent::AddLinkedStateTreeOverrides(
+	FGameplayTag SubTreeAssetTag,
+	UStateTree* InStateTree)
+{
+	if (!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(SubTreeAssetTag))
+	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("UFTAStateTreeAIComponent::AddLinkedStateTreeOverrides - Invalid tag")
+		);
+		return;
+	}
+
+	if (!IsValid(InStateTree))
+	{
+		UE_LOG(
+			LogTemp,
+			Warning,
+			TEXT("UFTAStateTreeAIComponent::AddLinkedStateTreeOverrides - Invalid tree")
+		);
+		return;
+	}
+
+	FStateTreeReference TreeRef;
+	TreeRef.SetStateTree(InStateTree);
+
+	UE_LOG(
+		LogTemp,
+		Warning,
+		TEXT("Linked State Tree Override - Tag: %s | Input Tree: %s | TreeRef: %s"),
+		*SubTreeAssetTag.ToString(),
+		*GetNameSafe(InStateTree),
+		*GetNameSafe(TreeRef.GetStateTree())
+	);
+
+	LinkedStateTreeOverrides.AddOverride(
+		SubTreeAssetTag,
+		TreeRef
+	);
+
 }
 

@@ -9,6 +9,7 @@
 #include "Enemy/GroupCombatSubsystem.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/StateTreeComponent.h"
 
 AEnemySpawner::AEnemySpawner()
 {
@@ -86,7 +87,12 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 							{
 								if(FTAGameMode->ActivateAIBehavior)
 								{
+									UStateTreeComponent* ST = EnemyController->FindComponentByClass<UStateTreeComponent>();
+
+									EnemyController->StateTreeComponent->SetStartLogicAutomatically(false);
 									EnemyController->StateTreeComponent->SetStateTree(EnemyData->StateTree);
+									
+									EnemyController->StateTreeComponent->AddLinkedStateTreeOverrides(EnemyData->TestTreeTag, EnemyData->LinkedPassive_StateTree);
 								}
 							}
 						}
