@@ -1,6 +1,5 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_AerialSuspension.h"
 
-#include "MaterialHLSLTree.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "CameraParamsDataAsset.h"
+#include "Algo/Sort.h"
 #include "Components/ActorComponent.h"
 #include "CameraSystemComponent.generated.h"
 
@@ -84,12 +85,12 @@ public:
 	
 	template<typename TValue, typename TParam>
 	static void ResolveCameraParam(
-	const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
-	TValue& TargetValue,
-	float& TargetLerpSpeed,
-	float& Priority,
-	const FCameraParamAccessors<TValue, TParam>& Access,
-	TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr)
+		const TArray<TObjectPtr<UCameraParamsDataAsset>>& ParamsArray,
+		TValue& TargetValue,
+		float& TargetLerpSpeed,
+		float& Priority,
+		const FCameraParamAccessors<TValue, TParam>& Access,
+		TFunction<void(TValue&, const TParam&, const UCameraParamsDataAsset*)> SpecialHandler = nullptr)
 	{
 		if (SpecialHandler)
 		{
@@ -102,12 +103,16 @@ public:
 
 		TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = ParamsArray;
 
-		Sorted.Sort([&](const TObjectPtr<UCameraParamsDataAsset>& A,
-						const TObjectPtr<UCameraParamsDataAsset>& B)
-		{
-			return Access.GetValueMetaData(Access.GetParam(A.Get())).Priority >
-				   Access.GetValueMetaData(Access.GetParam(B.Get())).Priority;
-		});
+		Algo::SortBy(
+			Sorted,
+			[&](const TObjectPtr<UCameraParamsDataAsset>& Params)
+			{
+				return Access.GetValueMetaData(
+					Access.GetParam(Params.Get())
+				).Priority;
+			},
+			TGreater<float>()
+		);
 
 		for (const auto& Params : Sorted)
 		{
@@ -115,7 +120,10 @@ public:
 			const FCameraValueData& Meta = Access.GetValueMetaData(Param);
 			Priority = Access.GetPriority(Meta);
 
-			if (!Meta.ShouldAdjust) continue;
+			if (!Meta.ShouldAdjust)
+			{
+				continue;
+			}
 
 			TargetLerpSpeed = Access.GetInLerp(Meta);
 			Priority = Access.GetPriority(Meta);
@@ -127,7 +135,10 @@ public:
 			const TParam& Param = Access.GetParam(Params.Get());
 			const FCameraValueData& MetaData = Access.GetValueMetaData(Param);
 
-			if (!MetaData.ShouldAdjust) continue;
+			if (!MetaData.ShouldAdjust)
+			{
+				continue;
+			}
 
 			if (MetaData.CameraOperation == ECameraOperation::Set)
 			{
@@ -141,11 +152,17 @@ public:
 			const TParam& Param = Access.GetParam(Params.Get());
 			const FCameraValueData& Meta = Access.GetValueMetaData(Param);
 
-			if (!Meta.ShouldAdjust) continue;
+			if (!Meta.ShouldAdjust)
+			{
+				continue;
+			}
 
 			if (Meta.CameraOperation == ECameraOperation::Additive)
 			{
-				TargetValue = Access.AdditiveOp(TargetValue, Access.GetValue(Param));
+				TargetValue = Access.AdditiveOp(
+					TargetValue,
+					Access.GetValue(Param)
+				);
 				break;
 			}
 		}

@@ -2,7 +2,6 @@
 
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
-#include "MaterialHLSLTree.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/CameraParamsDataAsset.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -261,11 +260,11 @@ void UCameraSystemComponent::HandleTargetLockOnParams()
 {
 	TArray<TObjectPtr<UCameraParamsDataAsset>> Sorted = CameraParamsArray;
 
-	Sorted.Sort([&](const TObjectPtr<UCameraParamsDataAsset>& A,
-					const TObjectPtr<UCameraParamsDataAsset>& B)
-	{
-		return A->TargetingLockOnParams.Priority < B->TargetingLockOnParams.Priority;
-	});
+	Sorted.Sort([](const auto& A, const auto& B)
+		{
+			return A.TargetingLockOnParams.Priority <
+				B.TargetingLockOnParams.Priority;
+		});
 
 	CurrentCameraStateParams->TargetingLockOnParams = Sorted.Last()->TargetingLockOnParams;
 }
