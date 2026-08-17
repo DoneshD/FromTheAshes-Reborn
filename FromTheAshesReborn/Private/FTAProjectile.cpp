@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "Components/SphereComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
 #include "DataAsset/RangedAbilityDataAsset.h"

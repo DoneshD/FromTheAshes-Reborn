@@ -92,6 +92,7 @@ void APlayerCharacter::BeginPlay()
 	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
 
 	GroupCombatComponent->AttackTokensCount = EncounterData->PlayerTokenData.StartingCount;
+
 }
 
 void APlayerCharacter::Tick(float DeltaSeconds)
