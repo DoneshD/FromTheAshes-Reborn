@@ -5,6 +5,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "EnemyBaseCharacter.generated.h"
 
+class UStateTree;
 class UAICombatParameters;
 class UWeaponDefinition;
 class UWidgetComponent;

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "StateTreeReference.h"
 #include "Engine/DataAsset.h"
 #include "EnemyCharacterDataAsset.generated.h"
 

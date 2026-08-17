@@ -18,5 +18,4 @@ public:
 	
 	void SetStateTree(UStateTree* InStateTree);
 
-	void AddLinkedStateTreeOverrides(FGameplayTag SubTreeAssetTag, UStateTree* InStateTree);
 };

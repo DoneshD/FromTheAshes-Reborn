@@ -31,6 +31,7 @@ void AAIControllerEnemyBase::OnPossess(APawn* InPawn)
 	}
 
 	OwnerPawn = InPawn;
+	
 }
 
 void AAIControllerEnemyBase::BeginPlay()
