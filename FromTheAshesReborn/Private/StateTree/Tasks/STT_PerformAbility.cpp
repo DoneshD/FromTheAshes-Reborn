@@ -5,14 +5,12 @@
 #include "AbilitySystemGlobals.h"
 #include "StateTreeExecutionContext.h"
 
-EStateTreeRunStatus FStateTreeTask_PerformAbility::EnterState(FStateTreeExecutionContext& Context,
-                                                              const FStateTreeTransitionResult& Transition) const
+EStateTreeRunStatus FStateTreeTask_PerformAbility::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
 	return PerformAbility(Context);
 }
 
-EStateTreeRunStatus FStateTreeTask_PerformAbility::Tick(FStateTreeExecutionContext& Context,
-	const float DeltaTime) const
+EStateTreeRunStatus FStateTreeTask_PerformAbility::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const
 {
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 	if(!InstanceData.InputActor)
@@ -39,8 +37,10 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::Tick(FStateTreeExecutionConte
 
 void FStateTreeTask_PerformAbility::ExitState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
+	FStateTreeTaskCommonBase::ExitState(Context, Transition);
+	
 	const FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
-
+	
 	if (InstanceData.InputActor)
 	{
 		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(InstanceData.InputActor);
@@ -50,7 +50,6 @@ void FStateTreeTask_PerformAbility::ExitState(FStateTreeExecutionContext& Contex
 		}
 	}
 
-	FStateTreeTaskCommonBase::ExitState(Context, Transition);
 }
 
 EStateTreeRunStatus FStateTreeTask_PerformAbility::PerformAbility(const FStateTreeExecutionContext& Context) const
@@ -78,6 +77,7 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::PerformAbility(const FStateTr
 	EventData.Instigator = InstanceData.InputActor;
 	EventData.EventTag = InstanceData.EventTag;
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(InstanceData.InputActor, EventData.EventTag, EventData);
+
 	
 	return EStateTreeRunStatus::Running;
 }

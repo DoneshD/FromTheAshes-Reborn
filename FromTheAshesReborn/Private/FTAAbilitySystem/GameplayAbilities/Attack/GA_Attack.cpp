@@ -98,7 +98,7 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 			AEnemyBaseCharacter* TargetEnemy = Cast<AEnemyBaseCharacter>(TargetActor);
 			if(TargetEnemy)
 			{
-				EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+				// EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 				return;
 			}
 		}

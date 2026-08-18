@@ -5,6 +5,7 @@
 #include "NiagaraComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Enemy/GroupCombatSubsystem.h"

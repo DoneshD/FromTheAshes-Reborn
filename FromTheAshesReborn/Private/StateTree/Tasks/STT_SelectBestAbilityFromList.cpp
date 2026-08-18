@@ -17,9 +17,8 @@ EStateTreeRunStatus FStateTreeTask_SelectBestAbilityFromList::EnterState(FStateT
 		UFTAGameplayAbility* AbilityCDO = RandomItem->GetDefaultObject<UFTAGameplayAbility>();
 		if(AbilityCDO)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Asset found: %s"), *AbilityCDO->DefaultAbilityDataAsset->GetName());
 			InstanceData.SelectedAbilityAsset = AbilityCDO->DefaultAbilityDataAsset;
-			return EStateTreeRunStatus::Succeeded;
+			return EStateTreeRunStatus::Running;
 		}
 	}
 	return EStateTreeRunStatus::Failed;
