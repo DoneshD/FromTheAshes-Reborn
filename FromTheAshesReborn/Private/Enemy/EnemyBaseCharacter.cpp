@@ -58,7 +58,7 @@ void AEnemyBaseCharacter::BeginPlay()
 		return;
 	}
 	
-	EquipmentManagerComponent->SetEquippedWeapon(WeaponClass);
+	// EquipmentManagerComponent->SetEquippedWeapon(WeaponClass);
 
 	if(!HealthComponent || !HealthWidget->IsValidLowLevel())
 	{

@@ -19,6 +19,10 @@ AWeaponActorBase::AWeaponActorBase()
 void AWeaponActorBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	TracingComponent->SetupVariables(SkeletalMesh, nullptr);
+	TracingComponent->MyActorsToIgnore.Add(this);
+	TracingComponent->ShouldIgnoreSelf = true;
 }
 
 void AWeaponActorBase::Tick(float DeltaTime)

@@ -10,6 +10,7 @@
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/StateTreeComponent.h"
+#include "Weapon/EquipmentManagerComponent.h"
 
 AEnemySpawner::AEnemySpawner()
 {
@@ -64,45 +65,22 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 					continue;
 				}
 				
-				AEnemyBaseCharacter* Enemy = GetWorld()->SpawnActor<AEnemyBaseCharacter>(EnemyData->EnemyCharacterClass, ResultLocation.Location, FRotator(0, 0, 0));
+				AEnemyBaseCharacter* EnemyChar = GetWorld()->SpawnActor<AEnemyBaseCharacter>(EnemyData->EnemyCharacterClass, ResultLocation.Location, FRotator(0, 0, 0));
 				
-				if(!Enemy)
+				if(!EnemyChar)
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Enemy null"))
 					return;
 				}
 				
 				
-				if(Enemy)
+				if(EnemyChar)
 				{
-					if(!Enemy->GetController())
+					if(!EnemyChar->GetController())
 					{
 						AAIControllerEnemyBase* EnemyController = GetWorld()->SpawnActor<AAIControllerEnemyBase>(EnemyData->EnemyControllerClass);
 				
-						if(EnemyController && EnemyController->IsValidLowLevel())
-						{
-							EnemyController->Possess(Enemy);
-							AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-							if(FTAGameMode)
-							{
-								if(FTAGameMode->ActivateAIBehavior)
-								{
-									EnemyController->StateTreeComponent->SetStateTree(EnemyData->StateTree);
-
-									FStateTreeReference AttackStateTreeReference;
-									AttackStateTreeReference.SetStateTree(EnemyData->LinkedPassive_StateTree);
-
-									EnemyController->StateTreeComponent->AddLinkedStateTreeOverrides(EnemyData->TestTreeTag,
-										AttackStateTreeReference
-									);
-							
-								}
-							}
-						}
-						else
-						{
-							UE_LOG(LogTemp, Error, TEXT("Invalid AI controller"))
-						}
+						ConstructStateTree(EnemyController, EnemyData, EnemyChar);
 					}
 					else
 					{
@@ -121,6 +99,54 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 			}
 			
 		}
+	}
+}
+
+void AEnemySpawner::ConstructStateTree(AAIControllerEnemyBase* EnemyController, UEnemyCharacterDataAsset* EnemyData, AEnemyBaseCharacter* EnemyChar)
+{
+	if(EnemyController && EnemyController->IsValidLowLevel())
+	{
+		EnemyController->Possess(EnemyChar);
+		AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+		if(FTAGameMode)
+		{
+			if(FTAGameMode->ActivateAIBehavior)
+			{
+				EnemyController->StateTreeComponent->SetStateTree(EnemyData->BaseCombatStateTree);
+				
+				FStateTreeReference PassiveStateTreeReference;
+				PassiveStateTreeReference.SetStateTree(EnemyData->PassiveTree.StateTree);
+
+				EnemyController->StateTreeComponent->AddLinkedStateTreeOverrides(EnemyData->PassiveTree.AssetTag,
+				PassiveStateTreeReference
+				);
+				
+				FStateTreeReference ActiveStateTreeReference;
+				ActiveStateTreeReference.SetStateTree(EnemyData->ActiveTree.StateTree);
+
+				EnemyController->StateTreeComponent->AddLinkedStateTreeOverrides(EnemyData->ActiveTree.AssetTag,
+				ActiveStateTreeReference
+				);
+
+				FStateTreeReference AttackStateTreeReference;
+				AttackStateTreeReference.SetStateTree(EnemyData->AttackTree.StateTree);
+
+				EnemyController->StateTreeComponent->AddLinkedStateTreeOverrides(EnemyData->AttackTree.AssetTag,
+				AttackStateTreeReference
+				);
+							
+			}
+
+			UEquipmentManagerComponent* EMC = EnemyChar->FindComponentByClass<UEquipmentManagerComponent>();
+			if(EMC)
+			{
+				EMC->SetEquippedWeapon(EnemyData->WeaponDefinitionClass);
+			}
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid AI controller"))
 	}
 }
 

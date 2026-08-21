@@ -5,6 +5,7 @@
 #include "EnemySpawner.generated.h"
 
 
+class UEnemyCharacterDataAsset;
 class AAIControllerEnemyBase;
 class AEnemyBaseCharacter;
 struct FWaveData;
@@ -30,5 +31,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnEnemies(FWaveData InWaveData);
+
+	UFUNCTION(BlueprintCallable)
+	void ConstructStateTree(AAIControllerEnemyBase* EnemyController, UEnemyCharacterDataAsset* EnemyData, AEnemyBaseCharacter* EnemyChar);
 
 };

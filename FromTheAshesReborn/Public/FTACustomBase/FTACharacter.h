@@ -61,8 +61,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UAnimMontage> AirDeathMontage;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
-	TSubclassOf<UWeaponDefinition> WeaponClass;
+	// UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
+	// TSubclassOf<UWeaponDefinition> WeaponClass;
 
 	// UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	// TObjectPtr<UContextualAnimSceneActorComponent> ContextualAnimSceneActorComponent;

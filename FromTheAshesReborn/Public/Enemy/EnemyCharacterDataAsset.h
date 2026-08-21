@@ -15,6 +15,19 @@ class UWeaponDefinition;
 class AAIControllerEnemyBase;
 class AEnemyBaseCharacter;
 
+USTRUCT(BlueprintType)
+struct FStateTreeLinkedAsset
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UStateTree* StateTree;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FGameplayTag AssetTag = FGameplayTag::EmptyTag;
+	
+};
+
 UCLASS()
 class FROMTHEASHESREBORN_API UEnemyCharacterDataAsset : public UPrimaryDataAsset
 {
@@ -35,12 +48,15 @@ public:
 	TObjectPtr<UAICombatParameters> CombatParameters;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
-	TObjectPtr<UStateTree> StateTree;
+	TObjectPtr<UStateTree> BaseCombatStateTree;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
-	TObjectPtr<UStateTree> LinkedPassive_StateTree;
+	FStateTreeLinkedAsset PassiveTree;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
-	FGameplayTag TestTreeTag = FGameplayTag::EmptyTag;
+	FStateTreeLinkedAsset ActiveTree;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	FStateTreeLinkedAsset AttackTree;
 	
 };
