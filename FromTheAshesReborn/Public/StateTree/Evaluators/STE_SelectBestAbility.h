@@ -14,6 +14,9 @@ struct FROMTHEASHESREBORN_API FStateTreeEvaluator_SelectBestAbility_InstanceData
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<AActor> InputActor = nullptr;
+
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAICombatParameters> AICombatParams;
 

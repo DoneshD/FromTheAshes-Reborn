@@ -1,5 +1,4 @@
 ﻿#include "FTAAbilitySystem/GameplayAbilities/Hit/GA_Knockback.h"
-
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 
 UGA_Knockback::UGA_Knockback()

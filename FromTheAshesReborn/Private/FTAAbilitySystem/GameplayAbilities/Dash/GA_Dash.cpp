@@ -53,7 +53,7 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UGA_Dash::ActivateAbility - Player state null"))
+		// UE_LOG(LogTemp, Warning, TEXT("UGA_Dash::ActivateAbility - Player state null"))
 	}
 
 	CurrentDashData = DuplicateObject<UDashAbilityDataAsset>(DefaultDashData,this);

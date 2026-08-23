@@ -33,6 +33,8 @@ void AEnemyBaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	TargetObjectTraceChannel = ECC_GameTraceChannel2;
+
 	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
 
 	if(!GCS)

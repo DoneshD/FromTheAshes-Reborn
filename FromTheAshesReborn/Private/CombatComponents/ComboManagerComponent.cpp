@@ -8,6 +8,7 @@
 #include "EventObjects/HitEventObject.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 #include "FTACustomBase/FTACharacter.h"
+#include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 
 
 UComboManagerComponent::UComboManagerComponent(): FTAASC(nullptr)
@@ -124,7 +125,7 @@ TObjectPtr<UDashAbilityDataAsset> UComboManagerComponent::GetDashAssetByRequirem
 	{
 		if (CurrentAsset)
 		{
-			if (CurrentAsset->DashDirection == InputDirection)
+			if (CurrentAsset->DashDirection == InputDirection || CurrentAsset->DashDirection == ELockOnInputOrientationDirection::Any)
 			{
 				return CurrentAsset;
 			}

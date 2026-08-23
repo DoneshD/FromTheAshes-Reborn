@@ -775,7 +775,7 @@ void UFTAGameplayAbility::EventMontageReceived(FGameplayTag EventTag, FGameplayE
 {
 	if(!UTagValidationFunctionLibrary::IsRegisteredGameplayTag(EventTag))
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack_Launcher::EventMontageReceived - EventTag is invalid"))
+		UE_LOG(LogTemp, Error, TEXT("UFTAGameplayAbility::EventMontageReceived - EventTag is invalid"))
 		return;
 	}
 	

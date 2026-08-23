@@ -4,6 +4,7 @@
 #include "AbilitySystemGlobals.h"
 #include "StateTreeExecutionContext.h"
 #include "StateTreeExecutionTypes.h"
+#include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 
@@ -13,12 +14,17 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 
+	
+
 	if (InstanceData.AICombatParams->PossibleAttacks.Num() > 0)
 	{
 		auto RandomItem = InstanceData.AICombatParams->PossibleAttacks[FMath::RandRange(0, InstanceData.AICombatParams->PossibleAttacks.Num() - 1)];
 		UGA_Attack* AbilityCDO = RandomItem->GetDefaultObject<UGA_Attack>();
 		if(AbilityCDO)
 		{
+			UComboManagerComponent* CMC = InstanceData.InputActor->FindComponentByClass<UComboManagerComponent>();
+			if(CMC)
+			{			}
 			InstanceData.AbilityAsset = AbilityCDO->DefaultAbilityDataAsset;
 		}
 	}

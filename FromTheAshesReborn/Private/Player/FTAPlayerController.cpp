@@ -98,14 +98,14 @@ void AFTAPlayerController::HandleMoveActionPressed(const FInputActionValue& Inpu
 	float WalkSpeed = InputActionValue.GetMagnitude() * 20.0f;
 	float ClampedWalkSpeed = FMath::Clamp(WalkSpeed, 200, 1000);
 
-	if(ClampedWalkSpeed < 600.0f)
-	{
-		PlayerCharacter->SetMaxWalkSpeed(200.0f);
-	}
-	else
-	{
-		PlayerCharacter->SetMaxWalkSpeed(1000.0f);
-	}
+	// if(ClampedWalkSpeed < 600.0f)
+	// {
+	// 	PlayerCharacter->SetMaxWalkSpeed(200.0f);
+	// }
+	// else
+	// {
+	// 	PlayerCharacter->SetMaxWalkSpeed(1000.0f);
+	// }
 
 	//Move to controller
 	PlayerCharacter->HasMovementInput = true;
@@ -153,7 +153,7 @@ void AFTAPlayerController::InputSlowTime(const FInputActionValue& InputActionVal
 	else
 	{
 		IsTimeSlowed = true;
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), .1);
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.1f);
 	}
 }
 

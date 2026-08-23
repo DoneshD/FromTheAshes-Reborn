@@ -56,8 +56,8 @@ void UFTAMotionWarpingComponent::WarpToTargetActor(FWarpData WarpData)
 	//Actor warp
 	if(WarpData.WarpTargetActor)
 	{
-		AEnemyBaseCharacter* EnemyActor = Cast<AEnemyBaseCharacter>(WarpData.WarpTargetActor);
-		if (EnemyActor && !EnemyActor->IsDead)
+		AFTACharacter* EnemyActor = Cast<AFTACharacter>(WarpData.WarpTargetActor);
+		if (EnemyActor)
 		{
 			FVector EnemyLocation = EnemyActor->GetActorLocation();
 			FVector OwnerLocation = GetOwner()->GetActorLocation();
@@ -98,7 +98,12 @@ void UFTAMotionWarpingComponent::WarpToTargetActor(FWarpData WarpData)
 		
 			UpdateWarpTarget(WarpTargetLocation, WarpTargetRotation);
 		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not an enemy"))
+		}
 	}
+	
 }
 
 void UFTAMotionWarpingComponent::WarpToTargetLocation(FWarpData WarpData)

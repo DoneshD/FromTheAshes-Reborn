@@ -26,7 +26,9 @@ enum class ELockOnInputOrientationDirection : uint8
 	Forward UMETA(DisplayName = "Forward"),
 	Backward UMETA(DisplayName = "Backward"),
 	Left UMETA(DisplayName = "Left"),
-	Right UMETA(DisplayName = "Right")
+	Right UMETA(DisplayName = "Right"),
+	//Temp
+	Any UMETA(DisplayName = "Any")
 };
 
 UCLASS()

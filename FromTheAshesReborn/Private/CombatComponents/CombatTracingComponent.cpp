@@ -46,77 +46,107 @@ void UCombatTracingComponent::TickComponent(float DeltaTime, ELevelTick TickType
 
 AActor* UCombatTracingComponent::TraceForEnemyActor(FWarpData TraceData)
 {
-	TArray<FHitResult> OutHits;
-	FVector TraceStartLocation = GetOwner()->GetActorLocation() + GetTraceDirection() * TraceData.StartTraceLocationOffset;
-	FVector TraceEndLocation =  GetOwner()->GetActorLocation() + GetTraceDirection() * TraceData.TraceDistance;
+    TArray<FHitResult> OutHits;
+
+
+    FVector TraceStartLocation =
+        GetOwner()->GetActorLocation() +
+        GetTraceDirection().GetSafeNormal() * TraceData.StartTraceLocationOffset;
+
+    FVector TraceEndLocation =
+        GetOwner()->GetActorLocation() +
+        GetTraceDirection().GetSafeNormal() * TraceData.TraceDistance;
 	
-	TArray<AActor*> ActorArray;
-	ActorArray.Add(GetOwner());
 
-	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(FTACharacter->TargetObjectTraceChannel));
 	
-	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
-		GetWorld(),
-		TraceStartLocation,
-		TraceEndLocation,
-		TraceData.TraceRadius,
-		ObjectTypes,
-		false,
-		ActorArray,
-		EDrawDebugTrace::None,
-		OutHits,
-		true,
-		FLinearColor::Red,
-		FLinearColor::Green,
-		5.0f
-		);
 
-	if(bHit)
-	{
-		AActor* BestActor = nullptr;
-		AActor* ClosestActorToOwner = FilterClosestActorToOwner(OutHits);
-		AActor* ClosestActorToAxis = FilterClosestActorToAxisTrace(OutHits, TraceStartLocation, TraceEndLocation);
+    TArray<AActor*> ActorArray;
+    ActorArray.Add(GetOwner());
 
-		if(ClosestActorToOwner == ClosestActorToAxis)
-		{
-			BestActor = ClosestActorToOwner;
-		}
-		else
-		{
-			float DistanceFromClosestActor = FVector::Dist(ClosestActorToOwner->GetActorLocation(), GetOwner()->GetActorLocation());
-			float DistanceFromAxisActor = FVector::Dist(ClosestActorToAxis->GetActorLocation(), GetOwner()->GetActorLocation());
+    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+    ObjectTypes.Add(
+        UEngineTypes::ConvertToObjectType(
+            FTACharacter->TargetObjectTraceChannel
+        )
+    );
 
-			float AxisDistanceForAxisActor = GetDistanceFromActorToAxis(ClosestActorToAxis, TraceStartLocation, TraceEndLocation);
-			float AxisDistanceForClosestActor = GetDistanceFromActorToAxis(ClosestActorToOwner, TraceStartLocation, TraceEndLocation);
+    bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(
+        GetWorld(),
+        TraceStartLocation,
+        TraceEndLocation,
+        TraceData.TraceRadius,
+        ObjectTypes,
+        false,
+        ActorArray,
+        EDrawDebugTrace::None,
+        OutHits,
+        true,
+        FLinearColor::Red,
+        FLinearColor::Green,
+        0.1f
+    );
 
-			float DifferenceRawDistance = FMath::Abs(DistanceFromClosestActor - DistanceFromAxisActor);
-			float DifferenceAxisDistance = FMath::Abs(AxisDistanceForAxisActor - AxisDistanceForClosestActor);
+    if (bHit)
+    {
+        AActor* BestActor = nullptr;
 
-			/*
-			UE_LOG(LogTemp, Warning, TEXT("Closest Actor Raw Distance: %f"), DistanceFromClosestActor);
-			UE_LOG(LogTemp, Warning, TEXT("Axis Actor Raw Distance: %f"), DistanceFromAxisActor);
+        AActor* ClosestActorToOwner = FilterClosestActorToOwner(OutHits);
+        AActor* ClosestActorToAxis = FilterClosestActorToAxisTrace(
+            OutHits,
+            TraceStartLocation,
+            TraceEndLocation
+        );
 
-			UE_LOG(LogTemp, Warning, TEXT("Axis Actor Axis Distance: %f"), AxisDistanceForAxisActor);
-			UE_LOG(LogTemp, Warning, TEXT("Closest Actor Axis Distance: %f"), AxisDistanceForClosestActor);
+        if (ClosestActorToOwner == ClosestActorToAxis)
+        {
+            BestActor = ClosestActorToOwner;
+        }
+        else
+        {
+            float DistanceFromClosestActor = FVector::Dist(
+                ClosestActorToOwner->GetActorLocation(),
+                GetOwner()->GetActorLocation()
+            );
 
-			UE_LOG(LogTemp, Warning, TEXT("DifferenceRawDistance: %f"), DifferenceRawDistance);
-			UE_LOG(LogTemp, Warning, TEXT("DifferenceAxisDistance: %f"), DifferenceAxisDistance);
-			*/
-			
-			
-			if (DifferenceRawDistance / (DifferenceAxisDistance) < 0.33f)
-			{
-				BestActor =  ClosestActorToOwner;
-			}
-			else
-			{
-				BestActor = ClosestActorToAxis;
-			}
-		}
-		return BestActor;
-	}
-	return nullptr;
+            float DistanceFromAxisActor = FVector::Dist(
+                ClosestActorToAxis->GetActorLocation(),
+                GetOwner()->GetActorLocation()
+            );
+
+            float AxisDistanceForAxisActor = GetDistanceFromActorToAxis(
+                ClosestActorToAxis,
+                TraceStartLocation,
+                TraceEndLocation
+            );
+
+            float AxisDistanceForClosestActor = GetDistanceFromActorToAxis(
+                ClosestActorToOwner,
+                TraceStartLocation,
+                TraceEndLocation
+            );
+
+            float DifferenceRawDistance = FMath::Abs(
+                DistanceFromClosestActor - DistanceFromAxisActor
+            );
+
+            float DifferenceAxisDistance = FMath::Abs(
+                AxisDistanceForAxisActor - AxisDistanceForClosestActor
+            );
+
+            if (DifferenceRawDistance / DifferenceAxisDistance < 0.33f)
+            {
+                BestActor = ClosestActorToOwner;
+            }
+            else
+            {
+                BestActor = ClosestActorToAxis;
+            }
+        }
+
+        return BestActor;
+    }
+
+    return nullptr;
 }
 
 void UCombatTracingComponent::RemoveEnemyActor()
@@ -223,5 +253,6 @@ FVector UCombatTracingComponent::GetTraceDirection()
 
 		return TraceDirection;
 	}
-	return FVector::ZeroVector;
+	
+	return GetOwner()->GetActorForwardVector();
 }

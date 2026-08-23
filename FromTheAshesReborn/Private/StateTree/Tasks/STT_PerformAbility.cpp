@@ -76,6 +76,7 @@ EStateTreeRunStatus FStateTreeTask_PerformAbility::PerformAbility(const FStateTr
 	FGameplayEventData EventData;
 	EventData.Instigator = InstanceData.InputActor;
 	EventData.EventTag = InstanceData.EventTag;
+
 	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(InstanceData.InputActor, EventData.EventTag, EventData);
 
 	
