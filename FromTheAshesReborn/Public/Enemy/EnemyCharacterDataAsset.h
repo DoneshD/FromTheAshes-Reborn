@@ -6,6 +6,7 @@
 #include "Engine/DataAsset.h"
 #include "EnemyCharacterDataAsset.generated.h"
 
+class UFTAAbilitySet;
 class UAICombatParameters;
 class UStateTree;
 class UStateTreeComponentSchema;
@@ -44,19 +45,25 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UWeaponDefinition> WeaponDefinitionClass;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TObjectPtr<UFTAAbilitySet>> Attacks;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TObjectPtr<UFTAAbilitySet>> Movement;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
 	TObjectPtr<UAICombatParameters> CombatParameters;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree | Base")
 	TObjectPtr<UStateTree> BaseCombatStateTree;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base | Passive")
 	FStateTreeLinkedAsset PassiveTree;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base| Active")
 	FStateTreeLinkedAsset ActiveTree;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Active | Attack")
 	FStateTreeLinkedAsset AttackTree;
 	
 };

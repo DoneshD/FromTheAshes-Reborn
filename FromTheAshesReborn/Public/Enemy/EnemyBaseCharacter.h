@@ -5,6 +5,7 @@
 #include "FTACustomBase/FTACharacter.h"
 #include "EnemyBaseCharacter.generated.h"
 
+class UEnemyCharacterDataAsset;
 class UStateTree;
 class UAICombatParameters;
 class UWeaponDefinition;
@@ -21,6 +22,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UAICombatParameters> AICombatParams;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UEnemyCharacterDataAsset> EnemyDataAsset;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UWidgetComponent> HealthWidget;

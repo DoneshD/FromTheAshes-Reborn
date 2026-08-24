@@ -79,6 +79,9 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 					if(!EnemyChar->GetController())
 					{
 						AAIControllerEnemyBase* EnemyController = GetWorld()->SpawnActor<AAIControllerEnemyBase>(EnemyData->EnemyControllerClass);
+						EnemyChar->AICombatParams = EnemyData->CombatParameters;
+						EnemyChar->EnemyDataAsset = EnemyData;
+						
 				
 						ConstructStateTree(EnemyController, EnemyData, EnemyChar);
 					}

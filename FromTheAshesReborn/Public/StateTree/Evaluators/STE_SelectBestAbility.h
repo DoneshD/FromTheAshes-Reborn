@@ -5,6 +5,8 @@
 #include "DataAsset/AICombatParameters.h"
 #include "STE_SelectBestAbility.generated.h"
 
+class UEnemyCharacterDataAsset;
+class UFTAAbilitySet;
 struct FAttackData;
 class UFTAGameplayAbility;
 class UFTAAbilityDataAsset;
@@ -17,8 +19,11 @@ struct FROMTHEASHESREBORN_API FStateTreeEvaluator_SelectBestAbility_InstanceData
 	UPROPERTY(EditAnywhere, Category = Input)
 	TObjectPtr<AActor> InputActor = nullptr;
 
-	UPROPERTY(EditAnywhere)
-	TObjectPtr<UAICombatParameters> AICombatParams;
+	// UPROPERTY(EditAnywhere, Category = Input)
+	// TObjectPtr<UEnemyCharacterDataAsset> EnemyData = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TArray<TObjectPtr<UFTAAbilitySet>> AbilitySets;
 
 	UPROPERTY(EditAnywhere, Category = Output)
 	TObjectPtr<UFTAAbilityDataAsset> AbilityAsset = nullptr;

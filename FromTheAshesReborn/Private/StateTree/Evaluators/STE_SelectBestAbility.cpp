@@ -5,6 +5,8 @@
 #include "StateTreeExecutionContext.h"
 #include "StateTreeExecutionTypes.h"
 #include "CombatComponents/ComboManagerComponent.h"
+#include "Enemy/EnemyCharacterDataAsset.h"
+#include "FTAAbilitySystem/AbilitySets/FTAAbilitySet.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTAAbilitySystem/GameplayAbilities/Attack/GA_Attack.h"
 
@@ -14,24 +16,39 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 
 	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
 
+	TArray<UFTAGameplayAbility*> PossibleAbilities;
+
 	
 
-	if (InstanceData.AICombatParams->PossibleAttacks.Num() > 0)
+	if(InstanceData.AbilitySets.Num() > 0)
 	{
-		auto RandomItem = InstanceData.AICombatParams->PossibleAttacks[FMath::RandRange(0, InstanceData.AICombatParams->PossibleAttacks.Num() - 1)];
-		UGA_Attack* AbilityCDO = RandomItem->GetDefaultObject<UGA_Attack>();
-		if(AbilityCDO)
+		for(auto Set : InstanceData.AbilitySets)
 		{
-			UComboManagerComponent* CMC = InstanceData.InputActor->FindComponentByClass<UComboManagerComponent>();
-			if(CMC)
-			{			}
-			InstanceData.AbilityAsset = AbilityCDO->DefaultAbilityDataAsset;
+			if(Set)
+			{
+				if(Set->GrantedGameplayAbilities.Num() > 0)
+				{
+					for(auto AbilityFromSet : Set->GrantedGameplayAbilities)
+					{
+						UFTAGameplayAbility* AbilityCDO = AbilityFromSet.Ability->GetDefaultObject<UFTAGameplayAbility>();
+						if(AbilityCDO)
+						{
+							PossibleAbilities.Add(AbilityCDO);
+						}
+					}
+				}
+			}
 		}
 	}
-	else
+
+	auto RandomItem = PossibleAbilities[FMath::RandRange(0, PossibleAbilities.Num() - 1)];
+
+	if(RandomItem)
 	{
-		UE_LOG(LogTemp, Error, TEXT("FStateTreeEvaluator_SelectBestAbility::TreeStart - No Attacks to choose from"))
+		UE_LOG(LogTemp, Warning, TEXT("Random Ability chosen: %s"), *RandomItem->GetName());
+		InstanceData.AbilityAsset = RandomItem->DefaultAbilityDataAsset;
 	}
+	
 }
 
 void FStateTreeEvaluator_SelectBestAbility::TreeStop(FStateTreeExecutionContext& Context) const

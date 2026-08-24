@@ -98,7 +98,7 @@ public:
 	void AddAbilityToAbilitySet(UFTAAbilitySystemComponent* FTAASC, FFTAAbilitySet_GameplayAbility GameplayAbilityToAdd);
 
 
-protected:
+public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Gameplay Abilities", meta=(TitleProperty=Ability))
 	TArray<FFTAAbilitySet_GameplayAbility> GrantedGameplayAbilities;
