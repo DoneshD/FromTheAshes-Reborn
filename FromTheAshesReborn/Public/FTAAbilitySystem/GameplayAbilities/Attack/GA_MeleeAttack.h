@@ -30,9 +30,6 @@ class FROMTHEASHESREBORN_API UGA_MeleeAttack : public UGA_Attack
 
 protected:
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Melee")
-	TObjectPtr<UMeleeAbilityDataAsset> DefaultMeleeAttackData;
-	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Melee")
 	TObjectPtr<UMeleeAbilityDataAsset> CurrentMeleeAttackData;
 
@@ -45,8 +42,6 @@ protected:
 protected:
 	
 	UGA_MeleeAttack(const FObjectInitializer& = FObjectInitializer::Get());
-
-	virtual void PostLoad() override;
 	
 	virtual bool CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags = nullptr, const FGameplayTagContainer* TargetTags = nullptr, OUT FGameplayTagContainer* OptionalRelevantTags = nullptr) const override;
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;

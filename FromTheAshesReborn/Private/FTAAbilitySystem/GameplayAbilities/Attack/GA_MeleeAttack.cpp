@@ -19,15 +19,8 @@ UGA_MeleeAttack::UGA_MeleeAttack(const FObjectInitializer&)
 	// ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("TempTag.Attacking"));
 }
 
-void UGA_MeleeAttack::PostLoad()
-{
-	Super::PostLoad();
 
-	if (!DefaultAbilityDataAsset && DefaultMeleeAttackData)
-	{
-		DefaultAbilityDataAsset = DefaultMeleeAttackData;
-	}
-}
+
 
 bool UGA_MeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
                                          const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
@@ -38,13 +31,21 @@ bool UGA_MeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle
 
 void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	
-	CurrentMeleeAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
-	CurrentAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
-	
+	UMeleeAbilityDataAsset* MeleeDataAsset = Cast<UMeleeAbilityDataAsset>(DefaultAbilityDataAsset);
+
+	if (MeleeDataAsset)
+	{
+		CurrentMeleeAttackData = DuplicateObject<UMeleeAbilityDataAsset>(MeleeDataAsset, this);
+		CurrentAttackData = DuplicateObject<UMeleeAbilityDataAsset>(MeleeDataAsset, this);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GA_MeleeAttack: No valid melee ability data found during activation"));
+	}
+    
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-	
 }
+
 void UGA_MeleeAttack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo,
 	const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateCancelAbility)
 {
