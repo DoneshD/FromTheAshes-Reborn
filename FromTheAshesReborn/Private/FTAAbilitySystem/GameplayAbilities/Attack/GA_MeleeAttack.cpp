@@ -19,21 +19,25 @@ UGA_MeleeAttack::UGA_MeleeAttack(const FObjectInitializer&)
 	// ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("TempTag.Attacking"));
 }
 
+void UGA_MeleeAttack::PostLoad()
+{
+	Super::PostLoad();
+
+	if (!DefaultAbilityDataAsset && DefaultMeleeAttackData)
+	{
+		DefaultAbilityDataAsset = DefaultMeleeAttackData;
+	}
+}
+
 bool UGA_MeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
-	const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
-	const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+                                         const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
+                                         const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
 
 void UGA_MeleeAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	if(!DefaultMeleeAttackData)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Default Melee Attack Data must be set"))
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
-	}
 	
 	CurrentMeleeAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
 	CurrentAttackData = DuplicateObject<UMeleeAbilityDataAsset>(DefaultMeleeAttackData,this);
