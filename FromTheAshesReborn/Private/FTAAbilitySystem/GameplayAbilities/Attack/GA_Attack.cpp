@@ -108,8 +108,24 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
 			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 			{
-				
-				ExecuteHitLogic(TargetHitDataHandle);
+				if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Intangible")))
+				{
+					if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectWindow")))
+					{
+						
+						if(!TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectDodge")))
+						{
+							TargetASC->AddLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectDodge"));
+						}
+						FGameplayEventData PerfectDodgeEventData;
+						PerfectDodgeEventData.EventTag = FGameplayTag::RequestGameplayTag("CombatMovementTag.PerfectDodge");
+						UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, PerfectDodgeEventData.EventTag, PerfectDodgeEventData);
+					}
+				}
+				else
+				{
+					ExecuteHitLogic(TargetHitDataHandle);
+				}
 			}
 		}
 	}

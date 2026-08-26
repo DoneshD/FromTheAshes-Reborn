@@ -15,14 +15,8 @@ class FROMTHEASHESREBORN_API UGA_Dash : public UFTAGameplayAbility
 	GENERATED_BODY()
 
 protected:
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	TArray<TObjectPtr<UDashAbilityDataAsset>> DashAbilityAssets;
 
 	ELockOnInputOrientationDirection InputDirection = ELockOnInputOrientationDirection::Forward;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dash")
-	TObjectPtr<UDashAbilityDataAsset> DefaultDashData;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Dash")
 	TObjectPtr<UDashAbilityDataAsset> CurrentDashData;

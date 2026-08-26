@@ -45,7 +45,6 @@ EStateTreeRunStatus FStateTreeTask_ReserveAttackTokens::EnterState(FStateTreeExe
 		{
 			GCS->EnemiesAttackTokensMap.Add(Enemy, InstanceData.TokenAmount);
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Tokens: %d"), InstanceData.TokenAmount);
 		TargetGCC->AttackTokensCount -= InstanceData.TokenAmount;
 		return EStateTreeRunStatus::Succeeded;
 	}

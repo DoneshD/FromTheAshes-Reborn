@@ -78,6 +78,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
 	FGameplayTag ActivationGroupTag = ActivationBlockingTag;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
+	bool BypassBlock = false;
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
 	FGameplayTagContainer RequiredTags;

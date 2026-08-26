@@ -56,7 +56,18 @@ void UGA_Dash::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FG
 		// UE_LOG(LogTemp, Warning, TEXT("UGA_Dash::ActivateAbility - Player state null"))
 	}
 
-	CurrentDashData = DuplicateObject<UDashAbilityDataAsset>(DefaultDashData,this);
+	UDashAbilityDataAsset* DashDataAsset = Cast<UDashAbilityDataAsset>(DefaultAbilityDataAsset);
+
+	if (DashDataAsset)
+	{
+		CurrentDashData = DuplicateObject<UDashAbilityDataAsset>(DashDataAsset, this);
+	}
+	else
+	{
+		// UE_LOG(LogTemp, Warning, TEXT("UGA_Dash: No valid melee ability data found during activation"));
+	}
+	
+	CurrentDashData = DuplicateObject<UDashAbilityDataAsset>(Cast<UDashAbilityDataAsset>(DefaultAbilityDataAsset), this);
 	
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 	
@@ -72,7 +83,10 @@ void UGA_Dash::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGamepl
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
 	
-	
+	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectDodge")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectDodge"));
+	}
 }
 
 void UGA_Dash::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
@@ -83,7 +97,11 @@ void UGA_Dash::PlayAbilityAnimMontage(TObjectPtr<UAnimMontage> AnimMontage)
 void UGA_Dash::OnMontageCancelled(FGameplayTag EventTag, FGameplayEventData EventData)
 {
 	Super::OnMontageCancelled(EventTag, EventData);
-	
+
+	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectDodge")))
+	{
+		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectDodge"));
+	}
 }
 
 void UGA_Dash::OnMontageCompleted(FGameplayTag EventTag, FGameplayEventData EventData)

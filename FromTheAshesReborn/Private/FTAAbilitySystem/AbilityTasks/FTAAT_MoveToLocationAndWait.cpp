@@ -100,6 +100,7 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 	//Temp solution: NOT scalabe
 	if(MoveToLocationData->GetLockedOnTargetLocation)
 	{
+		
 		AController* Controller = GetAvatarActor()->GetInstigatorController();
 		if(Controller)
 		{
@@ -107,13 +108,14 @@ void UFTAAT_MoveToLocationAndWait::Activate()
 			if(PlayerController)
 			{
 				AFTAPlayerState* FTAPlayerState = PlayerController->GetFTAPlayerState();
-				TargetEndLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation();
 
-				TargetEndLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation()
-				+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.RelativeOffsetVector.X
-				+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.RelativeOffsetVector.Y
-				+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.RelativeOffsetVector.Z;
-				
+				if(FTAPlayerState->HardLockedTargetActor)
+				{
+					TargetEndLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation()
+					+ GetAvatarActor()->GetActorForwardVector() * MoveToLocationData->LocationData.RelativeOffsetVector.X
+					+ GetAvatarActor()->GetActorRightVector()   * MoveToLocationData->LocationData.RelativeOffsetVector.Y
+					+ GetAvatarActor()->GetActorUpVector()      * MoveToLocationData->LocationData.RelativeOffsetVector.Z;
+				}
 			}
 		}
 	}
@@ -269,33 +271,41 @@ void UFTAAT_MoveToLocationAndWait::QuarterMovement()
 			AFTAPlayerState* FTAPlayerState = PlayerController->GetFTAPlayerState();
 			if(FTAPlayerState)
 			{
-				FVector TargetLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation();
-				FVector PlayerLocation = GetAvatarActor()->GetActorLocation();
-
-				FVector Offset = PlayerLocation - TargetLocation;
-				
-				float ClampedLength = FMath::Clamp(Offset.Length(), 300.0f, 800.0f);
-				Offset = Offset.GetSafeNormal() * ClampedLength;
-			
-				for (int32 i = 0; i < NumberOfPartitions; i++)
+				if(FTAPlayerState->HardLockedTargetActor)
 				{
-					const float StartAlpha = static_cast<float>(i) / NumberOfPartitions;
-					const float EndAlpha = static_cast<float>(i + 1) / NumberOfPartitions;
+					FVector TargetLocation = FTAPlayerState->HardLockedTargetActor->GetActorLocation();
+					FVector PlayerLocation = GetAvatarActor()->GetActorLocation();
 
-					if(MoveToLocationData->Direction == ETempDashDirection::Right)
-					{
-						Angle = -90.0f;
-					}
-					else
-					{
-						Angle = 90.0f;
-					}
+					FVector Offset = PlayerLocation - TargetLocation;
 					
-					FVector Start = TargetLocation + Offset.RotateAngleAxis(Angle * StartAlpha, FVector::UpVector);
-					FVector End = TargetLocation + Offset.RotateAngleAxis(Angle * EndAlpha, FVector::UpVector);
+					float ClampedLength = FMath::Clamp(Offset.Length(), 300.0f, 800.0f);
+					Offset = Offset.GetSafeNormal() * ClampedLength;
+				
+					for (int32 i = 0; i < NumberOfPartitions; i++)
+					{
+						const float StartAlpha = static_cast<float>(i) / NumberOfPartitions;
+						const float EndAlpha = static_cast<float>(i + 1) / NumberOfPartitions;
 
-					QuarterLocationArray.Add(End);
+						if(MoveToLocationData->Direction == ETempDashDirection::Right)
+						{
+							Angle = -90.0f;
+						}
+						else
+						{
+							Angle = 90.0f;
+						}
+						
+						FVector Start = TargetLocation + Offset.RotateAngleAxis(Angle * StartAlpha, FVector::UpVector);
+						FVector End = TargetLocation + Offset.RotateAngleAxis(Angle * EndAlpha, FVector::UpVector);
+
+						QuarterLocationArray.Add(End);
+					}	
 					
+				}
+				else
+				{
+					OnMoveCompleted.Broadcast();
+					EndTask();
 				}
 			}
 		}

@@ -45,7 +45,6 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 
 	if(RandomItem)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Random Ability chosen: %s"), *RandomItem->GetName());
 		InstanceData.AbilityAsset = RandomItem->DefaultAbilityDataAsset;
 	}
 	

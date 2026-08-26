@@ -210,6 +210,11 @@ bool UFTAGameplayAbility::CanActivateAbility(const FGameplayAbilitySpecHandle Ha
 		return false;
 	}
 
+	if(BypassBlock)
+	{
+		return true;
+	}
+
 	bool bHasActiveAbilities = false;
 
 	for (const FGameplayAbilitySpec& Spec : FTAASC->GetActivatableAbilities())
