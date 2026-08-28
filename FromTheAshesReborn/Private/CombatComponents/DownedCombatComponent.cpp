@@ -133,7 +133,7 @@ void UDownedCombatComponent::DisableComponent()
 	FTACharacter->CentralStateComponent->SetCurrentOrientation(FTACharacter->CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
 	FTACharacter->CentralStateComponent->SetCurrentState(FTACharacter->CentralStateComponent->NeutralStateTag);
 	
-	if(PossibleRecoveries[0] && PossibleRecoveries[0]->IsValidLowLevel() && PossibleRecoveries.Num() > 0 && !PossibleRecoveries.IsEmpty())
+	if (!PossibleRecoveries.IsEmpty() && IsValid(PossibleRecoveries[0]))
 	{
 		const UGA_Recover* const CDO = PossibleRecoveries[0]->GetDefaultObject<UGA_Recover>();
 		if (CDO)

@@ -23,7 +23,13 @@ struct FROMTHEASHESREBORN_API FStateTreeEvaluator_SelectBestAbility_InstanceData
 	// TObjectPtr<UEnemyCharacterDataAsset> EnemyData = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<AActor> TargetActor = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = Input)
 	TArray<TObjectPtr<UFTAAbilitySet>> AbilitySets;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	float DistanceToTarget = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = Output)
 	TObjectPtr<UFTAAbilityDataAsset> AbilityAsset = nullptr;
@@ -46,5 +52,9 @@ protected:
 	virtual void TreeStart(FStateTreeExecutionContext& Context) const override;
 	virtual void TreeStop(FStateTreeExecutionContext& Context) const override;
 	virtual void Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const override;
+
+	UFTAGameplayAbility* WeightedRandomSelection(TArray<TObjectPtr<UFTAGameplayAbility>> AbilityArray, float DistToTarget) const;
+
+	
 	
 };
