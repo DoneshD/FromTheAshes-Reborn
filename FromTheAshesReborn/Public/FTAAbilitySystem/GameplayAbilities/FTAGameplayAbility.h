@@ -100,8 +100,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Assets")
 	TArray<TObjectPtr<UFTAAbilityDataAsset>> AbilityAssets;
 
-	UPROPERTY()
-	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Movement")
 	FName WarpTargetName;
@@ -137,6 +135,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
 	TObjectPtr<UFTAAbilityDataAsset> DefaultAbilityDataAsset;
+
+	UPROPERTY()
+	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityDataAsset;
+	
+	UPROPERTY()
+	TObjectPtr<UFTAAbilityDataAsset> CurrentAbilityAsset;
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Ability Activation")
 	int ActivationPriority = 0;

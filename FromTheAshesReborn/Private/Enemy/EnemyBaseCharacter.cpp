@@ -54,6 +54,8 @@ void AEnemyBaseCharacter::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("HealthWidget is Null or Invalid"));
 	}
 
+	
+
 	if(!EquipmentManagerComponent && !EquipmentManagerComponent->IsValidLowLevel())
 	{
 		UE_LOG(LogTemp, Error, TEXT("EquipmentManagerComponent is Null or Invalid"));
@@ -69,6 +71,7 @@ void AEnemyBaseCharacter::BeginPlay()
 	}
 	
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AEnemyBaseCharacter::HealthChanged);
+
 
 	// if (FloatCurve)
 	// {

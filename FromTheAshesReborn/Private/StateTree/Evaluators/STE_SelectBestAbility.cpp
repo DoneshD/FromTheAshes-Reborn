@@ -18,8 +18,6 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 
 	TArray<TObjectPtr<UFTAGameplayAbility>> PossibleAbilities;
 
-	
-
 	if(InstanceData.AbilitySets.Num() > 0)
 	{
 		for(auto Set : InstanceData.AbilitySets)
@@ -45,7 +43,10 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 
 	if(PossibleAbilities.Num() > 0)
 	{
-		InstanceData.AbilityAsset = WeightedRandomSelection(PossibleAbilities, Dist)->DefaultAbilityDataAsset;
+		
+		UFTAGameplayAbility* Ability = WeightedRandomSelection(PossibleAbilities, Dist);
+		InstanceData.BestSelectedAbility = Ability;
+		InstanceData.AbilityAsset = Ability->DefaultAbilityDataAsset;
 	}
 	else
 	{
@@ -57,6 +58,10 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 void FStateTreeEvaluator_SelectBestAbility::TreeStop(FStateTreeExecutionContext& Context) const
 {
 	FStateTreeEvaluatorCommonBase::TreeStop(Context);
+
+	FInstanceDataType& InstanceData = Context.GetInstanceData(*this);
+	
+	
 }
 
 void FStateTreeEvaluator_SelectBestAbility::Tick(FStateTreeExecutionContext& Context, const float DeltaTime) const
