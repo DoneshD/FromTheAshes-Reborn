@@ -3,6 +3,7 @@
 #include "AbilitySystemComponent.h"
 #include "BrainComponent.h"
 #include "NiagaraComponent.h"
+#include "CombatComponents/GroupCombatComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
@@ -134,6 +135,7 @@ void AEnemyBaseCharacter::BeginPlay()
 	// }
 	
 	
+	
 }
 
 void AEnemyBaseCharacter::Tick(float DeltaTime)
@@ -163,8 +165,10 @@ void AEnemyBaseCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
 	if(PlayerCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Player detected"))
-		OnPlayerInAggressionRadius.Broadcast(this, EEnemyEngagementRole::Aggressor);
+		if(GroupCombatComponent->EngagementRole != EEnemyEngagementRole::Aggressor)
+		{
+			OnPlayerInAggressionRadius.Broadcast(this, EEnemyEngagementRole::Aggressor);
+		}
 	}
 }
 

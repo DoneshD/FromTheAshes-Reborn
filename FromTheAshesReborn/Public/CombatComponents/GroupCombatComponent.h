@@ -22,7 +22,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	EEnemyEngagementRole EngagementRole = EEnemyEngagementRole::None;
+
+	FTimerHandle CurrentRoleTimer;
 	
+	float RoleTimerStartTime = 0.0f;
+
 protected:
 	
 	UGroupCombatComponent();
@@ -31,5 +35,11 @@ protected:
 
 	bool ReserveAttackToken(int32 Amount);
 	void ReturnAttackToken(int32 Amount);
+	
+
+public:
+
+	void StartRoleTimer();
+	void DoSomething();
 	
 };

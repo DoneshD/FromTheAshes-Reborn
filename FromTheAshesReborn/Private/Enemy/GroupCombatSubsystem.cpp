@@ -132,12 +132,21 @@ void UGroupCombatSubsystem::AssignAllRandomEngagementRole(UEnemyEncounterDataAss
 		UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
 
 		GCC->EngagementRole = InRole;
+		ResetTimeSpentInRole(RandomEnemy);
 	}
 }
 
 void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter> EnemyChar, EEnemyEngagementRole InRole)
 {
+	
 	UGroupCombatComponent* GCC = EnemyChar->FindComponentByClass<UGroupCombatComponent>();
+	
+	// UE_LOG(LogTemp, Warning, TEXT("AssignEngagementRole - Time spent in current role: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(GCC->CurrentRoleTimer));
+	float TimeSpentInRole = GetWorld()->GetTimeSeconds() - GCC->RoleTimerStartTime;
+	UE_LOG(LogTemp, Warning, TEXT("AssignEngagementRole - Time spent in current role: %f"), TimeSpentInRole);
+
+
+	ResetTimeSpentInRole(EnemyChar);
 	GCC->EngagementRole = InRole;
 	UE_LOG(LogTemp, Warning, TEXT("Aggressors: %d"), GetNumOfRoles(EEnemyEngagementRole::Aggressor));
 
@@ -220,6 +229,7 @@ void UGroupCombatSubsystem::EnforceEngagementRoleCount(UEnemyEncounterDataAsset*
 			UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
 			
 			GCC->EngagementRole = InRole;
+			
 			OtherEnemies.Remove(RandomEnemy);
 		}
 	}
@@ -233,6 +243,7 @@ void UGroupCombatSubsystem::EnforceEngagementRoleCount(UEnemyEncounterDataAsset*
 			UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
 			
 			GCC->EngagementRole = EEnemyEngagementRole::Observer;
+			UE_LOG(LogTemp, Warning, TEXT("Im an observer"))
 			MatchingEnemies.Remove(RandomEnemy);
 		}
 	}
@@ -276,6 +287,12 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 	UGroupCombatComponent* InGCC =
 		InEnemy->FindComponentByClass<UGroupCombatComponent>();
 
+	// UE_LOG(LogTemp, Warning, TEXT("Swap out aggressor - Time spent in current role: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(InGCC->CurrentRoleTimer));
+
+	float TimeSpentInRole = GetWorld()->GetTimeSeconds() - InGCC->RoleTimerStartTime;
+	UE_LOG(LogTemp, Warning, TEXT("Swap out aggressor - Time spent in current role: %f"), TimeSpentInRole);
+	ResetTimeSpentInRole(InEnemy);
+
 	if (InGCC)
 	{
 		InGCC->EngagementRole = EEnemyEngagementRole::Cover;
@@ -295,6 +312,10 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 
 	AEnemyBaseCharacter* RandomEnemy = OtherEnemies[FMath::RandRange(0, OtherEnemies.Num() - 1)];
 	UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
+
+	float TimeSpentInRole_2 = GetWorld()->GetTimeSeconds() - GCC->RoleTimerStartTime;
+	UE_LOG(LogTemp, Warning, TEXT("Swap out aggressor - Time spent in current role_2: %f"), TimeSpentInRole_2);
+	ResetTimeSpentInRole(RandomEnemy);
 
 	GCC->EngagementRole = EEnemyEngagementRole::Aggressor;
 	
@@ -355,4 +376,10 @@ int32 UGroupCombatSubsystem::GetNumOfRoles(EEnemyEngagementRole InRole)
 		}
 	}
 	return Count;
+}
+
+void UGroupCombatSubsystem::ResetTimeSpentInRole(TObjectPtr<AEnemyBaseCharacter> Enemy)
+{
+	UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
+	GCC->StartRoleTimer();
 }

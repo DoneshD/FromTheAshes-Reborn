@@ -55,5 +55,7 @@ public:
 	void ActivateAllStateTrees();
 
 	int32 GetNumOfRoles(EEnemyEngagementRole InRole);
+
+	void ResetTimeSpentInRole(TObjectPtr<AEnemyBaseCharacter> Enemy);
 	
 };

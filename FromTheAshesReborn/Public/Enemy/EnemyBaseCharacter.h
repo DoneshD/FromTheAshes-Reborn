@@ -24,11 +24,7 @@ enum class EEnemyEngagementRole : uint8
 	Observer	UMETA(DisplayName = "Observer")
 };
 
-DECLARE_MULTICAST_DELEGATE_TwoParams(
-	FOnPlayerInAggressionRadius,
-	TObjectPtr<AEnemyBaseCharacter>,
-	EEnemyEngagementRole
-);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnPlayerInAggressionRadius, TObjectPtr<AEnemyBaseCharacter>, EEnemyEngagementRole);
 
 UCLASS()
 class FROMTHEASHESREBORN_API AEnemyBaseCharacter : public AFTACharacter
