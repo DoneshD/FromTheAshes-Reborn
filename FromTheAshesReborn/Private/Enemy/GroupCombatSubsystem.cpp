@@ -56,14 +56,16 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 	
 	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
 
-	AssignEngagementRole(EncounterData, EEnemyEngagementRole::Aggressor);
-	AssignEngagementRole(EncounterData, EEnemyEngagementRole::Cover);
-	AssignEngagementRole(EncounterData, EEnemyEngagementRole::Observer);
+	AssignAllRandomEngagementRole(EncounterData, EEnemyEngagementRole::Aggressor);
+	AssignAllRandomEngagementRole(EncounterData, EEnemyEngagementRole::Cover);
+	AssignAllRandomEngagementRole(EncounterData, EEnemyEngagementRole::Observer);
 	
 	for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
 	{
 		if (Enemy)
 		{
+			Enemy->OnPlayerInAggressionRadius.AddUObject(this, &UGroupCombatSubsystem::AssignEngagementRole);
+			
 			UAbilitySystemComponent* ASC = Enemy->FindComponentByClass<UAbilitySystemComponent>();
 	
 			ASC->RegisterGameplayTagEvent(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"), EGameplayTagEventType::NewOrRemoved).AddLambda(
@@ -79,7 +81,7 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 	}
 }
 
-void UGroupCombatSubsystem::AssignEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole)
+void UGroupCombatSubsystem::AssignAllRandomEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole)
 {
 	int32 RoleCount;
 
@@ -130,6 +132,29 @@ void UGroupCombatSubsystem::AssignEngagementRole(UEnemyEncounterDataAsset* InEnc
 		UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
 
 		GCC->EngagementRole = InRole;
+	}
+}
+
+void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter> EnemyChar, EEnemyEngagementRole InRole)
+{
+	UGroupCombatComponent* GCC = EnemyChar->FindComponentByClass<UGroupCombatComponent>();
+	GCC->EngagementRole = InRole;
+	UE_LOG(LogTemp, Warning, TEXT("Aggressors: %d"), GetNumOfRoles(EEnemyEngagementRole::Aggressor));
+
+	if(InRole == EEnemyEngagementRole::Aggressor)
+	{
+		if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(EnemyChar->GetController()))
+		{
+			const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
+
+			if (STComp)
+			{
+				FStateTreeEvent AttackEvent;
+				AttackEvent.Tag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Attacking");
+
+				EnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
+			}
+		}
 	}
 }
 

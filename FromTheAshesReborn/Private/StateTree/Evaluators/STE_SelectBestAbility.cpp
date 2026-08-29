@@ -136,7 +136,6 @@ UFTAGameplayAbility* FStateTreeEvaluator_SelectBestAbility::WeightedRandomSelect
 	}
 
 	float RandomVal = FMath::FRandRange(0, TotalWeight);
-		UE_LOG(LogTemp, Warning, TEXT("RandomVal: %f"), RandomVal)
 	
 	
 	for (const TPair<UFTAGameplayAbility*, FScoringCriteria>& Pair : ScoreMap)
@@ -155,9 +154,7 @@ UFTAGameplayAbility* FStateTreeEvaluator_SelectBestAbility::WeightedRandomSelect
 
 	if(BestAbility)
 	{
-			UE_LOG(LogTemp, Warning, TEXT("Best Ability: %s"),
-		*GetNameSafe(BestAbility));
-			return BestAbility;
+		return BestAbility;
 	}
 	return nullptr;
 }

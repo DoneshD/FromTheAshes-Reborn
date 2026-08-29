@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "EnemyBaseCharacter.h"
 #include "DataAsset/EnemyEncounterDataAsset.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "GroupCombatSubsystem.generated.h"
@@ -8,14 +9,14 @@
 class AWaveManager;
 class AEnemyBaseCharacter;
 
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class EEnemyEngagementRole : uint8
 {
 	None		UMETA(DisplayName = "None"),
 	Aggressor	UMETA(DisplayName = "Aggressor"),
 	Cover		UMETA(DisplayName = "Cover"),
 	Observer	UMETA(DisplayName = "Observer")
-};
+};*/
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGroupCombatSubsystem : public UWorldSubsystem
@@ -43,11 +44,14 @@ protected:
 public:
 	
 	void RegisterAllEnemiesToGroupCombat();
-	void AssignEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
+	void AssignAllRandomEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
+
+	void AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>, EEnemyEngagementRole InRole);
 
 	void EnforceEngagementRoleCount(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
 	
 	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);
+	
 	void ActivateAllStateTrees();
 
 	int32 GetNumOfRoles(EEnemyEngagementRole InRole);

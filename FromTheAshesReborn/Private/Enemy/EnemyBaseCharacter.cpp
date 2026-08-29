@@ -6,6 +6,7 @@
 #include "CombatComponents/HealthComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Enemy/AIControllerEnemyBase.h"
 #include "Enemy/GroupCombatSubsystem.h"
@@ -22,6 +23,20 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 {
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
+
+	PlayerDetectionSphere =
+	CreateDefaultSubobject<USphereComponent>(TEXT("PlayerDetectionSphere"));
+
+	PlayerDetectionSphere->InitSphereRadius(300.0f);
+	PlayerDetectionSphere->SetupAttachment(GetCapsuleComponent());
+
+	PlayerDetectionSphere->SetHiddenInGame(false);
+	PlayerDetectionSphere->SetVisibility(true);
+	
+	// PlayerDetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	// PlayerDetectionSphere->SetGenerateOverlapEvents(true);
+	// PlayerDetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
 
 	HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
 	HealthWidget->SetupAttachment(RootComponent);
@@ -72,6 +87,26 @@ void AEnemyBaseCharacter::BeginPlay()
 	
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AEnemyBaseCharacter::HealthChanged);
 
+	
+	// FVector Location = PlayerDetectionSphere->GetComponentLocation();
+	//
+	// DrawDebugSphere(
+	// 	GetWorld(),
+	// 	Location,
+	// 	PlayerDetectionSphere->GetScaledSphereRadius(),
+	// 	32,
+	// 	FColor::Red,
+	// 	true,   // Persistent
+	// 	-1.0f,  // Duration
+	// 	0,
+	// 	2.0f   // Thickness
+	// );
+
+	PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(
+		this,
+		&AEnemyBaseCharacter::OnOverlapBegin
+	);
+
 
 	// if (FloatCurve)
 	// {
@@ -120,6 +155,17 @@ void AEnemyBaseCharacter::Tick(float DeltaTime)
 	// 	DissolveTimeline.TickTimeline(DeltaTime);
 	// }
 	
+}
+
+void AEnemyBaseCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	APlayerCharacter* PlayerCharacter = Cast<APlayerCharacter>(OtherActor);
+	if(PlayerCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player detected"))
+		OnPlayerInAggressionRadius.Broadcast(this, EEnemyEngagementRole::Aggressor);
+	}
 }
 
 void AEnemyBaseCharacter::TimelineProgress(float Value)
