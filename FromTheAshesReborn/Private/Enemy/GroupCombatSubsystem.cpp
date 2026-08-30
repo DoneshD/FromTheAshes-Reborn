@@ -143,12 +143,13 @@ void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>
 	
 	// UE_LOG(LogTemp, Warning, TEXT("AssignEngagementRole - Time spent in current role: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(GCC->CurrentRoleTimer));
 	float TimeSpentInRole = GetWorld()->GetTimeSeconds() - GCC->RoleTimerStartTime;
-	UE_LOG(LogTemp, Warning, TEXT("AssignEngagementRole - Time spent in current role: %f"), TimeSpentInRole);
 
 
 	ResetTimeSpentInRole(EnemyChar);
 	GCC->EngagementRole = InRole;
 	UE_LOG(LogTemp, Warning, TEXT("Aggressors: %d"), GetNumOfRoles(EEnemyEngagementRole::Aggressor));
+	EnforceAllEngagementRoleCounts();
+	UE_LOG(LogTemp, Warning, TEXT("After - Aggressors: %d"), GetNumOfRoles(EEnemyEngagementRole::Aggressor));
 
 	if(InRole == EEnemyEngagementRole::Aggressor)
 	{
@@ -165,28 +166,55 @@ void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>
 			}
 		}
 	}
+
+	else if(InRole == EEnemyEngagementRole::Cover)
+	{
+		if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(EnemyChar->GetController()))
+		{
+			const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
+
+			if (STComp)
+			{
+				FStateTreeEvent AttackEvent;
+				AttackEvent.Tag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Active");
+
+				EnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
+			}
+		}
+	}
+
+	EnforceAllEngagementRoleCounts();
 }
 
-void UGroupCombatSubsystem::EnforceEngagementRoleCount(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole)
+void UGroupCombatSubsystem::EnforceEngagementRoleCount(EEnemyEngagementRole InRole)
 {
+	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+	if(!FTAGameMode)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
+		return;
+	}
+
+	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+	
 	int32 MinCount;
 	int32 CurrentCount = 0;
 	int32 MaxCount;
 	
 	if(InRole == EEnemyEngagementRole::Aggressor)
 	{
-		MinCount = InEncounterData->AggressorRoles.MinimumRoleCount;
-		MaxCount = InEncounterData->AggressorRoles.MaximumRoleCount;
+		MinCount = EncounterData->AggressorRoles.MinimumRoleCount;
+		MaxCount = EncounterData->AggressorRoles.MaximumRoleCount;
 	}
 	else if(InRole == EEnemyEngagementRole::Cover)
 	{
-		MinCount = InEncounterData->CoverRoles.MinimumRoleCount;
-		MaxCount = InEncounterData->CoverRoles.MaximumRoleCount;
+		MinCount = EncounterData->CoverRoles.MinimumRoleCount;
+		MaxCount = EncounterData->CoverRoles.MaximumRoleCount;
 	}
 	else if(InRole == EEnemyEngagementRole::Observer)
 	{
-		MinCount = InEncounterData->ObserverRoles.MinimumRoleCount;
-		MaxCount = InEncounterData->ObserverRoles.MaximumRoleCount;
+		MinCount = EncounterData->ObserverRoles.MinimumRoleCount;
+		MaxCount = EncounterData->ObserverRoles.MaximumRoleCount;
 	}
 	else
 	{
@@ -258,21 +286,17 @@ void UGroupCombatSubsystem::EnforceEngagementRoleCount(UEnemyEncounterDataAsset*
 	
 }
 
+void UGroupCombatSubsystem::EnforceAllEngagementRoleCounts()
+{
+	EnforceEngagementRoleCount(EEnemyEngagementRole::Cover);
+	EnforceEngagementRoleCount(EEnemyEngagementRole::Observer);
+	EnforceEngagementRoleCount(EEnemyEngagementRole::Aggressor);
+}
+
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
 {
-	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(!FTAGameMode)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
-		return;
-	}
-
-	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
 	
-	/*if(EncounterData->AggressorRoles.MinimumRoleCount < GetNumOfRoles(EEnemyEngagementRole::Aggressor))
-	{
-		return;
-	}*/
+	
 	
 	if (!InEnemy)
 	{
@@ -332,9 +356,7 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 		}
 	}
 
-	EnforceEngagementRoleCount(EncounterData, EEnemyEngagementRole::Cover);
-	EnforceEngagementRoleCount(EncounterData, EEnemyEngagementRole::Observer);
-	EnforceEngagementRoleCount(EncounterData, EEnemyEngagementRole::Aggressor);
+	EnforceAllEngagementRoleCounts();
 
 	/*UE_LOG(LogTemp, Warning, TEXT("Aggressor Count: %d"), PrintNumOfRoles(EEnemyEngagementRole::Aggressor))
 	UE_LOG(LogTemp, Warning, TEXT("Cover Count: %d"), PrintNumOfRoles(EEnemyEngagementRole::Cover))

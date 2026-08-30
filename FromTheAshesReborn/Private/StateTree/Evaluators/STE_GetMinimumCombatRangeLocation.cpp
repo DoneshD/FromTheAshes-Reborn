@@ -36,5 +36,17 @@ void FStateTreeEvaluator_GetMinimumCombatRangeLocation::Tick(FStateTreeExecution
 	FVector DirectionNormal = Direction.GetSafeNormal();
 	
 	InstanceData->MinimumLocation = InstanceData->TargetActor->GetActorLocation() + (DirectionNormal * InstanceData->MinimumCombatRangeDistance);
+
+	DrawDebugSphere(
+	InstanceData->OwningActor->GetWorld(),
+	InstanceData->MinimumLocation,
+	25.0f,      
+	16,          
+	FColor::Red,
+	false,      
+	0.0f,       
+	0,           
+	2.0f         
+);
 	
 }

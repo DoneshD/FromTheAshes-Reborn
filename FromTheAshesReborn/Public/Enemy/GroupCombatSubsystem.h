@@ -48,7 +48,8 @@ public:
 
 	void AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>, EEnemyEngagementRole InRole);
 
-	void EnforceEngagementRoleCount(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
+	void EnforceEngagementRoleCount(EEnemyEngagementRole InRole);
+	void EnforceAllEngagementRoleCounts();
 	
 	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);
 	
