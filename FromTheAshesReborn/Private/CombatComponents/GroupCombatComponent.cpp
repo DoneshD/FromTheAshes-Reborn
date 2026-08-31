@@ -36,25 +36,25 @@ void UGroupCombatComponent::ReturnAttackToken(int32 Amount)
 
 void UGroupCombatComponent::DoSomething()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UGroupCombatComponent::DoSomething"));
-	
-	UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
-	if(GCS)
-	{
-		AEnemyBaseCharacter* EnemyOwner = Cast<AEnemyBaseCharacter>(GetOwner());
-		if(EnemyOwner)
-		{
-			if(EngagementRole == EEnemyEngagementRole::Cover)
-			{
-				GCS->AssignEngagementRole(EnemyOwner, EEnemyEngagementRole::Aggressor);
-			}
-			else if(EngagementRole == EEnemyEngagementRole::Aggressor)
-			{
-				GCS->AssignEngagementRole(EnemyOwner, EEnemyEngagementRole::Cover);
-			}
-			
-		}
-	}
+	// UE_LOG(LogTemp, Warning, TEXT("UGroupCombatComponent::DoSomething"));
+	//
+	// UGroupCombatSubsystem* GCS = GetWorld()->GetSubsystem<UGroupCombatSubsystem>();
+	// if(GCS)
+	// {
+	// 	AEnemyBaseCharacter* EnemyOwner = Cast<AEnemyBaseCharacter>(GetOwner());
+	// 	if(EnemyOwner)
+	// 	{
+	// 		if(EngagementRole == EEnemyEngagementRole::Cover)
+	// 		{
+	// 			GCS->AssignEngagementRole(EnemyOwner, EEnemyEngagementRole::Aggressor);
+	// 		}
+	// 		else if(EngagementRole == EEnemyEngagementRole::Aggressor)
+	// 		{
+	// 			GCS->AssignEngagementRole(EnemyOwner, EEnemyEngagementRole::Cover);
+	// 		}
+	// 		
+	// 	}
+	// }
 }
 
 void UGroupCombatComponent::StartRoleTimer()

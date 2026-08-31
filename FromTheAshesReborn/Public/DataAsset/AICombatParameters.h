@@ -90,11 +90,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FChaseData ChaseData;
 	
-	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag AirStunFinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished");
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FGameplayTag DownedFinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.Downed.Finished");
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float AggressionLevel = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float CoverLevel = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float ObserverLevel = 0.0f;
 	
 };

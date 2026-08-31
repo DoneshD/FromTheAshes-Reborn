@@ -28,6 +28,8 @@ protected:
 	UPROPERTY()
 	TObjectPtr<AWaveManager> WaveManager;
 
+	bool Flip = true;
+
 public:
 	
 	UPROPERTY()
@@ -35,6 +37,8 @@ public:
 
 	UPROPERTY()
 	TMap<TObjectPtr<AEnemyBaseCharacter>, int32> EnemiesAttackTokensMap;
+
+	FTimerHandle AggressionTimer;
 
 protected:
 	
@@ -45,6 +49,9 @@ public:
 	
 	void RegisterAllEnemiesToGroupCombat();
 	void AssignAllRandomEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
+	void AssignAllWeightedRandomSelectionEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
+
+	TArray<AEnemyBaseCharacter*> GetAllAvailableEnemies();
 
 	void AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>, EEnemyEngagementRole InRole);
 
@@ -58,5 +65,7 @@ public:
 	int32 GetNumOfRoles(EEnemyEngagementRole InRole);
 
 	void ResetTimeSpentInRole(TObjectPtr<AEnemyBaseCharacter> Enemy);
+
+	void FlipAggression();
 	
 };

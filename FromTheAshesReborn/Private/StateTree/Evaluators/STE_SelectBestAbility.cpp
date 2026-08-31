@@ -137,7 +137,6 @@ UFTAGameplayAbility* FStateTreeEvaluator_SelectBestAbility::WeightedRandomSelect
 
 	float RandomVal = FMath::FRandRange(0, TotalWeight);
 	
-	
 	for (const TPair<UFTAGameplayAbility*, FScoringCriteria>& Pair : ScoreMap)
 	{
 		UFTAGameplayAbility* Ability = Pair.Key;

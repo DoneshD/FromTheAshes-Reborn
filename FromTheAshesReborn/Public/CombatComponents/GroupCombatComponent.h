@@ -35,7 +35,6 @@ protected:
 
 	bool ReserveAttackToken(int32 Amount);
 	void ReturnAttackToken(int32 Amount);
-	
 
 public:
 

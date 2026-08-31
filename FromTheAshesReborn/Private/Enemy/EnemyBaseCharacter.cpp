@@ -27,16 +27,16 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 
 	PlayerDetectionSphere =
 	CreateDefaultSubobject<USphereComponent>(TEXT("PlayerDetectionSphere"));
-
+	
 	PlayerDetectionSphere->InitSphereRadius(300.0f);
 	PlayerDetectionSphere->SetupAttachment(GetCapsuleComponent());
-
+	
 	PlayerDetectionSphere->SetHiddenInGame(false);
 	PlayerDetectionSphere->SetVisibility(true);
 	
-	// PlayerDetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	// PlayerDetectionSphere->SetGenerateOverlapEvents(true);
-	// PlayerDetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	PlayerDetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	PlayerDetectionSphere->SetGenerateOverlapEvents(true);
+	PlayerDetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 
 
 	HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
