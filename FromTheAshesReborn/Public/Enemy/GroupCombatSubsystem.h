@@ -48,8 +48,10 @@ protected:
 public:
 	
 	void RegisterAllEnemiesToGroupCombat();
-	void AssignAllRandomEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole);
-	void AssignAllWeightedRandomSelectionEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
+	void AssignInitialRoles(EEnemyEngagementRole Role, int32 StartingRoleCount);
+	
+	void AssignInitialWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
+	void AssignWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
 
 	TArray<AEnemyBaseCharacter*> GetAllAvailableEnemies();
 

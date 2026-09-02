@@ -58,139 +58,10 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 	
 	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
 
-	// AssignAllRandomEngagementRole(EncounterData, EEnemyEngagementRole::Aggressor);
-	// AssignAllRandomEngagementRole(EncounterData, EEnemyEngagementRole::Cover);
-	// AssignAllRandomEngagementRole(EncounterData, EEnemyEngagementRole::Observer);
-
-	TArray<AEnemyBaseCharacter*> GuaranteedAggressors;
+	AssignInitialRoles(EEnemyEngagementRole::Aggressor, EncounterData->AggressorRoles.StartingRoleCount);
+	AssignInitialRoles(EEnemyEngagementRole::Cover, EncounterData->CoverRoles.StartingRoleCount);
+	AssignInitialRoles(EEnemyEngagementRole::Observer, EncounterData->ObserverRoles.StartingRoleCount);
 	
-	for(auto Enemy : GetAllAvailableEnemies())
-	{
-		if(Enemy)
-		{
-			if(Enemy->AICombatParams->AggressionLevel == 1.0f)
-			{
-				GuaranteedAggressors.Add(Enemy);
-			}
-		}
-	}
-	
-	for(int i = 0; i < EncounterData->AggressorRoles.StartingRoleCount; i++)
-	{
-		if(GuaranteedAggressors.Num() > 0)
-		{
-			auto Enemy = GuaranteedAggressors[FMath::RandRange(0, GuaranteedAggressors.Num() - 1)];
-			if(Enemy)
-			{
-				UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-				if(GCC)
-				{
-					GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-					GCC->EngagementRole = EEnemyEngagementRole::Aggressor;
-					ResetTimeSpentInRole(Enemy);
-					GuaranteedAggressors.Remove(Enemy);
-				}
-			}
-			
-		}
-		else
-		{
-			AssignAllWeightedRandomSelectionEngagementRole(EEnemyEngagementRole::Aggressor, GetAllAvailableEnemies());
-		}
-	}
-
-	TArray<AEnemyBaseCharacter*> GuaranteedCovers;
-	
-	for(auto Enemy : GetAllAvailableEnemies())
-	{
-		if(Enemy)
-		{
-			if(Enemy->AICombatParams->CoverLevel == 1.0f)
-			{
-				GuaranteedCovers.Add(Enemy);
-			}
-		}
-	}
-
-	
-	for(int i = 0; i < EncounterData->CoverRoles.StartingRoleCount; i++)
-	{
-		if(GuaranteedCovers.Num() > 0)
-		{
-			auto Enemy = GuaranteedCovers[FMath::RandRange(0, GuaranteedCovers.Num() - 1)];
-			if(Enemy)
-			{
-				UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-				if(GCC)
-				{
-					GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-					GCC->EngagementRole = EEnemyEngagementRole::Cover;
-					ResetTimeSpentInRole(Enemy);
-					GuaranteedCovers.Remove(Enemy);
-				}
-			}
-			
-		}
-		else
-		{
-			auto Enemy = GetAllAvailableEnemies()[FMath::RandRange(0, GetAllAvailableEnemies().Num() - 1)];
-			if(Enemy)
-			{
-				UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-				if(GCC)
-				{
-					AssignAllWeightedRandomSelectionEngagementRole(EEnemyEngagementRole::Cover, GetAllAvailableEnemies());
-				}
-			}
-		}
-	}
-
-	TArray<AEnemyBaseCharacter*> GuaranteedObservers;
-	
-	for(auto Enemy : GetAllAvailableEnemies())
-	{
-		if(Enemy)
-		{
-			if(Enemy->AICombatParams->ObserverLevel == 1.0f)
-			{
-				GuaranteedObservers.Add(Enemy);
-			}
-		}
-	}
-
-	
-	for(int i = 0; i < EncounterData->ObserverRoles.StartingRoleCount; i++)
-	{
-		if(GuaranteedObservers.Num() > 0)
-		{
-			auto Enemy = GuaranteedObservers[FMath::RandRange(0, GuaranteedObservers.Num() - 1)];
-			if(Enemy)
-			{
-				UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-				if(GCC)
-				{
-					GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-					GCC->EngagementRole = EEnemyEngagementRole::Observer;
-					ResetTimeSpentInRole(Enemy);
-					GuaranteedObservers.Remove(Enemy);
-				}
-			}
-			
-		}
-		else
-		{
-			auto Enemy = GetAllAvailableEnemies()[FMath::RandRange(0, GetAllAvailableEnemies().Num() - 1)];
-			if(Enemy)
-			{
-				UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-				if(GCC)
-				{
-					
-					AssignAllWeightedRandomSelectionEngagementRole(EEnemyEngagementRole::Observer, GetAllAvailableEnemies());
-				}
-			}
-		}
-	}
 
 	for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
 	{
@@ -221,85 +92,87 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 	// );
 }
 
-void UGroupCombatSubsystem::AssignAllRandomEngagementRole(UEnemyEncounterDataAsset* InEncounterData, EEnemyEngagementRole InRole)
+void UGroupCombatSubsystem::AssignInitialRoles(EEnemyEngagementRole Role, int32 StartingRoleCount)
 {
-	int32 RoleCount;
+	TArray<AEnemyBaseCharacter*> GuaranteedEnemies;
+	
+	for(auto Enemy : GetAllAvailableEnemies())
+	{
+		if(!Enemy || !Enemy->AICombatParams)
+		{
+			continue;
+		}
+		float InitialWeight = 0.0f;
+		
+		switch (Role)
+		{
+		case EEnemyEngagementRole::Aggressor:
+			InitialWeight = Enemy->AICombatParams->AggressionStats.InitialWeight;
+			break;
 
-	if(InRole == EEnemyEngagementRole::Aggressor)
-	{
-		RoleCount = InEncounterData->AggressorRoles.StartingRoleCount;
-	}
-	else if(InRole == EEnemyEngagementRole::Cover)
-	{
-		RoleCount = InEncounterData->CoverRoles.StartingRoleCount;
-	}
-	else if(InRole == EEnemyEngagementRole::Observer)
-	{
-		RoleCount = InEncounterData->ObserverRoles.StartingRoleCount;
-	}
-	else
-	{
-		RoleCount = 0;
-		UE_LOG(LogTemp, Error, TEXT("UGroupCombatSubsystem::AssignEngagementRole - Invalid Role"))
-		return;
+		case EEnemyEngagementRole::Cover:
+			InitialWeight = Enemy->AICombatParams->CoverStats.InitialWeight;
+			break;
+
+		case EEnemyEngagementRole::Observer:
+			InitialWeight = Enemy->AICombatParams->ObserverStats.InitialWeight;
+			break;
+
+		default:
+			break;
+		}
+
+		if (InitialWeight == 1.0f)
+		{
+			GuaranteedEnemies.Add(Enemy);
+		}
 	}
 	
-	for (int32 i = 0; i < RoleCount; i++)
+	for (int32 i = 0; i < StartingRoleCount; i++)
 	{
-		TArray<AEnemyBaseCharacter*> AvailableEnemies;
-
-		for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+		if (GuaranteedEnemies.Num() > 0)
 		{
+			const int32 RandomIndex = FMath::RandRange(0, GuaranteedEnemies.Num() - 1);
+			AEnemyBaseCharacter* Enemy = GuaranteedEnemies[RandomIndex];
+
 			if (!Enemy)
 			{
 				continue;
 			}
-
-			UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
-
-			if (GCC && GCC->EngagementRole == EEnemyEngagementRole::None)
-			{
-				AvailableEnemies.Add(Enemy);
-			}
+			
+			AssignEngagementRole(Enemy, Role);
+			GuaranteedEnemies.RemoveAt(RandomIndex);
 		}
-
-		if (AvailableEnemies.Num() == 0)
+		else
 		{
-			break;
+			AssignInitialWeightedRandomEngagementRole(Role, GetAllAvailableEnemies());
 		}
-
-		AEnemyBaseCharacter* RandomEnemy = AvailableEnemies[FMath::RandRange(0, AvailableEnemies.Num() - 1)];
-		UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
-
-		GCC->EngagementRole = InRole;
-		ResetTimeSpentInRole(RandomEnemy);
 	}
 }
 
-void UGroupCombatSubsystem::AssignAllWeightedRandomSelectionEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies)
+void UGroupCombatSubsystem::AssignInitialWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies)
 {
-	
 	float RoleWeightTotal = 0;
 	
 	if(InRole == EEnemyEngagementRole::Aggressor)
 	{
 		for(auto EnemyChar : InEnemies)
 		{
-			RoleWeightTotal += EnemyChar->AICombatParams->AggressionLevel;
+			RoleWeightTotal += EnemyChar->AICombatParams->AggressionStats.InitialWeight;
 		}
 	}
 	else if(InRole == EEnemyEngagementRole::Cover)
 	{
 		for(auto EnemyChar : InEnemies)
 		{
-			RoleWeightTotal += EnemyChar->AICombatParams->CoverLevel;
+			RoleWeightTotal += EnemyChar->AICombatParams->CoverStats.InitialWeight;
 		}
 	}
 	else if(InRole == EEnemyEngagementRole::Observer)
 	{
 		for(auto EnemyChar : InEnemies)
 		{
-			RoleWeightTotal += EnemyChar->AICombatParams->ObserverLevel;
+			RoleWeightTotal += EnemyChar->AICombatParams->ObserverStats.InitialWeight;
 		}
 	}
 
@@ -314,15 +187,15 @@ void UGroupCombatSubsystem::AssignAllWeightedRandomSelectionEngagementRole(EEnem
 		
 		if(InRole == EEnemyEngagementRole::Aggressor)
 		{
-			RoleLevel = EnemyChar->AICombatParams->AggressionLevel;
+			RoleLevel = EnemyChar->AICombatParams->AggressionStats.InitialWeight;
 		}
 		else if(InRole == EEnemyEngagementRole::Cover)
 		{
-			RoleLevel = EnemyChar->AICombatParams->CoverLevel;
+			RoleLevel = EnemyChar->AICombatParams->CoverStats.InitialWeight;
 		}
 		else if(InRole == EEnemyEngagementRole::Observer)
 		{
-			RoleLevel = EnemyChar->AICombatParams->ObserverLevel;
+			RoleLevel = EnemyChar->AICombatParams->ObserverStats.InitialWeight;
 		}
 		
 		if(RoleLevel == 0.0f)
@@ -335,12 +208,76 @@ void UGroupCombatSubsystem::AssignAllWeightedRandomSelectionEngagementRole(EEnem
 	
 			if(RandomVal <= 0.0f)
 			{
-				UGroupCombatComponent* GCC = EnemyChar->FindComponentByClass<UGroupCombatComponent>();
-				GCC->EngagementRole = InRole;
-				ResetTimeSpentInRole(EnemyChar);
+				AssignEngagementRole(EnemyChar, InRole);
 				break;
 			}
 		}
+		return;
+	}
+}
+
+void UGroupCombatSubsystem::AssignWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies)
+{
+	float RoleWeightTotal = 0;
+	
+	if(InRole == EEnemyEngagementRole::Aggressor)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->AggressionStats.BaseWeight;
+		}
+	}
+	else if(InRole == EEnemyEngagementRole::Cover)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->CoverStats.BaseWeight;
+		}
+	}
+	else if(InRole == EEnemyEngagementRole::Observer)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->ObserverStats.BaseWeight;
+		}
+	}
+
+	Algo::RandomShuffle(InEnemies);
+	
+
+	float RandomVal = FMath::FRandRange(0, RoleWeightTotal);
+
+	for (auto EnemyChar : InEnemies)
+	{
+		float RoleLevel = 0.0f;
+		
+		if(InRole == EEnemyEngagementRole::Aggressor)
+		{
+			RoleLevel = EnemyChar->AICombatParams->AggressionStats.BaseWeight;
+		}
+		else if(InRole == EEnemyEngagementRole::Cover)
+		{
+			RoleLevel = EnemyChar->AICombatParams->CoverStats.BaseWeight;
+		}
+		else if(InRole == EEnemyEngagementRole::Observer)
+		{
+			RoleLevel = EnemyChar->AICombatParams->ObserverStats.BaseWeight;
+		}
+		
+		if(RoleLevel == 0.0f)
+		{
+			continue;
+		}
+		
+		RandomVal -= RoleWeightTotal;
+
+		if(RandomVal <= 0.0f)
+		{
+			
+			AssignEngagementRole(EnemyChar, InRole);
+			break;
+		}
+		
 		return;
 	}
 }
@@ -374,17 +311,12 @@ TArray<AEnemyBaseCharacter*> UGroupCombatSubsystem::GetAllAvailableEnemies()
 
 void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter> EnemyChar, EEnemyEngagementRole InRole)
 {
-	
 	UGroupCombatComponent* GCC = EnemyChar->FindComponentByClass<UGroupCombatComponent>();
 	
-	// UE_LOG(LogTemp, Warning, TEXT("AssignEngagementRole - Time spent in current role: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(GCC->CurrentRoleTimer));
 	float TimeSpentInRole = GetWorld()->GetTimeSeconds() - GCC->RoleTimerStartTime;
-
-
+	
 	ResetTimeSpentInRole(EnemyChar);
 	GCC->EngagementRole = InRole;
-	EnforceAllEngagementRoleCounts();
-	UE_LOG(LogTemp, Warning, TEXT("After - Aggressors: %d"), GetNumOfRoles(EEnemyEngagementRole::Aggressor));
 
 	if(InRole == EEnemyEngagementRole::Aggressor)
 	{
@@ -433,7 +365,6 @@ void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>
 		}
 	}
 
-	EnforceAllEngagementRoleCounts();
 }
 
 void UGroupCombatSubsystem::EnforceEngagementRoleCount(EEnemyEngagementRole InRole)
@@ -503,11 +434,7 @@ void UGroupCombatSubsystem::EnforceEngagementRoleCount(EEnemyEngagementRole InRo
 		for(int32 i = 0; i < RoleAdditionsNeeded; i++)
 		{
 			AEnemyBaseCharacter* RandomEnemy = OtherEnemies[FMath::RandRange(0, OtherEnemies.Num() - 1)];
-			
-			UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
-			
-			GCC->EngagementRole = InRole;
-			
+			AssignEngagementRole(RandomEnemy, InRole);
 			OtherEnemies.Remove(RandomEnemy);
 		}
 	}
@@ -517,11 +444,7 @@ void UGroupCombatSubsystem::EnforceEngagementRoleCount(EEnemyEngagementRole InRo
 		for(int32 i = 0; i < RoleRemovalsNeeded; i++)
 		{
 			AEnemyBaseCharacter* RandomEnemy = MatchingEnemies[FMath::RandRange(0, MatchingEnemies.Num() - 1)];
-			
-			UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
-			
-			GCC->EngagementRole = EEnemyEngagementRole::Observer;
-			UE_LOG(LogTemp, Warning, TEXT("Im an observer"))
+			AssignEngagementRole(RandomEnemy, EEnemyEngagementRole::Observer);
 			MatchingEnemies.Remove(RandomEnemy);
 		}
 	}
@@ -545,6 +468,17 @@ void UGroupCombatSubsystem::EnforceAllEngagementRoleCounts()
 
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
 {
+	for(auto Enemy : AllEnemiesArray)
+	{
+		if(Enemy)
+		{
+			float DistToTarget = FVector::Dist(Enemy->GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+			float DistRatio = DistToTarget / 200;
+			
+			UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - Ratio: %f"), *GetNameSafe(Enemy), DistRatio);
+		}
+	}
+	
 	if (!InEnemy)
 	{
 		return;
@@ -554,20 +488,8 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 	{
 		return;
 	}
-
-	UGroupCombatComponent* InGCC =
-		InEnemy->FindComponentByClass<UGroupCombatComponent>();
-
-	// UE_LOG(LogTemp, Warning, TEXT("Swap out aggressor - Time spent in current role: %f"), GetWorld()->GetTimerManager().GetTimerElapsed(InGCC->CurrentRoleTimer));
-
-	float TimeSpentInRole = GetWorld()->GetTimeSeconds() - InGCC->RoleTimerStartTime;
-	UE_LOG(LogTemp, Warning, TEXT("Swap out aggressor - Time spent in current role: %f"), TimeSpentInRole);
-	ResetTimeSpentInRole(InEnemy);
-
-	if (InGCC)
-	{
-		InGCC->EngagementRole = EEnemyEngagementRole::Cover;
-	}
+	
+	AssignEngagementRole(InEnemy, EEnemyEngagementRole::Cover);
 
 	TArray<AEnemyBaseCharacter*> OtherEnemies;
 
@@ -582,13 +504,8 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 	}
 
 	AEnemyBaseCharacter* RandomEnemy = OtherEnemies[FMath::RandRange(0, OtherEnemies.Num() - 1)];
-	UGroupCombatComponent* GCC = RandomEnemy->FindComponentByClass<UGroupCombatComponent>();
-
-	float TimeSpentInRole_2 = GetWorld()->GetTimeSeconds() - GCC->RoleTimerStartTime;
-	UE_LOG(LogTemp, Warning, TEXT("Swap out aggressor - Time spent in current role_2: %f"), TimeSpentInRole_2);
-	ResetTimeSpentInRole(RandomEnemy);
-
-	GCC->EngagementRole = EEnemyEngagementRole::Aggressor;
+	AssignEngagementRole(RandomEnemy, EEnemyEngagementRole::Aggressor);
+	
 	
 	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(RandomEnemy->GetController()))
 	{

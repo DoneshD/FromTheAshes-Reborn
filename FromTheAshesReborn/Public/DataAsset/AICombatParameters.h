@@ -26,17 +26,6 @@ public:
 };
 
 USTRUCT(BlueprintType)
-struct FGroupCombatData
-{
-	GENERATED_BODY()
-	
-public:
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int TokenAmount = 1;
-};
-
-USTRUCT(BlueprintType)
 struct FChaseData
 {
 	GENERATED_BODY()
@@ -68,41 +57,43 @@ public:
 	
 };
 
+USTRUCT(BlueprintType)
+struct FRoleStats
+{
+	GENERATED_BODY()
+	
+public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float InitialWeight = 0.0f;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float BaseWeight = 0.0f;
+};
+
+
 UCLASS()
 class FROMTHEASHESREBORN_API UAICombatParameters : public UPrimaryDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	
-	// UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	// TArray<FAttackData> AttackData;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<TSubclassOf<UGA_Attack>> PossibleAttacks;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Actions")
+	FAttackData AttackData;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Actions")
 	FStrafeData StrafeData;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGroupCombatData GroupCombatData;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Actions")
 	FChaseData ChaseData;
-	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag AirStunFinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.AirStunned.Finished");
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FGameplayTag DownedFinishedTag = FGameplayTag::RequestGameplayTag("StateTreeTag.Status.State.Downed.Finished");
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Role")
+	FRoleStats AggressionStats;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float AggressionLevel = 0.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Role")
+	FRoleStats CoverStats;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float CoverLevel = 0.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Role")
+	FRoleStats ObserverStats;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	float ObserverLevel = 0.0f;
-	
 };

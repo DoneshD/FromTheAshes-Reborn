@@ -51,19 +51,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TObjectPtr<UFTAAbilitySet>> Movement;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combat Params")
 	TObjectPtr<UAICombatParameters> CombatParameters;
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree | Base")
 	TObjectPtr<UStateTree> BaseCombatStateTree;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base | Passive")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree | Passive")
 	FStateTreeLinkedAsset PassiveTree;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Base| Active")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree | Active")
 	FStateTreeLinkedAsset ActiveTree;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Active | Attack")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "State Tree | Attack")
 	FStateTreeLinkedAsset AttackTree;
 	
 };
