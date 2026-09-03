@@ -31,8 +31,8 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 	PlayerDetectionSphere->InitSphereRadius(300.0f);
 	PlayerDetectionSphere->SetupAttachment(GetCapsuleComponent());
 	
-	PlayerDetectionSphere->SetHiddenInGame(false);
-	PlayerDetectionSphere->SetVisibility(true);
+	// PlayerDetectionSphere->SetHiddenInGame(false);
+	// PlayerDetectionSphere->SetVisibility(true);
 	
 	PlayerDetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	PlayerDetectionSphere->SetGenerateOverlapEvents(true);

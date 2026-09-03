@@ -389,7 +389,7 @@ void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>
 				{
 					StartAttacking(EnemyController);
 				},
-				2.0f,
+				1.0f,
 				false
 			);
 			// FStateTreeEvent AttackEvent;
@@ -438,7 +438,6 @@ void UGroupCombatSubsystem::StartAttacking(TObjectPtr<AAIControllerEnemyBase> In
 {
 	FStateTreeEvent AttackEvent;
 	AttackEvent.Tag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Attacking");
-	UE_LOG(LogTemp, Display, TEXT("StartAttacking"));
 	
 	InEnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
 }
