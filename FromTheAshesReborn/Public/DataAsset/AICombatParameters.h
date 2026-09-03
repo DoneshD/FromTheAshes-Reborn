@@ -68,6 +68,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	float BaseWeight = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float FinalWeight = 0.0f;
 };
 
 

@@ -167,7 +167,7 @@ void AEnemyBaseCharacter::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 	{
 		if(GroupCombatComponent->EngagementRole != EEnemyEngagementRole::Aggressor)
 		{
-			OnPlayerInAggressionRadius.Broadcast(this, EEnemyEngagementRole::Aggressor);
+			// OnPlayerInAggressionRadius.Broadcast(this, EEnemyEngagementRole::Aggressor);
 		}
 	}
 }

@@ -5,6 +5,8 @@
 #include "StateTreeExecutionTypes.h"
 #include "STT_ReceiveHit.generated.h"
 
+class UAICombatParameters;
+
 USTRUCT()
 struct FROMTHEASHESREBORN_API FStateTreeTask_ReceiveHit_InstanceData
 {
@@ -15,6 +17,9 @@ struct FROMTHEASHESREBORN_API FStateTreeTask_ReceiveHit_InstanceData
 	
 	UPROPERTY(EditAnywhere, Category = Input)
 	FGameplayTag StateTreeFinishedTag = FGameplayTag::EmptyTag;
+
+	UPROPERTY(EditAnywhere, Category = Input)
+	TObjectPtr<UAICombatParameters> CombatParams = nullptr;
 	
 };
 

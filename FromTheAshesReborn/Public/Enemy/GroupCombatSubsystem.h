@@ -53,11 +53,12 @@ public:
 	void AssignInitialWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
 	void AssignWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
 
+	AEnemyBaseCharacter* SelectWeightedRandomEnemy(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*>& InEnemies);
+
 	TArray<AEnemyBaseCharacter*> GetAllAvailableEnemies();
 
 	void AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>, EEnemyEngagementRole InRole);
 
-	void EnforceEngagementRoleCount(EEnemyEngagementRole InRole);
 	void EnforceAllEngagementRoleCounts();
 	
 	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);

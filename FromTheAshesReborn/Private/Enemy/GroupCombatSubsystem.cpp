@@ -204,7 +204,7 @@ void UGroupCombatSubsystem::AssignInitialWeightedRandomEngagementRole(EEnemyEnga
 		}
 		else
 		{
-			RandomVal -= RoleWeightTotal;
+			RandomVal -= RoleLevel;
 	
 			if(RandomVal <= 0.0f)
 			{
@@ -244,7 +244,6 @@ void UGroupCombatSubsystem::AssignWeightedRandomEngagementRole(EEnemyEngagementR
 
 	Algo::RandomShuffle(InEnemies);
 	
-
 	float RandomVal = FMath::FRandRange(0, RoleWeightTotal);
 
 	for (auto EnemyChar : InEnemies)
@@ -269,17 +268,76 @@ void UGroupCombatSubsystem::AssignWeightedRandomEngagementRole(EEnemyEngagementR
 			continue;
 		}
 		
-		RandomVal -= RoleWeightTotal;
+		RandomVal -= RoleLevel;
 
 		if(RandomVal <= 0.0f)
 		{
-			
 			AssignEngagementRole(EnemyChar, InRole);
 			break;
 		}
-		
-		return;
 	}
+}
+
+AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemy(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*>& InEnemies)
+{
+	float RoleWeightTotal = 0;
+	
+	if(InRole == EEnemyEngagementRole::Aggressor)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->AggressionStats.FinalWeight;
+		}
+	}
+	else if(InRole == EEnemyEngagementRole::Cover)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->CoverStats.FinalWeight;
+		}
+	}
+	else if(InRole == EEnemyEngagementRole::Observer)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->ObserverStats.FinalWeight;
+		}
+	}
+
+	Algo::RandomShuffle(InEnemies);
+	
+	float RandomVal = FMath::FRandRange(0, RoleWeightTotal);
+
+	for (auto EnemyChar : InEnemies)
+	{
+		float RoleLevel = 0.0f;
+		
+		if(InRole == EEnemyEngagementRole::Aggressor)
+		{
+			RoleLevel = EnemyChar->AICombatParams->AggressionStats.FinalWeight;
+		}
+		else if(InRole == EEnemyEngagementRole::Cover)
+		{
+			RoleLevel = EnemyChar->AICombatParams->CoverStats.FinalWeight;
+		}
+		else if(InRole == EEnemyEngagementRole::Observer)
+		{
+			RoleLevel = EnemyChar->AICombatParams->ObserverStats.FinalWeight;
+		}
+		
+		if(RoleLevel == 0.0f)
+		{
+			continue;
+		}
+		
+		RandomVal -= RoleLevel;
+
+		if(RandomVal <= 0.0f)
+		{
+			return EnemyChar;
+		}
+	}
+	return nullptr;
 }
 
 TArray<AEnemyBaseCharacter*> UGroupCombatSubsystem::GetAllAvailableEnemies()
@@ -367,115 +425,277 @@ void UGroupCombatSubsystem::AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>
 
 }
 
-void UGroupCombatSubsystem::EnforceEngagementRoleCount(EEnemyEngagementRole InRole)
+void UGroupCombatSubsystem::EnforceAllEngagementRoleCounts()
 {
 	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
+
 	if(!FTAGameMode)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
 		return;
 	}
 
-	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
-	
-	int32 MinCount;
-	int32 CurrentCount = 0;
-	int32 MaxCount;
-	
-	if(InRole == EEnemyEngagementRole::Aggressor)
+	if(!FTAGameMode->EnemyEncounterArray.IsValidIndex(FTAGameMode->CurrentEncounter))
 	{
-		MinCount = EncounterData->AggressorRoles.MinimumRoleCount;
-		MaxCount = EncounterData->AggressorRoles.MaximumRoleCount;
-	}
-	else if(InRole == EEnemyEngagementRole::Cover)
-	{
-		MinCount = EncounterData->CoverRoles.MinimumRoleCount;
-		MaxCount = EncounterData->CoverRoles.MaximumRoleCount;
-	}
-	else if(InRole == EEnemyEngagementRole::Observer)
-	{
-		MinCount = EncounterData->ObserverRoles.MinimumRoleCount;
-		MaxCount = EncounterData->ObserverRoles.MaximumRoleCount;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGroupCombatSubsystem::AssignEngagementRole - Invalid Role"))
+		UE_LOG(LogTemp, Error, TEXT("Invalid current encounter index"));
 		return;
 	}
 
-	TArray<AEnemyBaseCharacter*> MatchingEnemies;
-	TArray<AEnemyBaseCharacter*> OtherEnemies;
+	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
 
-	for(auto Enemy : AllEnemiesArray)
+	if(!EncounterData)
 	{
-		if(!Enemy)
+		UE_LOG(LogTemp, Error, TEXT("Invalid EncounterData"));
+		return;
+	}
+
+	struct FRoleRequirement
+	{
+		EEnemyEngagementRole Role;
+		int32 MinCount;
+		int32 MaxCount;
+		int32 CurrentCount = 0;
+	};
+
+	TArray<FRoleRequirement> Requirements =
+	{
+		{
+			EEnemyEngagementRole::Aggressor,
+			EncounterData->AggressorRoles.MinimumRoleCount,
+			EncounterData->AggressorRoles.MaximumRoleCount
+		},
+
+		{
+			EEnemyEngagementRole::Cover,
+			EncounterData->CoverRoles.MinimumRoleCount,
+			EncounterData->CoverRoles.MaximumRoleCount
+		},
+
+		{
+			EEnemyEngagementRole::Observer,
+			EncounterData->ObserverRoles.MinimumRoleCount,
+			EncounterData->ObserverRoles.MaximumRoleCount
+		}
+	};
+
+	TArray<AEnemyBaseCharacter*> ValidEnemies;
+
+	for(AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+	{
+		if(Enemy)
+		{
+			ValidEnemies.Add(Enemy);
+		}
+	}
+
+	for(AEnemyBaseCharacter* Enemy : ValidEnemies)
+	{
+		UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
+
+		if(!GCC)
 		{
 			continue;
 		}
 
-		if(UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>())
+		for(FRoleRequirement& Requirement : Requirements)
 		{
-			if(GCC->EngagementRole == InRole)
+			if(GCC->EngagementRole == Requirement.Role)
 			{
-				MatchingEnemies.Add(Enemy);
-				CurrentCount++;
-			}
-			else
-			{
-				OtherEnemies.Add(Enemy);
+				Requirement.CurrentCount++;
+				break;
 			}
 		}
 	}
 
-	if(CurrentCount < MinCount)
-	{
-		int32 RoleAdditionsNeeded = MinCount - CurrentCount;
+	int32 TotalMinimum = 0;
+	int32 TotalMaximum = 0;
 
-		for(int32 i = 0; i < RoleAdditionsNeeded; i++)
+	for(const FRoleRequirement& Requirement : Requirements)
+	{
+		TotalMinimum += Requirement.MinCount;
+		TotalMaximum += Requirement.MaxCount;
+	}
+
+	if(ValidEnemies.Num() < TotalMinimum)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Too many enemies - Enemies: %d, Minimum Required: %d"), ValidEnemies.Num(), TotalMinimum);
+	}
+
+	if(ValidEnemies.Num() > TotalMaximum)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Too few enemies - Enemies: %d, Maximum Allowed: %d"), ValidEnemies.Num(), TotalMaximum);
+	}
+
+	bool MadeChange = true;
+
+	while(MadeChange)
+	{
+		MadeChange = false;
+
+		for(FRoleRequirement& TargetRequirement : Requirements)
 		{
-			AEnemyBaseCharacter* RandomEnemy = OtherEnemies[FMath::RandRange(0, OtherEnemies.Num() - 1)];
-			AssignEngagementRole(RandomEnemy, InRole);
-			OtherEnemies.Remove(RandomEnemy);
+			if(TargetRequirement.CurrentCount >= TargetRequirement.MinCount)
+			{
+				continue;
+			}
+
+			TArray<AEnemyBaseCharacter*> Candidates;
+
+			for(AEnemyBaseCharacter* Enemy : ValidEnemies)
+			{
+				UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
+
+				if(!GCC)
+				{
+					continue;
+				}
+
+				if(GCC->EngagementRole == TargetRequirement.Role)
+				{
+					continue;
+				}
+
+				FRoleRequirement* CurrentRequirement = nullptr;
+
+				for(FRoleRequirement& Requirement : Requirements)
+				{
+					if(Requirement.Role == GCC->EngagementRole)
+					{
+						CurrentRequirement = &Requirement;
+						break;
+					}
+				}
+
+				if(!CurrentRequirement)
+				{
+					continue;
+				}
+
+				if(CurrentRequirement->CurrentCount > CurrentRequirement->MinCount)
+				{
+					Candidates.Add(Enemy);
+				}
+			}
+
+			if(Candidates.Num() == 0)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Couldnt satisfy minimum count for role %s"), *UEnum::GetValueAsString(TargetRequirement.Role));
+				continue;
+			}
+
+			AEnemyBaseCharacter* SelectedEnemy = SelectWeightedRandomEnemy(TargetRequirement.Role, Candidates);
+
+			if(!SelectedEnemy)
+			{
+				continue;
+			}
+
+			UGroupCombatComponent* GCC = SelectedEnemy->FindComponentByClass<UGroupCombatComponent>();
+
+			if(!GCC)
+			{
+				continue;
+			}
+
+			const EEnemyEngagementRole OldRole = GCC->EngagementRole;
+
+			for(FRoleRequirement& Requirement : Requirements)
+			{
+				if(Requirement.Role == OldRole)
+				{
+					Requirement.CurrentCount--;
+					break;
+				}
+			}
+
+			AssignEngagementRole(SelectedEnemy, TargetRequirement.Role);
+
+			TargetRequirement.CurrentCount++;
+
+			MadeChange = true;
+
+			// UE_LOG(LogTemp, Log, TEXT("Moved enemy from role %s to role %s to satisfy minimum"), *UEnum::GetValueAsString(OldRole), *UEnum::GetValueAsString(TargetRequirement.Role));
 		}
 	}
-	else if(CurrentCount > MaxCount)
+
+	for(FRoleRequirement& Requirement : Requirements)
 	{
-		int32 RoleRemovalsNeeded = CurrentCount - MaxCount;
-		for(int32 i = 0; i < RoleRemovalsNeeded; i++)
+		while(Requirement.CurrentCount > Requirement.MaxCount)
 		{
-			AEnemyBaseCharacter* RandomEnemy = MatchingEnemies[FMath::RandRange(0, MatchingEnemies.Num() - 1)];
-			AssignEngagementRole(RandomEnemy, EEnemyEngagementRole::Observer);
-			MatchingEnemies.Remove(RandomEnemy);
+			AEnemyBaseCharacter* SelectedEnemy = nullptr;
+
+			for(AEnemyBaseCharacter* Enemy : ValidEnemies)
+			{
+				UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
+
+				if(!GCC)
+				{
+					continue;
+				}
+
+				if(GCC->EngagementRole == Requirement.Role)
+				{
+					SelectedEnemy = Enemy;
+					break;
+				}
+			}
+
+			if(!SelectedEnemy)
+			{
+				break;
+			}
+
+			FRoleRequirement* DestinationRequirement = nullptr;
+
+			for(FRoleRequirement& OtherRequirement : Requirements)
+			{
+				if(OtherRequirement.Role == Requirement.Role)
+				{
+					continue;
+				}
+
+				if(OtherRequirement.CurrentCount < OtherRequirement.MaxCount)
+				{
+					DestinationRequirement = &OtherRequirement;
+					break;
+				}
+			}
+
+			if(!DestinationRequirement)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("No available role to move excess enemy from role %s"), *UEnum::GetValueAsString(Requirement.Role));
+				break;
+			}
+
+			AssignEngagementRole(SelectedEnemy, DestinationRequirement->Role);
+
+			Requirement.CurrentCount--;
+			DestinationRequirement->CurrentCount++;
+
+			// UE_LOG(LogTemp, Log, TEXT("Moved excess enemy from role %s to role %s"), *UEnum::GetValueAsString(Requirement.Role), *UEnum::GetValueAsString(DestinationRequirement->Role));
 		}
-	}
-	else if(CurrentCount == MaxCount)
-	{
-		return;
-	}
-	else
-	{
-		return;
 	}
 	
-}
-
-void UGroupCombatSubsystem::EnforceAllEngagementRoleCounts()
-{
-	EnforceEngagementRoleCount(EEnemyEngagementRole::Cover);
-	EnforceEngagementRoleCount(EEnemyEngagementRole::Observer);
-	EnforceEngagementRoleCount(EEnemyEngagementRole::Aggressor);
+	// for(const FRoleRequirement& Requirement : Requirements)
+	// {
+	// 	UE_LOG(LogTemp, Log, TEXT("Role %s: %d / Min %d / Max %d"),
+	// 		*UEnum::GetValueAsString(Requirement.Role),
+	// 		Requirement.CurrentCount,
+	// 		Requirement.MinCount,
+	// 		Requirement.MaxCount);
+	// }
 }
 
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
 {
-	for(auto Enemy : AllEnemiesArray)
+	for(AEnemyBaseCharacter* Enemy : AllEnemiesArray)
 	{
 		if(Enemy)
 		{
 			float DistToTarget = FVector::Dist(Enemy->GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
 			float DistRatio = DistToTarget / 200;
 			
-			UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - Ratio: %f"), *GetNameSafe(Enemy), DistRatio);
+			// UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - Ratio: %f"), *GetNameSafe(Enemy), DistRatio);
 		}
 	}
 	
@@ -506,20 +726,6 @@ void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InE
 	AEnemyBaseCharacter* RandomEnemy = OtherEnemies[FMath::RandRange(0, OtherEnemies.Num() - 1)];
 	AssignEngagementRole(RandomEnemy, EEnemyEngagementRole::Aggressor);
 	
-	
-	if (AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(RandomEnemy->GetController()))
-	{
-		const UFTAStateTreeAIComponent* STComp = EnemyController->StateTreeComponent;
-
-		if (STComp)
-		{
-			FStateTreeEvent AttackEvent;
-			AttackEvent.Tag = FGameplayTag::RequestGameplayTag("StateTreeTag.State.Attacking");
-
-			EnemyController->StateTreeComponent->SendStateTreeEvent(AttackEvent);
-		}
-	}
-
 	EnforceAllEngagementRoleCounts();
 
 	/*UE_LOG(LogTemp, Warning, TEXT("Aggressor Count: %d"), PrintNumOfRoles(EEnemyEngagementRole::Aggressor))

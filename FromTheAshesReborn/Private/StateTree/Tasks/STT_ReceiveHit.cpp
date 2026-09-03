@@ -2,6 +2,7 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemGlobals.h"
 #include "StateTreeExecutionContext.h"
+#include "DataAsset/AICombatParameters.h"
 
 EStateTreeRunStatus FStateTreeTask_ReceiveHit::EnterState(FStateTreeExecutionContext& Context, const FStateTreeTransitionResult& Transition) const
 {
@@ -23,6 +24,8 @@ EStateTreeRunStatus FStateTreeTask_ReceiveHit::EnterState(FStateTreeExecutionCon
 	{
 		ASC->RemoveLooseGameplayTag(InstanceData.StateTreeFinishedTag);
 	}
+
+	InstanceData.CombatParams->AggressionStats.FinalWeight = 0.0f;
 	
 	return EStateTreeRunStatus::Running;
 }
@@ -64,6 +67,8 @@ void FStateTreeTask_ReceiveHit::ExitState(FStateTreeExecutionContext& Context, c
 			ASC->RemoveLooseGameplayTag(InstanceData.StateTreeFinishedTag);
 		}
 	}
+
+	InstanceData.CombatParams->AggressionStats.FinalWeight = 1.0f;
 
 	FStateTreeTaskCommonBase::ExitState(Context, Transition);
 }
