@@ -27,6 +27,8 @@ public:
 	
 	float RoleTimerStartTime = 0.0f;
 
+	FTimerHandle AttackTimer;
+
 protected:
 	
 	UGroupCombatComponent();

@@ -6,6 +6,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "GroupCombatSubsystem.generated.h"
 
+class AAIControllerEnemyBase;
 class AWaveManager;
 class AEnemyBaseCharacter;
 
@@ -38,7 +39,7 @@ public:
 	UPROPERTY()
 	TMap<TObjectPtr<AEnemyBaseCharacter>, int32> EnemiesAttackTokensMap;
 
-	FTimerHandle AggressionTimer;
+	
 
 protected:
 	
@@ -58,6 +59,8 @@ public:
 	TArray<AEnemyBaseCharacter*> GetAllAvailableEnemies();
 
 	void AssignEngagementRole(TObjectPtr<AEnemyBaseCharacter>, EEnemyEngagementRole InRole);
+	
+	void StartAttacking(TObjectPtr<AAIControllerEnemyBase> InEnemyController);
 
 	void EnforceAllEngagementRoleCounts();
 	

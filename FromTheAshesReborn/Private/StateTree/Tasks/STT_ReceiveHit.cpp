@@ -25,7 +25,7 @@ EStateTreeRunStatus FStateTreeTask_ReceiveHit::EnterState(FStateTreeExecutionCon
 		ASC->RemoveLooseGameplayTag(InstanceData.StateTreeFinishedTag);
 	}
 
-	InstanceData.CombatParams->AggressionStats.FinalWeight = 0.0f;
+	// InstanceData.CombatParams->AggressionStats.FinalWeight = 0.0f;
 	
 	return EStateTreeRunStatus::Running;
 }
@@ -68,7 +68,7 @@ void FStateTreeTask_ReceiveHit::ExitState(FStateTreeExecutionContext& Context, c
 		}
 	}
 
-	InstanceData.CombatParams->AggressionStats.FinalWeight = 1.0f;
+	// InstanceData.CombatParams->AggressionStats.FinalWeight = 1.0f;
 
 	FStateTreeTaskCommonBase::ExitState(Context, Transition);
 }

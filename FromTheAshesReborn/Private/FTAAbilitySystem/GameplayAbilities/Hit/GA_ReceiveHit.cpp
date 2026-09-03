@@ -4,6 +4,7 @@
 #include "StateTreeEvents.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
+#include "DataAsset/AICombatParameters.h"
 #include "DataAsset/HitReactionDataAsset.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
 #include "Enemy/AIControllerEnemyBase.h"
@@ -51,6 +52,11 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	if(GetFTAAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.Hit.Finished")))
 	{
 		GetFTAAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("StateTreeTag.Status.Ability.Hit.Finished"));
+	}
+
+	if(AEnemyBaseCharacter* EnemyChar = Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo()))
+	{
+		EnemyChar->AICombatParams->AggressionStats.FinalWeight = 0.0f;
 	}
 	
 	FVector TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
@@ -187,6 +193,11 @@ void UGA_ReceiveHit::EndAbility(const FGameplayAbilitySpecHandle Handle, const F
 	if(GetAbilitySystemComponentFromActorInfo()->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit")))
 	{
 		GetAbilitySystemComponentFromActorInfo()->RemoveLooseGameplayTag(FGameplayTag::RequestGameplayTag("HitTag.State.Hit"));
+	}
+
+	if(AEnemyBaseCharacter* EnemyChar = Cast<AEnemyBaseCharacter>(GetFTACharacterFromActorInfo()))
+	{
+		EnemyChar->AICombatParams->AggressionStats.FinalWeight = 0.33f;
 	}
 
 

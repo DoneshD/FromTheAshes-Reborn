@@ -7,6 +7,7 @@
 #include "Enemy/EnemyCharacterDataAsset.h"
 #include "Enemy/FTAStateTreeAIComponent.h"
 #include "Enemy/GroupCombatSubsystem.h"
+#include "DataAsset/AICombatParameters.h"
 #include "GameModes/FTAGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/StateTreeComponent.h"
@@ -79,7 +80,8 @@ void AEnemySpawner::SpawnEnemies(FWaveData InWaveData)
 					if(!EnemyChar->GetController())
 					{
 						AAIControllerEnemyBase* EnemyController = GetWorld()->SpawnActor<AAIControllerEnemyBase>(EnemyData->EnemyControllerClass);
-						EnemyChar->AICombatParams = EnemyData->CombatParameters;
+						UAICombatParameters* CombatParams = DuplicateObject<UAICombatParameters>(EnemyData->CombatParameters, this);
+						EnemyChar->AICombatParams = CombatParams;
 						EnemyChar->EnemyDataAsset = EnemyData;
 						
 				
