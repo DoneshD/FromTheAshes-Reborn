@@ -1,10 +1,12 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Enemy/GroupCombatSubsystem.h"
 #include "Engine/DataAsset.h"
 #include "EnemyEncounterDataAsset.generated.h"
 
 class UEnemyCharacterDataAsset;
+class UGroupCombatSubsystem;
 
 USTRUCT(BlueprintType)
 struct FPlayerTokenData
@@ -22,7 +24,7 @@ struct FPlayerTokenData
 	
 };
 
-USTRUCT(BlueprintType)
+/*USTRUCT(BlueprintType)
 struct FRoleData
 {
 	GENERATED_BODY()
@@ -36,7 +38,7 @@ struct FRoleData
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	int32 MaximumRoleCount = 0;
 	
-};
+};*/
 
 USTRUCT(BlueprintType)
 struct FWaveData
@@ -58,14 +60,23 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Wave")
 	FWaveData WaveData;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
+	/*UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
 	FRoleData AggressorRoles;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
 	FRoleData CoverRoles;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
-	FRoleData ObserverRoles;
+	FRoleData ObserverRoles;*/
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
+	FRoleRequirement AggressorRoles;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
+	FRoleRequirement CoverRoles;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Roles")
+	FRoleRequirement ObserverRoles;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Player")
 	FPlayerTokenData PlayerTokenData;

@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "EnemyBaseCharacter.h"
-#include "DataAsset/EnemyEncounterDataAsset.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "GroupCombatSubsystem.generated.h"
 
@@ -10,12 +9,27 @@ class AAIControllerEnemyBase;
 class AWaveManager;
 class AEnemyBaseCharacter;
 
+
+USTRUCT(BlueprintType)
 struct FRoleRequirement
 {
+
+	GENERATED_BODY()
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	EEnemyEngagementRole Role;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	int32 MinCount;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	int32 MaxCount;
-	int32 CurrentCount = 0;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	int32 StartingCount;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	int32 CurrentCount;
 };
 
 UCLASS()
@@ -39,7 +53,7 @@ public:
 	UPROPERTY()
 	TMap<TObjectPtr<AEnemyBaseCharacter>, int32> EnemiesAttackTokensMap;
 
-	
+	TArray<FRoleRequirement> AllRoleRequirements;
 
 protected:
 	
@@ -74,9 +88,10 @@ public:
 	int32 GetNumInRoles(EEnemyEngagementRole InRole);
 
 	void ResetTimeSpentInRole(TObjectPtr<AEnemyBaseCharacter> Enemy);
-
-	void FlipAggressionCount();
+	void ChangeMinMaxRoleCount(EEnemyEngagementRole InRole, int32 InMinCount, int32 InMaxCount);
 	
 	void AddRole(EEnemyEngagementRole InRole);
+
+	
 	
 };

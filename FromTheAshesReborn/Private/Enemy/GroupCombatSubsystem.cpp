@@ -20,13 +20,6 @@ void UGroupCombatSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
 
-	/*WaveManager = Cast<AWaveManager>(UGameplayStatics::GetActorOfClass(GetWorld(), AWaveManager::StaticClass()));
-	if(!WaveManager)
-	{
-		UE_LOG(LogTemp, Error, TEXT("WaveManager is NULL"));
-		return;
-	}
-	WaveManager->OnAllEnemiesSpawnedInWave.AddUObject(this, &UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat);*/
 }
 
 void UGroupCombatSubsystem::Deinitialize()
@@ -59,10 +52,14 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 	Algo::RandomShuffle(AllEnemiesArray);
 	
 	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
+	
+	AllRoleRequirements.Add(EncounterData->AggressorRoles);
+	AllRoleRequirements.Add(EncounterData->CoverRoles);
+	AllRoleRequirements.Add(EncounterData->ObserverRoles);
 
-	AssignInitialRoles(EEnemyEngagementRole::Aggressor, EncounterData->AggressorRoles.StartingRoleCount);
-	AssignInitialRoles(EEnemyEngagementRole::Cover, EncounterData->CoverRoles.StartingRoleCount);
-	AssignInitialRoles(EEnemyEngagementRole::Observer, EncounterData->ObserverRoles.StartingRoleCount);
+	AssignInitialRoles(EEnemyEngagementRole::Aggressor, EncounterData->AggressorRoles.StartingCount);
+	AssignInitialRoles(EEnemyEngagementRole::Cover, EncounterData->CoverRoles.StartingCount);
+	AssignInitialRoles(EEnemyEngagementRole::Observer, EncounterData->ObserverRoles.StartingCount);
 	
 
 	for (AEnemyBaseCharacter* Enemy : AllEnemiesArray)
@@ -101,7 +98,7 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 		{
 			AddRole(AggressorRole);
 		},
-		5.0f,
+		2.0f,
 		false
 	);
 }
@@ -511,23 +508,20 @@ void UGroupCombatSubsystem::GetRoleCountsFromValidEnemies(TArray<FRoleRequiremen
 	{
 		{
 			EEnemyEngagementRole::Aggressor,
-			EncounterData->AggressorRoles.MinimumRoleCount,
-			EncounterData->AggressorRoles.MaximumRoleCount,
-			0
+			EncounterData->AggressorRoles.MinCount,
+			EncounterData->AggressorRoles.MaxCount
 		},
 
 		{
 			EEnemyEngagementRole::Cover,
-			EncounterData->CoverRoles.MinimumRoleCount,
-			EncounterData->CoverRoles.MaximumRoleCount,
-			0
+			EncounterData->CoverRoles.MinCount,
+			EncounterData->CoverRoles.MaxCount
 		},
 
 		{
 			EEnemyEngagementRole::Observer,
-			EncounterData->ObserverRoles.MinimumRoleCount,
-			EncounterData->ObserverRoles.MaximumRoleCount,
-			0
+			EncounterData->ObserverRoles.MinCount,
+			EncounterData->ObserverRoles.MaxCount
 		}
 	};
 	
@@ -809,68 +803,30 @@ void UGroupCombatSubsystem::ResetTimeSpentInRole(TObjectPtr<AEnemyBaseCharacter>
 	GCC->StartRoleTimer();
 }
 
-void UGroupCombatSubsystem::FlipAggressionCount()
+void UGroupCombatSubsystem::ChangeMinMaxRoleCount(EEnemyEngagementRole InRole, int32 InMinCount, int32 InMaxCount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Flip"))
-	
-	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(!FTAGameMode)
+	for(FRoleRequirement& RoleRequirement : AllRoleRequirements)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
-		return;
-	}
-
-	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
-
-	if(EncounterData)
-	{
-		if(Flip)
+		if(InRole == RoleRequirement.Role)
 		{
-			Flip = false;
-			EncounterData->AggressorRoles.MaximumRoleCount = 2;
-			EncounterData->AggressorRoles.MinimumRoleCount = 2;
-		}
-		else
-		{
-			Flip = true;
-			EncounterData->AggressorRoles.MaximumRoleCount = 1;
-			EncounterData->AggressorRoles.MinimumRoleCount = 1;
+			RoleRequirement.MaxCount = InMaxCount;
+			RoleRequirement.MinCount = InMinCount;
+			break;
 		}
 	}
-
-	EnforceAllEngagementRoleCounts();
 }
 
 void UGroupCombatSubsystem::AddRole(EEnemyEngagementRole InRole)
 {
-	AFTAGameModeBase* FTAGameMode = Cast<AFTAGameModeBase>(UGameplayStatics::GetGameMode(GetWorld()));
-	if(!FTAGameMode)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
-		return;
-	}
-	
-	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
-
 	int32 MaxCount = 0;
 
-	switch(InRole)
+	for(FRoleRequirement& Requirement : AllRoleRequirements)
 	{
-		case EEnemyEngagementRole::Aggressor:
-			MaxCount = EncounterData->AggressorRoles.MaximumRoleCount;
+		if(InRole == Requirement.Role)
+		{
+			MaxCount = Requirement.MaxCount;
 			break;
-
-		case EEnemyEngagementRole::Cover:
-			MaxCount = EncounterData->CoverRoles.MaximumRoleCount;
-			break;
-
-		case EEnemyEngagementRole::Observer:
-			MaxCount = EncounterData->ObserverRoles.MaximumRoleCount;
-			break;
-
-		default:
-			break;
-		
+		}
 	}
 	
 	if(GetNumInRoles(InRole) < MaxCount)

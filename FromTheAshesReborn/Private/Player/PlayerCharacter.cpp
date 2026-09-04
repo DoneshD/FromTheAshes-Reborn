@@ -4,6 +4,7 @@
 #include "CombatComponents/GroupCombatComponent.h"
 #include "CombatComponents/RangedCombatComponent.h"
 #include "Components/WidgetComponent.h"
+#include "DataAsset/EnemyEncounterDataAsset.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
 #include "Enemy/EnemyBaseCharacter.h"
 #include "Player/FTAPlayerState.h"
