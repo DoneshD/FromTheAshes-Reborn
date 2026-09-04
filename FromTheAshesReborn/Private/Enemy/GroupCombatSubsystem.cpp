@@ -354,6 +354,82 @@ AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemy(EEnemyEnga
 	return nullptr;
 }
 
+AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightRandomEnemyFromAllRoles()
+{
+	for(AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+	{
+		float DistanceScore = CalculateDistanceScore(Enemy);
+		// float RoleBias = CalculateRoleBias(Enemy);
+		
+		float FinalWeight = DistanceScore;
+
+		UE_LOG(LogTemp, Warning, TEXT("Final Score | Enemy: %s | DistanceScore: %.2f | FinalWeight: %.2f"),
+		   *Enemy->GetName(),
+		   DistanceScore,
+		   FinalWeight
+			);
+		 
+	}
+	
+	return nullptr;
+}
+
+float UGroupCombatSubsystem::CalculateDistanceScore(TObjectPtr<AEnemyBaseCharacter> InEnemy)
+{
+	ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+
+	if (!InEnemy || !PlayerCharacter)
+	{
+		return 0.0f;
+	}
+
+	float DistToTarget = FVector::Dist(
+		InEnemy->GetActorLocation(),
+		PlayerCharacter->GetActorLocation()
+	);
+
+	float IdealRange = InEnemy->AICombatParams->AttackData.IdealRangeForAttacking;
+
+	float DistRatio = IdealRange / DistToTarget;
+
+	float DistanceScore = FMath::Abs(1 - DistRatio);
+	float InverseDistanceScore = FMath::Abs(1 - DistanceScore);
+
+	return InverseDistanceScore;
+}
+
+float UGroupCombatSubsystem::CalculateRoleBias(AEnemyBaseCharacter* InEnemy)
+{
+	UGroupCombatComponent* GCC = InEnemy->FindComponentByClass<UGroupCombatComponent>();
+
+	float RoleBias = 0.0f;
+
+	if(!GCC)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UGroupCombatSubsystem::CalculateRoleBias - GCC is null"))
+	}
+	
+	switch (GCC->EngagementRole)
+	{
+	case EEnemyEngagementRole::Aggressor:
+		RoleBias = 0.5f;
+		break;
+
+	case EEnemyEngagementRole::Cover:
+		RoleBias = 0.25f;
+		break;
+
+	case EEnemyEngagementRole::Observer:
+		RoleBias = 0.15f;
+		break;
+
+	default:
+		break;
+	}
+
+	return RoleBias;
+}
+
 TArray<AEnemyBaseCharacter*> UGroupCombatSubsystem::GetAllAvailableEnemies()
 {
 	TArray<AEnemyBaseCharacter*> AvailableEnemies;
@@ -470,14 +546,14 @@ void UGroupCombatSubsystem::EnforceAllEngagementRoleCounts()
 
 	SatisfyMaximumRoleCounts(Requirements, ValidEnemies);
 	
-	/*for(const FRoleRequirement& Requirement : Requirements)
+	for(const FRoleRequirement& Requirement : Requirements)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Role %s: %d / Min %d / Max %d"),
 			*UEnum::GetValueAsString(Requirement.Role),
 			Requirement.CurrentCount,
 			Requirement.MinCount,
 			Requirement.MaxCount);
-	}*/
+	}
 }
 
 void UGroupCombatSubsystem::GetRoleCountsFromValidEnemies(TArray<FRoleRequirement>& OutRoleRequirements, TArray<AEnemyBaseCharacter*>& OutValidEnemies)
@@ -728,15 +804,7 @@ void UGroupCombatSubsystem::SatisfyMaximumRoleCounts(TArray<FRoleRequirement>& I
 
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
 {
-	for(AEnemyBaseCharacter* Enemy : AllEnemiesArray)
-	{
-		if(Enemy)
-		{
-			float DistToTarget = FVector::Dist(Enemy->GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
-			float DistRatio = DistToTarget / 200;
-			
-		}
-	}
+	SelectWeightRandomEnemyFromAllRoles();
 	
 	if (!InEnemy)
 	{

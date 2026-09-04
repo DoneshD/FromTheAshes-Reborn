@@ -50,6 +50,9 @@ public:
 	float MinimumDistanceForAttack = 250.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float IdealRangeForAttacking = 150.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TSubclassOf<UGA_Attack> PossibleAttack;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

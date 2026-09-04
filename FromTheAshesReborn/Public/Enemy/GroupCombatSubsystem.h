@@ -69,6 +69,10 @@ public:
 	void AssignWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
 
 	AEnemyBaseCharacter* SelectWeightedRandomEnemy(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*>& InEnemies);
+	AEnemyBaseCharacter* SelectWeightRandomEnemyFromAllRoles();
+
+	float CalculateDistanceScore(TObjectPtr<AEnemyBaseCharacter> InEnemy);
+	float CalculateRoleBias(AEnemyBaseCharacter* InEnemy);
 
 	TArray<AEnemyBaseCharacter*> GetAllAvailableEnemies();
 
