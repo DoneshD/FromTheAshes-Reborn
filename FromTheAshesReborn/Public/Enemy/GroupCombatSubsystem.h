@@ -10,14 +10,13 @@ class AAIControllerEnemyBase;
 class AWaveManager;
 class AEnemyBaseCharacter;
 
-/*UENUM(BlueprintType)
-enum class EEnemyEngagementRole : uint8
+struct FRoleRequirement
 {
-	None		UMETA(DisplayName = "None"),
-	Aggressor	UMETA(DisplayName = "Aggressor"),
-	Cover		UMETA(DisplayName = "Cover"),
-	Observer	UMETA(DisplayName = "Observer")
-};*/
+	EEnemyEngagementRole Role;
+	int32 MinCount;
+	int32 MaxCount;
+	int32 CurrentCount = 0;
+};
 
 UCLASS()
 class FROMTHEASHESREBORN_API UGroupCombatSubsystem : public UWorldSubsystem
@@ -30,6 +29,7 @@ protected:
 	TObjectPtr<AWaveManager> WaveManager;
 
 	bool Flip = true;
+	FTimerHandle AddTimer;
 
 public:
 	
@@ -63,15 +63,20 @@ public:
 	void StartAttacking(TObjectPtr<AAIControllerEnemyBase> InEnemyController);
 
 	void EnforceAllEngagementRoleCounts();
+	void GetRoleCountsFromValidEnemies(TArray<FRoleRequirement>& OutRoleRequirements, TArray<AEnemyBaseCharacter*>& OutValidEnemies);
+	void SatisfyMinimumRoleCounts(TArray<FRoleRequirement>& InRequirements, TArray<AEnemyBaseCharacter*>& InValidEnemies);
+	void SatisfyMaximumRoleCounts(TArray<FRoleRequirement>& InRequirements, TArray<AEnemyBaseCharacter*>& InValidEnemies);
 	
 	void SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy);
 	
 	void ActivateAllStateTrees();
 
-	int32 GetNumOfRoles(EEnemyEngagementRole InRole);
+	int32 GetNumInRoles(EEnemyEngagementRole InRole);
 
 	void ResetTimeSpentInRole(TObjectPtr<AEnemyBaseCharacter> Enemy);
 
-	void FlipAggression();
+	void FlipAggressionCount();
+	
+	void AddRole(EEnemyEngagementRole InRole);
 	
 };
