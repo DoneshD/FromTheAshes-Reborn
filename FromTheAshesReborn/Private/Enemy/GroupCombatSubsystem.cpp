@@ -90,7 +90,7 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 	// 	true
 	// );
 	
-	EEnemyEngagementRole AggressorRole = EEnemyEngagementRole::Aggressor;
+	/*EEnemyEngagementRole AggressorRole = EEnemyEngagementRole::Aggressor;
 
 	GetWorld()->GetTimerManager().SetTimer(
 		AddTimer,
@@ -100,7 +100,7 @@ void UGroupCombatSubsystem::RegisterAllEnemiesToGroupCombat()
 		},
 		2.0f,
 		false
-	);
+	);*/
 }
 
 void UGroupCombatSubsystem::AssignInitialRoles(EEnemyEngagementRole Role, int32 StartingRoleCount)
@@ -299,7 +299,7 @@ AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemy(EEnemyEnga
 		for(auto EnemyChar : InEnemies)
 		{
 			RoleWeightTotal += EnemyChar->AICombatParams->AggressionStats.FinalWeight;
-			// UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - Final Weight: %f"), *GetNameSafe(EnemyChar), EnemyChar->AICombatParams->AggressionStats.FinalWeight)
+			UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - Final Weight: %f"), *GetNameSafe(EnemyChar), EnemyChar->AICombatParams->AggressionStats.FinalWeight)
 		}
 	}
 	else if(InRole == EEnemyEngagementRole::Cover)
@@ -307,6 +307,8 @@ AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemy(EEnemyEnga
 		for(auto EnemyChar : InEnemies)
 		{
 			RoleWeightTotal += EnemyChar->AICombatParams->CoverStats.FinalWeight;
+			UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - Cover Weight: %f"), *GetNameSafe(EnemyChar), EnemyChar->AICombatParams->CoverStats.FinalWeight)
+			
 		}
 	}
 	else if(InRole == EEnemyEngagementRole::Observer)
@@ -314,6 +316,8 @@ AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemy(EEnemyEnga
 		for(auto EnemyChar : InEnemies)
 		{
 			RoleWeightTotal += EnemyChar->AICombatParams->ObserverStats.FinalWeight;
+			UE_LOG(LogTemp, Warning, TEXT("Enemy: %s - ObserverStats Weight: %f"), *GetNameSafe(EnemyChar), EnemyChar->AICombatParams->ObserverStats.FinalWeight)
+			
 		}
 	}
 	
@@ -340,6 +344,7 @@ AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemy(EEnemyEnga
 		
 		if(RoleLevel == 0.0f)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Skip Enemy: %s"), *GetNameSafe(EnemyChar));
 			continue;
 		}
 		
@@ -354,25 +359,72 @@ AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemy(EEnemyEnga
 	return nullptr;
 }
 
-AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightRandomEnemyFromAllRoles()
+AEnemyBaseCharacter* UGroupCombatSubsystem::SelectWeightedRandomEnemyForRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*>& InEnemies)
 {
-	for(AEnemyBaseCharacter* Enemy : AllEnemiesArray)
+	float RoleWeightTotal = 0;
+	
+	if(InRole == EEnemyEngagementRole::Aggressor)
 	{
-		float DistanceScore = CalculateDistanceScore(Enemy);
-		// float RoleBias = CalculateRoleBias(Enemy);
-		
-		float FinalWeight = DistanceScore;
-
-		UE_LOG(LogTemp, Warning, TEXT("Final Score | Enemy: %s | DistanceScore: %.2f | FinalWeight: %.2f"),
-		   *Enemy->GetName(),
-		   DistanceScore,
-		   FinalWeight
-			);
-		 
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += CalculateDistanceScore(EnemyChar);
+		}
+	}
+	else if(InRole == EEnemyEngagementRole::Cover)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->CoverStats.FinalWeight;
+		}
+	}
+	else if(InRole == EEnemyEngagementRole::Observer)
+	{
+		for(auto EnemyChar : InEnemies)
+		{
+			RoleWeightTotal += EnemyChar->AICombatParams->ObserverStats.FinalWeight;
+		}
 	}
 	
+	UE_LOG(LogTemp, Warning, TEXT("RoleWeightTotal: %f"), RoleWeightTotal);
+	
+	float RandomVal = FMath::FRandRange(0, RoleWeightTotal);
+
+	for (auto EnemyChar : InEnemies)
+	{
+		float RoleWeight = 0.0f;
+		
+		if(InRole == EEnemyEngagementRole::Aggressor)
+		{
+			RoleWeight = CalculateDistanceScore(EnemyChar);
+			UE_LOG(LogTemp, Warning, TEXT("Enemy: %s | RoleWeight: %f"), *GetNameSafe(EnemyChar), RoleWeight);
+			
+		}
+		else if(InRole == EEnemyEngagementRole::Cover)
+		{
+			RoleWeight = EnemyChar->AICombatParams->CoverStats.FinalWeight;
+		}
+		else if(InRole == EEnemyEngagementRole::Observer)
+		{
+			RoleWeight = EnemyChar->AICombatParams->ObserverStats.FinalWeight;
+		}
+		
+		if(RoleWeight == 0.0f)
+		{
+			continue;
+		}
+		
+		RandomVal -= RoleWeight;
+
+		if(RandomVal <= 0.0f)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Enemy: %s WON | RoleWeight: %f | Random Val: %f"), *GetNameSafe(EnemyChar), RoleWeight, RandomVal);
+			UE_LOG(LogTemp, Warning, TEXT("Enum: %s"), *UEnum::GetValueAsString(InRole));
+			return EnemyChar;
+		}
+	}
 	return nullptr;
 }
+
 
 float UGroupCombatSubsystem::CalculateDistanceScore(TObjectPtr<AEnemyBaseCharacter> InEnemy)
 {
@@ -395,39 +447,7 @@ float UGroupCombatSubsystem::CalculateDistanceScore(TObjectPtr<AEnemyBaseCharact
 	float DistanceScore = FMath::Abs(1 - DistRatio);
 	float InverseDistanceScore = FMath::Abs(1 - DistanceScore);
 
-	return InverseDistanceScore;
-}
-
-float UGroupCombatSubsystem::CalculateRoleBias(AEnemyBaseCharacter* InEnemy)
-{
-	UGroupCombatComponent* GCC = InEnemy->FindComponentByClass<UGroupCombatComponent>();
-
-	float RoleBias = 0.0f;
-
-	if(!GCC)
-	{
-		UE_LOG(LogTemp, Error, TEXT("UGroupCombatSubsystem::CalculateRoleBias - GCC is null"))
-	}
-	
-	switch (GCC->EngagementRole)
-	{
-	case EEnemyEngagementRole::Aggressor:
-		RoleBias = 0.5f;
-		break;
-
-	case EEnemyEngagementRole::Cover:
-		RoleBias = 0.25f;
-		break;
-
-	case EEnemyEngagementRole::Observer:
-		RoleBias = 0.15f;
-		break;
-
-	default:
-		break;
-	}
-
-	return RoleBias;
+	return InverseDistanceScore * InEnemy->AICombatParams->AggressionStats.FinalWeight;
 }
 
 TArray<AEnemyBaseCharacter*> UGroupCombatSubsystem::GetAllAvailableEnemies()
@@ -668,6 +688,8 @@ void UGroupCombatSubsystem::SatisfyMinimumRoleCounts(TArray<FRoleRequirement>& I
 			
 		Algo::RandomShuffle(InValidEnemies);
 
+		UE_LOG(LogTemp, Error, TEXT("Size 1: %d"), InValidEnemies.Num());
+		
 		for(AEnemyBaseCharacter* Enemy : InValidEnemies)
 		{
 			UGroupCombatComponent* GCC = Enemy->FindComponentByClass<UGroupCombatComponent>();
@@ -804,7 +826,6 @@ void UGroupCombatSubsystem::SatisfyMaximumRoleCounts(TArray<FRoleRequirement>& I
 
 void UGroupCombatSubsystem::SwapOutAggressor(TObjectPtr<AEnemyBaseCharacter> InEnemy)
 {
-	SelectWeightRandomEnemyFromAllRoles();
 	
 	if (!InEnemy)
 	{

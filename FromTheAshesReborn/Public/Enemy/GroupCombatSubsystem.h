@@ -69,10 +69,9 @@ public:
 	void AssignWeightedRandomEngagementRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*> InEnemies);
 
 	AEnemyBaseCharacter* SelectWeightedRandomEnemy(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*>& InEnemies);
-	AEnemyBaseCharacter* SelectWeightRandomEnemyFromAllRoles();
+	AEnemyBaseCharacter* SelectWeightedRandomEnemyForRole(EEnemyEngagementRole InRole, TArray<AEnemyBaseCharacter*>& InEnemies);
 
 	float CalculateDistanceScore(TObjectPtr<AEnemyBaseCharacter> InEnemy);
-	float CalculateRoleBias(AEnemyBaseCharacter* InEnemy);
 
 	TArray<AEnemyBaseCharacter*> GetAllAvailableEnemies();
 
@@ -95,7 +94,5 @@ public:
 	void ChangeMinMaxRoleCount(EEnemyEngagementRole InRole, int32 InMinCount, int32 InMaxCount);
 	
 	void AddRole(EEnemyEngagementRole InRole);
-
-	
 	
 };
