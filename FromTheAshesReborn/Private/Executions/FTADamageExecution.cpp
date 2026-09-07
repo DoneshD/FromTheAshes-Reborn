@@ -52,8 +52,7 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	
 	if (DamageDone > 0.0f)
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), BaseDamage);
-		BaseDamage = BaseDamage / 1.25;
+		UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), BaseDamage);
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UHealthAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, BaseDamage));
 	}
 }

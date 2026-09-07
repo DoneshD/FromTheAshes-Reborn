@@ -2,5 +2,5 @@
 
 UCalamityAttributeSet::UCalamityAttributeSet()
 {
-	BaseWeaponDamage = 36.0f;
+	BaseWeaponDamage = 5.0f;
 }

@@ -77,29 +77,32 @@ void UTargetingSystemComponent::TickComponent(const float DeltaTime, const ELeve
 	}
 	else
 	{
-		CameraParameters->CameraAnchorParams.TargetLocation.Value =
-			CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
-		
-		CameraParameters->SpringArmParams.ArmLength.Value =
-			CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
-		
-		CameraParameters->ControlRotationParams.TargetControlRotation.Value =
-			CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams, DeltaTime);
-
-		CameraSystemComponent->ResolveSpringArmParams();
-		CameraSystemComponent->ResolveCameraAnchorParams();
-		
-
-		if(CameraSystemComponent->CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.Priority <= 50)
+		if(CameraSystemComponent->EnableCameraSystem)
 		{
-			CameraSystemComponent->ResolveControlRotationParams();
-		}
+			CameraParameters->CameraAnchorParams.TargetLocation.Value =
+				CalculateAnchorLocation(PlayerCharacter, LockedOnTargetActor, DeltaTime, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
 		
-		if(FTAAbilitySystemComponent)
-		{
-			if(!FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation")))
+			CameraParameters->SpringArmParams.ArmLength.Value =
+				CalculateBaseSpringArmLength(PlayerCharacter, LockedOnTargetActor, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams);
+		
+			CameraParameters->ControlRotationParams.TargetControlRotation.Value =
+				CalculateControlRotation(CameraParameters->CameraAnchorParams.TargetLocation.Value, CameraSystemComponent->CurrentCameraStateParams->TargetingLockOnParams, DeltaTime);
+
+			CameraSystemComponent->ResolveSpringArmParams();
+			CameraSystemComponent->ResolveCameraAnchorParams();
+		
+
+			if(CameraSystemComponent->CurrentCameraStateParams->ControlRotationParams.TargetControlRotation.MetaData.Priority <= 50)
 			{
-				SetOwnerActorRotation();
+				CameraSystemComponent->ResolveControlRotationParams();
+			}
+		
+			if(FTAAbilitySystemComponent)
+			{
+				if(!FTAAbilitySystemComponent->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.DisableRotation")))
+				{
+					SetOwnerActorRotation();
+				}
 			}
 		}
 	}
@@ -705,7 +708,7 @@ AActor* UTargetingSystemComponent::TargetActor(bool& IsSuccess)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Actor is NULL"));
+		// UE_LOG(LogTemp, Error, TEXT("Actor is NULL"));
 	}
 	TargetLockOff();
 	IsSuccess = false;

@@ -69,6 +69,9 @@ public:
 	UPROPERTY()
 	TArray<TObjectPtr<UCameraParamsDataAsset>> CameraParamsArray;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool EnableCameraSystem = true;
+
 public:
 	
 	template<typename TValue, typename TParam>
@@ -196,6 +199,9 @@ public:
 	void ResolveCameraFOV();
 	void ResolveCameraComponentParams();
 	void ResolveCameraParams();
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleCameraSystem(bool bEnableCameraSystem);
 	
 	UFUNCTION(BlueprintCallable)
 	void AddCameraParameters(UCameraParamsDataAsset* CameraParams);

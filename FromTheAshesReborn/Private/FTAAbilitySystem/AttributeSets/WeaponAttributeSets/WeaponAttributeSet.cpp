@@ -1,6 +1,6 @@
 ﻿#include "FTAAbilitySystem/AttributeSets/WeaponAttributeSets/WeaponAttributeSet.h"
 
-UWeaponAttributeSet::UWeaponAttributeSet() : BaseWeaponDamage(20.0f)
+UWeaponAttributeSet::UWeaponAttributeSet() : BaseWeaponDamage(5.0f)
 {
 
 }

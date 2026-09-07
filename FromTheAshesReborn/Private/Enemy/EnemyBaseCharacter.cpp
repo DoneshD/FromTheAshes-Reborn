@@ -103,10 +103,7 @@ void AEnemyBaseCharacter::BeginPlay()
 	// 	2.0f   // Thickness
 	// );
 
-	PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(
-		this,
-		&AEnemyBaseCharacter::OnOverlapBegin
-	);
+	PlayerDetectionSphere->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBaseCharacter::OnOverlapBegin);
 
 
 	// if (FloatCurve)
@@ -211,6 +208,7 @@ void AEnemyBaseCharacter::CheckDeath(float NewValue)
 
 void AEnemyBaseCharacter::Death()
 {
+	UE_LOG(LogTemp, Warning, TEXT("Death"));
 	AAIControllerEnemyBase* EnemyController = Cast<AAIControllerEnemyBase>(GetController());
 
 	if(!EnemyController && !EnemyController->IsValidLowLevel())
@@ -232,6 +230,9 @@ void AEnemyBaseCharacter::Death()
 		ShouldRotate = false;
 		
 		PlayAnimMontage(DeathMontage);
+
+		UE_LOG(LogTemp, Warning, TEXT("Death playing"));
+		
 		if (DeathSound)
 		{
 			float RandomPitch = UKismetMathLibrary::RandomFloatInRange(1.0f, 2.0f);
@@ -250,7 +251,7 @@ void AEnemyBaseCharacter::Death()
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
 		GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 
-		for(auto Element : EquipmentManagerComponent->CurrentEquippedWeaponActors)
+		/*for(auto Element : EquipmentManagerComponent->CurrentEquippedWeaponActors)
 		{
 			if(Element)
 			{
@@ -258,7 +259,7 @@ void AEnemyBaseCharacter::Death()
 			}
 		}
 		
-		Destroy();
+		Destroy();*/
 
 		OnDeath.Broadcast();
 	

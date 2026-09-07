@@ -80,33 +80,37 @@ void UCameraSystemComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (SpringArmComponent)
+	if(EnableCameraSystem)
 	{
-		HandleSpringArmParams(DeltaTime);
-	}
-	
-	if (CameraComponent)
-	{
-		HandleCameraComponentParams(DeltaTime);
-	}
+		if (SpringArmComponent)
+		{
+			HandleSpringArmParams(DeltaTime);
+		}
+		
+		if (CameraComponent)
+		{
+			HandleCameraComponentParams(DeltaTime);
+		}
 
-	if (CameraAnchorComponent)
-	{
-		HandleCameraAnchorParams(DeltaTime);
-	}
-	
-	if(OwnerPlayerController)
-	{
-		HandleControlRotationParams(DeltaTime);
-	}
+		if (CameraAnchorComponent)
+		{
+			HandleCameraAnchorParams(DeltaTime);
+		}
+		
+		if(OwnerPlayerController)
+		{
+			HandleControlRotationParams(DeltaTime);
+		}
 
-	// for(TObjectPtr<UCameraParamsDataAsset> CameraAsset : CameraParamsArray)
-	// {
-	// 	if(CameraAsset)
-	// 	{
-	// 		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CameraAsset->GetName())
-	// 	}
-	// }
+		// for(TObjectPtr<UCameraParamsDataAsset> CameraAsset : CameraParamsArray)
+		// {
+		// 	if(CameraAsset)
+		// 	{
+		// 		UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *CameraAsset->GetName())
+		// 	}
+		// }
+	}
+		
 	
 }
 
@@ -499,6 +503,11 @@ void UCameraSystemComponent::ResolveCameraParams()
 	ResolveCameraAnchorParams();
 	ResolveCameraComponentParams();
 	ResolveControlRotationParams();
+}
+
+void UCameraSystemComponent::ToggleCameraSystem(bool bEnableCameraSystem)
+{
+	EnableCameraSystem = bEnableCameraSystem;
 }
 
 void UCameraSystemComponent::AddCameraParameters(UCameraParamsDataAsset* CameraParams)
