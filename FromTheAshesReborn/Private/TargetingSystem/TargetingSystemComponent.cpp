@@ -179,7 +179,7 @@ void UTargetingSystemComponent::TargetLockOn(AActor* TargetToLockOn)
 	{
 		if (IsValid(OwnerPlayerController))
 		{
-			CameraSystemComponent->OwnerPlayerController->SetIgnoreLookInput(false);;
+			CameraSystemComponent->OwnerPlayerController->SetIgnoreLookInput(false);
 			OwnerPlayerController->SetIgnoreLookInput(false);
 		}
 	}

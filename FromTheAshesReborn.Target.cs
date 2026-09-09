@@ -8,6 +8,8 @@ public class FromTheAshesRebornTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_8;
+		bUseUnityBuild = false;
+
 		ExtraModuleNames.AddRange(new string[] { "FromTheAshesReborn" });
 	}
 }
