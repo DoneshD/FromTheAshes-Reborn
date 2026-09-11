@@ -15,5 +15,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TObjectPtr<UContextualAnimSceneAsset>> PossibleExecutions;
+
 	
 };
