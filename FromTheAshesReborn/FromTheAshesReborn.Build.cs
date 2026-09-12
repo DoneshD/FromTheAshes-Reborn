@@ -27,6 +27,8 @@ public class FromTheAshesReborn : ModuleRules
 			"Niagara",
 			"NavigationSystem",
 			"ContextualAnimation",
+			"LevelSequence",
+			"MovieScene",
 			"UMG"
 		});
 	}

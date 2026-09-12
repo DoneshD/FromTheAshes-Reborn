@@ -64,8 +64,8 @@ public:
 	// UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
 	// TSubclassOf<UWeaponDefinition> WeaponClass;
 
-	// UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	// TObjectPtr<UContextualAnimSceneActorComponent> ContextualAnimSceneActorComponent;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UContextualAnimSceneActorComponent> ContextualAnimSceneActorComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UContextualAnimSceneAsset> ContextualAnimSceneAsset;
