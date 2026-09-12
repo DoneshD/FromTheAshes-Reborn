@@ -11,6 +11,7 @@
 #include "CombatComponents/AfterImageComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/CombatTracingComponent.h"
+#include "CombatComponents/DismembermentComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
 #include "FTACustomBase/FTACharacterMovementComponent.h"
@@ -94,6 +95,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	ContextualAnimSceneActorComponent = CreateDefaultSubobject<UContextualAnimSceneActorComponent>(TEXT("ContextualAnimSceneActorComponent"));
 	this->AddOwnedComponent(GetMesh());
 	InitializedActorComponents.AddUnique(ContextualAnimSceneActorComponent);
+
+	DismembermentComponent = CreateDefaultSubobject<UDismembermentComponent>(TEXT("DismembermentComponent"));
+	this->AddOwnedComponent(GetMesh());
+	InitializedActorComponents.AddUnique(DismembermentComponent);
 }
 
 void AFTACharacter::BeginPlay()

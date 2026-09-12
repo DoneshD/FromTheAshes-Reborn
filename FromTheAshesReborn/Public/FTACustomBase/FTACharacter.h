@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UDismembermentComponent;
 class UTracingComponent;
 class UCombatTracingComponent;
 class UFTAMotionWarpingComponent;
@@ -42,14 +43,8 @@ class FROMTHEASHESREBORN_API AFTACharacter : public ACharacter, public IAbilityS
 	GENERATED_BODY()
 
 public:
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "TempTag")
-	FGameplayTag TempSlamLoopTag;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "TempTag")
-	FGameplayTag TempRushdownLoopTag;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere,  Category = "TempTag")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UAnimMontage> TumbleMontage;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -59,16 +54,10 @@ public:
 	TObjectPtr<UAnimMontage> DeathMontage;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<UAnimMontage> AirDeathMontage;
-
-	// UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
-	// TSubclassOf<UWeaponDefinition> WeaponClass;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UContextualAnimSceneActorComponent> ContextualAnimSceneActorComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TObjectPtr<UContextualAnimSceneAsset> ContextualAnimSceneAsset;
+	TObjectPtr<UDismembermentComponent> DismembermentComponent;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<USoundBase> DeathSound;
@@ -126,6 +115,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UAfterImageComponent> AfterImageComponent;
+	
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "FTACharacter | Niagara")
 	UNiagaraSystem* FX_AfterImage;
