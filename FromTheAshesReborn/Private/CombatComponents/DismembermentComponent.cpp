@@ -1,5 +1,10 @@
 #include "CombatComponents/DismembermentComponent.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraSystem.h"
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+
 UDismembermentComponent::UDismembermentComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -9,6 +14,14 @@ UDismembermentComponent::UDismembermentComponent()
 void UDismembermentComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	OwnerCharacter = Cast<ACharacter>(GetOwner());
+
+	if(!OwnerCharacter)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UDismembermentComponent::BeginPlay - OwnerCharacter invalid"));
+		return;
+	}
 	
 }
 
@@ -25,30 +38,24 @@ void UDismembermentComponent::CaptureDismembermentData(FName InBoneName)
 
 void UDismembermentComponent::RenameBoneName()
 {
-	switch (HitBoneName)
+	if (HitBoneName == "pelvis" ||
+	HitBoneName == "spine_02" ||
+	HitBoneName == "spine_03" ||
+	HitBoneName == "neck_01" ||
+	HitBoneName == "head")
 	{
-	case FName("pelvis"):
 		HitBoneName = "spine_01";
-		break;
-
-	case FName("spine_02"):
-		HitBoneName = "spine_01";
-		break;
-
-	case FName("spine_03"):
-		HitBoneName = "spine_01";
-		break;
-
-	case FName("neck_01"):
-		HitBoneName = "spine_01";
-		break;
-
-	case FName("head"):
-		HitBoneName = "spine_01";
-		break;
-
-	default:
-		break;
 	}
+	
+}
+
+void UDismembermentComponent::ApplyDismemberment(FVector InImpulse, FVector InHitLocation, FName InBoneName,
+	UNiagaraSystem* InNiagaraSystem)
+{
+	OwnerCharacter->GetMesh()->BreakConstraint(InImpulse, OwnerCharacter->GetMesh()->GetSocketLocation(InBoneName), InBoneName);
+	FTransform SocketTransform = OwnerCharacter->GetMesh()->GetSocketTransform(InBoneName);
+	UNiagaraComponent* NiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+		InNiagaraSystem, OwnerCharacter->GetMesh(), InBoneName, SocketTransform.GetLocation(),
+		SocketTransform.GetRotation().Rotator(), EAttachLocation::KeepWorldPosition, true);
 }
 

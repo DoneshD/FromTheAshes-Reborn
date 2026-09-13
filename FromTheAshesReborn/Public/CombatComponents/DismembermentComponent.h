@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "Components/ActorComponent.h"
 #include "DismembermentComponent.generated.h"
 
@@ -12,6 +13,10 @@ class FROMTHEASHESREBORN_API UDismembermentComponent : public UActorComponent
 public:
 	FName HitBoneName;
 
+protected:
+	UPROPERTY()
+	TObjectPtr<ACharacter> OwnerCharacter;
+
 
 protected:
 	
@@ -22,5 +27,8 @@ protected:
 	void CaptureDismembermentData(FName InBoneName);
 
 	void RenameBoneName();
+
+	UFUNCTION(BlueprintCallable)
+	void ApplyDismemberment(FVector InImpulse, FVector InHitLocation, FName InBoneName, UNiagaraSystem* InNiagaraSystem);
 
 };
