@@ -3,6 +3,7 @@
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/Character.h"
+#include "Weapon/EquipmentManagerComponent.h"
 #include "Weapon/WeaponActorBase.h"
 #include "Weapon/WeaponDefinition.h"
 

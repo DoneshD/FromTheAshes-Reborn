@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UDismembermentUtils;
 class UTracingComponent;
 class UCombatTracingComponent;
 class UFTAMotionWarpingComponent;
