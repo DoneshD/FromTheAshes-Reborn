@@ -14,6 +14,8 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Meta = (Categories = "GameplayCue"))
 	FGameplayTag CueTag;
-	
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	bool ActivateAllCues = false;
 	
 };

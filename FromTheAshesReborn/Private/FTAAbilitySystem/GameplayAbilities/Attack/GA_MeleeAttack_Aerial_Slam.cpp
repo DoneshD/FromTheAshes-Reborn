@@ -3,6 +3,7 @@
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "FTAAbilitySystem/AbilitySystemComponent/FTAAbilitySystemComponent.h"
+#include "FTAAbilitySystem/GameplayCues/DecalCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/FTASoundCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/FTAVisualCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/WeaponCueObject.h"
@@ -202,7 +203,7 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 		{
 			FGameplayCueParameters VisualCueParams;
 				
-			UFTAVisualCueObject* VisualCueCDO = VisualCueLanded->GetDefaultObject<UFTAVisualCueObject>();
+			/*UFTAVisualCueObject* VisualCueCDO = VisualCueLanded->GetDefaultObject<UFTAVisualCueObject>();
 			if(VisualCueCDO)
 			{
 				for(FDecalCueStruct& DecalStruct : VisualCueCDO->DecalCueArray)
@@ -217,7 +218,7 @@ void UGA_MeleeAttack_Aerial_Slam::OnMoveComplete()
 				{
 					K2_AddGameplayCueWithParams(VisualCueCDO->VisualCueTag, VisualCueParams);
 				}
-			}
+			}*/
 		}
 
 		FGameplayCueParameters SoundCueParams;
