@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UNiagaraSystem;
 enum class ELockOnInputOrientationDirection : uint8;
 class UAerialAbilityModifier;
 class UMoveToLocationDataAsset;
@@ -132,6 +133,12 @@ protected:
 	FDelegateHandle AdjustFOVDelegateHandle;
 
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
+	TSubclassOf<UGameplayEffect> TestGameplayEffectClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
+	TObjectPtr<UNiagaraSystem> TestNiagaraSystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
 	TObjectPtr<UFTAAbilityDataAsset> DefaultAbilityDataAsset;

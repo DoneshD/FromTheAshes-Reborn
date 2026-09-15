@@ -51,6 +51,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<TObjectPtr<UFTAAbilitySet>> Movement;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TArray<TObjectPtr<UFTAAbilitySet>> Defenses;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combat Params")
 	TObjectPtr<UAICombatParameters> CombatParameters;
 	

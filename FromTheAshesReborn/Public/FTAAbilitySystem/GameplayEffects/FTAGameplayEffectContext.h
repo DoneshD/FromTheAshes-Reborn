@@ -5,6 +5,7 @@
 #include "FTAAbilitySystem/FTAAbilitySourceInterface.h"
 #include "FTAGameplayEffectContext.generated.h"
 
+class UNiagaraSystem;
 class AActor;
 class FArchive;
 class IFTAAbilitySourceInterface;
@@ -15,12 +16,16 @@ USTRUCT()
 struct FFTAGameplayEffectContext : public FGameplayEffectContext
 {
 	GENERATED_BODY()
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraSystem> NiagaraSystem;
 	
 	FFTAGameplayEffectContext() : FGameplayEffectContext(){}
 	FFTAGameplayEffectContext(AActor* InInstigator, AActor* InEffectCauser) : FGameplayEffectContext(InInstigator, InEffectCauser){}
 
+	
 	static FROMTHEASHESREBORN_API FFTAGameplayEffectContext* ExtractEffectContext(struct FGameplayEffectContextHandle Handle);
-	void SetAbilitySource(const IFTAAbilitySourceInterface* InObject, float InSourceLevel);
+	void SetAbilitySource(const UObject* InObject, float InSourceLevel);
 
 	const IFTAAbilitySourceInterface* GetAbilitySource() const;
 

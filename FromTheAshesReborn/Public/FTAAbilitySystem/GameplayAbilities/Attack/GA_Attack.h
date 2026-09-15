@@ -6,6 +6,7 @@
 #include "GA_Attack.generated.h"
 
 
+class UNiagaraSystem;
 struct FMeleeAttackForms;
 class AWeaponActorBase;
 class UAttackAbilityDataAsset;

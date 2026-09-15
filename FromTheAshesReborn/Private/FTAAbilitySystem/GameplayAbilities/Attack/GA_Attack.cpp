@@ -2,6 +2,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemGlobals.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Camera/CameraSystemComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
 #include "DataAsset/MoveToLocationDataAsset.h"
@@ -13,6 +14,7 @@
 #include "FTAAbilitySystem/GameplayCues/FTAVisualCueObject.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "TracingComponent/TracingComponent.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "Weapon/WeaponActorBase.h"
@@ -108,8 +110,9 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 			FGameplayAbilityTargetDataHandle TargetHitDataHandle = AddHitResultToTargetData(LastItem);
 			if(TargetHitDataHandle.Num() > 0 && TargetHitDataHandle.Get(0))
 			{
-				if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Intangible")))
+				if (TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Intangible")))
 				{
+					
 					if(TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.PerfectWindow")))
 					{
 						
