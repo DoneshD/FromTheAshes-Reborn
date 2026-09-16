@@ -334,31 +334,49 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if(TestGameplayEffectClass)
-	{
-		FGameplayEffectContextHandle Context = GetFTAAbilitySystemComponentFromActorInfo()->MakeEffectContext();
+    Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
+    
+    if (!TestGameplayEffectClass)
+    {
+        return;
+    }
+	
+    UFTAAbilitySystemComponent* ASC = GetFTAAbilitySystemComponentFromActorInfo();
+	
+    if (!IsValid(ASC))
+    {
+        return;
+    }
+	
+    FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
 
-		auto* MyContext = static_cast<FFTAGameplayEffectContext*>(Context.Get());
-		// MyContext->SetAbilitySource(TestNiagaraSystem, 1);
-		MyContext->NiagaraSystem = TestNiagaraSystem;
+    if (!Context.IsValid())
+    {
+        return;
+    }
 
-		FGameplayEffectSpecHandle Spec =
-		GetFTAAbilitySystemComponentFromActorInfo()->MakeOutgoingSpec(
-			TestGameplayEffectClass,
-			1.0f,
-			Context
-		);
+    FFTAGameplayEffectContext* FTAContext = FFTAGameplayEffectContext::ExtractEffectContext(Context);
+	
+    if (!FTAContext)
+    {
+        return;
+    }
+	
+    FTAContext->CueObject = CueObject;
+    FGameplayEffectSpecHandle Spec =ASC->MakeOutgoingSpec(TestGameplayEffectClass, 1.0f,Context);
 
-		if (Spec.IsValid())
-		{
-			GetFTAAbilitySystemComponentFromActorInfo()->ApplyGameplayEffectSpecToSelf(
-				*Spec.Data.Get()
-			);
-		}
-		
-	}
+    if (!Spec.IsValid())
+    {
+        return;
+    }
+	
+    if (!Spec.Data.IsValid())
+    {
+        return;
+    }
+
+    ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
 
 	GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UFTAGameplayAbility::SetRuntimeAbilityData);
 	

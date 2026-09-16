@@ -71,6 +71,8 @@ public:
 	virtual void InitAbilityActorInfo(AActor* InOwnerActor, AActor* InAvatarActor) override;
 	static UFTAAbilitySystemComponent* GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent = false);
 
+	virtual FGameplayEffectContextHandle MakeEffectContext() const override;
+
 	UFUNCTION(BlueprintCallable)
 	void GiveAbilityToASC(TSubclassOf<UFTAGameplayAbility> AbilityToGrant, FGameplayTag InputTag, FGameplayTag ActivationGroupTag);
 

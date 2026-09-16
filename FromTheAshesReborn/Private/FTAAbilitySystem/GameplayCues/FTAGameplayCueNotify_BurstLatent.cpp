@@ -1,50 +1,55 @@
 #include "FTAAbilitySystem/GameplayCues/FTAGameplayCueNotify_BurstLatent.h"
 
 #include "NiagaraSystem.h"
+#include "FTAAbilitySystem/GameplayCues/FTACueObject.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 
-void AFTAGameplayCueNotify_BurstLatent::HandleGameplayCue(
-	AActor* MyTarget,
-	EGameplayCueEvent::Type EventType,
-	const FGameplayCueParameters& Parameters)
+void AFTAGameplayCueNotify_BurstLatent::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::Type EventType, const FGameplayCueParameters& Parameters)
 {
-	Super::HandleGameplayCue(MyTarget, EventType, Parameters);
+    switch (EventType)
+    {
+    case EGameplayCueEvent::OnActive:
+    {
+        if (!Parameters.EffectContext.IsValid())
+        {
+            UE_LOG(LogTemp, Error, TEXT("EffectContext is invalid"));
+            break;
+        }
 
-	const FFTAGameplayEffectContext* FTAContext =
-		FFTAGameplayEffectContext::ExtractEffectContext(
-			Parameters.EffectContext
-		);
+        FFTAGameplayEffectContext* FTAContext = FFTAGameplayEffectContext::ExtractEffectContext(Parameters.EffectContext);
 
-	if (FTAContext && FTAContext->NiagaraSystem)
-	{
-		UNiagaraSystem* NiagaraSystem = FTAContext->NiagaraSystem;
+        if (!FTAContext)
+        {
+            UE_LOG(LogTemp, Error, TEXT("FTAContext is NULL"));
+            break;
+        }
 
-		UE_LOG(
-			LogTemp,
-			Warning,
-			TEXT("Niagara System: %s"),
-			*NiagaraSystem->GetName()
-		);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid niagara"))
-	}
-}
+        if (!FTAContext->CueObject)
+        {
+            UE_LOG(LogTemp, Error, TEXT("CueObject is NULL"));
+            break;
+        }
 
+        FTACueObject = FTAContext->CueObject;
 
-bool AFTAGameplayCueNotify_BurstLatent::OnExecute(AActor* MyTarget, const FGameplayCueParameters& Parameters)
-{
-	
-	UE_LOG(LogTemp, Warning, TEXT("FTA Gameplay Cue Fired - OnExecute"));
+        break;
+    }
 
-	return true;
-}
+    case EGameplayCueEvent::WhileActive:
+    {
+        break;
+    }
 
-bool AFTAGameplayCueNotify_BurstLatent::OnExecute_Implementation(AActor* MyTarget,
-	const FGameplayCueParameters& Parameters)
-{
-	UE_LOG(LogTemp, Warning, TEXT("FTA Gameplay Cue Fired - OnExecuteImplementation"));
-	
-	return Super::OnExecute_Implementation(MyTarget, Parameters);
+    case EGameplayCueEvent::Removed:
+    {
+        FTACueObject = nullptr;
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    
+    Super::HandleGameplayCue(MyTarget, EventType, Parameters);
 }

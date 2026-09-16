@@ -5,6 +5,7 @@
 #include "GameplayCueManager.h"
 #include "GameplayTags.h"
 #include "GameplayTagContainer.h"
+#include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTAAbilitySystem/TagRelationships/FTAAbilityTagRelationshipMapping.h"
 #include "HelperFunctionLibraries/LockOnFunctionLibrary.h"
 
@@ -38,6 +39,17 @@ void UFTAAbilitySystemComponent::InitAbilityActorInfo(AActor* InOwnerActor, AAct
 UFTAAbilitySystemComponent* UFTAAbilitySystemComponent::GetAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent)
 {
 	return Cast<UFTAAbilitySystemComponent>(UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor, LookForComponent));
+}
+
+FGameplayEffectContextHandle UFTAAbilitySystemComponent::MakeEffectContext() const
+{
+	FGameplayEffectContextHandle Context(
+		new FFTAGameplayEffectContext()
+	);
+
+	Context.AddSourceObject(GetOwner());
+
+	return Context;
 }
 
 void UFTAAbilitySystemComponent::GiveAbilityToASC(TSubclassOf<UFTAGameplayAbility> AbilityToGrant, FGameplayTag InputTag, FGameplayTag ActivationGroupTag)

@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UFTACueObject;
 class UNiagaraSystem;
 enum class ELockOnInputOrientationDirection : uint8;
 class UAerialAbilityModifier;
@@ -138,7 +139,7 @@ public:
 	TSubclassOf<UGameplayEffect> TestGameplayEffectClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
-	TObjectPtr<UNiagaraSystem> TestNiagaraSystem;
+	TObjectPtr<UFTACueObject> CueObject;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
 	TObjectPtr<UFTAAbilityDataAsset> DefaultAbilityDataAsset;

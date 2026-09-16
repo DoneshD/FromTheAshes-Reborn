@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FTACueObject.h"
 #include "GameplayCueNotify_BurstLatent.h"
 #include "FTAGameplayCueNotify_BurstLatent.generated.h"
 
@@ -9,10 +10,12 @@ class FROMTHEASHESREBORN_API AFTAGameplayCueNotify_BurstLatent : public AGamepla
 {
 	GENERATED_BODY()
 
-	virtual void HandleGameplayCue(AActor* MyTarget,EGameplayCueEvent::Type EventType,const FGameplayCueParameters& Parameters) override;
+public:
 
-	virtual bool OnExecute(AActor* MyTarget, const FGameplayCueParameters& Parameters);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Cue")
+	TObjectPtr<UFTACueObject> FTACueObject;
 
-	virtual bool OnExecute_Implementation(AActor* MyTarget, const FGameplayCueParameters& Parameters) override;
-	
+public:
+
+	virtual void HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::Type EventType, const FGameplayCueParameters& Parameters) override;
 };
