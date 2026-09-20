@@ -64,13 +64,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool UseNiagaraGround = true;
 
-	
-	
-	
-
 protected:
 	UCharacterOverlayComponent();
 	virtual void BeginPlay() override;
+
+	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void ToggleOverlay();
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void StartEffect();
+
+	
 	
 };

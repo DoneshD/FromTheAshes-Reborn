@@ -61,7 +61,7 @@ void UCharacterOverlayComponent::BeginPlay()
 	}
 
 	OverlayMaterialReference = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(),OverlayMaterial);
-
+	
 	
 }
 
@@ -69,4 +69,47 @@ void UCharacterOverlayComponent::TickComponent(float DeltaTime, ELevelTick TickT
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+}
+
+void UCharacterOverlayComponent::ToggleOverlay()
+{
+	if(IsActivated)
+	{
+		SkeletalMeshComponent->SetOverlayMaterial(OverlayMaterialReference);
+		if(Alpha >= 1.0f)
+		{
+			Alpha = 1.0f;
+			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+			TimerHandle.Invalidate();
+		}
+		else
+		{
+			Alpha = Alpha + TimerSpeed;
+			OverlayMaterialReference->SetScalarParameterValue(FName("Fade"), Alpha);
+		}
+		
+	}
+}
+
+void UCharacterOverlayComponent::StartEffect()
+{
+
+	if(UseNiagaraGround)
+	{
+		GroundStartNiagaraComponent->Activate();
+	}
+	if(UseNiagaraOverlay)
+	{
+		SpawnedNiagaraComponent->Activate();
+	}
+
+	IsActivated = true;
+
+	GetWorld()->GetTimerManager().SetTimer(
+		TimerHandle,            
+		this,                      
+		&UCharacterOverlayComponent::ToggleOverlay, 
+		.001f,                     
+		true                     
+	);
 }
