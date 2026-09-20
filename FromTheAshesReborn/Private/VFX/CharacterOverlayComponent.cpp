@@ -1,5 +1,9 @@
 #include "VFX/CharacterOverlayComponent.h"
 
+#include "NiagaraFunctionLibrary.h"
+#include "GameFramework/Character.h"
+#include "Kismet/KismetMaterialLibrary.h"
+
 UCharacterOverlayComponent::UCharacterOverlayComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -9,6 +13,55 @@ UCharacterOverlayComponent::UCharacterOverlayComponent()
 void UCharacterOverlayComponent::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Character = Cast<ACharacter>(GetOwner());
+
+	if(!Character)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCharacterOverlayComponent::BeginPlay() - Not a character"))
+	}
+
+	SkeletalMeshComponent = Character->GetMesh();
+
+	IsActivated = false;
+
+	TimerSpeed = TimerSpeed / 1000.0f;
+
+	if(UseNiagaraGround)
+	{
+		GroundStartNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			NiagaraGround,
+			SkeletalMeshComponent,
+			FName("None"), FVector(0.0f, 0.0f, 0.0f),
+			FRotator(0.0f, 0.0f, 0.0f),
+			EAttachLocation::KeepRelativeOffset,
+			false,
+			false,
+			ENCPoolMethod::ManualRelease,
+			true);
+		
+	}
+
+	if(UseNiagaraOverlay)
+	{
+		SpawnedNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			NiagaraOverlay,
+			SkeletalMeshComponent,
+			FName("None"), FVector(0.0f, 0.0f, 0.0f),
+			FRotator(0.0f, 0.0f, 0.0f),
+			EAttachLocation::KeepRelativeOffset,
+			false,
+			false,
+			ENCPoolMethod::ManualRelease,
+			true);
+
+
+		UNiagaraFunctionLibrary::OverrideSystemUserVariableSkeletalMeshComponent(SpawnedNiagaraComponent, FString("Skeletal Mesh"), SkeletalMeshComponent);
+
+	}
+
+	OverlayMaterialReference = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(),OverlayMaterial);
+
 	
 }
 
