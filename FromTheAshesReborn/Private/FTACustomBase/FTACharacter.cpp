@@ -22,6 +22,7 @@
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TracingComponent/TracingComponent.h"
+#include "VFX/CharacterOverlayComponent.h"
 #include "Weapon/EquipmentManagerComponent.h"
 #include "Weapon/WeaponActorBase.h"
 
@@ -90,6 +91,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	AfterImageComponent = CreateDefaultSubobject<UAfterImageComponent>(TEXT("AfterImageComponent"));
 	this->AddOwnedComponent(GetMesh());
 	InitializedActorComponents.AddUnique(AfterImageComponent);
+
+	CharacterOverlayComponent = CreateDefaultSubobject<UCharacterOverlayComponent>(TEXT("CharacterOverlayComponent"));
+	this->AddOwnedComponent(GetMesh());
+	InitializedActorComponents.AddUnique(CharacterOverlayComponent);
 
 	ContextualAnimSceneActorComponent = CreateDefaultSubobject<UContextualAnimSceneActorComponent>(TEXT("ContextualAnimSceneActorComponent"));
 	this->AddOwnedComponent(GetMesh());
