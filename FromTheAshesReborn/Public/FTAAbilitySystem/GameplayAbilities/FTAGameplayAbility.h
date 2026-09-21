@@ -7,6 +7,7 @@
 #include "Player/FTAPlayerState.h"
 #include "FTAGameplayAbility.generated.h"
 
+class UAbilityTask_WaitGameplayEvent;
 class UFTACueObject;
 class UNiagaraSystem;
 enum class ELockOnInputOrientationDirection : uint8;
@@ -60,6 +61,9 @@ private:
 
 	UPROPERTY()
 	TObjectPtr<UAT_WaitInputTagAndQueueWindowEvent> WaitInputTagAndQueueWindowEventTask;
+
+	UPROPERTY()
+	UAbilityTask_WaitGameplayEvent* WaitHitTask;
 
 	UPROPERTY()
 	TObjectPtr<UFTAAT_PlayMontageAndWaitForEvent> PlayMontageTask;
@@ -273,5 +277,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void ResetCombo();
+
+	UFUNCTION(BlueprintCallable)
+	void OnHitReceived(FGameplayEventData EventData);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void K2_OnHitReceived(FGameplayEventData EventData);
 	
 };

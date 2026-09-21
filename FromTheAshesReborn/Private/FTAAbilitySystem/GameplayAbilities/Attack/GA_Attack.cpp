@@ -125,10 +125,9 @@ void UGA_Attack::OnHitAdded(FHitResult LastItem)
 						UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, PerfectDodgeEventData.EventTag, PerfectDodgeEventData);
 					}
 				}
-				else
-				{
-					ExecuteHitLogic(TargetHitDataHandle);
-				}
+				
+				ExecuteHitLogic(TargetHitDataHandle);
+				
 			}
 		}
 	}
@@ -445,6 +444,10 @@ void UGA_Attack::SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& T
 		// CurrentMoveToLocationAsset->LocationData.RelativeOffsetVector = FVector::ZeroVector;
 		CurrentMoveToLocationAsset->TempLocationData.EndLocationVector = FVector::ZeroVector;
 	}
+	
+	FGameplayEventData OnHitEvent;
+
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(TargetActor, FGameplayTag::RequestGameplayTag("Event.Hit.Test1"), OnHitEvent);
 }
 
 UFTAAbilityDataAsset* UGA_Attack::SelectAbilityAsset(TArray<UFTAAbilityDataAsset*> InAbilityAssets)

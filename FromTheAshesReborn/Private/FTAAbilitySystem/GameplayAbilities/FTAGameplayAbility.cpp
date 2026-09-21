@@ -8,6 +8,7 @@
 #include "GameplayTagContainer.h"
 #include "MotionWarpingComponent.h"
 #include "Abilities/Tasks/AbilityTask_MoveToLocation.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/ComboManagerComponent.h"
@@ -337,46 +338,45 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
     
-    if (!TestGameplayEffectClass)
+    if (TestGameplayEffectClass)
     {
-        return;
-    }
-	
-    UFTAAbilitySystemComponent* ASC = GetFTAAbilitySystemComponentFromActorInfo();
-	
-    if (!IsValid(ASC))
-    {
-        return;
-    }
-	
-    FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+        
+	    UFTAAbilitySystemComponent* ASC = GetFTAAbilitySystemComponentFromActorInfo();
+		
+	    if (!IsValid(ASC))
+	    {
+	        return;
+	    }
+		
+	    FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
 
-    if (!Context.IsValid())
-    {
-        return;
-    }
+	    if (!Context.IsValid())
+	    {
+	        return;
+	    }
 
-    FFTAGameplayEffectContext* FTAContext = FFTAGameplayEffectContext::ExtractEffectContext(Context);
-	
-    if (!FTAContext)
-    {
-        return;
-    }
-	
-    FTAContext->CueObject = CueObject;
-    FGameplayEffectSpecHandle Spec =ASC->MakeOutgoingSpec(TestGameplayEffectClass, 1.0f,Context);
+	    FFTAGameplayEffectContext* FTAContext = FFTAGameplayEffectContext::ExtractEffectContext(Context);
+		
+	    if (!FTAContext)
+	    {
+	        return;
+	    }
+		
+	    FTAContext->CueObject = CueObject;
+	    FGameplayEffectSpecHandle Spec =ASC->MakeOutgoingSpec(TestGameplayEffectClass, 1.0f,Context);
 
-    if (!Spec.IsValid())
-    {
-        return;
-    }
-	
-    if (!Spec.Data.IsValid())
-    {
-        return;
-    }
+	    if (!Spec.IsValid())
+	    {
+	        return;
+	    }
+		
+	    if (!Spec.Data.IsValid())
+	    {
+	        return;
+	    }
 
-    ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+	    ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+    }
 
 	GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UFTAGameplayAbility::SetRuntimeAbilityData);
 	
@@ -397,6 +397,13 @@ void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handl
 		{
 			WaitInputTagAndQueueWindowEventTask->ReadyForActivation();
 		}	
+	}
+
+	WaitHitTask = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FGameplayTag::RequestGameplayTag("Event.Hit.Test1"));
+	if (WaitHitTask)
+	{
+		WaitHitTask->EventReceived.AddDynamic(this, &UFTAGameplayAbility::OnHitReceived);
+		WaitHitTask->ReadyForActivation();
 	}
 
 	if(IsAerialAbility)
@@ -874,4 +881,9 @@ void UFTAGameplayAbility::ResetCombo()
 	ComboManagerComponent->GetCurrentComboContainer().Reset();
 	ComboManagerComponent->SetCurrentComboIndex(0);
 	ComboManagerComponent->PauseCurrentAttack = false;
+}
+
+void UFTAGameplayAbility::OnHitReceived(FGameplayEventData EventData)
+{
+	K2_OnHitReceived(EventData);
 }
