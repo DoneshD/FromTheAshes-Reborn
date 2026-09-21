@@ -87,13 +87,11 @@ void UCharacterOverlayComponent::ToggleOverlay()
 			Alpha = Alpha + TimerSpeed;
 			OverlayMaterialReference->SetScalarParameterValue(FName("Fade"), Alpha);
 		}
-		
 	}
 }
 
 void UCharacterOverlayComponent::StartEffect()
 {
-
 	if(UseNiagaraGround)
 	{
 		GroundStartNiagaraComponent->Activate();

@@ -1,6 +1,13 @@
 #include "FTAAbilitySystem/GameplayCues/OverlayCueNotify.h"
 
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "FTAAbilitySystem/GameplayCues/MaterialCueObject.h"
+#include "FTAAbilitySystem/GameplayCues/OverlayCueObject.h"
+#include "GameFramework/Character.h"
+#include "Kismet/KismetMaterialLibrary.h"
+#include "VFX/CharacterOverlayComponent.h"
 
 void AOverlayCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::Type EventType, const FGameplayCueParameters& Parameters){
 	Super::HandleGameplayCue(MyTarget, EventType, Parameters);
@@ -11,20 +18,13 @@ void AOverlayCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 		{
 			if(FTACueObject)
 			{
-				UMaterialCueObject* MCO = Cast<UMaterialCueObject>(FTACueObject);
-				if(MCO)
+				OverlayCueObject = Cast<UOverlayCueObject>(FTACueObject);
+				if(OverlayCueObject)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("MCO: %s"), *GetNameSafe(MCO));
+					UE_LOG(LogTemp, Warning, TEXT("MCO: %s"), *GetNameSafe(OverlayCueObject));
 				}
 
-				GetWorld()->GetTimerManager().SetTimer(
-				TimerHandle,            
-				this,                      
-				&AOverlayCueNotify::TestFunc, 
-				.001f,                     
-				true                     
-			);
-
+				InitializeParameters();
 			}
 			break;
 		}
@@ -45,7 +45,96 @@ void AOverlayCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 	
 }
 
-void AOverlayCueNotify::TestFunc()
+void AOverlayCueNotify::InitializeParameters()
 {
-	UE_LOG(LogTemp, Warning, TEXT("HERERERE"));
+	Character = Cast<ACharacter>(GetOwner());
+
+	if(!Character)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UCharacterOverlayComponent::BeginPlay() - Not a character"))
+	}
+
+	SkeletalMeshComponent = Character->GetMesh();
+
+	IsActivated = false;
+
+	OverlayCueObject->OverlayStruct.AlphaSpeed = OverlayCueObject->OverlayStruct.AlphaSpeed / 1000.0f;
+
+	if(UseNiagaraGround)
+	{
+		GroundStartNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			NiagaraGround,
+			SkeletalMeshComponent,
+			FName("None"), FVector(0.0f, 0.0f, 0.0f),
+			FRotator(0.0f, 0.0f, 0.0f),
+			EAttachLocation::KeepRelativeOffset,
+			false,
+			false,
+			ENCPoolMethod::ManualRelease,
+			true);
+		
+	}
+
+	if(UseNiagaraOverlay)
+	{
+		SpawnedNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			NiagaraOverlay,
+			SkeletalMeshComponent,
+			FName("None"), FVector(0.0f, 0.0f, 0.0f),
+			FRotator(0.0f, 0.0f, 0.0f),
+			EAttachLocation::KeepRelativeOffset,
+			false,
+			false,
+			ENCPoolMethod::ManualRelease,
+			true);
+
+
+		UNiagaraFunctionLibrary::OverrideSystemUserVariableSkeletalMeshComponent(SpawnedNiagaraComponent, FString("Skeletal Mesh"), SkeletalMeshComponent);
+		
+	}
+
+	OverlayMaterialReference = UKismetMaterialLibrary::CreateDynamicMaterialInstance(GetWorld(), OverlayCueObject->OverlayStruct.MaterialInterface);
+
+	ActivateComponents();
+}
+
+void AOverlayCueNotify::ActivateComponents()
+{
+	if(UseNiagaraGround)
+	{
+		GroundStartNiagaraComponent->Activate();
+	}
+	if(UseNiagaraOverlay)
+	{
+		SpawnedNiagaraComponent->Activate();
+	}
+
+	IsActivated = true;
+
+	GetWorld()->GetTimerManager().SetTimer(
+	TimerHandle,            
+	this,                      
+	&AOverlayCueNotify::StartOverlay, 
+	.001f,                     
+	true                     
+	);
+}
+
+void AOverlayCueNotify::StartOverlay()
+{
+	if(IsActivated)
+	{
+		SkeletalMeshComponent->SetOverlayMaterial(OverlayMaterialReference);
+		if(Alpha >= 1.0f)
+		{
+			Alpha = 1.0f;
+			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+			TimerHandle.Invalidate();
+		}
+		else
+		{
+			Alpha = Alpha + OverlayCueObject->OverlayStruct.AlphaSpeed;
+			OverlayMaterialReference->SetScalarParameterValue(FName("Fade"), Alpha);
+		}
+	}
 }
