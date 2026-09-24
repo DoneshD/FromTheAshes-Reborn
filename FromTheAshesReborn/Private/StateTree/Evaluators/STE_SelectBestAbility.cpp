@@ -47,6 +47,7 @@ void FStateTreeEvaluator_SelectBestAbility::TreeStart(FStateTreeExecutionContext
 		UFTAGameplayAbility* Ability = WeightedRandomSelection(PossibleAbilities, Dist);
 		InstanceData.BestSelectedAbility = Ability;
 		InstanceData.AbilityAsset = Ability->DefaultAbilityDataAsset;
+
 	}
 	else
 	{

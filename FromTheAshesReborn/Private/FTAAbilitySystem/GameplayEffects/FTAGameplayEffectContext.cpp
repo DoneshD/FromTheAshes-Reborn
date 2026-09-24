@@ -15,7 +15,7 @@ FFTAGameplayEffectContext* FFTAGameplayEffectContext::ExtractEffectContext(FGame
 
 	if (BaseEffectContext->GetScriptStruct() != FFTAGameplayEffectContext::StaticStruct())
 	{
-		UE_LOG(LogTemp, Error, TEXT("ExtractEffectContext: Context is NOT FFTAGameplayEffectContext. Actual type: %s"), *BaseEffectContext->GetScriptStruct()->GetName());
+		// UE_LOG(LogTemp, Error, TEXT("ExtractEffectContext: Context is NOT FFTAGameplayEffectContext. Actual type: %s"), *BaseEffectContext->GetScriptStruct()->GetName());
 		return nullptr;
 	}
 
