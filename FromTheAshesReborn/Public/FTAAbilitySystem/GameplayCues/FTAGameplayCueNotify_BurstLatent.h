@@ -12,8 +12,7 @@ class FROMTHEASHESREBORN_API AFTAGameplayCueNotify_BurstLatent : public AGamepla
 
 public:
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Cue")
-	TObjectPtr<UFTACueObject> FTACueObject;
+	
 
 public:
 

@@ -45,6 +45,7 @@ protected:
 
 	FVector StartLocation;
 
+	UPROPERTY()
 	UOverlayCueObject* OverlayCueObject;
 
 public:

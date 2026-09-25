@@ -19,6 +19,7 @@
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_MoveToLocationAndWait.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_OnTick.h"
 #include "FTAAbilitySystem/AbilityTasks/FTAAT_PlayMontageAndWaitForEvent.h"
+#include "FTAAbilitySystem/GameplayCues/FTACueObject.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "FTACustomBase/FTACharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -67,7 +68,7 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		return nullptr;
 	}
 	
-	return InAbilityAssets[0];
+	return InAbilityAssets[ComboManagerComponent->GetCurrentComboIndex()];
 }
 
 void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
@@ -585,7 +586,7 @@ FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGamep
 	return ContextHandle;
 }
 
-void UFTAGameplayAbility::ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> InGameplayEffect, UFTACueObject* InCueObject)
+void UFTAGameplayAbility::ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> InGameplayEffect, TArray<UFTACueObject*> InCueObjects)
 {
 	if (InGameplayEffect)
 	{
@@ -610,8 +611,15 @@ void UFTAGameplayAbility::ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect>
 		{
 			return;
 		}
+
+		for(auto CueObject : InCueObjects)
+		{
+			if(CueObject)
+			{
+				FTAContext->CueObjects.Add(CueObject->CueTag, CueObject);
+			}
+		}
 		
-		FTAContext->CueObject = InCueObject;
 		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(InGameplayEffect, 1.0f,Context);
 
 		if (!Spec.IsValid())

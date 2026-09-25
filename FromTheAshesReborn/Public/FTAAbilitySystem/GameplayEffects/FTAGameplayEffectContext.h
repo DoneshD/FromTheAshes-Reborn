@@ -19,7 +19,7 @@ struct FFTAGameplayEffectContext : public FGameplayEffectContext
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TObjectPtr<UFTACueObject> CueObject;
+	TMap<FGameplayTag, TObjectPtr<UFTACueObject>> CueObjects;
 	
 	FFTAGameplayEffectContext() : FGameplayEffectContext(){}
 	FFTAGameplayEffectContext(AActor* InInstigator, AActor* InEffectCauser) : FGameplayEffectContext(InInstigator, InEffectCauser){}

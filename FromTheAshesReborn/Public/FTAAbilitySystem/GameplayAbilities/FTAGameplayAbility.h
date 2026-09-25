@@ -238,7 +238,7 @@ public:
 	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
 
 	UFUNCTION(BlueprintCallable)
-	void ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> InGameplayEffect, UFTACueObject* InCueObject);
+	void ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> InGameplayEffect, TArray<UFTACueObject*> InCueObjects);
 	
 	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;

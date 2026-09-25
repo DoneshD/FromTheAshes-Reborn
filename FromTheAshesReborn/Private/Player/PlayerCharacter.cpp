@@ -92,6 +92,12 @@ void APlayerCharacter::BeginPlay()
 
 	UEnemyEncounterDataAsset* EncounterData = FTAGameMode->EnemyEncounterArray[FTAGameMode->CurrentEncounter];
 
+	if(!EncounterData)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Invalid gamemode"));
+		return;
+	}
+
 	GroupCombatComponent->AttackTokensCount = EncounterData->PlayerTokenData.StartingCount;
 
 }

@@ -23,14 +23,7 @@ void AFTAGameplayCueNotify_BurstLatent::HandleGameplayCue(AActor* MyTarget, EGam
             UE_LOG(LogTemp, Error, TEXT("FTAContext is NULL"));
             break;
         }
-
-        if (!FTAContext->CueObject)
-        {
-            UE_LOG(LogTemp, Error, TEXT("CueObject is NULL"));
-            break;
-        }
-
-        FTACueObject = FTAContext->CueObject;
+            
 
         break;
     }
@@ -42,7 +35,6 @@ void AFTAGameplayCueNotify_BurstLatent::HandleGameplayCue(AActor* MyTarget, EGam
 
     case EGameplayCueEvent::Removed:
     {
-        FTACueObject = nullptr;
         break;
     }
 

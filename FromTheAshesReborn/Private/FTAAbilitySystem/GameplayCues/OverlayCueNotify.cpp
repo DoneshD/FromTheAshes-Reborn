@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "FTAAbilitySystem/GameplayCues/MaterialCueObject.h"
 #include "FTAAbilitySystem/GameplayCues/OverlayCueObject.h"
+#include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 #include "GameFramework/Character.h"
 #include "Kismet/KismetMaterialLibrary.h"
 #include "VFX/CharacterOverlayComponent.h"
@@ -16,16 +17,32 @@ void AOverlayCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 	{
 	case EGameplayCueEvent::OnActive:
 		{
-			if(FTACueObject)
-			{
-				OverlayCueObject = Cast<UOverlayCueObject>(FTACueObject);
-				if(OverlayCueObject)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("MCO: %s"), *GetNameSafe(OverlayCueObject));
-				}
 
-				InitializeParameters();
+			if (!Parameters.EffectContext.IsValid())
+			{
+				UE_LOG(LogTemp, Error, TEXT("EffectContext is invalid"));
+				break;
 			}
+
+			FFTAGameplayEffectContext* FTAContext = FFTAGameplayEffectContext::ExtractEffectContext(Parameters.EffectContext);
+
+			if (!FTAContext)
+			{
+				UE_LOG(LogTemp, Error, TEXT("FTAContext is NULL"));
+				break;
+			}
+
+			UFTACueObject* CueObject = FTAContext->CueObjects.FindRef(FGameplayTag::RequestGameplayTag("GameplayCue.Overlay"));
+
+			OverlayCueObject = Cast<UOverlayCueObject>(CueObject);
+
+			if (!OverlayCueObject)
+			{
+				return;
+			}
+
+			InitializeParameters();
+			
 			break;
 		}
 
