@@ -27,6 +27,9 @@ struct FFTAGameplayEffectContext : public FGameplayEffectContext
 	virtual FGameplayEffectContext* Duplicate() const override;
 	
 	static FROMTHEASHESREBORN_API FFTAGameplayEffectContext* ExtractEffectContext(struct FGameplayEffectContextHandle Handle);
+	
+	FFTAGameplayEffectContext* K2_ExtractEffectContext(struct FGameplayEffectContextHandle Handle);
+
 	void SetAbilitySource(const UObject* InObject, float InSourceLevel);
 
 	const IFTAAbilitySourceInterface* GetAbilitySource() const;

@@ -58,6 +58,12 @@ void AOverlayCueNotify::InitializeParameters()
 
 	IsActivated = false;
 
+	if(!OverlayCueObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Object"))
+		return;
+	}
+
 	OverlayCueObject->OverlayStruct.AlphaSpeed = OverlayCueObject->OverlayStruct.AlphaSpeed / 1000.0f;
 
 	if(UseNiagaraGround)
@@ -100,6 +106,7 @@ void AOverlayCueNotify::InitializeParameters()
 
 void AOverlayCueNotify::ActivateComponents()
 {
+	UE_LOG(LogTemp, Log, TEXT("Activating OverlayCue"));
 	if(UseNiagaraGround)
 	{
 		GroundStartNiagaraComponent->Activate();

@@ -335,48 +335,7 @@ void UFTAGameplayAbility::OnRemoveAbility(const FGameplayAbilityActorInfo* Actor
 
 void UFTAGameplayAbility::ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData)
 {
-
     Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
-    
-    if (TestGameplayEffectClass)
-    {
-        
-	    UFTAAbilitySystemComponent* ASC = GetFTAAbilitySystemComponentFromActorInfo();
-		
-	    if (!IsValid(ASC))
-	    {
-	        return;
-	    }
-		
-	    FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
-
-	    if (!Context.IsValid())
-	    {
-	        return;
-	    }
-
-	    FFTAGameplayEffectContext* FTAContext = FFTAGameplayEffectContext::ExtractEffectContext(Context);
-		
-	    if (!FTAContext)
-	    {
-	        return;
-	    }
-		
-	    FTAContext->CueObject = CueObject;
-	    FGameplayEffectSpecHandle Spec =ASC->MakeOutgoingSpec(TestGameplayEffectClass, 1.0f,Context);
-
-	    if (!Spec.IsValid())
-	    {
-	        return;
-	    }
-		
-	    if (!Spec.Data.IsValid())
-	    {
-	        return;
-	    }
-
-	    ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
-    }
 
 	GetFTAAbilitySystemComponentFromActorInfo()->OnAbilityRuntimeData.AddUniqueDynamic(this, &UFTAGameplayAbility::SetRuntimeAbilityData);
 	
@@ -624,6 +583,49 @@ FGameplayEffectContextHandle UFTAGameplayAbility::MakeEffectContext(const FGamep
 	// EffectContext->AddSourceObject(SourceObject);
 	//
 	return ContextHandle;
+}
+
+void UFTAGameplayAbility::ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> InGameplayEffect, UFTACueObject* InCueObject)
+{
+	if (InGameplayEffect)
+	{
+        
+		UFTAAbilitySystemComponent* ASC = GetFTAAbilitySystemComponentFromActorInfo();
+		
+		if (!IsValid(ASC))
+		{
+			return;
+		}
+		
+		FGameplayEffectContextHandle Context = ASC->MakeEffectContext();
+
+		if (!Context.IsValid())
+		{
+			return;
+		}
+
+		FFTAGameplayEffectContext* FTAContext = FFTAGameplayEffectContext::ExtractEffectContext(Context);
+		
+		if (!FTAContext)
+		{
+			return;
+		}
+		
+		FTAContext->CueObject = InCueObject;
+		FGameplayEffectSpecHandle Spec = ASC->MakeOutgoingSpec(InGameplayEffect, 1.0f,Context);
+
+		if (!Spec.IsValid())
+		{
+			return;
+		}
+		
+		if (!Spec.Data.IsValid())
+		{
+			return;
+		}
+
+		ASC->ApplyGameplayEffectSpecToSelf(*Spec.Data);
+	}
 }
 
 void UFTAGameplayAbility::ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const

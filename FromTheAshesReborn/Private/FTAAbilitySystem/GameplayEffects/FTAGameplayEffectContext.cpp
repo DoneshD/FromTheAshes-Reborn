@@ -22,6 +22,12 @@ FFTAGameplayEffectContext* FFTAGameplayEffectContext::ExtractEffectContext(FGame
 	return static_cast<FFTAGameplayEffectContext*>(BaseEffectContext);
 }
 
+FFTAGameplayEffectContext* FFTAGameplayEffectContext::K2_ExtractEffectContext(
+	struct FGameplayEffectContextHandle Handle)
+{
+	return ExtractEffectContext(Handle);
+}
+
 FGameplayEffectContext* FFTAGameplayEffectContext::Duplicate() const
 {
 	FFTAGameplayEffectContext* NewContext = new FFTAGameplayEffectContext();

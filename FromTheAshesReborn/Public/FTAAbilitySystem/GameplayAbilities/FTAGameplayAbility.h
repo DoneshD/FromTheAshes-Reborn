@@ -140,12 +140,6 @@ protected:
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
-	TSubclassOf<UGameplayEffect> TestGameplayEffectClass;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
-	TObjectPtr<UFTACueObject> CueObject;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Base Data")
 	TObjectPtr<UFTAAbilityDataAsset> DefaultAbilityDataAsset;
 
 	UPROPERTY()
@@ -242,6 +236,10 @@ public:
 	virtual void ApplyCost(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo) const override;
 
 	virtual FGameplayEffectContextHandle MakeEffectContext(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo) const override;
+
+	UFUNCTION(BlueprintCallable)
+	void ApplyGameplayEffectToSelf(TSubclassOf<UGameplayEffect> InGameplayEffect, UFTACueObject* InCueObject);
+	
 	virtual void ApplyAbilityTagsToGameplayEffectSpec(FGameplayEffectSpec& Spec, FGameplayAbilitySpec* AbilitySpec) const override;
 	virtual bool DoesAbilitySatisfyTagRequirements(const UAbilitySystemComponent& AbilitySystemComponent, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, OUT FGameplayTagContainer* OptionalRelevantTags) const override;
 	virtual void GetAbilitySource(FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, float& OutSourceLevel, const IFTAAbilitySourceInterface*& OutAbilitySource, AActor*& OutEffectCauser) const;
