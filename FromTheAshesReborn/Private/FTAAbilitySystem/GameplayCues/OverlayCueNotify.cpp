@@ -10,7 +10,8 @@
 #include "Kismet/KismetMaterialLibrary.h"
 #include "VFX/CharacterOverlayComponent.h"
 
-void AOverlayCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::Type EventType, const FGameplayCueParameters& Parameters){
+void AOverlayCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::Type EventType, const FGameplayCueParameters& Parameters)
+{
 	Super::HandleGameplayCue(MyTarget, EventType, Parameters);
 
 	switch (EventType)
@@ -180,9 +181,32 @@ void AOverlayCueNotify::StopOverlay()
 		Alpha = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	}
-	
-	Alpha = Alpha - OverlayCueObject->OverlayStruct.AlphaSpeed;
-	
-	SkeletalMeshComponent->SetOverlayMaterial(nullptr);
-	OverlayMaterialReference->SetScalarParameterValue(FName("Fade"), Alpha);
+
+
+	if(!OverlayCueObject)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Object"))
+		
+	}
+	else
+	{
+		Alpha = Alpha - OverlayCueObject->OverlayStruct.AlphaSpeed;
+	}
+
+	if(!SkeletalMeshComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Skeletal MeshComponent"))
+	}
+	else
+	{
+		SkeletalMeshComponent->SetOverlayMaterial(nullptr);
+	}
+	if(!OverlayMaterialReference)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Overlay Material Reference"))
+	}
+	else
+	{
+		OverlayMaterialReference->SetScalarParameterValue(FName("Fade"), Alpha);
+	}
 }

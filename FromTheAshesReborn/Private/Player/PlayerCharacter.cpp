@@ -2,6 +2,7 @@
 #include "Camera/CameraSystemComponent.h"
 #include "Camera/CameraComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
+#include "CombatComponents/HeatComponent.h"
 #include "CombatComponents/RangedCombatComponent.h"
 #include "Components/WidgetComponent.h"
 #include "DataAsset/EnemyEncounterDataAsset.h"
@@ -68,6 +69,10 @@ APlayerCharacter::APlayerCharacter(const class FObjectInitializer& ObjectInitial
 	RangedCombatComponent = CreateDefaultSubobject<URangedCombatComponent>(TEXT("RangedCombatComponent"));
 	this->AddOwnedComponent(RangedCombatComponent);
 	InitializedActorComponents.AddUnique(RangedCombatComponent);
+
+	HeatComponent = CreateDefaultSubobject<UHeatComponent>(TEXT("HeatComponent"));
+	this->AddOwnedComponent(HeatComponent);
+	InitializedActorComponents.AddUnique(HeatComponent);
 	
 }
 
