@@ -53,6 +53,7 @@ void AOverlayCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 
 	case EGameplayCueEvent::Removed:
 		{
+			StopOverlay();
 			break;
 		}
 
@@ -161,4 +162,27 @@ void AOverlayCueNotify::StartOverlay()
 			OverlayMaterialReference->SetScalarParameterValue(FName("Fade"), Alpha);
 		}
 	}
+}
+
+void AOverlayCueNotify::StopOverlay()
+{
+	if(UseNiagaraGround)
+	{
+		GroundStartNiagaraComponent->Deactivate();
+	}
+	if(UseNiagaraOverlay)
+	{
+		SpawnedNiagaraComponent->Deactivate();
+	}
+	IsActivated = false;
+	if(Alpha <= 0.0f)
+	{
+		Alpha = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	}
+	
+	Alpha = Alpha - OverlayCueObject->OverlayStruct.AlphaSpeed;
+	
+	SkeletalMeshComponent->SetOverlayMaterial(nullptr);
+	OverlayMaterialReference->SetScalarParameterValue(FName("Fade"), Alpha);
 }

@@ -70,5 +70,6 @@ public:
 	void InitializeParameters();
 	void ActivateComponents();
 	void StartOverlay();
+	void StopOverlay();
 	
 };

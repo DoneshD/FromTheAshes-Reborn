@@ -68,7 +68,18 @@ UFTAAbilityDataAsset* UFTAGameplayAbility::SelectAbilityAsset(TArray<UFTAAbility
 		return nullptr;
 	}
 	
-	return InAbilityAssets[ComboManagerComponent->GetCurrentComboIndex()];
+	if (ComboManagerComponent)
+	{
+		const int32 ComboIndex = ComboManagerComponent->GetCurrentComboIndex();
+
+		if (InAbilityAssets.IsValidIndex(ComboIndex) && InAbilityAssets[ComboIndex])
+		{
+			return InAbilityAssets[ComboIndex];
+		}
+	}
+
+	
+	return InAbilityAssets[0];
 }
 
 void UFTAGameplayAbility::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
