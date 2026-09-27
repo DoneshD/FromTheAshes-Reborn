@@ -37,7 +37,7 @@ void UHealthComponent::InitializeWithAbilitySystem(UFTAAbilitySystemComponent* I
 	HealthSet = AbilitySystemComponent->GetSet<UHealthAttributeSet>();
 	if (!HealthSet)
 	{
-		UE_LOG(LogTemp, Error, TEXT("LyraHealthComponent: Cannot initialize health component for owner [%s] with NULL health set on the ability system."), *GetNameSafe(Owner));
+		UE_LOG(LogTemp, Error, TEXT("HealthComponent: Cannot initialize health component for owner [%s] with NULL health set on the ability system."), *GetNameSafe(Owner));
 		return;
 	}
 
