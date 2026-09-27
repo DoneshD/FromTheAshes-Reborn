@@ -19,6 +19,7 @@
 #include "Components/CapsuleComponent.h"
 #include "DataAsset/FTACharacterData.h"
 #include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
+#include "FTAAbilitySystem/AttributeSets/HeatAttributeSet.h"
 #include "HelperFunctionLibraries/TagValidationFunctionLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "TracingComponent/TracingComponent.h"
@@ -39,6 +40,7 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	FTAAbilitySystemComponent = CreateDefaultSubobject<UFTAAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 
 	CreateDefaultSubobject<UHealthAttributeSet>(TEXT("HealthSet"));
+	CreateDefaultSubobject<UHeatAttributeSet>(TEXT("HeatSet"));
 
 	CentralStateComponent = CreateDefaultSubobject<UCentralStateComponent>(TEXT("CentralStateComponent"));
 	this->AddOwnedComponent(CentralStateComponent);

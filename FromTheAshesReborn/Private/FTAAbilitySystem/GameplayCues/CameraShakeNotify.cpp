@@ -33,8 +33,6 @@ void ACameraShakeNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::
 			{
 				return;
 			}
-
-			UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *GetNameSafe(CameraShakeCueObject));
 			
 			break;
 		}

@@ -275,6 +275,18 @@ void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetD
 				1
 				);
 			}
+
+			if(CurrentAttackData->ObtainHeatEffect)
+			{
+				FActiveGameplayEffectHandle AppliedHeatEffect = ApplyGameplayEffectToOwner(
+				CurrentSpecHandle,
+				CurrentActorInfo,
+				CurrentActivationInfo,
+				CurrentAttackData->ObtainHeatEffect.GetDefaultObject(),
+				1,
+				1
+				);
+			}
 			
 			/*if(CDO->HitEffect)
 			{
@@ -480,6 +492,11 @@ void UGA_Attack::ExtractAssetProperties(UFTAAbilityDataAsset* InAbilityAsset)
 		CurrentAttackData->ApplyDamageEffect = AttackAsset->ApplyDamageEffect;
 	}
 
+	if(AttackAsset->ObtainHeatEffect)
+	{
+		CurrentAttackData->ObtainHeatEffect = AttackAsset->ObtainHeatEffect;
+	}
+
 	if(AttackAsset->MoveToLocationDataAsset)
 	{
 		CurrentMoveToLocationAsset = AttackAsset->MoveToLocationDataAsset;
@@ -582,6 +599,11 @@ void UGA_Attack::SetRuntimeAbilityData(UFTAAbilityDataAsset* InAbilityRuntimeDat
 	if(AttackAsset->ApplyDamageEffect)
 	{
 		CurrentAttackData->ApplyDamageEffect = AttackAsset->ApplyDamageEffect;
+	}
+
+	if(AttackAsset->ObtainHeatEffect)
+	{
+		CurrentAttackData->ObtainHeatEffect = AttackAsset->ObtainHeatEffect;
 	}
 
 	if(AttackAsset->MoveToLocationDataAsset)

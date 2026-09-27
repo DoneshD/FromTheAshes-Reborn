@@ -33,9 +33,6 @@ void ANiagaraCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 			{
 				return;
 			}
-
-			UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *GetNameSafe(NiagaraCueObject));
-			
 			break;
 		}
 

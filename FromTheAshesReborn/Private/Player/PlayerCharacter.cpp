@@ -104,6 +104,7 @@ void APlayerCharacter::BeginPlay()
 	}
 
 	GroupCombatComponent->AttackTokensCount = EncounterData->PlayerTokenData.StartingCount;
+	HeatComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
 
 }
 

@@ -125,7 +125,6 @@ void AOverlayCueNotify::InitializeParameters()
 
 void AOverlayCueNotify::ActivateComponents()
 {
-	UE_LOG(LogTemp, Log, TEXT("Activating OverlayCue"));
 	if(UseNiagaraGround)
 	{
 		GroundStartNiagaraComponent->Activate();

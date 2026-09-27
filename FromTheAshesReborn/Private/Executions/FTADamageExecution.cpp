@@ -3,6 +3,7 @@
 #include "Executions/FTADamageExecution.h"
 #include "FTAAbilitySystem/AttributeSets/FTAAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/HealthAttributeSet.h"
+#include "FTAAbilitySystem/AttributeSets/HeatAttributeSet.h"
 #include "FTAAbilitySystem/AttributeSets/WeaponAttributeSets/WeaponAttributeSet.h"
 #include "FTAAbilitySystem/GameplayEffects/FTAGameplayEffectContext.h"
 
@@ -54,5 +55,6 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), BaseDamage);
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UHealthAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, BaseDamage));
+		
 	}
 }

@@ -33,9 +33,6 @@ void ADecalCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::Typ
 			{
 				return;
 			}
-
-			UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *GetNameSafe(DecalCueObject));
-			
 			break;
 		}
 

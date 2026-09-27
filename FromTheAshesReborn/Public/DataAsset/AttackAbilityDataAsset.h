@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Damage")
 	TSubclassOf<UGameplayEffect> ApplyDamageEffect;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack | Heat")
+	TSubclassOf<UGameplayEffect> ObtainHeatEffect;
+
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Attack | Movement")
 	TObjectPtr<UMoveToLocationDataAsset> MoveToLocationDataAsset;
 	
