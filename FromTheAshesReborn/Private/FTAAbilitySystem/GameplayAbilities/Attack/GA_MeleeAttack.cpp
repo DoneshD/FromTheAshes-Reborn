@@ -19,12 +19,7 @@ UGA_MeleeAttack::UGA_MeleeAttack(const FObjectInitializer&)
 	// ActivationOwnedTags.AddTag(FGameplayTag::RequestGameplayTag("TempTag.Attacking"));
 }
 
-
-
-
-bool UGA_MeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle,
-                                         const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags,
-                                         const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
+bool UGA_MeleeAttack::CanActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayTagContainer* SourceTags, const FGameplayTagContainer* TargetTags, FGameplayTagContainer* OptionalRelevantTags) const
 {
 	return Super::CanActivateAbility(Handle, ActorInfo, SourceTags, TargetTags, OptionalRelevantTags);
 }
