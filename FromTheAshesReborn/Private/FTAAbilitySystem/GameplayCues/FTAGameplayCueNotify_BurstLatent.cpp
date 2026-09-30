@@ -12,7 +12,7 @@ void AFTAGameplayCueNotify_BurstLatent::HandleGameplayCue(AActor* MyTarget, EGam
     {
         if (!Parameters.EffectContext.IsValid())
         {
-            UE_LOG(LogTemp, Error, TEXT("EffectContext is invalid"));
+            // UE_LOG(LogTemp, Error, TEXT("EffectContext is invalid"));
             break;
         }
 

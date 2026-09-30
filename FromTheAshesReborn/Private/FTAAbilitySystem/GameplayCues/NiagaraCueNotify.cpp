@@ -13,7 +13,7 @@ void ANiagaraCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 
 			if (!Parameters.EffectContext.IsValid())
 			{
-				UE_LOG(LogTemp, Error, TEXT("EffectContext is invalid"));
+				// UE_LOG(LogTemp, Error, TEXT("EffectContext is invalid"));
 				break;
 			}
 

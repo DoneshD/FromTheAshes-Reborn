@@ -49,8 +49,8 @@ protected:
 	virtual void ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 	virtual void GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
 	
-	virtual void ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
-	virtual void AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle, TSubclassOf<UGA_ReceiveHit> InHitAbilityClass);
+	virtual void ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
+	virtual void AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle);
 
 	UFUNCTION(BlueprintCallable, Category = "Attack Ability")
 	virtual void SendHitGameplayEvents(const FGameplayAbilityTargetDataHandle& TargetDataHandle, FHitDataInfo& HitData);

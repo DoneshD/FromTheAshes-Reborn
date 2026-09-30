@@ -79,7 +79,6 @@ void UGA_Attack::CancelAbility(const FGameplayAbilitySpecHandle Handle, const FG
 void UGA_Attack::EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled)
 {
 	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
-	
 	CurrentAttackData = nullptr;
 }
 
@@ -170,6 +169,9 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 	}
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
+
+	ApplyHitEffects(TargetDataHandle);
+	AddHitCues(TargetDataHandle);
 	
 	if (IsValid(CurrentAttackData) && !CurrentAttackData->PossibleHitReactions.IsEmpty())
 	{
@@ -186,9 +188,7 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 					{
 						if(CDO->CanActivateAbility(TargetSpec->Handle, TargetActorInfo, nullptr, nullptr, nullptr))
 						{
-							ApplyHitEffects(TargetDataHandle, HitData.HitAbilityClass);
 							SendHitGameplayEvents(TargetDataHandle, HitData);
-							AddHitCues(TargetDataHandle, HitData.HitAbilityClass);
 							break;
 						}
 					}
@@ -229,7 +229,7 @@ void UGA_Attack::GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetD
 				else
 				{
 					UE_LOG(LogTemp, Error, TEXT("UGA_Attack::GrantHitAbility - GrantAbilityEffect is null"))
-					EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+					// EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
 					return;
 				}
 			}
@@ -255,62 +255,38 @@ void UGA_Attack::GrantHitAbility(const FGameplayAbilityTargetDataHandle& TargetD
 	}
 }
 
-void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle,
-	TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+void UGA_Attack::ApplyHitEffects(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
-	if (InHitAbilityClass && InHitAbilityClass->IsValidLowLevel())
+	if(CurrentAttackData->ApplyDamageEffect)
 	{
-		const UGA_ReceiveHit* const CDO = InHitAbilityClass->GetDefaultObject<UGA_ReceiveHit>();
-		if (CDO)
-		{
-			if(CurrentAttackData->ApplyDamageEffect)
-			{
-				TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
-				CurrentSpecHandle,
-				CurrentActorInfo,
-				CurrentActivationInfo,
-				TargetDataHandle,
-				CurrentAttackData->ApplyDamageEffect, 
-				1,
-				1
-				);
-			}
-
-			if(CurrentAttackData->ObtainHeatEffect)
-			{
-				FActiveGameplayEffectHandle AppliedHeatEffect = ApplyGameplayEffectToOwner(
-				CurrentSpecHandle,
-				CurrentActorInfo,
-				CurrentActivationInfo,
-				CurrentAttackData->ObtainHeatEffect.GetDefaultObject(),
-				1,
-				1
-				);
-			}
-			
-			/*if(CDO->HitEffect)
-			{
-				FGameplayEffectSpecHandle HitEffectHandle = MakeOutgoingGameplayEffectSpec(CDO->HitEffect, 1.0f);
-
-				TArray<FActiveGameplayEffectHandle> TestAppliedHitEffects = ApplyGameplayEffectSpecToTarget(
-						CurrentSpecHandle,
-						CurrentActorInfo,
-						CurrentActivationInfo,
-						HitEffectHandle,
-						TargetDataHandle
-					);
-			}*/
-		}
+		TArray<FActiveGameplayEffectHandle> AppliedDamageEffects = ApplyGameplayEffectToTarget(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		TargetDataHandle,
+		CurrentAttackData->ApplyDamageEffect, 
+		1,
+		1
+		);
 	}
-	else
+
+	//TODO: Move later
+	if(CurrentAttackData->ObtainHeatEffect)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_MeleeWeaponAttack::ActivateAbility - MeleeWeaponActor is Null"));
-		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
+		FActiveGameplayEffectHandle AppliedHeatEffect = ApplyGameplayEffectToOwner(
+		CurrentSpecHandle,
+		CurrentActorInfo,
+		CurrentActivationInfo,
+		CurrentAttackData->ObtainHeatEffect.GetDefaultObject(),
+		1,
+		1
+		);
 	}
-}
+}	
+	
 
-void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle,TSubclassOf<UGA_ReceiveHit> InHitAbilityClass)
+
+void UGA_Attack::AddHitCues(const FGameplayAbilityTargetDataHandle& TargetDataHandle)
 {
 	AActor* TargetActor = TargetDataHandle.Get(0)->GetHitResult()->GetActor();
 
