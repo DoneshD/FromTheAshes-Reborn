@@ -7,6 +7,7 @@
 #include "GameplayEffectComponents/AbilitiesGameplayEffectComponent.h"
 #include "FTACharacter.generated.h"
 
+class UArmorComponent;
 class UCharacterOverlayComponent;
 class UDismembermentUtils;
 class UTracingComponent;
@@ -92,12 +93,15 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UCentralStateComponent> CentralStateComponent;
-
+	
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UEquipmentManagerComponent> EquipmentManagerComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FTACharacter", Meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UHealthComponent> HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FTACharacter", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UArmorComponent> ArmorComponent;
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = "FTACharacter | Core Components")
 	TObjectPtr<UMotionWarpingComponent> MotionWarpingComponent;

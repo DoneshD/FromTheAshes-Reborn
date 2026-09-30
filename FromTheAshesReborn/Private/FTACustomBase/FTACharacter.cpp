@@ -9,6 +9,7 @@
 #include "NiagaraComponent.h"
 #include "CombatComponents/AerialCombatComponent.h"
 #include "CombatComponents/AfterImageComponent.h"
+#include "CombatComponents/ArmorComponent.h"
 #include "CombatComponents/CentralStateComponent.h"
 #include "CombatComponents/CombatTracingComponent.h"
 #include "CombatComponents/DownedCombatComponent.h"
@@ -53,6 +54,10 @@ AFTACharacter::AFTACharacter(const FObjectInitializer& ObjectInitializer) :
 	HealthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
 	this->AddOwnedComponent(HealthComponent);
 	InitializedActorComponents.AddUnique(HealthComponent);
+
+	ArmorComponent = CreateDefaultSubobject<UArmorComponent>(TEXT("ArmorComponent"));
+	this->AddOwnedComponent(ArmorComponent);
+	InitializedActorComponents.AddUnique(ArmorComponent);
 
 	MotionWarpingComponent = CreateDefaultSubobject<UMotionWarpingComponent>(TEXT("MotionWarpingComponent"));
 	this->AddOwnedComponent(MotionWarpingComponent);
@@ -111,6 +116,8 @@ void AFTACharacter::BeginPlay()
 	AddCharacterBaseAbilities();
 	
 	HealthComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
+	ArmorComponent->InitializeWithAbilitySystem(FTAAbilitySystemComponent);
+	
 	
 	CentralStateComponent->SetCurrentState(CentralStateComponent->NeutralStateTag);
 	CentralStateComponent->SetCurrentOrientation(CentralStateComponent->GroundedOrientationTag, MOVE_Walking);
