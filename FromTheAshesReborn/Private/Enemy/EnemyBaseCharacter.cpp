@@ -3,6 +3,7 @@
 #include "AbilitySystemComponent.h"
 #include "BrainComponent.h"
 #include "NiagaraComponent.h"
+#include "CombatComponents/ArmorComponent.h"
 #include "CombatComponents/GroupCombatComponent.h"
 #include "CombatComponents/HealthComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -37,12 +38,12 @@ AEnemyBaseCharacter::AEnemyBaseCharacter(const class FObjectInitializer& ObjectI
 	PlayerDetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	PlayerDetectionSphere->SetGenerateOverlapEvents(true);
 	PlayerDetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
-
-
+	
 	HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
 	HealthWidget->SetupAttachment(RootComponent);
 	
-	
+	ArmorWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ArmorWidget"));
+	ArmorWidget->SetupAttachment(RootComponent);
 }
 
 void AEnemyBaseCharacter::BeginPlay()
@@ -70,8 +71,15 @@ void AEnemyBaseCharacter::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("HealthWidget is Null or Invalid"));
 	}
 
+	if(ArmorWidget && ArmorWidget->IsValidLowLevel())
+	{
+		ArmorWidget->SetVisibility(false);	
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ArmorWidget is Null or Invalid"));
+	}
 	
-
 	if(!EquipmentManagerComponent && !EquipmentManagerComponent->IsValidLowLevel())
 	{
 		UE_LOG(LogTemp, Error, TEXT("EquipmentManagerComponent is Null or Invalid"));
@@ -87,6 +95,14 @@ void AEnemyBaseCharacter::BeginPlay()
 	}
 	
 	HealthComponent->OnHealthChanged.AddDynamic(this, &AEnemyBaseCharacter::HealthChanged);
+
+	if(!ArmorComponent || !ArmorWidget->IsValidLowLevel())
+	{
+		UE_LOG(LogTemp, Error, TEXT("ArmorComponent is Null or Invalid"));
+		return;
+	}
+	
+	ArmorComponent->OnArmorChanged.AddDynamic(this, &AEnemyBaseCharacter::ArmorChanged);
 
 	
 	// FVector Location = PlayerDetectionSphere->GetComponentLocation();
@@ -186,6 +202,13 @@ void AEnemyBaseCharacter::TimelineFinished()
 void AEnemyBaseCharacter::HealthChanged(UHealthComponent* InHealthComponent, float OldValue, float NewValue, AActor* InInstigator)
 {
 	OnHealthChanged(InHealthComponent, OldValue, NewValue, InInstigator);
+
+}
+
+void AEnemyBaseCharacter::ArmorChanged(UArmorComponent* InArmorComponent, float OldValue, float NewValue, AActor* InInstigator)
+{
+	OnArmorChanged(InArmorComponent, OldValue, NewValue, InInstigator);
+	
 }
 
 void AEnemyBaseCharacter::CheckDeath(float NewValue)

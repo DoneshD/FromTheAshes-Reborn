@@ -12,6 +12,8 @@ struct FGameplayEffectSpec;
 struct FOnAttributeChangeData;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FArmor_AttributeChanged, UArmorComponent*, ArmorComponent, float, OldValue, float, NewValue, AActor*, Instigator);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnArmorDepleted);
+
 
 UCLASS(Blueprintable, Meta=(BlueprintSpawnableComponent))
 class FROMTHEASHESREBORN_API UArmorComponent : public UActorComponent
@@ -45,10 +47,15 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FArmor_AttributeChanged OnMaxArmorChanged;
 
-protected:
+	UPROPERTY(BlueprintAssignable)
+	FOnArmorDepleted OnArmorDepleted;
+
+public:
 	
 	virtual void HandleCurrentArmorChanged(const FOnAttributeChangeData& ChangeData);
 	virtual void HandleMaxArmorChanged(const FOnAttributeChangeData& ChangeData);
+
+	UFUNCTION(BlueprintCallable)
 	virtual void HandleOutOfArmor(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude);
 
 protected:

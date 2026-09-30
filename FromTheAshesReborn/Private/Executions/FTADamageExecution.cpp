@@ -35,7 +35,7 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 
 	if(!TypedContext)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UFTADamageExecution::Execute_Implementation - TypedContext is Null"))
+		// UE_LOG(LogTemp, Error, TEXT("UFTADamageExecution::Execute_Implementation - TypedContext is Null"))
 	}
 	
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();
@@ -53,7 +53,7 @@ void UFTADamageExecution::Execute_Implementation(const FGameplayEffectCustomExec
 	
 	if (DamageDone > 0.0f)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), BaseDamage);
+		// UE_LOG(LogTemp, Warning, TEXT("Damage: %f"), BaseDamage);
 		OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(UHealthAttributeSet::GetIncomingDamageAttribute(), EGameplayModOp::Additive, BaseDamage));
 		
 	}

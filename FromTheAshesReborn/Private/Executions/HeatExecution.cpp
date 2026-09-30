@@ -33,7 +33,7 @@ void UHeatExecution::Execute_Implementation(const FGameplayEffectCustomExecution
 
 	if(!TypedContext)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UHeatExecution::Execute_Implementation - TypedContext is Null"))
+		// UE_LOG(LogTemp, Error, TEXT("UHeatExecution::Execute_Implementation - TypedContext is Null"))
 	}
 	
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();

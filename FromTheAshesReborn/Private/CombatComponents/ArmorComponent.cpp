@@ -44,6 +44,7 @@ void UArmorComponent::InitializeWithAbilitySystem(UFTAAbilitySystemComponent* In
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UArmorAttributeSet::GetCurrentArmorAttribute()).AddUObject(this, &ThisClass::HandleCurrentArmorChanged);
 	AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(UArmorAttributeSet::GetMaxArmorAttribute()).AddUObject(this, &ThisClass::HandleMaxArmorChanged);
 	ArmorSet->OnOutOfArmor.AddUObject(this, &ThisClass::HandleOutOfArmor);
+	
 
 	AbilitySystemComponent->SetNumericAttributeBase(UArmorAttributeSet::GetCurrentArmorAttribute(), 0.0f);
 
@@ -96,8 +97,9 @@ void UArmorComponent::HandleMaxArmorChanged(const FOnAttributeChangeData& Change
 
 }
 
-void UArmorComponent::HandleOutOfArmor(AActor* DamageInstigator, AActor* DamageCauser,
-	const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude)
+void UArmorComponent::HandleOutOfArmor(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude)
 {
-	//TODO: Later use
+	UE_LOG(LogTemp, Warning, TEXT("Here"));
+	OnArmorDepleted.Broadcast();
+	
 }

@@ -33,7 +33,7 @@ void UArmorExecution::Execute_Implementation(const FGameplayEffectCustomExecutio
 
 	if(!TypedContext)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UArmorExecution::Execute_Implementation - TypedContext is Null"))
+		// UE_LOG(LogTemp, Error, TEXT("UArmorExecution::Execute_Implementation - TypedContext is Null"))
 	}
 	
 	const FGameplayTagContainer* SourceTags = Spec.CapturedSourceTags.GetAggregatedTags();

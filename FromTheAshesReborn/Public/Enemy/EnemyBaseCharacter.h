@@ -42,6 +42,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TObjectPtr<UWidgetComponent> HealthWidget;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TObjectPtr<UWidgetComponent> ArmorWidget;
+
 	FOnEnemyDeathSignature OnDeath;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Combat")
@@ -75,6 +78,12 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnHealthChanged(UHealthComponent* InHealthComponent, float OldValue, float NewValue, AActor* InInstigator);
+
+	UFUNCTION()
+	void ArmorChanged(UArmorComponent* InArmorComponent, float OldValue, float NewValue, AActor* InInstigator);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnArmorChanged(UArmorComponent* InArmorComponent, float OldValue, float NewValue, AActor* InInstigator);
 
 	UFUNCTION(BlueprintCallable)
 	void CheckDeath(float NewValue);

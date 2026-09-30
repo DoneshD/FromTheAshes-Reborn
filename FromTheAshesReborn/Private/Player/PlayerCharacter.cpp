@@ -153,6 +153,7 @@ void APlayerCharacter::OnTargetLockedOn(AActor* Target)
 	if(Enemy)
 	{
 		Enemy->HealthWidget->SetVisibility(true);
+		Enemy->ArmorWidget->SetVisibility(true);
 	}
 }
 
@@ -163,6 +164,7 @@ void APlayerCharacter::OnTargetLockedOff(AActor* Target)
 	if(Enemy)
 	{
 		Enemy->HealthWidget->SetVisibility(false);
+		Enemy->ArmorWidget->SetVisibility(false);
 	}
 }
 
