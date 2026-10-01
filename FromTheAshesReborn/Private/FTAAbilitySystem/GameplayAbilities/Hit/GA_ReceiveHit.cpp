@@ -58,7 +58,12 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	{
 		EnemyChar->AICombatParams->AggressionStats.FinalWeight = 0.0f;
 	}
-	
+	if(!UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HERE 1"))
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
+		return;
+	}
 	FVector TargetLocation = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
 	
 	FVector StartLocation = GetFTACharacterFromActorInfo()->GetActorLocation(); 
@@ -95,9 +100,10 @@ void UGA_ReceiveHit::ActivateAbility(const FGameplayAbilitySpecHandle Handle, co
 	
 	if(!CurrentEventData.OptionalObject)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
+		/*UE_LOG(LogTemp, Error, TEXT("UGA_ReceiveHit::ActivateAbility - CurrentEventData.OptionalObject is Null"));
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, false, false);
-		return;
+		return;*/
+		CurrentEventData.OptionalObject = NewObject<UHitEventObject>(this);
 	}
 
 	if(EnableManualMovement)

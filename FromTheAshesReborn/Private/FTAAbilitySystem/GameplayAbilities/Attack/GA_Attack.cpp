@@ -170,8 +170,12 @@ void UGA_Attack::ExecuteHitLogic(const FGameplayAbilityTargetDataHandle& TargetD
 
 	const FGameplayAbilityActorInfo* TargetActorInfo = TargetASC->AbilityActorInfo.Get();
 
+	if(!TargetASC->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Character.State.Buff.Armor")))
+	{
+		AddHitCues(TargetDataHandle);
+	}
+	
 	ApplyHitEffects(TargetDataHandle);
-	AddHitCues(TargetDataHandle);
 	
 	if (IsValid(CurrentAttackData) && !CurrentAttackData->PossibleHitReactions.IsEmpty())
 	{

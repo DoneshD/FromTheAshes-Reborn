@@ -99,7 +99,5 @@ void UArmorComponent::HandleMaxArmorChanged(const FOnAttributeChangeData& Change
 
 void UArmorComponent::HandleOutOfArmor(AActor* DamageInstigator, AActor* DamageCauser, const FGameplayEffectSpec& DamageEffectSpec, float DamageMagnitude)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Here"));
 	OnArmorDepleted.Broadcast();
-	
 }

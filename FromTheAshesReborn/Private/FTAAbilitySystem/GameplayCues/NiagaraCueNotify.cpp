@@ -10,7 +10,7 @@ void ANiagaraCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 	{
 	case EGameplayCueEvent::OnActive:
 		{
-
+			
 			if (!Parameters.EffectContext.IsValid())
 			{
 				// UE_LOG(LogTemp, Error, TEXT("EffectContext is invalid"));
@@ -33,6 +33,8 @@ void ANiagaraCueNotify::HandleGameplayCue(AActor* MyTarget, EGameplayCueEvent::T
 			{
 				return;
 			}
+
+			// UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *GetNameSafe(NiagaraCueObject));
 			break;
 		}
 
